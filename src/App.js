@@ -1,28 +1,27 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, {Component} from 'react';
+import AppBar from './components/AppBar';
+//import Amplify from 'aws-amplify';
+import {Route, Switch} from 'react-router-dom';
+//import aws_exports from './aws-exports';
+import Home from './containers/Home';
+import Login from './containers/Login';
+
+//Amplify.configure(aws_exports);
 
 class App extends Component {
-  render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
-      </div>
-    );
-  }
+    render() {
+        return (
+            <div className="App">
+                <header className="App-header">
+                    <AppBar/>
+                </header>
+                <Switch>
+                    <Route path="/" exact component={Home}/>
+                    <Route path="/login" exact component={Login} />
+                </Switch>
+            </div>
+        );
+    }
 }
 
 export default App;
