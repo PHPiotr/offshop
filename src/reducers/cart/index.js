@@ -5,25 +5,25 @@ import {
 } from '../../actions/cart';
 
 const initialState = {
-    count: 0,
+    amount: 0,
 };
 
-const cart = (state = initialState, action) => {
-    switch (action.type) {
+const cart = (state = initialState, {payload, type}) => {
+    switch (type) {
         case ADD_TO_CART:
             return {
                 ...state,
-                count: state.count += (action.payload || 1),
+                amount: state.amount += (payload.amount),
             };
         case REMOVE_FROM_CART:
             return {
                 ...state,
-                count: state.count -= (action.payload || 1),
+                amount: state.amount -= (payload.amount),
             };
         case EMPTY_CART:
             return {
                 ...state,
-                count: 0,
+                amount: 0,
             };
         default:
             return state;

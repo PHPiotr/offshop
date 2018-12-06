@@ -1,7 +1,7 @@
-import { createStore, combineReducers, applyMiddleware } from "redux";
+import { createStore, applyMiddleware } from "redux";
 import logger from 'redux-logger';
 import { composeWithDevTools } from 'redux-devtools-extension';
-import cart from '../reducers/cart';
+import rootReducer from '../reducers';
 
 const configureStore = (initialState) => {
     const middleware = [];
@@ -11,9 +11,7 @@ const configureStore = (initialState) => {
     }
 
     return createStore(
-        combineReducers({
-            cart,
-        }),
+        rootReducer,
         initialState,
         composeWithDevTools(applyMiddleware(...middleware))
     );

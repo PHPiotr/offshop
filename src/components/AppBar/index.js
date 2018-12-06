@@ -22,7 +22,7 @@ const styles = () => ({
 class PrimaryAppBar extends Component {
 
     render() {
-        const {classes} = this.props;
+        const {classes, cart} = this.props;
 
         return (
             <div className={classes.root}>
@@ -34,7 +34,7 @@ class PrimaryAppBar extends Component {
                         <div className={classes.grow}/>
                         <div>
                             <IconButton color="inherit">
-                                <Badge badgeContent={1} color="secondary">
+                                <Badge badgeContent={cart.amount} color="secondary">
                                     <ShoppingCartIcon/>
                                 </Badge>
                             </IconButton>
@@ -49,6 +49,7 @@ class PrimaryAppBar extends Component {
 
 PrimaryAppBar.propTypes = {
     classes: PropTypes.object.isRequired,
+    cart: PropTypes.object.isRequired,
 };
 
 export default withStyles(styles)(PrimaryAppBar);

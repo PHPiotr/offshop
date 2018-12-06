@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
-import AppBar from './components/AppBar';
 //import Amplify from 'aws-amplify';
 import {Route, Switch} from 'react-router-dom';
 //import aws_exports from './aws-exports';
+import Header from './containers/Header';
 import Home from './containers/Home';
 import Login from './containers/Login';
 
@@ -12,9 +12,7 @@ class App extends Component {
     render() {
         return (
             <div className="App">
-                <header className="App-header">
-                    <AppBar/>
-                </header>
+                <Header />
                 <Switch>
                     <Route path="/" exact component={Home}/>
                     <Route path="/login" exact component={Login} />

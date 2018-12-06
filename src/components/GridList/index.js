@@ -8,10 +8,6 @@ import ListSubheader from '@material-ui/core/ListSubheader';
 import IconButton from '@material-ui/core/IconButton';
 import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
 import RemoveShoppingCartIcon from '@material-ui/icons/RemoveShoppingCart';
-import stroik_1 from '../../images/stroik_1.jpg';
-import stroik_2 from '../../images/stroik_2.jpg';
-import stroik_3 from '../../images/stroik_3.jpg';
-import stroik_4 from '../../images/stroik_4.jpg';
 
 const styles = theme => ({
     root: {
@@ -26,54 +22,30 @@ const styles = theme => ({
     },
 });
 
-const tileData = [
-    {
-        img: stroik_1,
-        title: 'Stroik 1',
-        price: '55',
-        inCart: true,
-    },
-    {
-        img: stroik_2,
-        title: 'Stroik 2',
-        price: '30',
-        inCart: false,
-    }, {
-        img: stroik_3,
-        title: 'Stroik 3',
-        price: '45',
-        inCart: false,
-    }, {
-        img: stroik_4,
-        title: 'Stroik 4',
-        price: '35',
-        inCart: false,
-    },
-];
-
 function TitlebarGridList(props) {
-    const {classes} = props;
+    const {classes, category, products, addToCart} = props;
 
     return (
         <div className={classes.root}>
             <GridList cellHeight={`auto`} className={classes.gridList}>
-                <GridListTile key="Subheader" cols={2} style={{height: 'auto'}}>
-                    <ListSubheader component="div">Kompozycje</ListSubheader>
+                <GridListTile cols={2} style={{height: 'auto'}}>
+                    <ListSubheader component="div">{category.title}</ListSubheader>
                 </GridListTile>
-                {tileData.map(tile => (
-                    <GridListTile key={tile.img}>
-                        <img src={tile.img} alt={tile.title}/>
-                        <GridListTileBar
-                            title={tile.title}
-                            subtitle={<span>{tile.price} zł</span>}
-                            actionIcon={
-                                <IconButton className={classes.icon}>
-                                    {tile.inCart ? <RemoveShoppingCartIcon/> : <AddShoppingCartIcon/>}
-                                </IconButton>
-                            }
-                        />
-                    </GridListTile>
-                ))}
+                {products.map((product) => (
+                        <GridListTile key={product.id}>
+                            <img src={require(`../../images/${product.img}`)} alt={product.title}/>
+                            <GridListTileBar
+                                title={product.title}
+                                subtitle={<span>{product.price} zł</span>}
+                                actionIcon={
+                                    <IconButton id={product.id} className={classes.icon} onClick={addToCart} disabled={!product.amount}>
+                                        {product.amount ? <AddShoppingCartIcon/> : <RemoveShoppingCartIcon/>}
+                                    </IconButton>
+                                }
+                            />
+                        </GridListTile>
+                    )
+                )}
             </GridList>
         </div>
     );
