@@ -5,7 +5,7 @@ import {
 } from '../../actions/cart';
 
 const initialState = {
-    amount: 0,
+    amount: 6,
 };
 
 const cart = (state = initialState, {payload, type}) => {

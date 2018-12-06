@@ -3,7 +3,6 @@ import {connect} from 'react-redux';
 import AppBar from "../../components/AppBar";
 
 class Header extends Component {
-
     render() {
         return (
             <header className="App-header">

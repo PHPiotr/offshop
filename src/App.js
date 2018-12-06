@@ -1,25 +1,36 @@
 import React, {Component} from 'react';
-//import Amplify from 'aws-amplify';
 import {Route, Switch} from 'react-router-dom';
-//import aws_exports from './aws-exports';
 import Header from './containers/Header';
 import Home from './containers/Home';
+import Cart from './containers/Cart';
 import Login from './containers/Login';
+import {withStyles} from '@material-ui/core/styles';
 
-//Amplify.configure(aws_exports);
+const styles = theme => ({
+    root: {
+        display: 'flex',
+        flexWrap: 'wrap',
+        overflow: 'hidden',
+        backgroundColor: theme.palette.background.paper,
+    },
+});
 
 class App extends Component {
     render() {
+        const {classes} = this.props;
         return (
             <div className="App">
-                <Header />
-                <Switch>
-                    <Route path="/" exact component={Home}/>
-                    <Route path="/login" exact component={Login} />
-                </Switch>
+                <Header/>
+                <div className={classes.root}>
+                    <Switch>
+                        <Route path="/" exact component={Home}/>
+                        <Route path="/cart" exact component={Cart}/>
+                        <Route path="/login" exact component={Login}/>
+                    </Switch>
+                </div>
             </div>
         );
     }
 }
 
-export default App;
+export default withStyles(styles)(App);

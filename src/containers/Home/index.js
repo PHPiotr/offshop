@@ -1,12 +1,11 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import GridList from '../../components/GridList';
-import {addToCart} from "../../actions/cart";
+import Products from '../../components/Products';
+import {addToCart, removeFromCart} from "../../actions/cart";
 
 class Home extends Component {
-
     render() {
-        return <GridList {...this.props} />
+        return <Products {...this.props} />
     }
 }
 
@@ -17,8 +16,10 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
     addToCart(e) {
-        console.log(e);
         dispatch(addToCart(e.currentTarget.id));
+    },
+    removeFromCart(e) {
+        dispatch(removeFromCart(e.currentTarget.id));
     }
 });
 

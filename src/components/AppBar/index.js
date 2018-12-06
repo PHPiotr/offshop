@@ -28,12 +28,12 @@ class PrimaryAppBar extends Component {
             <div className={classes.root}>
                 <AppBar position="static">
                     <Toolbar>
-                        <Typography variant="h6" color="inherit" noWrap>
+                        <Typography variant="h5" color="inherit" noWrap>
                             <Link style={{color: '#fff', textDecoration: 'none'}} to="/">Kwiaty</Link>
                         </Typography>
                         <div className={classes.grow}/>
                         <div>
-                            <IconButton color="inherit">
+                            <IconButton component={Link} to="/cart" color="inherit">
                                 <Badge badgeContent={cart.amount} color="secondary">
                                     <ShoppingCartIcon/>
                                 </Badge>
