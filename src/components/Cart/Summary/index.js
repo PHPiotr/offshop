@@ -29,7 +29,7 @@ const styles = theme => ({
 });
 
 const CartSummary = (props) => {
-    const {classes, products, supply} = props;
+    const {classes, products, suppliers, setCurrentSupplier} = props;
     return (
         <div className={classes.root}>
             <div className={classes.section1}>
@@ -56,20 +56,19 @@ const CartSummary = (props) => {
                 </Typography>
                 <RadioGroup
                     name="position"
-                    value="2"
-                    onChange={() => null}
+                    value={suppliers.currentId}
                     row
                 >
-                    {supply.items.map(({id, title, price}) => (
-                        <div>
-                            <FormControlLabel
-                                key={id}
-                                value={id}
-                                control={<Radio color="primary" />}
-                                label={`${title}: ${price} zł`}
-                                labelPlacement="end"
-                            />
-                        </div>
+                    {suppliers.items.map(({id, title, price}) => (
+                        <FormControlLabel
+                            key={id}
+                            value={id}
+                            control={<Radio color="primary"/>}
+                            label={`${title}: ${price} zł`}
+                            labelPlacement="end"
+                            checked={id === suppliers.currentId}
+                            onChange={setCurrentSupplier}
+                        />
                     ))}
                 </RadioGroup>
             </div>

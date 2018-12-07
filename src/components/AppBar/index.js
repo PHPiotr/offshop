@@ -6,7 +6,6 @@ import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import Badge from '@material-ui/core/Badge';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
-import Button from '@material-ui/core/Button';
 import {withStyles} from '@material-ui/core/styles';
 import {Link} from 'react-router-dom';
 
@@ -38,7 +37,6 @@ class PrimaryAppBar extends Component {
                                     <ShoppingCartIcon/>
                                 </Badge>
                             </IconButton>
-                            {/*<Button component={Link} to="/login" color="inherit">Login</Button>*/}
                         </div>
                     </Toolbar>
                 </AppBar>

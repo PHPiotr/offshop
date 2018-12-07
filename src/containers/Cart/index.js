@@ -3,7 +3,8 @@ import {connect} from 'react-redux';
 import CartProducts from '../../components/Cart/Products';
 import CartSummary from '../../components/Cart/Summary';
 import SubHeader from '../../components/SubHeader';
-import {addToCart, removeFromCart, removeItemFromCart} from "../../actions/cart";
+import {addToCart, removeFromCart, removeItemFromCart} from '../../actions/cart';
+import {setCurrentSupplier} from '../../actions/suppliers';
 
 class Cart extends Component {
     render() {
@@ -23,7 +24,7 @@ class Cart extends Component {
 const mapStateToProps = (state) => ({
     cart: state.cart,
     products: state.products.items.filter(p => p.inCart > 0),
-    supply: state.supply,
+    suppliers: state.suppliers,
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -36,6 +37,9 @@ const mapDispatchToProps = (dispatch) => ({
     removeItemFromCart(e, amount) {
         dispatch(removeItemFromCart(e.currentTarget.id, amount));
     },
+    setCurrentSupplier(e) {
+        dispatch(setCurrentSupplier(e.target.value));
+    }
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Cart);
