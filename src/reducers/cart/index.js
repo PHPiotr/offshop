@@ -2,6 +2,7 @@ import {
     ADD_TO_CART,
     REMOVE_FROM_CART,
     EMPTY_CART,
+    REMOVE_ITEM_FROM_CART,
 } from '../../actions/cart';
 
 const initialState = {
@@ -16,6 +17,11 @@ const cart = (state = initialState, {payload, type}) => {
                 amount: state.amount += (payload.amount),
             };
         case REMOVE_FROM_CART:
+            return {
+                ...state,
+                amount: state.amount -= (payload.amount),
+            };
+        case REMOVE_ITEM_FROM_CART:
             return {
                 ...state,
                 amount: state.amount -= (payload.amount),

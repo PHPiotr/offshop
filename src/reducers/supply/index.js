@@ -11,7 +11,7 @@ const initialState = {
             'price': 10,
         },
         {
-            'id': '2',
+            'id': '3',
             'title': 'Kurier (przedpłata)',
             'price': 12,
         },

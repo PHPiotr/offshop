@@ -34,11 +34,11 @@ class PrimaryAppBar extends Component {
                         <div className={classes.grow}/>
                         <div>
                             <IconButton component={Link} to="/cart" color="inherit">
-                                <Badge badgeContent={cart.amount} color="secondary">
+                                <Badge badgeContent={cart.amount} invisible={cart.amount < 1} color="secondary">
                                     <ShoppingCartIcon/>
                                 </Badge>
                             </IconButton>
-                            <Button component={Link} to="/login" color="inherit">Login</Button>
+                            {/*<Button component={Link} to="/login" color="inherit">Login</Button>*/}
                         </div>
                     </Toolbar>
                 </AppBar>

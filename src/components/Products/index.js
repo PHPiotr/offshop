@@ -6,8 +6,7 @@ import GridListTile from '@material-ui/core/GridListTile';
 import GridListTileBar from '@material-ui/core/GridListTileBar';
 import IconButton from '@material-ui/core/IconButton';
 import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
-import RemoveShoppingCartIcon from '@material-ui/icons/RemoveShoppingCart';
-import Badge from "@material-ui/core/Badge/Badge";
+import Badge from '@material-ui/core/Badge/Badge';
 import SubHeader from '../SubHeader';
 
 const styles = theme => ({
@@ -19,29 +18,26 @@ const styles = theme => ({
         backgroundColor: theme.palette.background.paper,
     },
     icon: {
-        color: 'rgba(255, 255, 255, 0.54)',
+        color: theme.palette.background.paper,
     },
 });
 
-function TitlebarGridList(props) {
+function ProductsGridList(props) {
     const {classes, category, products, addToCart} = props;
 
     return (
         <Fragment>
             <SubHeader content={category.title} />
             <GridList cellHeight={`auto`}>
-                {products.map((product) => (
-                        <GridListTile key={product.id}>
-                            <img src={require(`../../images/${product.img}`)} alt={product.title}/>
+                {products.map(p => (
+                        <GridListTile key={p.id}>
+                            <img src={require(`../../images/${p.img}`)} alt={p.title}/>
                             <GridListTileBar
-                                title={product.title}
-                                subtitle={<span>{product.price} zł</span>}
+                                title={p.title}
+                                subtitle={<span>{p.price} zł / szt.<br />Ilość: {p.amount + p.inCart} szt.</span>}
                                 actionIcon={
-                                    <IconButton id={product.id} className={classes.icon} onClick={addToCart}
-                                                disabled={!product.amount}>
-                                        <Badge badgeContent={product.amount}>
-                                            {product.amount ? <AddShoppingCartIcon/> : <RemoveShoppingCartIcon/>}
-                                        </Badge>
+                                    <IconButton id={p.id} className={classes.icon} onClick={addToCart} disabled={!p.amount}>
+                                        <AddShoppingCartIcon/>
                                     </IconButton>
                                 }
                             />
@@ -53,8 +49,8 @@ function TitlebarGridList(props) {
     );
 }
 
-TitlebarGridList.propTypes = {
+ProductsGridList.propTypes = {
     classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(TitlebarGridList);
+export default withStyles(styles)(ProductsGridList);

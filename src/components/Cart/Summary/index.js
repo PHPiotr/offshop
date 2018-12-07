@@ -1,11 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {withStyles} from '@material-ui/core/styles';
-import Chip from '@material-ui/core/Chip';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import Divider from '@material-ui/core/Divider';
 import Typography from '@material-ui/core/Typography';
+import Radio from '@material-ui/core/Radio';
+import RadioGroup from '@material-ui/core/RadioGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
 
 const styles = theme => ({
     root: {
@@ -27,19 +29,22 @@ const styles = theme => ({
 });
 
 const CartSummary = (props) => {
-    const {classes, products} = props;
+    const {classes, products, supply} = props;
     return (
         <div className={classes.root}>
             <div className={classes.section1}>
                 <Grid container alignItems="center">
                     <Grid item xs>
                         <Typography gutterBottom variant="h6">
-                            Podsumowanie
+                            Do zapłaty
                         </Typography>
                     </Grid>
                     <Grid item>
                         <Typography gutterBottom variant="h6">
                             {products.reduce((total, p) => (p.price * p.inCart + total), 0)} zł
+                        </Typography>
+                        <Typography gutterBottom variant="body2">
+                            + dostawa
                         </Typography>
                     </Grid>
                 </Grid>
@@ -49,11 +54,24 @@ const CartSummary = (props) => {
                 <Typography gutterBottom variant="body1">
                     Wybierz sposób dostawy
                 </Typography>
-                <div>
-                    <Chip className={classes.chip} label="Odbiór osobisty"/>
-                    <Chip className={classes.chip} label="Kurier"/>
-                    <Chip className={classes.chip} label="Paczkomat"/>
-                </div>
+                <RadioGroup
+                    name="position"
+                    value="2"
+                    onChange={() => null}
+                    row
+                >
+                    {supply.items.map(({id, title, price}) => (
+                        <div>
+                            <FormControlLabel
+                                key={id}
+                                value={id}
+                                control={<Radio color="primary" />}
+                                label={`${title}: ${price} zł`}
+                                labelPlacement="end"
+                            />
+                        </div>
+                    ))}
+                </RadioGroup>
             </div>
             <div className={classes.section3}>
                 <Button variant="contained" color="primary" fullWidth>

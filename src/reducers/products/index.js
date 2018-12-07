@@ -1,4 +1,8 @@
-import {ADD_TO_CART, REMOVE_FROM_CART} from "../../actions/cart";
+import {
+    ADD_TO_CART,
+    REMOVE_FROM_CART,
+    REMOVE_ITEM_FROM_CART,
+} from "../../actions/cart";
 
 const initialState = {
     items: [
@@ -74,6 +78,20 @@ const products = (state = initialState, action) => {
                             ...i,
                             amount: i.amount += action.payload.amount,
                             inCart: i.inCart -= action.payload.amount,
+                        };
+                    }
+                    return i;
+                }),
+            };
+        case REMOVE_ITEM_FROM_CART:
+            return {
+                ...state,
+                items: state.items.map(i => {
+                    if (i.id === action.payload.productId) {
+                        return {
+                            ...i,
+                            amount: i.amount += action.payload.amount,
+                            inCart: 0,
                         };
                     }
                     return i;

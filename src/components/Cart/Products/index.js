@@ -11,8 +11,9 @@ import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction/L
 import IconButton from "@material-ui/core/IconButton/IconButton";
 import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
 import RemoveShoppingCartIcon from '@material-ui/icons/RemoveShoppingCart';
-import Badge from "@material-ui/core/Badge/Badge";
+import DeleteIcon from '@material-ui/icons/Delete';
 import Divider from '@material-ui/core/Divider';
+import TextField from '@material-ui/core/TextField';
 
 const styles = theme => ({
     root: {
@@ -22,10 +23,21 @@ const styles = theme => ({
     inline: {
         display: 'inline',
     },
+    textField: {
+        marginLeft: 0,
+        marginRight: 0,
+        width: '45px',
+        textAlign: 'center',
+        borderRadius: 0,
+        padding: 0,
+    },
 });
 
 function AlignItemsList(props) {
-    const {classes, products, addToCart, removeFromCart} = props;
+    const {classes, products, addOneToCart, removeOneFromCart, removeItemFromCart} = props;
+
+    const handleRemoveAllFromCart = e => removeItemFromCart(e, products.find(p => p.id === e.currentTarget.id).inCart);
+
     return (
         <List className={classes.root}>
             {products.map(p => (
@@ -46,15 +58,22 @@ function AlignItemsList(props) {
                             }
                         />
                         <ListItemSecondaryAction>
-                            <IconButton id={p.id} onClick={addToCart} disabled={!p.amount}>
-                                <Badge badgeContent={p.amount}>
-                                    <AddShoppingCartIcon/>
-                                </Badge>
+                            <IconButton id={p.id} onClick={addOneToCart} disabled={!p.amount}>
+                                <AddShoppingCartIcon/>
                             </IconButton>
-                            <IconButton id={p.id} onClick={removeFromCart}>
-                                <Badge badgeContent={p.inCart}>
-                                    <RemoveShoppingCartIcon/>
-                                </Badge>
+                            <TextField
+                                id={p.id}
+                                className={classes.textField}
+                                value={p.inCart}
+                                helperText={`z ${p.inCart + p.amount} szt.`}
+                                margin="none"
+                                type="number"
+                            />
+                            <IconButton id={p.id} onClick={removeOneFromCart} disabled={p.inCart < 2}>
+                                <RemoveShoppingCartIcon/>
+                            </IconButton>
+                            <IconButton id={p.id} onClick={handleRemoveAllFromCart}>
+                                <DeleteIcon/>
                             </IconButton>
                         </ListItemSecondaryAction>
                     </ListItem>
