@@ -29,9 +29,32 @@ const styles = theme => ({
 });
 
 const CartSummary = (props) => {
-    const {classes, products, suppliers, setCurrentSupplier} = props;
+    const {classes, cart, products, suppliers, setCurrentSupplier} = props;
     return (
         <div className={classes.root}>
+            <div className={classes.section1}>
+                <Typography gutterBottom variant="h6">
+                    Wybierz sposób dostawy
+                </Typography>
+                <RadioGroup
+                    name="position"
+                    value={suppliers.currentId}
+                    row
+                >
+                    {suppliers.items.map(({id, title, pricePerUnit}) => (
+                        <FormControlLabel
+                            key={id}
+                            value={id}
+                            control={<Radio color="primary"/>}
+                            label={`${title}: ${pricePerUnit * cart.units} zł`}
+                            labelPlacement="end"
+                            checked={id === suppliers.currentId}
+                            onChange={setCurrentSupplier}
+                        />
+                    ))}
+                </RadioGroup>
+            </div>
+            <Divider variant="middle"/>
             <div className={classes.section1}>
                 <Grid container alignItems="center">
                     <Grid item xs>
@@ -44,34 +67,12 @@ const CartSummary = (props) => {
                             {products.reduce((total, p) => (p.price * p.inCart + total), 0)} zł
                         </Typography>
                         <Typography gutterBottom variant="body2">
-                            + dostawa
+                            + dostawa {}
                         </Typography>
                     </Grid>
                 </Grid>
             </div>
             <Divider variant="middle"/>
-            <div className={classes.section2}>
-                <Typography gutterBottom variant="body1">
-                    Wybierz sposób dostawy
-                </Typography>
-                <RadioGroup
-                    name="position"
-                    value={suppliers.currentId}
-                    row
-                >
-                    {suppliers.items.map(({id, title, price}) => (
-                        <FormControlLabel
-                            key={id}
-                            value={id}
-                            control={<Radio color="primary"/>}
-                            label={`${title}: ${price} zł`}
-                            labelPlacement="end"
-                            checked={id === suppliers.currentId}
-                            onChange={setCurrentSupplier}
-                        />
-                    ))}
-                </RadioGroup>
-            </div>
             <div className={classes.section3}>
                 <Button variant="contained" color="primary" fullWidth>
                     Zapłać

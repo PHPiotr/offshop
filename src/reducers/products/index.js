@@ -1,7 +1,6 @@
 import {
     ADD_TO_CART,
     REMOVE_FROM_CART,
-    REMOVE_ITEM_FROM_CART,
 } from "../../actions/cart";
 
 const initialState = {
@@ -12,10 +11,12 @@ const initialState = {
             'title': 'Stroik 1',
             'slug': 'stroik-1',
             'active': true,
-            'amount': 0,
-            'inCart': 2,
+            'amount':2,
+            'inCart': 0,
             'price': 35,
             'img': 'stroik_1.jpg',
+            'unitsPerProduct': 1,
+            'unit': 'kg',
         },
         {
             'id': '2',
@@ -27,6 +28,8 @@ const initialState = {
             'inCart': 0,
             'price': 45,
             'img': 'stroik_2.jpg',
+            'unitsPerProduct': 1.5,
+            'unit': 'kg',
         },
         {
             'id': '3',
@@ -35,9 +38,11 @@ const initialState = {
             'slug': 'stroik-3',
             'active': true,
             'amount': 30,
-            'inCart': 1,
+            'inCart': 0,
             'price': 55,
             'img': 'stroik_3.jpg',
+            'unitsPerProduct': 0.5,
+            'unit': 'kg',
         },
         {
             'id': '4',
@@ -46,9 +51,11 @@ const initialState = {
             'slug': 'stroik-4',
             'active': true,
             'amount': 3,
-            'inCart': 3,
+            'inCart': 0,
             'price': 70,
             'img': 'stroik_4.jpg',
+            'unitsPerProduct': 0.5,
+            'unit': 'kg',
         },
     ],
 };
@@ -58,40 +65,26 @@ const products = (state = initialState, action) => {
         case ADD_TO_CART:
             return {
                 ...state,
-                items: state.items.map(i => {
-                    if (i.id === action.payload.productId) {
+                items: state.items.map(item => {
+                    if (item.id === action.payload.item.id) {
                         return {
-                            ...i,
-                            amount: i.amount -= action.payload.amount,
-                            inCart: i.inCart += action.payload.amount,
+                            ...item,
+                            amount: item.amount -= action.payload.amount,
+                            inCart: item.inCart += action.payload.amount,
                         };
                     }
-                    return i;
+                    return item;
                 }),
             };
         case REMOVE_FROM_CART:
             return {
                 ...state,
                 items: state.items.map(i => {
-                    if (i.id === action.payload.productId) {
+                    if (i.id === action.payload.item.id) {
                         return {
                             ...i,
                             amount: i.amount += action.payload.amount,
                             inCart: i.inCart -= action.payload.amount,
-                        };
-                    }
-                    return i;
-                }),
-            };
-        case REMOVE_ITEM_FROM_CART:
-            return {
-                ...state,
-                items: state.items.map(i => {
-                    if (i.id === action.payload.productId) {
-                        return {
-                            ...i,
-                            amount: i.amount += action.payload.amount,
-                            inCart: 0,
                         };
                     }
                     return i;

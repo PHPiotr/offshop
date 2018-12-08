@@ -1,22 +1,17 @@
 import {SET_CURRENT_SUPPLIER} from "../../actions/suppliers";
 
 const initialState = {
-    currentId: '3',
+    currentId: '1',
     items: [
         {
             id: '1',
             title: 'Odbiór osobisty',
-            price: 0,
+            pricePerUnit: 0,
         },
         {
             id: '2',
-            title: 'Paczkomat',
-            price: 10,
-        },
-        {
-            id: '3',
             title: 'Kurier (przedpłata)',
-            price: 12,
+            pricePerUnit: 12,
         },
     ],
 };

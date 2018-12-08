@@ -22,11 +22,15 @@ const styles = theme => ({
 });
 
 function ProductsGridList(props) {
-    const {classes, category, products, addToCart} = props;
+    const {classes, products} = props;
+
+    const handleAddToCart = e => {
+        props.addToCart(products.find(p => p.id === e.currentTarget.id), 1);
+    };
 
     return (
         <Fragment>
-            <SubHeader content={category.title} />
+            <SubHeader content={props.category.title} />
             <GridList cellHeight={`auto`}>
                 {products.map(p => (
                         <GridListTile key={p.id}>
@@ -35,7 +39,7 @@ function ProductsGridList(props) {
                                 title={p.title}
                                 subtitle={<span>{p.price} zł / szt.<br />Ilość: {p.amount + p.inCart} szt.</span>}
                                 actionIcon={
-                                    <IconButton id={p.id} className={classes.icon} onClick={addToCart} disabled={!p.amount}>
+                                    <IconButton id={p.id} className={classes.icon} onClick={handleAddToCart} disabled={!p.amount}>
                                         <AddShoppingCartIcon/>
                                     </IconButton>
                                 }
@@ -50,6 +54,8 @@ function ProductsGridList(props) {
 
 ProductsGridList.propTypes = {
     classes: PropTypes.object.isRequired,
+    addToCart: PropTypes.func.isRequired,
+    products: PropTypes.array.isRequired,
 };
 
 export default withStyles(styles)(ProductsGridList);

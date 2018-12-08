@@ -33,10 +33,14 @@ const styles = theme => ({
     },
 });
 
-function AlignItemsList(props) {
-    const {classes, products, addOneToCart, removeOneFromCart, removeItemFromCart} = props;
+const getItemById = (items, itemId) => items.find(({id}) => id === itemId);
 
-    const handleRemoveAllFromCart = e => removeItemFromCart(e, products.find(p => p.id === e.currentTarget.id).inCart);
+const ProductsInCart = (props) => {
+    const {classes, products} = props;
+
+    const handleIncrementItemInCart = e => props.incrementItemInCart(getItemById(products, e.currentTarget.id));
+    const handleDecrementItemInCart = e => props.decrementItemInCart(getItemById(products, e.currentTarget.id));
+    const handleRemoveItemFromCart = e => props.removeItemFromCart(getItemById(products, e.currentTarget.id));
 
     return (
         <List className={classes.root}>
@@ -58,7 +62,7 @@ function AlignItemsList(props) {
                             }
                         />
                         <ListItemSecondaryAction>
-                            <IconButton id={p.id} onClick={addOneToCart} disabled={!p.amount}>
+                            <IconButton id={p.id} onClick={handleIncrementItemInCart} disabled={!p.amount}>
                                 <AddShoppingCartIcon/>
                             </IconButton>
                             <TextField
@@ -69,10 +73,10 @@ function AlignItemsList(props) {
                                 margin="none"
                                 type="number"
                             />
-                            <IconButton id={p.id} onClick={removeOneFromCart} disabled={p.inCart < 2}>
+                            <IconButton id={p.id} onClick={handleDecrementItemInCart} disabled={p.inCart < 2}>
                                 <RemoveShoppingCartIcon/>
                             </IconButton>
-                            <IconButton id={p.id} onClick={handleRemoveAllFromCart}>
+                            <IconButton id={p.id} onClick={handleRemoveItemFromCart}>
                                 <DeleteIcon/>
                             </IconButton>
                         </ListItemSecondaryAction>
@@ -84,8 +88,12 @@ function AlignItemsList(props) {
     );
 }
 
-AlignItemsList.propTypes = {
+ProductsInCart.propTypes = {
     classes: PropTypes.object.isRequired,
+    products: PropTypes.array.isRequired,
+    incrementItemInCart: PropTypes.func.isRequired,
+    decrementItemInCart: PropTypes.func.isRequired,
+    removeItemFromCart: PropTypes.func.isRequired,
 };
 
-export default withStyles(styles)(AlignItemsList);
+export default withStyles(styles)(ProductsInCart);

@@ -27,12 +27,12 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
-    addToCart(e) {
-        dispatch(addToCart(e.currentTarget.id));
+    addToCart(item, amount) {
+        dispatch(addToCart(item, amount));
         dispatch(openAddedToCartDialog());
     },
-    removeFromCart(e) {
-        dispatch(removeFromCart(e.currentTarget.id));
+    removeFromCart(e, amount, units) {
+        dispatch(removeFromCart(e.currentTarget.id, amount, units));
     },
     goToBasket() {
         dispatch(closeAddedToCartDialog());
