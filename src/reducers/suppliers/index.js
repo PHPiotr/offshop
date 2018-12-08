@@ -1,7 +1,8 @@
 import {SET_CURRENT_SUPPLIER} from "../../actions/suppliers";
 
 const initialState = {
-    currentId: '1',
+    currentId: null,
+    current: {},
     items: [
         {
             id: '1',
@@ -21,7 +22,8 @@ const suppliers = (state = initialState, action) => {
         case SET_CURRENT_SUPPLIER:
             return {
                 ...state,
-                currentId: action.payload.supplierId,
+                currentId: action.payload.current.id,
+                current: action.payload.current,
             };
         default:
             return state;

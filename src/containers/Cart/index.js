@@ -24,21 +24,22 @@ class Cart extends Component {
 const mapStateToProps = (state) => ({
     cart: state.cart,
     products: state.products.items.filter(p => p.inCart > 0),
-    suppliers: state.suppliers,
+    suppliers: state.suppliers.items,
+    currentSupplier: state.suppliers.current,
 });
 
 const mapDispatchToProps = (dispatch) => ({
     incrementItemInCart(item) {
-        dispatch(addToCart(item, 1));
+        dispatch(addToCart(item));
     },
     decrementItemInCart(item) {
-        dispatch(removeFromCart(item, 1));
+        dispatch(removeFromCart(item));
     },
     removeItemFromCart(item) {
         dispatch(removeFromCart(item, item.inCart));
     },
-    setCurrentSupplier(e) {
-        dispatch(setCurrentSupplier(e.target.value));
+    setCurrentSupplier(supplier) {
+        dispatch(setCurrentSupplier(supplier));
     }
 });
 

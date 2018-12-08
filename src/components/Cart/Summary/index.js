@@ -29,27 +29,26 @@ const styles = theme => ({
 });
 
 const CartSummary = (props) => {
-    const {classes, cart, products, suppliers, setCurrentSupplier} = props;
+    const {classes, cart, products, suppliers} = props;
+
+    const handleSetCurrentSupplier = e => props.setCurrentSupplier(suppliers.find(s => s.id === e.target.value));
+
     return (
         <div className={classes.root}>
             <div className={classes.section1}>
                 <Typography gutterBottom variant="h6">
                     Wybierz sposób dostawy
                 </Typography>
-                <RadioGroup
-                    name="position"
-                    value={suppliers.currentId}
-                    row
-                >
-                    {suppliers.items.map(({id, title, pricePerUnit}) => (
+                <RadioGroup name="position" value={props.currentSupplier.id}>
+                    {suppliers.map(({id, title, pricePerUnit}) => (
                         <FormControlLabel
                             key={id}
                             value={id}
                             control={<Radio color="primary"/>}
                             label={`${title}: ${pricePerUnit * cart.units} zł`}
                             labelPlacement="end"
-                            checked={id === suppliers.currentId}
-                            onChange={setCurrentSupplier}
+                            checked={id === props.currentSupplier.id}
+                            onChange={handleSetCurrentSupplier}
                         />
                     ))}
                 </RadioGroup>
@@ -64,10 +63,7 @@ const CartSummary = (props) => {
                     </Grid>
                     <Grid item>
                         <Typography gutterBottom variant="h6">
-                            {products.reduce((total, p) => (p.price * p.inCart + total), 0)} zł
-                        </Typography>
-                        <Typography gutterBottom variant="body2">
-                            + dostawa {}
+                            {products.reduce((total, p) => (p.price * p.inCart + total), 0) + (props.currentSupplier.pricePerUnit > 0 ? cart.units * props.currentSupplier.pricePerUnit : 0)} zł
                         </Typography>
                     </Grid>
                 </Grid>
@@ -84,6 +80,10 @@ const CartSummary = (props) => {
 
 CartSummary.propTypes = {
     classes: PropTypes.object.isRequired,
+    cart: PropTypes.object.isRequired,
+    products: PropTypes.array.isRequired,
+    suppliers: PropTypes.array.isRequired,
+    currentSupplier: PropTypes.object.isRequired,
 };
 
 export default withStyles(styles)(CartSummary);
