@@ -2,12 +2,10 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import AppBar from "../../components/AppBar";
 
-class Header extends Component {
+class Navigation extends Component {
     render() {
         return (
-            <header className="App-header">
-                <AppBar {...this.props} />
-            </header>
+            <AppBar {...this.props} />
         );
     }
 }
@@ -20,4 +18,4 @@ const mapDispatchToProps = (dispatch) => ({
 
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(Header);
+export default connect(mapStateToProps, mapDispatchToProps)(Navigation);

@@ -61,16 +61,16 @@ const CartSummary = (props) => {
                             Do zapłaty
                         </Typography>
                     </Grid>
-                    <Grid item>
+                    <Grid item align="right">
                         <Typography gutterBottom variant="h6">
-                            {products.reduce((total, p) => (p.price * p.inCart + total), 0) + (props.currentSupplier.pricePerUnit > 0 ? cart.units * props.currentSupplier.pricePerUnit : 0)} zł
+                            {`${products.reduce((total, p) => (p.price * p.inCart + total), 0) + (props.currentSupplier.pricePerUnit > 0 ? cart.units * props.currentSupplier.pricePerUnit : 0)} zł`}
                         </Typography>
                     </Grid>
                 </Grid>
             </div>
             <Divider variant="middle"/>
             <div className={classes.section3}>
-                <Button variant="contained" color="primary" fullWidth>
+                <Button disabled variant="contained" color="primary">
                     Zapłać
                 </Button>
             </div>

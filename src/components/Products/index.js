@@ -1,22 +1,25 @@
 import React, {Fragment} from 'react';
 import PropTypes from 'prop-types';
-import {withStyles} from '@material-ui/core/styles';
 import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
 import GridListTileBar from '@material-ui/core/GridListTileBar';
 import IconButton from '@material-ui/core/IconButton';
 import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
+import Grid from '@material-ui/core/Grid';
+import {withStyles} from '@material-ui/core/styles';
 import SubHeader from '../SubHeader';
 
 const styles = theme => ({
-    root: {
+    gridListTitle: {
+        height: '100%',
         display: 'flex',
-        flexWrap: 'wrap',
-        justifyContent: 'space-around',
-        overflow: 'hidden',
-        backgroundColor: theme.palette.background.paper,
+        flexDirection: 'column',
+        margin: '0 auto',
     },
-    icon: {
+    gridListTileBar: {
+        flexGrow: 1,
+    },
+    iconButton: {
         color: theme.palette.background.paper,
     },
 });
@@ -32,21 +35,23 @@ function ProductsGridList(props) {
         <Fragment>
             <SubHeader content={props.category.title} />
             <GridList cellHeight={`auto`}>
-                {products.map(p => (
-                        <GridListTile key={p.id}>
-                            <img src={require(`../../images/${p.img}`)} alt={p.title}/>
+                {products.map(product => (
+                    <Grid item key={product.id} xs={12} sm={6} md={4} lg={3}>
+                        <GridListTile key={product.id} className={classes.gridListTitle}>
+                            <img src={require(`../../images/${product.img}`)} alt={product.title} className={classes.image} />
                             <GridListTileBar
-                                title={p.title}
-                                subtitle={<span>{p.price} zł / szt.<br />Ilość: {p.amount + p.inCart} szt.</span>}
+                                className={classes.gridListTileBar}
+                                title={product.title}
+                                subtitle={<span>{product.price} zł</span>}
                                 actionIcon={
-                                    <IconButton id={p.id} className={classes.icon} onClick={handleAddToCart} disabled={!p.amount}>
+                                    <IconButton id={product.id} className={classes.iconButton} onClick={handleAddToCart} disabled={!product.amount}>
                                         <AddShoppingCartIcon/>
                                     </IconButton>
                                 }
                             />
                         </GridListTile>
-                    )
-                )}
+                    </Grid>
+                ))}
             </GridList>
         </Fragment>
     );
