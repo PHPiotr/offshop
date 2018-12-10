@@ -14,9 +14,6 @@ const styles = theme => ({
         width: '100%',
         backgroundColor: theme.palette.background.paper,
     },
-    chip: {
-        marginRight: theme.spacing.unit,
-    },
     section1: {
         margin: `${theme.spacing.unit * 3}px ${theme.spacing.unit * 2}px`,
     },
@@ -54,7 +51,7 @@ const CartSummary = (props) => {
                 </RadioGroup>
             </div>
             <Divider variant="middle"/>
-            <div className={classes.section1}>
+            <div className={classes.section2}>
                 <Grid container alignItems="center">
                     <Grid item xs>
                         <Typography gutterBottom variant="h6">
@@ -70,8 +67,8 @@ const CartSummary = (props) => {
             </div>
             <Divider variant="middle"/>
             <div className={classes.section3}>
-                <Button disabled variant="contained" color="primary">
-                    Zapłać
+                <Button onClick={props.checkout} disabled={!props.currentSupplier.id} variant="contained" color="primary">
+                    Zamów
                 </Button>
             </div>
         </div>

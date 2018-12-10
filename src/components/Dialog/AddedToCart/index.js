@@ -29,8 +29,8 @@ const AddedToCart = (props) => (
             <Button onClick={props.onContinueShoppingClick} color="primary">
                 {props.continueShoppingButtonLabel}
             </Button>
-            <Button onClick={props.onGoToBasketClick} color="primary">
-                {props.goToBasketButtonLabel}
+            <Button onClick={props.onGoToCartClick} color="primary">
+                {props.goToCartButtonLabel}
             </Button>
         </DialogActions>
     </Dialog>
@@ -39,9 +39,9 @@ const AddedToCart = (props) => (
 AddedToCart.propTypes = {
     open: PropTypes.bool.isRequired,
     onContinueShoppingClick: PropTypes.func.isRequired,
-    onGoToBasketClick: PropTypes.func.isRequired,
+    onGoToCartClick: PropTypes.func.isRequired,
     continueShoppingButtonLabel: PropTypes.string,
-    goToBasketButtonLabel: PropTypes.string,
+    goToCartButtonLabel: PropTypes.string,
     title: PropTypes.string,
     content: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
 };
@@ -49,7 +49,7 @@ AddedToCart.propTypes = {
 AddedToCart.defaultProps = {
     title: ADDED_TO_BASKET_DIALOG_TITLE,
     continueShoppingButtonLabel: CONTINUE_SHOPPING_BUTTON_LABEL,
-    goToBasketButtonLabel: GO_TO_BASKET_BUTTON_LABEL,
+    goToCartButtonLabel: GO_TO_BASKET_BUTTON_LABEL,
     content: null,
 };
 

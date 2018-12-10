@@ -13,7 +13,7 @@ class Home extends Component {
                 <AddedToCartDialog
                     open={this.props.addedToCartDialog.open}
                     onContinueShoppingClick={this.props.continueShopping}
-                    onGoToBasketClick={this.props.goToBasket}
+                    onGoToCartClick={this.props.goToCart}
                 />
             </Fragment>
         )
@@ -34,7 +34,7 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
     removeFromCart(e, amount, units) {
         dispatch(removeFromCart(e.currentTarget.id, amount, units));
     },
-    goToBasket() {
+    goToCart() {
         dispatch(closeAddedToCartDialog());
         ownProps.history.push('/cart');
     },

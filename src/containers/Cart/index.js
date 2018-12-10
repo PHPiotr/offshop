@@ -28,7 +28,7 @@ const mapStateToProps = (state) => ({
     currentSupplier: state.suppliers.current,
 });
 
-const mapDispatchToProps = (dispatch) => ({
+const mapDispatchToProps = (dispatch, ownProps) => ({
     incrementItemInCart(item) {
         dispatch(addToCart(item));
     },
@@ -40,6 +40,9 @@ const mapDispatchToProps = (dispatch) => ({
     },
     setCurrentSupplier(supplier) {
         dispatch(setCurrentSupplier(supplier));
+    },
+    checkout() {
+        ownProps.history.push('/checkout');
     }
 });
 
