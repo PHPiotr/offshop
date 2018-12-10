@@ -64,20 +64,22 @@ const Checkout = props => {
                 {activeStep === steps.length ? (
                     <Fragment>
                         <Typography variant="h5" gutterBottom>
-                            Thank you for your order.
+                            Dziękujemy za zamówienie.
                         </Typography>
                         <Typography variant="subtitle1">
-                            Your order number is #2001539. We have emailed your order confirmation, and will
-                            send you an update when your order has shipped.
+                            Numer Twojego zamówienia to #2001539. Wysłaliśmy do Ciebie maila ze szczegółami.
                         </Typography>
                     </Fragment>
                 ) : (
                     <Fragment>
+                        <Typography variant="h6" gutterBottom>
+                            {steps[activeStep]}
+                        </Typography>
                         {getStepContent(activeStep)}
                         <div className={classes.buttons}>
                             {activeStep !== 0 && (
                                 <Button onClick={props.handleBack} className={classes.button}>
-                                    Back
+                                    Wróć
                                 </Button>
                             )}
                             <Button
@@ -86,7 +88,7 @@ const Checkout = props => {
                                 onClick={props.handleNext}
                                 className={classes.button}
                             >
-                                {activeStep === steps.length - 1 ? 'Place order' : 'Next'}
+                                {activeStep === steps.length - 1 ? 'Złóż zamówienie' : 'Dalej'}
                             </Button>
                         </div>
                     </Fragment>

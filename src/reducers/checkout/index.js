@@ -2,7 +2,7 @@ import {STEP_NEXT, STEP_BACK} from "../../actions/checkout";
 
 const initialState = {
     activeStep: 0,
-    steps: ['Shipping address', 'Payment details', 'Review your order'],
+    steps: ['Adres do wysyłki', 'Szczegóły płatności', 'Potwierdzenie zamówienia'],
 };
 
 const checkout = (state = initialState, action) => {

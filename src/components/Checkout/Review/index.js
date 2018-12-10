@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Fragment} from 'react';
 import PropTypes from 'prop-types';
 import {withStyles} from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
@@ -37,10 +37,7 @@ const styles = theme => ({
 function Review(props) {
     const {classes} = props;
     return (
-        <React.Fragment>
-            <Typography variant="h6" gutterBottom>
-                Order summary
-            </Typography>
+        <Fragment>
             <List disablePadding>
                 {products.map(product => (
                     <ListItem className={classes.listItem} key={product.name}>
@@ -58,14 +55,14 @@ function Review(props) {
             <Grid container spacing={16}>
                 <Grid item xs={12} sm={6}>
                     <Typography variant="h6" gutterBottom className={classes.title}>
-                        Shipping
+                        Adres do wysyłki
                     </Typography>
                     <Typography gutterBottom>John Smith</Typography>
                     <Typography gutterBottom>{addresses.join(', ')}</Typography>
                 </Grid>
                 <Grid item container direction="column" xs={12} sm={6}>
                     <Typography variant="h6" gutterBottom className={classes.title}>
-                        Payment details
+                        Szczegóły płatności
                     </Typography>
                     <Grid container>
                         {payments.map(payment => (
@@ -81,7 +78,7 @@ function Review(props) {
                     </Grid>
                 </Grid>
             </Grid>
-        </React.Fragment>
+        </Fragment>
     );
 }
 
