@@ -8,6 +8,7 @@ import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
 import Grid from '@material-ui/core/Grid';
 import {withStyles} from '@material-ui/core/styles';
 import SubHeader from '../SubHeader';
+import Avatar from "@material-ui/core/Avatar/Avatar";
 
 const styles = theme => ({
     gridListTitle: {
@@ -38,7 +39,7 @@ function ProductsGridList(props) {
                 {products.map(product => (
                     <Grid item key={product.id} xs={12} sm={6} md={4} lg={3}>
                         <GridListTile key={product.id} className={classes.gridListTitle}>
-                            <img src={require(`../../images/${product.img}`)} alt={product.title} className={classes.image} />
+                            <img src={require(`../../../public/images/${product.img}`)} alt={product.title} className={classes.image} />
                             <GridListTileBar
                                 className={classes.gridListTileBar}
                                 title={product.title}
