@@ -44,7 +44,7 @@ function ProductsGridList(props) {
                                 title={product.title}
                                 subtitle={<span>{product.price} zł</span>}
                                 actionIcon={
-                                    <IconButton id={product.id} className={classes.iconButton} onClick={handleAddToCart} disabled={!product.amount}>
+                                    <IconButton id={product.id} className={classes.iconButton} onClick={handleAddToCart} style={{display: product.amount <= 0 ? 'none' : 'block'}}>
                                         <AddShoppingCartIcon/>
                                     </IconButton>
                                 }

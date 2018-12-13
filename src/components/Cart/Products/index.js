@@ -62,7 +62,7 @@ const ProductsInCart = (props) => {
                             }
                         />
                         <ListItemSecondaryAction>
-                            <IconButton id={p.id} onClick={handleIncrementItemInCart} disabled={!p.amount}>
+                            <IconButton id={p.id} onClick={handleIncrementItemInCart} disabled={p.amount <= 0}>
                                 <AddShoppingCartIcon/>
                             </IconButton>
                             <TextField
