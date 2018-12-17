@@ -7,7 +7,6 @@ import StepLabel from "@material-ui/core/StepLabel/StepLabel";
 import Button from "@material-ui/core/Button/Button";
 import Paper from "@material-ui/core/Paper/Paper";
 import AddressForm from "./AddressForm";
-import PaymentForm from "./PaymentForm";
 import Review from "./Review";
 import PropTypes from "prop-types";
 
@@ -35,14 +34,12 @@ const styles = theme => ({
     },
 });
 
-const getStepContent = step => {
-    switch (step) {
+const getStepContent = props => {
+    switch (props.activeStep) {
         case 0:
             return <AddressForm/>;
         case 1:
-            return <PaymentForm/>;
-        case 2:
-            return <Review/>;
+            return <Review {...props}/>;
         default:
             throw new Error('Unknown step');
     }
@@ -75,21 +72,20 @@ const Checkout = props => {
                         <Typography variant="h6" gutterBottom>
                             {steps[activeStep]}
                         </Typography>
-                        {getStepContent(activeStep)}
+                        {getStepContent(props)}
                         <div className={classes.buttons}>
                             {activeStep !== 0 && (
                                 <Button onClick={props.handleBack} className={classes.button}>
                                     Wróć
                                 </Button>
                             )}
-                            <Button
+                            {activeStep < steps.length - 1 && <Button
                                 variant="contained"
                                 color="primary"
                                 onClick={props.handleNext}
                                 className={classes.button}
-                            >
-                                {activeStep === steps.length - 1 ? 'Złóż zamówienie' : 'Dalej'}
-                            </Button>
+                            >Dalej</Button>}
+                            <div id="google-pay-btn-wrapper" className={classes.button} style={{display: activeStep === steps.length - 1 ? 'block' : 'none'}} />
                         </div>
                     </Fragment>
                 )}

@@ -7,6 +7,8 @@ import {
 const initialState = {
     amount: 0,
     units: 0,
+    totalPrice: 0,
+    items: [],
 };
 
 const cart = (state = initialState, {payload, type}) => {
@@ -16,12 +18,14 @@ const cart = (state = initialState, {payload, type}) => {
                 ...state,
                 amount: state.amount += payload.amount,
                 units: state.units += payload.item.unitsPerProduct * payload.amount,
+                totalPrice: state.totalPrice += payload.item.price * payload.amount,
             };
         case REMOVE_FROM_CART:
             return {
                 ...state,
                 amount: state.amount -= payload.amount,
                 units: state.units -= payload.item.unitsPerProduct * payload.amount,
+                totalPrice: state.totalPrice -= payload.item.price * payload.amount,
             };
         case EMPTY_CART:
             return initialState;
