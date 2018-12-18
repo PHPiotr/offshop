@@ -5,6 +5,7 @@ import {stepBack, stepNext} from '../../actions/checkout';
 import SubHeader from "../../components/SubHeader";
 import withGooglePay from '../../hoc/withGooglePay';
 import {authorize, createOrder} from '../../api/payu';
+import {setShippingInputValue} from "../../actions/shipping";
 
 const onPaymentDataReceived = (paymentData, totalAmount, products) => {
     const {paymentMethodData} = paymentData;
@@ -38,7 +39,7 @@ class Checkout extends Component {
 
     componentDidMount() {
         if (!this.props.supplier.id || !this.props.cart.amount) {
-            this.props.redirectToCart();
+            //this.props.redirectToCart();
         }
     }
 
@@ -59,6 +60,14 @@ const mapStateToProps = state => ({
     cart: state.cart,
     totalPrice: state.cart.totalPrice + state.suppliers.current.pricePerUnit * state.cart.units,
     products: state.products.items.filter(p => p.inCart > 0),
+    shipping: state.shipping,
+    validShippingData: !state.shipping.itemIds.reduce((acc, i) => {
+        const {value, required} = state.shipping.items[i];
+        if (required && (typeof value !== 'string' || !value.trim())) {
+            acc++;
+        }
+        return acc;
+    }, 0),
 });
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
@@ -72,7 +81,7 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
         ownProps.history.replace('/cart');
     },
     onGooglePayButtonClick: (paymentData, props) => {
-        console.log(paymentData);
+        console.log('paymentData, ownProps', paymentData, ownProps);
         const {totalPrice, products} = props;
         onPaymentDataReceived(
             paymentData,
@@ -83,6 +92,10 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
                 quantity: inCart.toString(),
             })),
         );
+    },
+    setShippingInputValue: ({target}) => {
+        const {name, value} = target;
+        dispatch(setShippingInputValue(name, value));
     },
 });
 

@@ -37,9 +37,9 @@ const styles = theme => ({
 const getStepContent = props => {
     switch (props.activeStep) {
         case 0:
-            return <AddressForm/>;
+            return <AddressForm shipping={props.shipping} setShippingInputValue={props.setShippingInputValue} />;
         case 1:
-            return <Review {...props}/>;
+            return <Review {...props} />;
         default:
             throw new Error('Unknown step');
     }
@@ -84,6 +84,7 @@ const Checkout = props => {
                                 color="primary"
                                 onClick={props.handleNext}
                                 className={classes.button}
+                                disabled={!props.validShippingData}
                             >Dalej</Button>}
                             <div id="google-pay-btn-wrapper" className={classes.button} style={{display: activeStep === steps.length - 1 ? 'block' : 'none'}} />
                         </div>

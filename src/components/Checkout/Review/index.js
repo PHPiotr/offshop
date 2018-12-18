@@ -7,7 +7,6 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Grid from '@material-ui/core/Grid';
 
-const addresses = ['1 Material-UI Drive', 'Reactville', 'Anytown', '99999', 'USA'];
 const payments = [
     {name: 'Card type', detail: 'Visa'},
     {name: 'Card holder', detail: 'Mr John Smith'},
@@ -16,6 +15,27 @@ const payments = [
 ];
 
 const styles = theme => ({
+    paper: {
+        marginTop: theme.spacing.unit * 3,
+        marginBottom: theme.spacing.unit * 3,
+        padding: theme.spacing.unit * 2,
+        [theme.breakpoints.up(600 + theme.spacing.unit * 3 * 2)]: {
+            marginTop: theme.spacing.unit * 6,
+            marginBottom: theme.spacing.unit * 6,
+            padding: theme.spacing.unit * 3,
+        },
+    },
+    stepper: {
+        padding: `${theme.spacing.unit * 3}px 0 ${theme.spacing.unit * 5}px`,
+    },
+    buttons: {
+        display: 'flex',
+        justifyContent: 'flex-end',
+    },
+    button: {
+        marginTop: theme.spacing.unit * 3,
+        marginLeft: theme.spacing.unit,
+    },
     listItem: {
         padding: `${theme.spacing.unit}px 0`,
     },
@@ -34,8 +54,9 @@ function Review(props) {
             <List disablePadding>
                 {props.products.map(product => (
                     <ListItem className={classes.listItem} key={product.id}>
-                        <ListItemText primary={product.title} secondary={`${product.inCart} szt.`} />
-                        <Typography variant="body2">{`${parseFloat(product.price).toFixed(2)} x ${product.inCart} = ${parseFloat(product.price * product.inCart).toFixed(2)} zł`}</Typography>
+                        <ListItemText primary={product.title} secondary={`${product.inCart} szt.`}/>
+                        <Typography
+                            variant="body2">{`${parseFloat(product.price).toFixed(2)} x ${product.inCart} = ${parseFloat(product.price * product.inCart).toFixed(2)} zł`}</Typography>
                     </ListItem>
                 ))}
                 <ListItem className={classes.listItem}>
@@ -45,13 +66,17 @@ function Review(props) {
                     </Typography>
                 </ListItem>
             </List>
-            <Grid container spacing={16}>
-                <Grid item xs={12} sm={6}>
+            <Grid container spacing={24}>
+                <Grid item xs={12}>
                     <Typography variant="h6" gutterBottom className={classes.title}>
-                        Adres do wysyłki
+                        Dane do wysyłki
                     </Typography>
-                    <Typography gutterBottom>John Smith</Typography>
-                    <Typography gutterBottom>{addresses.join(', ')}</Typography>
+                    {props.shipping.itemIds.map(itemId => {
+                        const {label, value} = props.shipping.items[itemId];
+                        return (
+                            <Typography gutterBottom>{`${label}: ${value}`}</Typography>
+                        )
+                    })}
                 </Grid>
                 <Grid item container direction="column" xs={12} sm={6}>
                     <Typography variant="h6" gutterBottom className={classes.title}>
