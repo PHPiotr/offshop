@@ -86,7 +86,7 @@ const ProductsInCart = (props) => {
             ))}
         </List>
     );
-}
+};
 
 ProductsInCart.propTypes = {
     classes: PropTypes.object.isRequired,

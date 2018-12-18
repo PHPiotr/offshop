@@ -20,6 +20,7 @@ const styles = theme => ({
             marginBottom: theme.spacing.unit * 6,
             padding: theme.spacing.unit * 3,
         },
+        width: '100%',
     },
     stepper: {
         padding: `${theme.spacing.unit * 3}px 0 ${theme.spacing.unit * 5}px`,
@@ -34,19 +35,18 @@ const styles = theme => ({
     },
 });
 
-const getStepContent = props => {
-    switch (props.activeStep) {
-        case 0:
-            return <AddressForm shipping={props.shipping} setShippingInputValue={props.setShippingInputValue} />;
+const getStepContent = activeStep => {
+    switch (activeStep) {
         case 1:
-            return <Review {...props} />;
+            return <Review />;
+        case 0:
         default:
-            throw new Error('Unknown step');
+            return <AddressForm />;
     }
 };
 
 const Checkout = props => {
-    const {classes, activeStep, steps} = props;
+    const {classes, activeStep, steps, products} = props;
 
     return (
         <Paper className={classes.paper}>
@@ -72,7 +72,7 @@ const Checkout = props => {
                         <Typography variant="h6" gutterBottom>
                             {steps[activeStep]}
                         </Typography>
-                        {getStepContent(props)}
+                        {getStepContent(props.activeStep)}
                         <div className={classes.buttons}>
                             {activeStep !== 0 && (
                                 <Button onClick={props.handleBack} className={classes.button}>
@@ -86,7 +86,7 @@ const Checkout = props => {
                                 className={classes.button}
                                 disabled={!props.validShippingData}
                             >Dalej</Button>}
-                            <div id="google-pay-btn-wrapper" className={classes.button} style={{display: activeStep === steps.length - 1 ? 'block' : 'none'}} />
+                            <div id="google-pay-btn-wrapper" className={classes.button} style={{display: (activeStep === steps.length - 1 && props.validShippingData && products.length > 0) ? 'block' : 'none'}} />
                         </div>
                     </Fragment>
                 )}

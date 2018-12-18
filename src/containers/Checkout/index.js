@@ -5,7 +5,6 @@ import {stepBack, stepNext} from '../../actions/checkout';
 import SubHeader from "../../components/SubHeader";
 import withGooglePay from '../../hoc/withGooglePay';
 import {authorize, createOrder} from '../../api/payu';
-import {setShippingInputValue} from "../../actions/shipping";
 
 const onPaymentDataReceived = (paymentData, totalAmount, products) => {
     const {paymentMethodData} = paymentData;
@@ -92,10 +91,6 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
                 quantity: inCart.toString(),
             })),
         );
-    },
-    setShippingInputValue: ({target}) => {
-        const {name, value} = target;
-        dispatch(setShippingInputValue(name, value));
     },
 });
 

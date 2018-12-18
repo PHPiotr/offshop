@@ -1,41 +1,14 @@
 import React, {Fragment} from 'react';
+import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
 import {withStyles} from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
-import Grid from '@material-ui/core/Grid';
-
-const payments = [
-    {name: 'Card type', detail: 'Visa'},
-    {name: 'Card holder', detail: 'Mr John Smith'},
-    {name: 'Card number', detail: 'xxxx-xxxx-xxxx-1234'},
-    {name: 'Expiry date', detail: '04/2024'},
-];
+import Divider from "@material-ui/core/Divider";
 
 const styles = theme => ({
-    paper: {
-        marginTop: theme.spacing.unit * 3,
-        marginBottom: theme.spacing.unit * 3,
-        padding: theme.spacing.unit * 2,
-        [theme.breakpoints.up(600 + theme.spacing.unit * 3 * 2)]: {
-            marginTop: theme.spacing.unit * 6,
-            marginBottom: theme.spacing.unit * 6,
-            padding: theme.spacing.unit * 3,
-        },
-    },
-    stepper: {
-        padding: `${theme.spacing.unit * 3}px 0 ${theme.spacing.unit * 5}px`,
-    },
-    buttons: {
-        display: 'flex',
-        justifyContent: 'flex-end',
-    },
-    button: {
-        marginTop: theme.spacing.unit * 3,
-        marginLeft: theme.spacing.unit,
-    },
     listItem: {
         padding: `${theme.spacing.unit}px 0`,
     },
@@ -47,61 +20,80 @@ const styles = theme => ({
     },
 });
 
-function Review(props) {
-    const {classes} = props;
+const Review = props => {
+
+    const {classes, products, shippingDetails, totalPrice, currency} = props;
+
     return (
         <Fragment>
             <List disablePadding>
-                {props.products.map(product => (
-                    <ListItem className={classes.listItem} key={product.id}>
-                        <ListItemText primary={product.title} secondary={`${product.inCart} szt.`}/>
-                        <Typography
-                            variant="body2">{`${parseFloat(product.price).toFixed(2)} x ${product.inCart} = ${parseFloat(product.price * product.inCart).toFixed(2)} zł`}</Typography>
-                    </ListItem>
+                {products.map(({id, title, inCart, pricePerItem, priceTotal}) => (
+                    <Fragment key={id}>
+                        <ListItem className={classes.listItem}>
+                            <ListItemText primary={title} secondary={`${inCart} szt.`}/>
+                            <Typography variant="body2">
+                                {`${pricePerItem} x ${inCart} = ${priceTotal} ${currency}`}
+                            </Typography>
+                        </ListItem>
+                        <Divider/>
+                    </Fragment>
                 ))}
                 <ListItem className={classes.listItem}>
                     <ListItemText primary="Do zapłaty"/>
                     <Typography variant="subtitle1" className={classes.total}>
-                        {`${parseFloat(props.totalPrice).toFixed(2)} zł`}
+                        {`${totalPrice} ${currency}`}
                     </Typography>
                 </ListItem>
+                <Divider/>
             </List>
-            <Grid container spacing={24}>
-                <Grid item xs={12}>
-                    <Typography variant="h6" gutterBottom className={classes.title}>
-                        Dane do wysyłki
-                    </Typography>
-                    {props.shipping.itemIds.map(itemId => {
-                        const {label, value} = props.shipping.items[itemId];
-                        return (
-                            <Typography gutterBottom>{`${label}: ${value}`}</Typography>
-                        )
-                    })}
-                </Grid>
-                <Grid item container direction="column" xs={12} sm={6}>
-                    <Typography variant="h6" gutterBottom className={classes.title}>
-                        Szczegóły płatności
-                    </Typography>
-                    <Grid container>
-                        {payments.map(payment => (
-                            <React.Fragment key={payment.name}>
-                                <Grid item xs={6}>
-                                    <Typography gutterBottom>{payment.name}</Typography>
-                                </Grid>
-                                <Grid item xs={6}>
-                                    <Typography gutterBottom>{payment.detail}</Typography>
-                                </Grid>
-                            </React.Fragment>
-                        ))}
-                    </Grid>
-                </Grid>
-            </Grid>
+            <Typography variant="h6" gutterBottom className={classes.title}>
+                Dane do wysyłki
+            </Typography>
+            <List disablePadding>
+                {shippingDetails.map(({label, value}) => {
+                    return (
+                        <Fragment key={label}>
+                            <ListItem className={classes.listItem}>
+                                <ListItemText primary={label}/>
+                                <Typography variant="subtitle1" className={classes.total}>
+                                    {value}
+                                </Typography>
+                            </ListItem>
+                            <Divider/>
+                        </Fragment>
+                    )
+                })}
+            </List>
         </Fragment>
     );
-}
-
-Review.propTypes = {
-    classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(Review);
+const mapStateToProps = state => ({
+    products: state.products.items.reduce((accumulator, product) => {
+        if (product.inCart > 0) {
+            const pricePerItem = parseFloat(product.price).toFixed(2);
+            accumulator.push({
+                ...product,
+                pricePerItem,
+                priceTotal: parseFloat(pricePerItem * product.inCart).toFixed(2),
+            });
+        }
+        return accumulator;
+    }, []),
+    shippingDetails: state.shipping.itemIds.map(itemId => state.shipping.items[itemId]),
+    totalPrice: state.cart.totalPrice ? parseFloat(state.cart.totalPrice + state.suppliers.current.pricePerUnit * state.cart.units).toFixed(2) : '0.00',
+
+});
+
+Review.propTypes = {
+    products: PropTypes.array.isRequired,
+    shippingDetails: PropTypes.array.isRequired,
+    totalPrice: PropTypes.string.isRequired,
+    currency: PropTypes.string,
+};
+
+Review.defaultProps = {
+    currency: 'zł',
+};
+
+export default connect(mapStateToProps)(withStyles(styles)(Review));
