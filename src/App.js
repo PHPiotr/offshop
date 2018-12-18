@@ -10,6 +10,7 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import Typography from '@material-ui/core/Typography';
 import classNames from 'classnames';
 import Grid from '@material-ui/core/Grid';
+import {hot} from 'react-hot-loader';
 
 const styles = theme => ({
     root: {
@@ -68,4 +69,4 @@ class App extends Component {
     }
 }
 
-export default withStyles(styles)(App);
+export default hot(module)(withStyles(styles)(App));
