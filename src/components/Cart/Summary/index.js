@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {withStyles} from '@material-ui/core/styles';
+import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import Divider from '@material-ui/core/Divider';
@@ -21,14 +21,16 @@ const styles = theme => ({
         margin: theme.spacing.unit * 2,
     },
     section3: {
-        margin: `${theme.spacing.unit * 6}px ${theme.spacing.unit * 2}px ${theme.spacing.unit * 2}px`,
+        margin: `${theme.spacing.unit * 6}px ${theme.spacing.unit * 2}px ${theme
+            .spacing.unit * 2}px`,
     },
 });
 
-const CartSummary = (props) => {
-    const {classes, cart, products, suppliers} = props;
+const CartSummary = props => {
+    const { classes, cart, products, suppliers } = props;
 
-    const handleSetCurrentSupplier = e => props.setCurrentSupplier(suppliers.find(s => s.id === e.target.value));
+    const handleSetCurrentSupplier = e =>
+        props.setCurrentSupplier(suppliers.find(s => s.id === e.target.value));
 
     return (
         <div className={classes.root}>
@@ -37,11 +39,11 @@ const CartSummary = (props) => {
                     Wybierz sposób dostawy
                 </Typography>
                 <RadioGroup name="position" value={props.currentSupplier.id}>
-                    {suppliers.map(({id, title, pricePerUnit}) => (
+                    {suppliers.map(({ id, title, pricePerUnit }) => (
                         <FormControlLabel
                             key={id}
                             value={id}
-                            control={<Radio color="primary"/>}
+                            control={<Radio color="primary" />}
                             label={`${title}: ${pricePerUnit * cart.units} zł`}
                             labelPlacement="end"
                             checked={id === props.currentSupplier.id}
@@ -50,7 +52,7 @@ const CartSummary = (props) => {
                     ))}
                 </RadioGroup>
             </div>
-            <Divider variant="middle"/>
+            <Divider variant="middle" />
             <div className={classes.section2}>
                 <Grid container alignItems="center">
                     <Grid item xs>
@@ -60,14 +62,26 @@ const CartSummary = (props) => {
                     </Grid>
                     <Grid item align="right">
                         <Typography gutterBottom variant="h6">
-                            {`${products.reduce((total, p) => (p.price * p.inCart + total), 0) + (props.currentSupplier.pricePerUnit > 0 ? cart.units * props.currentSupplier.pricePerUnit : 0)} zł`}
+                            {`${products.reduce(
+                                (total, p) => p.price * p.inCart + total,
+                                0
+                            ) +
+                                (props.currentSupplier.pricePerUnit > 0
+                                    ? cart.units *
+                                      props.currentSupplier.pricePerUnit
+                                    : 0)} zł`}
                         </Typography>
                     </Grid>
                 </Grid>
             </div>
-            <Divider variant="middle"/>
+            <Divider variant="middle" />
             <div className={classes.section3}>
-                <Button onClick={props.checkout} disabled={!props.currentSupplier.id} variant="contained" color="primary">
+                <Button
+                    onClick={props.checkout}
+                    disabled={!props.currentSupplier.id}
+                    variant="contained"
+                    color="primary"
+                >
                     Zamów
                 </Button>
             </div>

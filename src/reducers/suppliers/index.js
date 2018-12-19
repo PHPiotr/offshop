@@ -1,4 +1,4 @@
-import {SET_CURRENT_SUPPLIER} from "../../actions/suppliers";
+import { SET_CURRENT_SUPPLIER } from '../../actions/suppliers';
 
 const initialState = {
     currentId: null,

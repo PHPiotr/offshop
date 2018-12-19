@@ -1,18 +1,17 @@
 import React from 'react';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
-import {setShippingInputValue} from '../../../actions/shipping';
+import { setShippingInputValue } from '../../../actions/shipping';
 
 const AddressForm = props => {
-
-    const {inputKeys, inputs, setInputValue} = props;
+    const { inputKeys, inputs, setInputValue } = props;
 
     return (
         <Grid container spacing={24}>
             {inputKeys.map(itemId => {
-                const {required, label, value, type} = inputs[itemId];
+                const { required, label, value, type } = inputs[itemId];
 
                 return (
                     <Grid item xs={12} key={itemId}>
@@ -27,7 +26,7 @@ const AddressForm = props => {
                             onChange={setInputValue}
                         />
                     </Grid>
-                )
+                );
             })}
         </Grid>
     );
@@ -39,8 +38,8 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-    setInputValue: ({target}) => {
-        const {name, value} = target;
+    setInputValue: ({ target }) => {
+        const { name, value } = target;
         dispatch(setShippingInputValue(name, value));
     },
 });
@@ -51,4 +50,7 @@ AddressForm.propTypes = {
     setInputValue: PropTypes.func.isRequired,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(AddressForm);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(AddressForm);

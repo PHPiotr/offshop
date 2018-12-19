@@ -1,14 +1,14 @@
-import React, {Fragment} from 'react';
-import withStyles from "@material-ui/core/styles/withStyles";
-import Typography from "@material-ui/core/Typography/Typography";
-import Stepper from "@material-ui/core/Stepper/Stepper";
-import Step from "@material-ui/core/Step/Step";
-import StepLabel from "@material-ui/core/StepLabel/StepLabel";
-import Button from "@material-ui/core/Button/Button";
-import Paper from "@material-ui/core/Paper/Paper";
-import AddressForm from "./AddressForm";
-import Review from "./Review";
-import PropTypes from "prop-types";
+import React, { Fragment } from 'react';
+import withStyles from '@material-ui/core/styles/withStyles';
+import Typography from '@material-ui/core/Typography/Typography';
+import Stepper from '@material-ui/core/Stepper/Stepper';
+import Step from '@material-ui/core/Step/Step';
+import StepLabel from '@material-ui/core/StepLabel/StepLabel';
+import Button from '@material-ui/core/Button/Button';
+import Paper from '@material-ui/core/Paper/Paper';
+import AddressForm from './AddressForm';
+import Review from './Review';
+import PropTypes from 'prop-types';
 
 const styles = theme => ({
     paper: {
@@ -46,7 +46,7 @@ const getStepContent = activeStep => {
 };
 
 const Checkout = props => {
-    const {classes, activeStep, steps, products} = props;
+    const { classes, activeStep, steps, products } = props;
 
     return (
         <Paper className={classes.paper}>
@@ -64,7 +64,8 @@ const Checkout = props => {
                             Dziękujemy za zamówienie.
                         </Typography>
                         <Typography variant="subtitle1">
-                            Numer Twojego zamówienia to #2001539. Wysłaliśmy do Ciebie maila ze szczegółami.
+                            Numer Twojego zamówienia to #2001539. Wysłaliśmy do
+                            Ciebie maila ze szczegółami.
                         </Typography>
                     </Fragment>
                 ) : (
@@ -75,18 +76,36 @@ const Checkout = props => {
                         {getStepContent(props.activeStep)}
                         <div className={classes.buttons}>
                             {activeStep !== 0 && (
-                                <Button onClick={props.handleBack} className={classes.button}>
+                                <Button
+                                    onClick={props.handleBack}
+                                    className={classes.button}
+                                >
                                     Wróć
                                 </Button>
                             )}
-                            {activeStep < steps.length - 1 && <Button
-                                variant="contained"
-                                color="primary"
-                                onClick={props.handleNext}
+                            {activeStep < steps.length - 1 && (
+                                <Button
+                                    variant="contained"
+                                    color="primary"
+                                    onClick={props.handleNext}
+                                    className={classes.button}
+                                    disabled={!props.validShippingData}
+                                >
+                                    Dalej
+                                </Button>
+                            )}
+                            <div
+                                id="google-pay-btn-wrapper"
                                 className={classes.button}
-                                disabled={!props.validShippingData}
-                            >Dalej</Button>}
-                            <div id="google-pay-btn-wrapper" className={classes.button} style={{display: (activeStep === steps.length - 1 && props.validShippingData && products.length > 0) ? 'block' : 'none'}} />
+                                style={{
+                                    display:
+                                        activeStep === steps.length - 1 &&
+                                        props.validShippingData &&
+                                        products.length > 0
+                                            ? 'block'
+                                            : 'none',
+                                }}
+                            />
                         </div>
                     </Fragment>
                 )}

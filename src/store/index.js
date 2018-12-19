@@ -1,11 +1,11 @@
-import { createStore, applyMiddleware } from "redux";
+import { createStore, applyMiddleware } from 'redux';
 import logger from 'redux-logger';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import rootReducer from '../reducers';
 
 const devEnv = process.env.NODE_ENV === 'development';
 
-const configureStore = (initialState) => {
+const configureStore = initialState => {
     const middleware = [];
 
     if (devEnv) {
@@ -18,9 +18,11 @@ const configureStore = (initialState) => {
         composeWithDevTools(applyMiddleware(...middleware))
     );
 
-    if(devEnv) {
-        if(module.hot) {
-            module.hot.accept("../reducers", () => createdStore.replaceReducer(require("../reducers").default));
+    if (devEnv) {
+        if (module.hot) {
+            module.hot.accept('../reducers', () =>
+                createdStore.replaceReducer(require('../reducers').default)
+            );
         }
     }
 

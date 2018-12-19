@@ -10,9 +10,9 @@ import {
     ADDED_TO_BASKET_DIALOG_TITLE,
     CONTINUE_SHOPPING_BUTTON_LABEL,
     GO_TO_BASKET_BUTTON_LABEL,
-} from "../../../constants/pl/addedToCartDialog";
+} from '../../../constants/pl/addedToCartDialog';
 
-const AddedToCart = (props) => (
+const AddedToCart = props => (
     <Dialog
         open={props.open}
         onClose={props.onContinueShoppingClick}
@@ -20,11 +20,13 @@ const AddedToCart = (props) => (
         aria-describedby="alert-dialog-description"
     >
         <DialogTitle id="alert-dialog-title">{props.title}</DialogTitle>
-        {props.content && <DialogContent>
-            <DialogContentText id="alert-dialog-description">
-                {props.content}
-            </DialogContentText>
-        </DialogContent>}
+        {props.content && (
+            <DialogContent>
+                <DialogContentText id="alert-dialog-description">
+                    {props.content}
+                </DialogContentText>
+            </DialogContent>
+        )}
         <DialogActions>
             <Button onClick={props.onContinueShoppingClick} color="primary">
                 {props.continueShoppingButtonLabel}

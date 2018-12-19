@@ -1,0 +1,7 @@
+build
+node_modules
+scripts
+config
+public
+package.json
+package-lock.json

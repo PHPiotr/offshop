@@ -1,7 +1,7 @@
 import {
     OPEN_ADDED_TO_CART_DIALOG,
     CLOSE_ADDED_TO_CART_DIALOG,
-} from "../../actions/addedToCartDialog";
+} from '../../actions/addedToCartDialog';
 
 const initialState = {
     open: false,
@@ -11,9 +11,9 @@ const initialState = {
 const addedToCartDialog = (state = initialState, action) => {
     switch (action.type) {
         case OPEN_ADDED_TO_CART_DIALOG:
-            return {...state, open: true};
+            return { ...state, open: true };
         case CLOSE_ADDED_TO_CART_DIALOG:
-            return {...state, open: false, itemAdded: {}};
+            return { ...state, open: false, itemAdded: {} };
         default:
             return state;
     }

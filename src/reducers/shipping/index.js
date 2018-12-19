@@ -1,4 +1,4 @@
-import {SET_SHIPPING_INPUT_VALUE} from "../../actions/shipping";
+import { SET_SHIPPING_INPUT_VALUE } from '../../actions/shipping';
 
 const initialState = {
     itemIds: [

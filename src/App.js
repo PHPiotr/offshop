@@ -1,16 +1,16 @@
-import React, {Component, Fragment} from 'react';
-import {Route, Switch} from 'react-router-dom';
+import React, { Component, Fragment } from 'react';
+import { Route, Switch } from 'react-router-dom';
 import Navigation from './containers/Navigation';
 import Home from './containers/Home';
 import Cart from './containers/Cart';
 import Checkout from './containers/Checkout';
 import Login from './containers/Login';
-import {withStyles} from '@material-ui/core/styles';
+import { withStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Typography from '@material-ui/core/Typography';
 import classNames from 'classnames';
 import Grid from '@material-ui/core/Grid';
-import {hot} from 'react-hot-loader';
+import { hot } from 'react-hot-loader';
 
 const styles = theme => ({
     root: {
@@ -40,27 +40,40 @@ const styles = theme => ({
 
 class App extends Component {
     render() {
-        const {classes} = this.props;
+        const { classes } = this.props;
         return (
             <Fragment>
-                <CssBaseline/>
+                <CssBaseline />
                 <header>
-                    <Navigation/>
+                    <Navigation />
                 </header>
                 <main>
                     <div className={classNames(classes.layout, classes.grid)}>
-                        <Grid container alignContent="center" alignItems="center">
+                        <Grid
+                            container
+                            alignContent="center"
+                            alignItems="center"
+                        >
                             <Switch>
-                                <Route path="/" exact component={Home}/>
-                                <Route path="/cart" exact component={Cart}/>
-                                <Route path="/checkout" exact component={Checkout}/>
-                                <Route path="/login" exact component={Login}/>
+                                <Route path="/" exact component={Home} />
+                                <Route path="/cart" exact component={Cart} />
+                                <Route
+                                    path="/checkout"
+                                    exact
+                                    component={Checkout}
+                                />
+                                <Route path="/login" exact component={Login} />
                             </Switch>
                         </Grid>
                     </div>
                 </main>
                 <footer className={classes.footer}>
-                    <Typography variant="subtitle1" align="center" color="textSecondary" component="p">
+                    <Typography
+                        variant="subtitle1"
+                        align="center"
+                        color="textSecondary"
+                        component="p"
+                    >
                         Stworzone z miłości do żony
                     </Typography>
                 </footer>

@@ -1,14 +1,14 @@
-import React, {Fragment} from 'react';
+import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
-import {withStyles} from '@material-ui/core/styles';
+import { withStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import Avatar from '@material-ui/core/Avatar';
 import Typography from '@material-ui/core/Typography';
-import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction/ListItemSecondaryAction";
-import IconButton from "@material-ui/core/IconButton/IconButton";
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction/ListItemSecondaryAction';
+import IconButton from '@material-ui/core/IconButton/IconButton';
 import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
 import RemoveShoppingCartIcon from '@material-ui/icons/RemoveShoppingCart';
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -33,14 +33,17 @@ const styles = theme => ({
     },
 });
 
-const getItemById = (items, itemId) => items.find(({id}) => id === itemId);
+const getItemById = (items, itemId) => items.find(({ id }) => id === itemId);
 
-const ProductsInCart = (props) => {
-    const {classes, products} = props;
+const ProductsInCart = props => {
+    const { classes, products } = props;
 
-    const handleIncrementItemInCart = e => props.incrementItemInCart(getItemById(products, e.currentTarget.id));
-    const handleDecrementItemInCart = e => props.decrementItemInCart(getItemById(products, e.currentTarget.id));
-    const handleRemoveItemFromCart = e => props.removeItemFromCart(getItemById(products, e.currentTarget.id));
+    const handleIncrementItemInCart = e =>
+        props.incrementItemInCart(getItemById(products, e.currentTarget.id));
+    const handleDecrementItemInCart = e =>
+        props.decrementItemInCart(getItemById(products, e.currentTarget.id));
+    const handleRemoveItemFromCart = e =>
+        props.removeItemFromCart(getItemById(products, e.currentTarget.id));
 
     return (
         <List className={classes.root}>
@@ -48,13 +51,22 @@ const ProductsInCart = (props) => {
                 <Fragment key={p.id}>
                     <ListItem key={p.id} alignItems="flex-start">
                         <ListItemAvatar>
-                            <Avatar src={require(`../../../../public/images/${p.img}`)} alt={p.title}/>
+                            <Avatar
+                                src={require(`../../../../public/images/${
+                                    p.img
+                                }`)}
+                                alt={p.title}
+                            />
                         </ListItemAvatar>
                         <ListItemText
                             primary={p.title}
                             secondary={
                                 <React.Fragment>
-                                    <Typography component="span" className={classes.inline} color="textPrimary">
+                                    <Typography
+                                        component="span"
+                                        className={classes.inline}
+                                        color="textPrimary"
+                                    >
                                         {`${p.price * p.inCart} zł`}
                                     </Typography>
                                     {` (${p.price} zł / szt.)`}
@@ -62,8 +74,12 @@ const ProductsInCart = (props) => {
                             }
                         />
                         <ListItemSecondaryAction>
-                            <IconButton id={p.id} onClick={handleIncrementItemInCart} disabled={p.amount <= 0}>
-                                <AddShoppingCartIcon/>
+                            <IconButton
+                                id={p.id}
+                                onClick={handleIncrementItemInCart}
+                                disabled={p.amount <= 0}
+                            >
+                                <AddShoppingCartIcon />
                             </IconButton>
                             <TextField
                                 id={p.id}
@@ -73,15 +89,22 @@ const ProductsInCart = (props) => {
                                 margin="none"
                                 type="number"
                             />
-                            <IconButton id={p.id} onClick={handleDecrementItemInCart} disabled={p.inCart < 2}>
-                                <RemoveShoppingCartIcon/>
+                            <IconButton
+                                id={p.id}
+                                onClick={handleDecrementItemInCart}
+                                disabled={p.inCart < 2}
+                            >
+                                <RemoveShoppingCartIcon />
                             </IconButton>
-                            <IconButton id={p.id} onClick={handleRemoveItemFromCart}>
-                                <DeleteIcon/>
+                            <IconButton
+                                id={p.id}
+                                onClick={handleRemoveItemFromCart}
+                            >
+                                <DeleteIcon />
                             </IconButton>
                         </ListItemSecondaryAction>
                     </ListItem>
-                    <Divider/>
+                    <Divider />
                 </Fragment>
             ))}
         </List>
