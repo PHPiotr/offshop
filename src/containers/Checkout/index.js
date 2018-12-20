@@ -6,7 +6,7 @@ import SubHeader from '../../components/SubHeader';
 import withGooglePay from '../../hoc/withGooglePay';
 import { authorize, createOrder } from '../../api/payu';
 
-const onPaymentDataReceived = (paymentData, totalAmount, products) => {
+const onPaymentDataReceived = (paymentData, totalAmount, products, buyer) => {
     const { paymentMethodData } = paymentData;
     authorize()
         .then(response => {
@@ -22,7 +22,8 @@ const onPaymentDataReceived = (paymentData, totalAmount, products) => {
                 btoa(paymentMethodData.tokenizationData.token),
                 totalAmount,
                 products,
-                paymentMethodData.description
+                paymentMethodData.description,
+                buyer,
             )
                 .then(response => {
                     if (!response.ok) {
@@ -32,7 +33,7 @@ const onPaymentDataReceived = (paymentData, totalAmount, products) => {
                 })
                 .then(orderData => {
                     const { orderId, redirectUri, status } = orderData;
-                    console.log(orderId, redirectUri, status);
+                    console.log(orderId, redirectUri, status, orderData);
                     window.location.href = redirectUri;
                 })
                 .catch(e => console.log(e));
@@ -73,6 +74,13 @@ const mapStateToProps = state => ({
         }
         return acc;
     }, 0),
+    buyer: {
+        email: state.shipping.items.email.value,
+        phone: state.shipping.items.phone.value,
+        firstName: state.shipping.items.firstName.value,
+        lastName: state.shipping.items.lastName.value,
+        language: 'pl',
+    },
 });
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
@@ -86,14 +94,10 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
         ownProps.history.replace('/cart');
     },
     onGooglePayButtonClick: (paymentData, props) => {
-        console.log('paymentData, ownProps', paymentData, ownProps);
-        const { totalPrice, products } = props;
+        const { totalPrice, products, buyer } = props;
         onPaymentDataReceived(
             paymentData,
-            parseFloat(totalPrice)
-                .toFixed(2)
-                .toString()
-                .replace('.', ''),
+            parseFloat(totalPrice).toFixed(2).toString().replace('.', ''),
             products.map(({ title, price, inCart }) => ({
                 name: title,
                 unitPrice: parseFloat(price)
@@ -101,7 +105,8 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
                     .toString()
                     .replace('.', ''),
                 quantity: inCart.toString(),
-            }))
+            })),
+            buyer
         );
     },
 });

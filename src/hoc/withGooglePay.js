@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
 const baseRequest = {
@@ -13,8 +13,7 @@ const tokenizationSpecification = {
     type: process.env.REACT_APP_GOOGLE_PAY_TOKENIZATION_TYPE,
     parameters: {
         gateway: process.env.REACT_APP_GOOGLE_PAY_TOKENIZATION_GATEWAY,
-        gatewayMerchantId:
-            process.env.REACT_APP_GOOGLE_PAY_TOKENIZATION_GATEWAY_MERCHANT_ID,
+        gatewayMerchantId: process.env.REACT_APP_GOOGLE_PAY_TOKENIZATION_GATEWAY_MERCHANT_ID,
     },
 };
 
@@ -52,20 +51,47 @@ paymentDataRequest.transactionInfo = {
 
 let googlePayButton = null;
 
-function withGooglePay(WrappedComponent) {
+const onButtonClick = (paymentsClient, totalPrice, props, callback) => {
+    paymentDataRequest.transactionInfo.totalPrice = parseFloat(
+        totalPrice
+    )
+        .toFixed(2)
+        .toString();
+    paymentsClient
+        .loadPaymentData(paymentDataRequest)
+        .then(paymentData =>
+            callback(
+                paymentData,
+                props
+            )
+        )
+        .catch(e => console.error(e));
+};
+
+const createButton = (response, paymentsClient, totalPrice, props, callbackOnGooglePayButtonClick) => {
+    if (!response.result) {
+        throw Error('Problem creating google pay button');
+    }
+    return paymentsClient.createButton({
+        onClick: () => onButtonClick(paymentsClient, totalPrice, props, callbackOnGooglePayButtonClick),
+    });
+};
+
+const withGooglePay = (WrappedComponent) => {
+
     class GooglePay extends Component {
+
         state = {
-            paymentsClient: null,
-            totalPrice: this.props.totalPrice,
+            googlePayButton: null,
         };
 
         componentDidMount() {
-            const { props } = this;
-            const { totalPrice } = props;
+            const {totalPrice, onGooglePayButtonClick} = this.props;
             const script = document.createElement('script');
             script.src = 'https://pay.google.com/gp/p/js/pay.js';
             script.type = 'text/javascript';
             script.async = true;
+            script.id = 'google-pay-script';
             document.body.appendChild(script);
             script.onload = () => {
                 // eslint-disable-next-line no-undef
@@ -73,62 +99,28 @@ function withGooglePay(WrappedComponent) {
                     environment:
                         process.env.REACT_APP_GOOGLE_PAYMENTS_ENV || 'TEST',
                 });
-                this.setState({ ...this.state, paymentsClient });
 
-                const isReadyToPayRequest = { ...baseRequest };
-
+                const isReadyToPayRequest = {...baseRequest};
                 isReadyToPayRequest.allowedPaymentMethods = [
                     baseCardPaymentMethod,
                 ];
 
-                paymentsClient
-                    .isReadyToPay(isReadyToPayRequest)
+                paymentsClient.isReadyToPay(isReadyToPayRequest)
                     .then(response => {
-                        if (response.result) {
-                            googlePayButton = paymentsClient.createButton({
-                                onClick: () => {
-                                    paymentDataRequest.transactionInfo.totalPrice = parseFloat(
-                                        totalPrice
-                                    )
-                                        .toFixed(2)
-                                        .toString();
-                                    paymentsClient
-                                        .loadPaymentData(paymentDataRequest)
-                                        .then(paymentData =>
-                                            this.props.onGooglePayButtonClick(
-                                                paymentData,
-                                                props
-                                            )
-                                        )
-                                        .catch(e => console.error(e));
-                                },
-                            });
-                            googlePayButton &&
-                                document
-                                    .getElementById(
-                                        this.props.googlePayButtonParentId
-                                    )
-                                    .appendChild(googlePayButton);
-                        }
+                        googlePayButton = createButton(response, paymentsClient, totalPrice, this.props, onGooglePayButtonClick);
+                        this.setState({...this.state, googlePayButton});
+                        googlePayButton && document.getElementById(this.props.googlePayButtonParentId).appendChild(googlePayButton);
                     })
-                    .catch(function(err) {
-                        // show error in developer console for debugging
+                    .catch(function (err) {
                         console.error(err);
                     });
             };
         }
 
-        componentWillReceiveProps(prevProps, nextProps) {
-            console.log('prev, next', prevProps, nextProps);
-        }
-
         render() {
-            if (!this.state.paymentsClient) {
-                return null;
-            }
             return (
                 <WrappedComponent
-                    paymentsClient={this.state.paymentsClient}
+                    googlePayButton={this.state.googlePayButton}
                     {...this.props}
                 />
             );
@@ -140,6 +132,7 @@ function withGooglePay(WrappedComponent) {
         googlePayButtonParentId: PropTypes.string,
         totalPrice: PropTypes.number.isRequired,
         products: PropTypes.array.isRequired,
+        buyer: PropTypes.object.isRequired,
     };
 
     GooglePay.defaultProps = {
@@ -147,6 +140,6 @@ function withGooglePay(WrappedComponent) {
     };
 
     return GooglePay;
-}
+};
 
 export default withGooglePay;

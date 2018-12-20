@@ -17,7 +17,8 @@ export const createOrder = (
     authorizationCode,
     totalAmount,
     products,
-    description
+    description,
+    buyer,
 ) =>
     fetch('https://localhost:9000/google_pay/orders', {
         method: 'POST',
@@ -29,19 +30,11 @@ export const createOrder = (
             totalAmount,
             products,
             description,
-            merchantPosId:
-                process.env
-                    .REACT_APP_GOOGLE_PAY_TOKENIZATION_GATEWAY_MERCHANT_ID,
+            merchantPosId: process.env.REACT_APP_GOOGLE_PAY_TOKENIZATION_GATEWAY_MERCHANT_ID,
             currencyCode: process.env.REACT_APP_CURRENCY_CODE,
             customerIp: '127.0.0.1',
-            notifyUrl: 'https://localhost:3000/notify',
-            buyer: {
-                email: 'john.doe@example.com',
-                phone: '654111654',
-                firstName: 'John',
-                lastName: 'Doe',
-                language: 'pl',
-            },
+            notifyUrl: 'https://localhost:3000/cart',
+            buyer,
             settings: {
                 invoiceDisabled: true,
             },
