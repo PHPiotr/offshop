@@ -51,29 +51,21 @@ paymentDataRequest.transactionInfo = {
 
 let googlePayButton = null;
 
-const onButtonClick = (paymentsClient, totalPrice, props, callback) => {
-    paymentDataRequest.transactionInfo.totalPrice = parseFloat(
-        totalPrice
-    )
-        .toFixed(2)
-        .toString();
-    paymentsClient
-        .loadPaymentData(paymentDataRequest)
-        .then(paymentData =>
-            callback(
-                paymentData,
-                props
-            )
-        )
+const onButtonClick = (paymentsClient, totalPrice, callback) => {
+    paymentDataRequest.transactionInfo.totalPrice = parseFloat(totalPrice).toFixed(2).toString();
+    paymentsClient.loadPaymentData(paymentDataRequest)
+        .then(paymentData => callback(paymentData))
         .catch(e => console.error(e));
 };
 
-const createButton = (response, paymentsClient, totalPrice, props, callbackOnGooglePayButtonClick) => {
+const createButton = (response, paymentsClient, totalPrice, callbackOnGooglePayButtonClick) => {
     if (!response.result) {
         throw Error('Problem creating google pay button');
     }
     return paymentsClient.createButton({
-        onClick: () => onButtonClick(paymentsClient, totalPrice, props, callbackOnGooglePayButtonClick),
+        onClick() {
+            onButtonClick(paymentsClient, totalPrice, callbackOnGooglePayButtonClick);
+        },
     });
 };
 
@@ -107,7 +99,7 @@ const withGooglePay = (WrappedComponent) => {
 
                 paymentsClient.isReadyToPay(isReadyToPayRequest)
                     .then(response => {
-                        googlePayButton = createButton(response, paymentsClient, totalPrice, this.props, onGooglePayButtonClick);
+                        googlePayButton = createButton(response, paymentsClient, totalPrice, onGooglePayButtonClick);
                         this.setState({...this.state, googlePayButton});
                         googlePayButton && document.getElementById(this.props.googlePayButtonParentId).appendChild(googlePayButton);
                     })
@@ -131,8 +123,6 @@ const withGooglePay = (WrappedComponent) => {
         onGooglePayButtonClick: PropTypes.func.isRequired,
         googlePayButtonParentId: PropTypes.string,
         totalPrice: PropTypes.number.isRequired,
-        products: PropTypes.array.isRequired,
-        buyer: PropTypes.object.isRequired,
     };
 
     GooglePay.defaultProps = {

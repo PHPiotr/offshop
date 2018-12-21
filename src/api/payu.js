@@ -12,14 +12,14 @@ export const authorize = () =>
         },
     });
 
-export const createOrder = (
-    accessToken,
-    authorizationCode,
-    totalAmount,
-    products,
-    description,
-    buyer,
-) =>
+export const createOrder = ({
+                                accessToken,
+                                authorizationCode,
+                                totalAmount,
+                                products,
+                                description,
+                                buyer,
+                            }) =>
     fetch('https://localhost:9000/google_pay/orders', {
         method: 'POST',
         mode: 'cors',
@@ -32,7 +32,6 @@ export const createOrder = (
             description,
             merchantPosId: process.env.REACT_APP_GOOGLE_PAY_TOKENIZATION_GATEWAY_MERCHANT_ID,
             currencyCode: process.env.REACT_APP_CURRENCY_CODE,
-            customerIp: '127.0.0.1',
             notifyUrl: 'https://localhost:3000/cart',
             buyer,
             settings: {
