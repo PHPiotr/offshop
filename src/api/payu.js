@@ -1,5 +1,5 @@
 export const authorize = () =>
-    fetch('https://localhost:9000/authorize', {
+    fetch(`${process.env.REACT_APP_API_HOST}/authorize`, {
         method: 'POST',
         mode: 'cors',
         cache: 'no-cache',
@@ -20,7 +20,7 @@ export const createOrder = ({
                                 description,
                                 buyer,
                             }) =>
-    fetch('https://localhost:9000/google_pay/orders', {
+    fetch(`${process.env.REACT_APP_API_HOST}/orders`, {
         method: 'POST',
         mode: 'cors',
         cache: 'no-cache',
