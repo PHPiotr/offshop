@@ -59,11 +59,11 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
     onGooglePayButtonClick(paymentDataFromGooglePay) {
         dispatch(createOrderPayU(paymentDataFromGooglePay))
             .then(payload => {
-                const {redirectUri} = payload;
-                if (!redirectUri) {
+                const {payuRedirectUri} = payload;
+                if (!payuRedirectUri) {
                     throw Error(payload);
                 }
-                window.location.href = redirectUri;
+                window.location.href = payuRedirectUri;
             })
             .catch(error => console.error(error));
     },
