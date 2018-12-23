@@ -12,7 +12,7 @@ export const authorize = () =>
         },
     });
 
-export const createOrder = ({
+export const orderCreateRequest = ({
                                 accessToken,
                                 authorizationCode,
                                 totalAmount,
@@ -40,5 +40,16 @@ export const createOrder = ({
         }),
         headers: {
             'Content-Type': 'application/json',
+        },
+    });
+
+export const orderRetrieveRequest = ({accessToken, extOrderId}) =>
+    fetch(`${process.env.REACT_APP_API_HOST}/orders/${extOrderId}`, {
+        method: 'GET',
+        mode: 'cors',
+        cache: 'no-cache',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${accessToken}`,
         },
     });

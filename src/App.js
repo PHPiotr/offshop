@@ -4,6 +4,7 @@ import Navigation from './containers/Navigation';
 import Home from './containers/Home';
 import Cart from './containers/Cart';
 import Checkout from './containers/Checkout';
+import Order from './containers/Order';
 import Login from './containers/Login';
 import { withStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -57,11 +58,8 @@ class App extends Component {
                             <Switch>
                                 <Route path="/" exact component={Home} />
                                 <Route path="/cart" exact component={Cart} />
-                                <Route
-                                    path="/checkout"
-                                    exact
-                                    component={Checkout}
-                                />
+                                <Route path="/checkout" exact component={Checkout} />
+                                <Route path="/order/:extOrderId" exact component={Order} />
                                 <Route path="/login" exact component={Login} />
                             </Switch>
                         </Grid>
