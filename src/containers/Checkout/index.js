@@ -5,7 +5,6 @@ import {stepBack, stepNext, setActiveStep} from '../../actions/checkout';
 import {createOrder, setOrderData} from '../../actions/order';
 import SubHeader from '../../components/SubHeader';
 import withGooglePay from '../../hoc/withGooglePay';
-import {emptyCart} from "../../actions/cart";
 
 const ORDER_DATA = 'orderData';
 
@@ -29,11 +28,9 @@ class Checkout extends Component {
     }
 
     componentWillUnmount() {
-        if (this.props.activeStep > this.props.steps.length - 1) {
-            this.props.handleRestoreActiveStep(0);
-        }
         if (this.props.orderData) {
             this.props.handleRestoreOrderData(null);
+            this.props.handleRestoreActiveStep(0);
         }
     }
 
@@ -98,13 +95,12 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
                     window.location.href = redirectUri;
                 } else {
                     dispatch(stepNext());
-                    dispatch(emptyCart());
                 }
             })
             .catch(error => console.error(error));
     },
-    handleRestoreOrderData(orderDataFromStorage) {
-        dispatch(setOrderData(orderDataFromStorage));
+    handleRestoreOrderData(orderData) {
+        dispatch(setOrderData(orderData));
     },
 });
 

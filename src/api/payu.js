@@ -24,11 +24,12 @@ export const orderCreateRequest = params =>
             description: params.description,
             merchantPosId: process.env.REACT_APP_GOOGLE_PAY_TOKENIZATION_GATEWAY_MERCHANT_ID,
             currencyCode: process.env.REACT_APP_CURRENCY_CODE,
-            notifyUrl: 'https://localhost:3000/cart',
+            notifyUrl: 'https://localhost:3000',
             buyer: params.buyer,
             settings: {
                 invoiceDisabled: true,
             },
+            continueUrl: `https://localhost:3000/checkout`,
         }),
         headers: {
             'Content-Type': 'application/json',

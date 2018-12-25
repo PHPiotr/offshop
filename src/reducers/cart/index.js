@@ -1,4 +1,5 @@
-import { ADD_TO_CART, REMOVE_FROM_CART, EMPTY_CART } from '../../actions/cart';
+import { ADD_TO_CART, REMOVE_FROM_CART } from '../../actions/cart';
+import {CREATE_ORDER_SUCCESS, RETRIEVE_ORDER_SUCCESS} from "../../actions/order";
 
 const initialState = {
     amount: 0,
@@ -27,7 +28,8 @@ const cart = (state = initialState, { payload, type }) => {
                 totalPrice: (state.totalPrice -=
                     payload.item.price * payload.amount),
             };
-        case EMPTY_CART:
+        case RETRIEVE_ORDER_SUCCESS:
+        case CREATE_ORDER_SUCCESS:
             return {
                 ...state,
                 amount: 0,

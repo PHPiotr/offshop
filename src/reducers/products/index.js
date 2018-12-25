@@ -1,4 +1,5 @@
 import { ADD_TO_CART, REMOVE_FROM_CART } from '../../actions/cart';
+import {CREATE_ORDER_SUCCESS, RETRIEVE_ORDER_SUCCESS} from "../../actions/order";
 
 const initialState = {
     items: [
@@ -86,6 +87,12 @@ const products = (state = initialState, action) => {
                     }
                     return i;
                 }),
+            };
+        case RETRIEVE_ORDER_SUCCESS:
+        case CREATE_ORDER_SUCCESS:
+            return {
+                ...state,
+                items: state.items.map(i => ({...i, inCart: 0})),
             };
         default:
             return state;
