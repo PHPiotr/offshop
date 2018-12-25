@@ -1,6 +1,7 @@
 import {
     STEP_NEXT,
     STEP_BACK,
+    SET_ACTIVE_STEP,
 } from '../../actions/checkout';
 
 const initialState = {
@@ -24,6 +25,11 @@ const checkout = (state = initialState, action) => {
                 activeStep: state.activeStep
                     ? (state.activeStep -= 1)
                     : state.activeStep,
+            };
+        case SET_ACTIVE_STEP:
+            return {
+                ...state,
+                activeStep: action.payload.activeStep,
             };
         default:
             return state;

@@ -12,44 +12,37 @@ export const authorize = () =>
         },
     });
 
-export const orderCreateRequest = ({
-                                accessToken,
-                                authorizationCode,
-                                totalAmount,
-                                products,
-                                description,
-                                buyer,
-                            }) =>
+export const orderCreateRequest = params =>
     fetch(`${process.env.REACT_APP_API_HOST}/orders`, {
         method: 'POST',
         mode: 'cors',
         cache: 'no-cache',
         body: JSON.stringify({
-            accessToken,
-            authorizationCode,
-            totalAmount,
-            products,
-            description,
+            authorizationCode: params.authorizationCode,
+            totalAmount: params.totalAmount,
+            products: params.products,
+            description: params.description,
             merchantPosId: process.env.REACT_APP_GOOGLE_PAY_TOKENIZATION_GATEWAY_MERCHANT_ID,
             currencyCode: process.env.REACT_APP_CURRENCY_CODE,
             notifyUrl: 'https://localhost:3000/cart',
-            buyer,
+            buyer: params.buyer,
             settings: {
                 invoiceDisabled: true,
             },
         }),
         headers: {
             'Content-Type': 'application/json',
+            'Authorization': `Bearer ${params.accessToken}`,
         },
     });
 
-export const orderRetrieveRequest = ({accessToken, extOrderId}) =>
-    fetch(`${process.env.REACT_APP_API_HOST}/orders/${extOrderId}`, {
+export const orderRetrieveRequest = params =>
+    fetch(`${process.env.REACT_APP_API_HOST}/orders/${params.extOrderId}`, {
         method: 'GET',
         mode: 'cors',
         cache: 'no-cache',
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${accessToken}`,
+            'Authorization': `Bearer ${params.accessToken}`,
         },
     });

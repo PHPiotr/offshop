@@ -28,7 +28,13 @@ const cart = (state = initialState, { payload, type }) => {
                     payload.item.price * payload.amount),
             };
         case EMPTY_CART:
-            return initialState;
+            return {
+                ...state,
+                amount: 0,
+                units: 0,
+                totalPrice: 0,
+                items: [],
+            };
         default:
             return state;
     }

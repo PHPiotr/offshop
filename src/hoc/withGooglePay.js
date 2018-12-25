@@ -77,7 +77,7 @@ const withGooglePay = (WrappedComponent) => {
             googlePayButton: null,
         };
 
-        componentDidMount() {
+        setUpGooglePay = () => {
             const {totalPrice, onGooglePayButtonClick} = this.props;
             const script = document.createElement('script');
             script.src = 'https://pay.google.com/gp/p/js/pay.js';
@@ -101,12 +101,21 @@ const withGooglePay = (WrappedComponent) => {
                     .then(response => {
                         googlePayButton = createButton(response, paymentsClient, totalPrice, onGooglePayButtonClick);
                         this.setState({...this.state, googlePayButton});
-                        googlePayButton && document.getElementById(this.props.googlePayButtonParentId).appendChild(googlePayButton);
+                        const buttonWrapperElem = document.getElementById(this.props.googlePayButtonParentId);
+                        googlePayButton && buttonWrapperElem && buttonWrapperElem.appendChild(googlePayButton);
                     })
                     .catch(function (err) {
                         console.error(err);
                     });
             };
+        };
+
+        componentDidMount() {
+            window.addEventListener('setUpGooglePay', this.setUpGooglePay());
+        }
+
+        componentWillUnmount() {
+            window.removeEventListener('setUpGooglePay', this.setUpGooglePay());
         }
 
         render() {

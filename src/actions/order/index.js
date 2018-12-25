@@ -7,6 +7,8 @@ export const CREATE_ORDER_REQUEST = 'CREATE_ORDER_REQUEST';
 export const CREATE_ORDER_SUCCESS = 'CREATE_ORDER_SUCCESS';
 export const CREATE_ORDER_FAILURE = 'CREATE_ORDER_FAILURE';
 
+export const setOrderData = orderData => ({type: RETRIEVE_ORDER_SUCCESS, payload: {orderData}});
+
 export const retrieveOrder = extOrderId => {
 
     return dispatch => {
@@ -51,10 +53,10 @@ export const createOrder = paymentDataFromGooglePay => {
 
         try {
             const authResponse = await authorize();
-            if (!authResponse.ok) {
-                throw Error('Unable to authorize');
-            }
             const authData = await authResponse.json();
+            if (!authResponse.ok) {
+                throw Error(authData.errorMessage);
+            }
 
             const state = getState();
             const { access_token } = authData;
@@ -87,16 +89,16 @@ export const createOrder = paymentDataFromGooglePay => {
                 description,
                 buyer,
             });
-            if (!orderResponse.ok) {
-                throw Error('Unable to create order');
-            }
             const orderData = await orderResponse.json();
+            if (!orderResponse.ok) {
+                throw Error(orderData.errorMessage);
+            }
             dispatch({type: CREATE_ORDER_SUCCESS, payload: {orderData}});
 
             return Promise.resolve(orderData);
 
         } catch (orderError) {
-            dispatch({type: CREATE_ORDER_FAILURE, payload: {orderError}});
+            dispatch({type: CREATE_ORDER_FAILURE, payload: {orderError: orderError.message}});
 
             return Promise.reject(orderError);
         }

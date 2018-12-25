@@ -10,3 +10,6 @@ export const removeFromCart = (item, amount = 1) => ({
     type: REMOVE_FROM_CART,
     payload: { item, amount },
 });
+export const emptyCart = () => ({
+    type: EMPTY_CART,
+});

@@ -46,7 +46,7 @@ const getStepContent = activeStep => {
 };
 
 const Checkout = props => {
-    const { classes, activeStep, steps, products } = props;
+    const { classes, activeStep, steps, products, orderData } = props;
 
     return (
         <Paper className={classes.paper}>
@@ -61,11 +61,13 @@ const Checkout = props => {
                 {activeStep === steps.length ? (
                     <Fragment>
                         <Typography variant="h5" gutterBottom>
-                            Dziękujemy za zamówienie.
+                            Dziękujemy za zakupy.
                         </Typography>
                         <Typography variant="subtitle1">
-                            Numer Twojego zamówienia to #2001539. Wysłaliśmy do
-                            Ciebie maila ze szczegółami.
+                            {`Numer Twojego zamówienia to: ${orderData.extOrderId}.`}
+                        </Typography>
+                        <Typography variant="subtitle1">
+                            {`Więcej szczegółów znajdziesz w wiadomości, którą wysłaliśmy na Twój adres: ${orderData.buyer.email}.`}
                         </Typography>
                     </Fragment>
                 ) : (
