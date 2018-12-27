@@ -2,19 +2,22 @@ import React, {Component, Fragment} from 'react';
 import CheckoutView from '../../components/Checkout';
 import {connect} from 'react-redux';
 import {stepBack, stepNext, setActiveStep} from '../../actions/checkout';
-import {createOrder, setOrderData} from '../../actions/order';
+import {createOrder, retrieveOrder, setOrderData} from '../../actions/order';
 import SubHeader from '../../components/SubHeader';
 import withGooglePay from '../../hoc/withGooglePay';
 
 const ORDER_DATA = 'orderData';
+const COMPLETED = 'COMPLETED';
 
 class Checkout extends Component {
     componentDidMount() {
         try {
             const orderDataFromStorage = localStorage.getItem(ORDER_DATA);
             if (orderDataFromStorage) {
-                this.props.handleRestoreOrderData(JSON.parse(orderDataFromStorage));
+                const orderData = JSON.parse(orderDataFromStorage);
+                this.props.handleRestoreOrderData(orderData);
                 this.props.handleRestoreActiveStep(this.props.steps.length);
+                this.props.syncOrderData(orderData.extOrderId);
                 localStorage.removeItem(ORDER_DATA);
                 return;
             }
@@ -82,25 +85,40 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
     redirectToCart() {
         ownProps.history.replace('/cart');
     },
-    onGooglePayButtonClick(paymentDataFromGooglePay) {
-        dispatch(createOrder(paymentDataFromGooglePay))
-            .then(payload => {
-                const {redirectUri} = payload;
-                if (redirectUri) {
-                    try {
-                        localStorage.setItem(ORDER_DATA, JSON.stringify(payload));
-                    } catch (e) {
-                        console.log('localStorage not available: ', e);
-                    }
-                    window.location.href = redirectUri;
-                } else {
-                    dispatch(stepNext());
+    async onGooglePayButtonClick(paymentDataFromGooglePay) {
+        try {
+            const payload = await dispatch(createOrder(paymentDataFromGooglePay));
+            const {redirectUri, extOrderId} = payload;
+            if (redirectUri) {
+                try {
+                    localStorage.setItem(ORDER_DATA, JSON.stringify(payload));
+                } catch (e) {
+                    console.log('localStorage not available: ', e);
                 }
-            })
-            .catch(error => console.error(error));
+                window.location.href = redirectUri;
+            } else {
+                dispatch(stepNext());
+                const {status} = await dispatch(retrieveOrder(extOrderId));
+                if (status !== COMPLETED) {
+                    console.log('order status is: ', status);
+                }
+            }
+        } catch (error) {
+            console.error(error);
+        }
     },
     handleRestoreOrderData(orderData) {
         dispatch(setOrderData(orderData));
+    },
+    async syncOrderData(extOrderId) {
+        try {
+            const {status} = await dispatch(retrieveOrder(extOrderId));
+            if (status !== COMPLETED) {
+                console.log('order status is: ', status);
+            }
+        } catch (error) {
+            console.error(error);
+        }
     },
 });
 

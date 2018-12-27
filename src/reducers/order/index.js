@@ -20,7 +20,6 @@ const order = (state = initialState, action) => {
             return {
                 ...state,
                 retrievingOrder: true,
-                data: null,
                 error: null,
             };
         case RETRIEVE_ORDER_SUCCESS:
@@ -34,14 +33,12 @@ const order = (state = initialState, action) => {
               return {
                   ...state,
                   retrievingOrder: false,
-                  data: null,
                   error: action.payload.orderError,
               };
         case CREATE_ORDER_REQUEST:
             return {
                 ...state,
                 creatingOrder: true,
-                data: null,
                 error: null,
             };
         case CREATE_ORDER_SUCCESS:
@@ -55,7 +52,6 @@ const order = (state = initialState, action) => {
             return {
                 ...state,
                 creatingOrder: false,
-                data: null,
                 error: action.payload.orderError,
             };
         default:

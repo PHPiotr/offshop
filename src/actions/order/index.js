@@ -11,37 +11,31 @@ export const setOrderData = orderData => ({type: RETRIEVE_ORDER_SUCCESS, payload
 
 export const retrieveOrder = extOrderId => {
 
-    return dispatch => {
+    return async dispatch => {
 
         dispatch({type: RETRIEVE_ORDER_REQUEST});
 
-        return authorize()
-            .then(response => {
-                if (!response.ok) {
-                    throw Error(response.json());
-                }
-                return response.json();
-            })
-            .then(authorizationData => {
+        try {
+            const authResponse = await authorize();
+            const authData = await authResponse.json();
+            if (!authResponse.ok) {
+                throw Error(authData.errorMessage);
+            }
+            const { access_token } = authData;
 
-                const { access_token } = authorizationData;
+            const orderResponse = await orderRetrieveRequest({accessToken: access_token, extOrderId});
+            const orderData = await orderResponse.json();
+            if (!orderResponse.ok) {
+                throw Error(orderData.errorMessage);
+            }
+            dispatch({type: RETRIEVE_ORDER_SUCCESS, payload: {orderData}});
 
-                return orderRetrieveRequest({accessToken: access_token, extOrderId})
-                    .then(response => {
-                        if (!response.ok) {
-                            throw Error;
-                        }
-                        return response.json();
-                    }).then(orderData => {
-                        dispatch({type: RETRIEVE_ORDER_SUCCESS, payload: {orderData}});
-                        return Promise.resolve(orderData);
+            return Promise.resolve(orderData);
 
-                    });
-            })
-            .catch(orderError => {
-                dispatch({type: RETRIEVE_ORDER_FAILURE, payload: {orderError}});
-                return Promise.reject(orderError);
-            });
+        } catch (orderError) {
+            dispatch({type: RETRIEVE_ORDER_FAILURE, payload: {orderError}});
+            return Promise.reject(orderError);
+        }
     };
 };
 
