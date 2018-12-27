@@ -51,15 +51,10 @@ const ProductsInCart = props => {
                 <Fragment key={p.id}>
                     <ListItem key={p.id} alignItems="flex-start">
                         <ListItemAvatar>
-                            <Avatar
-                                src={require(`../../../../public/images/${
-                                    p.img
-                                }`)}
-                                alt={p.title}
-                            />
+                            <Avatar src={require(`../../../../public/images/${p.img}`)} alt={p.name}/>
                         </ListItemAvatar>
                         <ListItemText
-                            primary={p.title}
+                            primary={p.name}
                             secondary={
                                 <React.Fragment>
                                     <Typography
@@ -77,7 +72,7 @@ const ProductsInCart = props => {
                             <IconButton
                                 id={p.id}
                                 onClick={handleIncrementItemInCart}
-                                disabled={p.amount <= 0}
+                                disabled={p.quantity <= 0}
                             >
                                 <AddShoppingCartIcon />
                             </IconButton>
@@ -85,7 +80,7 @@ const ProductsInCart = props => {
                                 id={p.id}
                                 className={classes.textField}
                                 value={p.inCart}
-                                helperText={`z ${p.inCart + p.amount} szt.`}
+                                helperText={`z ${p.inCart + p.quantity} szt.`}
                                 margin="none"
                                 type="number"
                             />

@@ -69,8 +69,8 @@ class PrimaryAppBar extends Component {
                                 color="inherit"
                             >
                                 <Badge
-                                    badgeContent={cart.amount}
-                                    invisible={cart.amount < 1}
+                                    badgeContent={cart.quantity}
+                                    invisible={cart.quantity < 1}
                                     color="secondary"
                                 >
                                     <ShoppingCartIcon/>

@@ -63,7 +63,7 @@ export const createOrder = paymentDataFromGooglePay => {
             const products = state.products.items.reduce((acc, p) => {
                 if (p.inCart > 0) {
                     acc.push({
-                        name: p.title,
+                        name: p.name,
                         unitPrice: parseFloat(p.price).toFixed(2).toString().replace('.', ''),
                         quantity: p.inCart.toString(),
                     });

@@ -6,12 +6,13 @@ const initialState = {
         {
             id: '1',
             categoryId: '1',
-            title: 'Stroik 1',
+            name: 'Stroik 1',
             slug: 'stroik-1',
             active: true,
-            amount: 2,
+            quantity: 2,
             inCart: 0,
             price: 35,
+            unitPrice: 35,
             img: 'stroik_1.jpg',
             unitsPerProduct: 1,
             unit: 'kg',
@@ -19,40 +20,43 @@ const initialState = {
         {
             id: '2',
             categoryId: '1',
-            title: 'Stroik 2',
+            name: 'Stroik 2',
             slug: 'stroik-2',
             active: true,
-            amount: 0,
+            quantity: 0,
             inCart: 0,
             price: 45,
+            unitPrice: 45,
             img: 'stroik_2.jpg',
-            unitsPerProduct: 1.5,
+            unitsPerProduct: 1,
             unit: 'kg',
         },
         {
             id: '3',
             categoryId: '1',
-            title: 'Stroik 3',
+            name: 'Stroik 3',
             slug: 'stroik-3',
             active: true,
-            amount: 30,
+            quantity: 30,
             inCart: 0,
             price: 55,
+            unitPrice: 55,
             img: 'stroik_3.jpg',
-            unitsPerProduct: 0.5,
+            unitsPerProduct: 1,
             unit: 'kg',
         },
         {
             id: '4',
             categoryId: '1',
-            title: 'Stroik 4',
+            name: 'Stroik 4',
             slug: 'stroik-4',
             active: true,
-            amount: 3,
+            quantity: 3,
             inCart: 0,
             price: 70,
+            unitPrice: 70,
             img: 'stroik_4.jpg',
-            unitsPerProduct: 0.5,
+            unitsPerProduct: 1,
             unit: 'kg',
         },
     ],
@@ -67,8 +71,8 @@ const products = (state = initialState, action) => {
                     if (item.id === action.payload.item.id) {
                         return {
                             ...item,
-                            amount: (item.amount -= action.payload.amount),
-                            inCart: (item.inCart += action.payload.amount),
+                            quantity: (item.quantity -= action.payload.quantity),
+                            inCart: (item.inCart += action.payload.quantity),
                         };
                     }
                     return item;
@@ -81,8 +85,8 @@ const products = (state = initialState, action) => {
                     if (i.id === action.payload.item.id) {
                         return {
                             ...i,
-                            amount: (i.amount += action.payload.amount),
-                            inCart: (i.inCart -= action.payload.amount),
+                            quantity: (i.quantity += action.payload.quantity),
+                            inCart: (i.inCart -= action.payload.quantity),
                         };
                     }
                     return i;

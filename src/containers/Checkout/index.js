@@ -25,7 +25,7 @@ class Checkout extends Component {
             console.log('localStorage not available: ', e);
         }
 
-        if (!this.props.supplier.id || !this.props.cart.amount) {
+        if (!this.props.supplier.id || !this.props.cart.quantity) {
             this.props.redirectToCart();
         }
     }
