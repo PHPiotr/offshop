@@ -28,7 +28,7 @@ function ProductsGridList(props) {
     const {classes, products} = props;
 
     const handleAddToCart = e => {
-        props.addToCart(products.find(p => p.id === e.currentTarget.id), 1);
+        props.addToCart(products.find(p => p._id === e.currentTarget.id), 1);
     };
 
     return (
@@ -36,8 +36,8 @@ function ProductsGridList(props) {
             <SubHeader content={props.category.title}/>
             <GridList cellHeight={`auto`}>
                 {products.map(product => (
-                    <Grid item key={product.id} xs={12} sm={6} md={4} lg={3}>
-                        <GridListTile key={product.id} className={classes.gridListTitle}>
+                    <Grid item key={product._id} xs={12} sm={6} md={4} lg={3}>
+                        <GridListTile key={product._id} className={classes.gridListTitle}>
                             <img
                                 src={require(`../../../public/images/${product.img}`)}
                                 alt={product.name}
@@ -49,7 +49,7 @@ function ProductsGridList(props) {
                                 subtitle={<span>{product.price} zł</span>}
                                 actionIcon={
                                     <IconButton
-                                        id={product.id}
+                                        id={product._id}
                                         className={classes.iconButton}
                                         onClick={handleAddToCart}
                                         style={{display: product.quantity <= 0 ? 'none' : 'block'}}

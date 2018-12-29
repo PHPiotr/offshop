@@ -1,39 +1,16 @@
 import React, {Component, Fragment} from 'react';
 import CheckoutView from '../../components/Checkout';
 import {connect} from 'react-redux';
-import {stepBack, stepNext, setActiveStep} from '../../actions/checkout';
-import {createOrder, retrieveOrder, setOrderData} from '../../actions/order';
+import {stepBack, stepNext, setActiveStep, toggleCreateOrderFailedDialog} from '../../actions/checkout';
+import {createOrder} from '../../actions/order';
 import SubHeader from '../../components/SubHeader';
+import OrderCreateFailedDialog from '../../components/Checkout/OrderCreateFailedDialog';
 import withGooglePay from '../../hoc/withGooglePay';
-
-const ORDER_DATA = 'orderData';
-const COMPLETED = 'COMPLETED';
 
 class Checkout extends Component {
     componentDidMount() {
-        try {
-            const orderDataFromStorage = localStorage.getItem(ORDER_DATA);
-            if (orderDataFromStorage) {
-                const orderData = JSON.parse(orderDataFromStorage);
-                this.props.handleRestoreOrderData(orderData);
-                this.props.handleRestoreActiveStep(this.props.steps.length);
-                this.props.syncOrderData(orderData.extOrderId);
-                localStorage.removeItem(ORDER_DATA);
-                return;
-            }
-        } catch (e) {
-            console.log('localStorage not available: ', e);
-        }
-
         if (!this.props.supplier.id || !this.props.cart.quantity) {
             this.props.redirectToCart();
-        }
-    }
-
-    componentWillUnmount() {
-        if (this.props.orderData) {
-            this.props.handleRestoreOrderData(null);
-            this.props.handleRestoreActiveStep(0);
         }
     }
 
@@ -42,6 +19,7 @@ class Checkout extends Component {
             <Fragment>
                 <SubHeader content="Zamówienie"/>
                 <CheckoutView {...this.props} />
+                <OrderCreateFailedDialog/>
             </Fragment>
         );
     }
@@ -88,36 +66,15 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
     async onGooglePayButtonClick(paymentDataFromGooglePay) {
         try {
             const payload = await dispatch(createOrder(paymentDataFromGooglePay));
-            const {redirectUri, extOrderId} = payload;
+            const {redirectUri} = payload;
             if (redirectUri) {
-                try {
-                    localStorage.setItem(ORDER_DATA, JSON.stringify(payload));
-                } catch (e) {
-                    console.log('localStorage not available: ', e);
-                }
                 window.location.href = redirectUri;
             } else {
-                dispatch(stepNext());
-                const {status} = await dispatch(retrieveOrder(extOrderId));
-                if (status !== COMPLETED) {
-                    console.log('order status is: ', status);
-                }
+                dispatch(setActiveStep(0));
+                ownProps.history.replace('/order');
             }
-        } catch (error) {
-            console.error(error);
-        }
-    },
-    handleRestoreOrderData(orderData) {
-        dispatch(setOrderData(orderData));
-    },
-    async syncOrderData(extOrderId) {
-        try {
-            const {status} = await dispatch(retrieveOrder(extOrderId));
-            if (status !== COMPLETED) {
-                console.log('order status is: ', status);
-            }
-        } catch (error) {
-            console.error(error);
+        } catch (orderError) {
+            dispatch(toggleCreateOrderFailedDialog());
         }
     },
 });

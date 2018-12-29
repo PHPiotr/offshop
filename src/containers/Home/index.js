@@ -1,14 +1,19 @@
-import React, { Component, Fragment } from 'react';
-import { connect } from 'react-redux';
+import React, {Component, Fragment} from 'react';
+import {connect} from 'react-redux';
 import Products from '../../components/Products';
 import AddedToCartDialog from '../../components/Dialog/AddedToCart';
-import { addToCart, removeFromCart } from '../../actions/cart';
+import {addToCart, removeFromCart} from '../../actions/cart';
 import {
     openAddedToCartDialog,
     closeAddedToCartDialog,
 } from '../../actions/addedToCartDialog';
+import {getProductsIfNeeded} from "../../actions/products";
 
 class Home extends Component {
+    componentDidMount() {
+        this.props.handleFetchProducts();
+    }
+
     render() {
         return (
             <Fragment>
@@ -34,8 +39,11 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
-    addToCart(item, amount) {
-        dispatch(addToCart(item, amount));
+    handleFetchProducts() {
+        dispatch(getProductsIfNeeded());
+    },
+    addToCart(item, quantity) {
+        dispatch(addToCart(item, quantity));
         dispatch(openAddedToCartDialog());
     },
     removeFromCart(e, amount, units) {

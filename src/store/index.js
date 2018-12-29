@@ -3,6 +3,10 @@ import logger from 'redux-logger';
 import thunk from 'redux-thunk';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import rootReducer from '../reducers';
+import {loadState, saveState} from "../services/localStorage";
+import throttle from 'lodash.throttle';
+import {initialState as orderInitialState} from '../reducers/order';
+import {initialState as productsInitialState} from '../reducers/products';
 
 const devEnv = process.env.NODE_ENV === 'development';
 
@@ -19,6 +23,15 @@ const configureStore = initialState => {
         composeWithDevTools(applyMiddleware(...middleware))
     );
 
+    createdStore.subscribe(throttle(() => {
+        const state = store.getState();
+        saveState({
+            cart: state.cart,
+            order: {...orderInitialState, data: state.order.data, error: state.order.error},
+            products: {...productsInitialState, items: state.products.items, error: state.products.error},
+        });
+    }, 1000));
+
     if (devEnv) {
         if (module.hot) {
             module.hot.accept('../reducers', () =>
@@ -30,6 +43,7 @@ const configureStore = initialState => {
     return createdStore;
 };
 
-export const store = configureStore();
+
+export const store = configureStore(loadState());
 
 export default store;

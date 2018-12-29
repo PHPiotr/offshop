@@ -35,7 +35,7 @@ export const orderCreateRequest = params =>
             settings: {
                 invoiceDisabled: true,
             },
-            continueUrl: `https://localhost:3000/checkout`,
+            continueUrl: `https://localhost:3000/order`,
         }),
         headers: {
             'Content-Type': 'application/json',

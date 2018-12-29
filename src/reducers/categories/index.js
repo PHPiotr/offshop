@@ -1,8 +1,8 @@
 const initialState = {
-    currentId: '1',
+    currentId: null,
     items: [
         {
-            id: '1',
+            id: null,
             title: 'Kompozycje',
             slug: 'kompozycje',
             active: true,

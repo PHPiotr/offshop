@@ -1,11 +1,10 @@
-import { ADD_TO_CART, REMOVE_FROM_CART } from '../../actions/cart';
+import {ADD_TO_CART, REMOVE_FROM_CART} from '../../actions/cart';
 import {CREATE_ORDER_SUCCESS, RETRIEVE_ORDER_SUCCESS} from "../../actions/order";
 
 const initialState = {
     quantity: 0,
     units: 0,
     totalPrice: 0,
-    items: [],
 };
 
 const cart = (state = initialState, { payload, type }) => {
@@ -31,7 +30,6 @@ const cart = (state = initialState, { payload, type }) => {
                 quantity: 0,
                 units: 0,
                 totalPrice: 0,
-                items: [],
             };
         default:
             return state;

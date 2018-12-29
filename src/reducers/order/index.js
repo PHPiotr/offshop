@@ -4,14 +4,16 @@ import {
     RETRIEVE_ORDER_SUCCESS,
     CREATE_ORDER_REQUEST,
     CREATE_ORDER_SUCCESS,
-    CREATE_ORDER_FAILURE
+    CREATE_ORDER_FAILURE,
+
 } from "../../actions/order";
 
-const initialState = {
+export const initialState = {
     retrievingOrder: false,
     creatingOrder: false,
     data: null,
     error: null,
+    errorDialogOpen: false,
 };
 
 const order = (state = initialState, action) => {
@@ -34,6 +36,7 @@ const order = (state = initialState, action) => {
                   ...state,
                   retrievingOrder: false,
                   error: action.payload.orderError,
+                  data: action.payload.data,
               };
         case CREATE_ORDER_REQUEST:
             return {

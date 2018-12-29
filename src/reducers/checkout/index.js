@@ -1,12 +1,13 @@
 import {
     STEP_NEXT,
     STEP_BACK,
-    SET_ACTIVE_STEP,
+    SET_ACTIVE_STEP, TOGGLE_CREATE_ORDER_FAILED_DIALOG,
 } from '../../actions/checkout';
 
 const initialState = {
     activeStep: 0,
     steps: ['Dane do wysyłki', 'Potwierdzenie zamówienia'],
+    createOrderFailedDialogOpen: false,
 };
 
 const checkout = (state = initialState, action) => {
@@ -30,6 +31,11 @@ const checkout = (state = initialState, action) => {
             return {
                 ...state,
                 activeStep: action.payload.activeStep,
+            };
+        case TOGGLE_CREATE_ORDER_FAILED_DIALOG:
+            return {
+                ...state,
+                createOrderFailedDialogOpen: !state.createOrderFailedDialogOpen,
             };
         default:
             return state;

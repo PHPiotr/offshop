@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React, {Fragment} from 'react';
 import withStyles from '@material-ui/core/styles/withStyles';
 import Typography from '@material-ui/core/Typography/Typography';
 import Stepper from '@material-ui/core/Stepper/Stepper';
@@ -38,15 +38,15 @@ const styles = theme => ({
 const getStepContent = activeStep => {
     switch (activeStep) {
         case 1:
-            return <Review />;
+            return <Review/>;
         case 0:
         default:
-            return <AddressForm />;
+            return <AddressForm/>;
     }
 };
 
 const Checkout = props => {
-    const { classes, activeStep, steps, products, orderData } = props;
+    const {classes, activeStep, steps, products} = props;
 
     return (
         <Paper className={classes.paper}>
@@ -58,59 +58,43 @@ const Checkout = props => {
                 ))}
             </Stepper>
             <Fragment>
-                {activeStep === steps.length ? (
-                    <Fragment>
-                        <Typography variant="h5" gutterBottom>
-                            Dziękujemy za zakupy.
-                        </Typography>
-                        <Typography variant="subtitle1">
-                            {`Numer Twojego zamówienia to: ${orderData.extOrderId}.`}
-                        </Typography>
-                        <Typography variant="subtitle1">
-                            {`Więcej szczegółów znajdziesz w wiadomości, którą wysłaliśmy na Twój adres: ${orderData.buyer.email}.`}
-                        </Typography>
-                    </Fragment>
-                ) : (
-                    <Fragment>
-                        <Typography variant="h6" gutterBottom>
-                            {steps[activeStep]}
-                        </Typography>
-                        {getStepContent(props.activeStep)}
-                        <div className={classes.buttons}>
-                            {activeStep !== 0 && (
-                                <Button
-                                    onClick={props.handleBack}
-                                    className={classes.button}
-                                >
-                                    Wróć
-                                </Button>
-                            )}
-                            {activeStep < steps.length - 1 && (
-                                <Button
-                                    variant="contained"
-                                    color="primary"
-                                    onClick={props.handleNext}
-                                    className={classes.button}
-                                    disabled={!props.validShippingData}
-                                >
-                                    Dalej
-                                </Button>
-                            )}
-                            <div
-                                id="google-pay-btn-wrapper"
-                                className={classes.button}
-                                style={{
-                                    display:
-                                        activeStep === steps.length - 1 &&
-                                        props.validShippingData &&
-                                        products.length > 0
-                                            ? 'block'
-                                            : 'none',
-                                }}
-                            />
-                        </div>
-                    </Fragment>
-                )}
+                <Typography variant="h6" gutterBottom>
+                    {steps[activeStep]}
+                </Typography>
+                {getStepContent(props.activeStep)}
+                <div className={classes.buttons}>
+                    {activeStep !== 0 && (
+                        <Button
+                            onClick={props.handleBack}
+                            className={classes.button}
+                        >
+                            Wróć
+                        </Button>
+                    )}
+                    {activeStep < steps.length - 1 && (
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={props.handleNext}
+                            className={classes.button}
+                            disabled={!props.validShippingData}
+                        >
+                            Dalej
+                        </Button>
+                    )}
+                    <div
+                        id="google-pay-btn-wrapper"
+                        className={classes.button}
+                        style={{
+                            display:
+                                activeStep === steps.length - 1 &&
+                                props.validShippingData &&
+                                products.length > 0
+                                    ? 'block'
+                                    : 'none',
+                        }}
+                    />
+                </div>
             </Fragment>
         </Paper>
     );

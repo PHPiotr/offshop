@@ -1,74 +1,26 @@
-import { ADD_TO_CART, REMOVE_FROM_CART } from '../../actions/cart';
+import {ADD_TO_CART, REMOVE_FROM_CART} from '../../actions/cart';
 import {CREATE_ORDER_SUCCESS, RETRIEVE_ORDER_SUCCESS} from "../../actions/order";
+import {RETRIEVE_PRODUCTS_REQUEST, RETRIEVE_PRODUCTS_SUCCESS, RETRIEVE_PRODUCTS_FAILURE} from "../../actions/products";
 
-const initialState = {
-    items: [
-        {
-            id: '1',
-            categoryId: '1',
-            name: 'Stroik 1',
-            slug: 'stroik-1',
-            active: true,
-            quantity: 2,
-            inCart: 0,
-            price: 35,
-            unitPrice: 35,
-            img: 'stroik_1.jpg',
-            unitsPerProduct: 1,
-            unit: 'kg',
-        },
-        {
-            id: '2',
-            categoryId: '1',
-            name: 'Stroik 2',
-            slug: 'stroik-2',
-            active: true,
-            quantity: 0,
-            inCart: 0,
-            price: 45,
-            unitPrice: 45,
-            img: 'stroik_2.jpg',
-            unitsPerProduct: 1,
-            unit: 'kg',
-        },
-        {
-            id: '3',
-            categoryId: '1',
-            name: 'Stroik 3',
-            slug: 'stroik-3',
-            active: true,
-            quantity: 30,
-            inCart: 0,
-            price: 55,
-            unitPrice: 55,
-            img: 'stroik_3.jpg',
-            unitsPerProduct: 1,
-            unit: 'kg',
-        },
-        {
-            id: '4',
-            categoryId: '1',
-            name: 'Stroik 4',
-            slug: 'stroik-4',
-            active: true,
-            quantity: 3,
-            inCart: 0,
-            price: 70,
-            unitPrice: 70,
-            img: 'stroik_4.jpg',
-            unitsPerProduct: 1,
-            unit: 'kg',
-        },
-    ],
+export const initialState = {
+    isFetching: false,
+    error: null,
+    items: [],
 };
 
 const products = (state = initialState, action) => {
     switch (action.type) {
+        case RETRIEVE_PRODUCTS_REQUEST:
+            return {...state, isFetching: true, error: null};
+        case RETRIEVE_PRODUCTS_SUCCESS:
+            return {...state, isFetching: false, items: action.payload.items, error: null};
+        case RETRIEVE_PRODUCTS_FAILURE:
+            return {...state, isFetching: false, error: action.payload.error};
         case ADD_TO_CART:
             return {
                 ...state,
                 items: state.items.map(item => {
-                    if (item.id === action.payload.item.id) {
+                    if (item._id === action.payload.item._id) {
                         return {
                             ...item,
                             quantity: (item.quantity -= action.payload.quantity),

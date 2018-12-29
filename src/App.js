@@ -58,8 +58,8 @@ class App extends Component {
                             <Switch>
                                 <Route path="/" exact component={Home} />
                                 <Route path="/cart" exact component={Cart} />
+                                <Route path="/order" exact component={Order} />
                                 <Route path="/checkout" exact component={Checkout} />
-                                <Route path="/order/:extOrderId" exact component={Order} />
                                 <Route path="/login" exact component={Login} />
                             </Switch>
                         </Grid>
