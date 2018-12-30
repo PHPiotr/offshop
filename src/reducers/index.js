@@ -1,4 +1,5 @@
 import { combineReducers } from 'redux';
+import buyer from './buyer';
 import cart from './cart';
 import checkout from './checkout';
 import order from './order';
@@ -9,6 +10,7 @@ import addedToCartDialog from './addedToCartDialog';
 import shipping from './shipping';
 
 export default combineReducers({
+    buyer,
     cart,
     checkout,
     order,
