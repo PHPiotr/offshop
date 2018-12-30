@@ -1,5 +1,6 @@
 import { combineReducers } from 'redux';
 import buyer from './buyer';
+import buyerDelivery from './buyerDelivery';
 import cart from './cart';
 import checkout from './checkout';
 import order from './order';
@@ -11,6 +12,7 @@ import shipping from './shipping';
 
 export default combineReducers({
     buyer,
+    buyerDelivery,
     cart,
     checkout,
     order,
