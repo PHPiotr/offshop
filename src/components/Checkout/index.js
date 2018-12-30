@@ -6,9 +6,10 @@ import Step from '@material-ui/core/Step/Step';
 import StepLabel from '@material-ui/core/StepLabel/StepLabel';
 import Button from '@material-ui/core/Button/Button';
 import Paper from '@material-ui/core/Paper/Paper';
-import AddressForm from './AddressForm';
 import Review from './Review';
 import PropTypes from 'prop-types';
+import BuyerForm from "./BuyerForm";
+import BuyerDeliveryForm from "./BuyerDeliveryForm";
 
 const styles = theme => ({
     paper: {
@@ -37,16 +38,20 @@ const styles = theme => ({
 
 const getStepContent = activeStep => {
     switch (activeStep) {
-        case 1:
-            return <Review/>;
         case 0:
         default:
-            return <AddressForm/>;
+            return <BuyerForm/>;
+        case 1:
+            return <BuyerDeliveryForm/>;
+        case 2:
+            return <Review/>;
     }
 };
 
 const Checkout = props => {
     const {classes, activeStep, steps, products} = props;
+
+    const canProceed = activeStep === 0 ? props.validBuyerData : props.validBuyerDeliveryData;
 
     return (
         <Paper className={classes.paper}>
@@ -64,12 +69,7 @@ const Checkout = props => {
                 {getStepContent(props.activeStep)}
                 <div className={classes.buttons}>
                     {activeStep !== 0 && (
-                        <Button
-                            onClick={props.handleBack}
-                            className={classes.button}
-                        >
-                            Wróć
-                        </Button>
+                        <Button onClick={props.handleBack} className={classes.button}>Wróć</Button>
                     )}
                     {activeStep < steps.length - 1 && (
                         <Button
@@ -77,7 +77,7 @@ const Checkout = props => {
                             color="primary"
                             onClick={props.handleNext}
                             className={classes.button}
-                            disabled={!props.validShippingData}
+                            disabled={!canProceed}
                         >
                             Dalej
                         </Button>
@@ -88,7 +88,8 @@ const Checkout = props => {
                         style={{
                             display:
                                 activeStep === steps.length - 1 &&
-                                props.validShippingData &&
+                                props.validBuyerData &&
+                                props.validBuyerDeliveryData &&
                                 products.length > 0
                                     ? 'block'
                                     : 'none',

@@ -7,6 +7,7 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Divider from '@material-ui/core/Divider';
+import Grid from "@material-ui/core/Grid";
 
 const styles = theme => ({
     listItem: {
@@ -21,7 +22,7 @@ const styles = theme => ({
 });
 
 const Review = props => {
-    const { classes, products, shippingDetails, totalPrice, currency } = props;
+    const { classes, products, buyerDetails, buyerDeliveryDetails, totalPrice, currency } = props;
 
     return (
         <Fragment>
@@ -61,27 +62,43 @@ const Review = props => {
                 </ListItem>
                 <Divider />
             </List>
-            <Typography variant="h6" gutterBottom className={classes.title}>
-                Dane do wysyłki
-            </Typography>
-            <List disablePadding>
-                {shippingDetails.map(({ label, value }) => {
-                    return (
-                        <Fragment key={label}>
-                            <ListItem className={classes.listItem}>
-                                <ListItemText primary={label} />
-                                <Typography
-                                    variant="subtitle1"
-                                    className={classes.total}
-                                >
-                                    {value}
-                                </Typography>
-                            </ListItem>
-                            <Divider />
-                        </Fragment>
-                    );
-                })}
-            </List>
+
+            <Grid container spacing={16}>
+                <Grid item xs={12} sm={6}>
+                    <Typography variant="h6" gutterBottom className={classes.title}>
+                        Dane kupującego
+                    </Typography>
+                    <Grid container>
+                        {buyerDetails.map(({ label, value }) => (
+                            <Fragment key={label}>
+                                <Grid item xs={6}>
+                                    <Typography gutterBottom>{label}</Typography>
+                                </Grid>
+                                <Grid item xs={6}>
+                                    <Typography gutterBottom>{value}</Typography>
+                                </Grid>
+                            </Fragment>
+                        ))}
+                    </Grid>
+                </Grid>
+                <Grid item container direction="column" xs={12} sm={6}>
+                    <Typography variant="h6" gutterBottom className={classes.title}>
+                        Dane do wysyłki
+                    </Typography>
+                    <Grid container>
+                        {buyerDeliveryDetails.map(({ label, value }) => (
+                            <Fragment key={label}>
+                                <Grid item xs={6}>
+                                    <Typography gutterBottom>{label}</Typography>
+                                </Grid>
+                                <Grid item xs={6}>
+                                    <Typography gutterBottom>{value}</Typography>
+                                </Grid>
+                            </Fragment>
+                        ))}
+                    </Grid>
+                </Grid>
+            </Grid>
         </Fragment>
     );
 };
@@ -93,16 +110,25 @@ const mapStateToProps = state => ({
             accumulator.push({
                 ...product,
                 pricePerItem,
-                priceTotal: parseFloat(pricePerItem * product.inCart).toFixed(
-                    2
-                ),
+                priceTotal: parseFloat(pricePerItem * product.inCart).toFixed(2),
             });
         }
         return accumulator;
     }, []),
-    shippingDetails: state.shipping.itemIds.map(
-        itemId => state.shipping.items[itemId]
-    ),
+    buyerDetails: state.buyer.ids.reduce((acc, i) => {
+        const item = state.buyer.data[i];
+        if (item.type !== 'hidden' && item.value.trim()) {
+            acc.push(item);
+        }
+        return acc;
+    }, []),
+    buyerDeliveryDetails: state.buyerDelivery.ids.reduce((acc, i) => {
+        const item = state.buyerDelivery.data[i];
+        if (item.type !== 'hidden' && item.value.trim()) {
+            acc.push(item);
+        }
+        return acc;
+    }, []),
     totalPrice: state.cart.totalPrice
         ? parseFloat(
               state.cart.totalPrice +
@@ -116,7 +142,8 @@ const mapStateToProps = state => ({
 
 Review.propTypes = {
     products: PropTypes.array.isRequired,
-    shippingDetails: PropTypes.array.isRequired,
+    buyerDetails: PropTypes.array.isRequired,
+    buyerDeliveryDetails: PropTypes.array.isRequired,
     totalPrice: PropTypes.string.isRequired,
     currency: PropTypes.string,
 };

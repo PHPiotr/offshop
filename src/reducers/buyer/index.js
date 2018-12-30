@@ -1,3 +1,5 @@
+import {SET_BUYER_INPUT_VALUE} from "../../actions/buyer";
+
 const initialState = {
     ids: [
         'customerId',
@@ -9,62 +11,71 @@ const initialState = {
         'nin',
         'language',
     ],
-    data: [
-        {
-            customerId: {
-                value: 'guest',
-                required: false,
-                type: 'hidden',
-                label: 'Id kupującego',
-            },
-            extCustomerId: {
-                value: 'guest',
-                required: false,
-                type: 'hidden',
-                label: 'Identyfikator kupującego używany w systemie klienta',
-            },
-            email: {
-                value: '',
-                required: true,
-                type: 'email',
-                label: 'Adres email kupującego',
-            },
-            phone: {
-                value: '',
-                required: false,
-                type: 'tel',
-                label: 'Numer telefonu',
-            },
-            firstName: {
-                value: '',
-                required: false,
-                type: 'text',
-                label: 'Imię kupującego',
-            },
-            lastName: {
-                value: '',
-                required: false,
-                type: 'text',
-                label: 'Nazwisko kupującego',
-            },
-            nin: {
-                value: '',
-                required: false,
-                type: 'text',
-                label: 'PESEL lub zagraniczny ekwiwalent',
-            },
-            language: {
-                value: 'pl',
-                required: false,
-                type: 'hidden',
-                label: '',
-            },
-        }
-    ],
+    data: {
+        customerId: {
+            value: 'guest',
+            required: false,
+            type: 'hidden',
+            label: 'Id kupującego',
+        },
+        extCustomerId: {
+            value: 'guest',
+            required: false,
+            type: 'hidden',
+            label: 'Identyfikator kupującego używany w systemie klienta',
+        },
+        email: {
+            value: '',
+            required: true,
+            type: 'email',
+            label: 'Adres email kupującego',
+        },
+        phone: {
+            value: '',
+            required: false,
+            type: 'tel',
+            label: 'Numer telefonu',
+        },
+        firstName: {
+            value: '',
+            required: false,
+            type: 'text',
+            label: 'Imię kupującego',
+        },
+        lastName: {
+            value: '',
+            required: false,
+            type: 'text',
+            label: 'Nazwisko kupującego',
+        },
+        nin: {
+            value: '',
+            required: false,
+            type: 'text',
+            label: 'PESEL lub zagraniczny ekwiwalent',
+        },
+        language: {
+            value: 'pl',
+            required: false,
+            type: 'hidden',
+            label: '',
+        },
+    },
 };
 
 const buyer = (state = initialState, {type, payload}) => {
     switch (type) {
+        case SET_BUYER_INPUT_VALUE:
+            return {
+                ...state,
+                data: {
+                    ...state.data,
+                    [payload.name]: {
+                        ...state.data[payload.name],
+                        value: payload.value,
+                    },
+                },
+            };
         default:
             return state;
     }

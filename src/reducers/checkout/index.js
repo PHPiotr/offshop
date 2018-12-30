@@ -6,7 +6,7 @@ import {
 
 const initialState = {
     activeStep: 0,
-    steps: ['Dane do wysyłki', 'Potwierdzenie zamówienia'],
+    steps: ['Dane kupującego', 'Dane do wysyłki', 'Podsumowanie'],
     createOrderFailedDialogOpen: false,
 };
 

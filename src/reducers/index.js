@@ -8,7 +8,6 @@ import categories from './categories';
 import products from './products';
 import suppliers from './suppliers';
 import addedToCartDialog from './addedToCartDialog';
-import shipping from './shipping';
 
 export default combineReducers({
     buyer,
@@ -20,5 +19,4 @@ export default combineReducers({
     products,
     suppliers,
     addedToCartDialog,
-    shipping,
 });

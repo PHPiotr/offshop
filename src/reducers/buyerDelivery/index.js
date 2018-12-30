@@ -1,3 +1,5 @@
+import {SET_BUYER_DELIVERY_INPUT_VALUE} from "../../actions/buyerDelivery";
+
 const initialState = {
     ids: [
         'street',
@@ -45,7 +47,7 @@ const initialState = {
         countryCode: {
             value: 'pl',
             required: true,
-            type: 'text',
+            type: 'hidden',
             label: 'Kraj',
         },
         name: {
@@ -77,6 +79,17 @@ const initialState = {
 
 const buyerDelivery = (state = initialState, {type, payload}) => {
     switch (type) {
+        case SET_BUYER_DELIVERY_INPUT_VALUE:
+            return {
+                ...state,
+                data: {
+                    ...state.data,
+                    [payload.name]: {
+                        ...state.data[payload.name],
+                        value: payload.value,
+                    },
+                },
+            };
         default:
             return state;
     }

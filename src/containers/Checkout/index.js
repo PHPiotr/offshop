@@ -33,20 +33,28 @@ const mapStateToProps = state => ({
     totalPrice: state.cart.totalPrice + state.suppliers.current.pricePerUnit * state.cart.units,
     products: state.products.items.filter(p => p.inCart > 0),
     shipping: state.shipping,
-    validShippingData: !state.shipping.itemIds.reduce((acc, i) => {
-        const {value, required} = state.shipping.items[i];
+    validBuyerData: !state.buyer.ids.reduce((acc, i) => {
+        const {value, required} = state.buyer.data[i];
         if (required && (typeof value !== 'string' || !value.trim())) {
             acc++;
         }
         return acc;
     }, 0),
-    buyer: {
-        email: state.shipping.items.email.value,
-        phone: state.shipping.items.phone.value,
-        firstName: state.shipping.items.firstName.value,
-        lastName: state.shipping.items.lastName.value,
-        language: 'pl',
-    },
+    validBuyerDeliveryData: !state.buyerDelivery.ids.reduce((acc, i) => {
+        const {value, required} = state.buyerDelivery.data[i];
+        if (required && (typeof value !== 'string' || !value.trim())) {
+            acc++;
+        }
+        return acc;
+    }, 0),
+    buyer: state.buyer.ids.reduce((acc, key) => {
+        acc[key] = state.buyer.data[key].value;
+        return acc;
+    }, {}),
+    buyerDelivery: state.buyerDelivery.ids.reduce((acc, key) => {
+        acc[key] = state.buyerDelivery.data[key].value;
+        return acc;
+    }, {}),
     orderData: state.order.data,
 });
 

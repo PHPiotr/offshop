@@ -7,8 +7,6 @@ export const CREATE_ORDER_REQUEST = 'CREATE_ORDER_REQUEST';
 export const CREATE_ORDER_SUCCESS = 'CREATE_ORDER_SUCCESS';
 export const CREATE_ORDER_FAILURE = 'CREATE_ORDER_FAILURE';
 
-export const setOrderData = orderData => ({type: RETRIEVE_ORDER_SUCCESS, payload: {orderData}});
-
 export const retrieveOrder = extOrderId => {
 
     return async dispatch => {
@@ -59,7 +57,7 @@ export const createOrder = paymentDataFromGooglePay => {
 
             const totalPrice = state.cart.totalPrice + state.suppliers.current.pricePerUnit * state.cart.units;
             const totalAmount = parseFloat(totalPrice).toFixed(2).toString().replace('.', '');
-            const description = `${state.shipping.items.firstName.value} ${state.shipping.items.lastName.value} ${paymentMethodData.description}`;
+            const description = `${paymentMethodData.description}`;
             const products = state.products.items.reduce((acc, p) => {
                 if (p.inCart > 0) {
                     acc.push({
@@ -70,8 +68,12 @@ export const createOrder = paymentDataFromGooglePay => {
                 }
                 return acc;
             }, []);
-            const buyer = state.shipping.itemIds.reduce((acc, i) => {
-                acc[i] = state.shipping.items[i].value;
+            const buyer = state.buyer.ids.reduce((acc, i) => {
+                acc[i] = state.buyer.data[i].value;
+                return acc;
+            }, {});
+            buyer['buyer.delivery'] = state.buyerDelivery.ids.reduce((acc, i) => {
+                acc[i] = state.buyerDelivery.data[i].value;
                 return acc;
             }, {});
 
