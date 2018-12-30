@@ -34,7 +34,7 @@ const products = (state = initialState, action) => {
             return {
                 ...state,
                 items: state.items.map(i => {
-                    if (i.id === action.payload.item.id) {
+                    if (i._id === action.payload.item._id) {
                         return {
                             ...i,
                             quantity: (i.quantity += action.payload.quantity),

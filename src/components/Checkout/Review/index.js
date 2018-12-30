@@ -27,11 +27,11 @@ const Review = props => {
         <Fragment>
             <List disablePadding>
                 {products.map(
-                    ({ _id, title, inCart, pricePerItem, priceTotal }) => (
+                    ({ _id, name, inCart, pricePerItem, priceTotal }) => (
                         <Fragment key={_id}>
                             <ListItem className={classes.listItem}>
                                 <ListItemText
-                                    primary={title}
+                                    primary={name}
                                     secondary={`${inCart} szt.`}
                                 />
                                 <Typography variant="body2">
