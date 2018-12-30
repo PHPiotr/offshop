@@ -42,6 +42,17 @@ const Review = props => {
                         </Fragment>
                     )
                 )}
+                {props.supplier.pricePerUnit > 0 &&
+                    <Fragment>
+                        <ListItem className={classes.listItem}>
+                            <ListItemText primary="Dostawa" secondary={props.supplier.title}/>
+                            <Typography variant="body2">
+                                {`${props.deliveryPrice} zł`}
+                            </Typography>
+                        </ListItem>
+                        <Divider/>
+                    </Fragment>
+                }
                 <ListItem className={classes.listItem}>
                     <ListItemText primary="Do zapłaty" />
                     <Typography variant="subtitle1" className={classes.total}>
@@ -98,6 +109,9 @@ const mapStateToProps = state => ({
                   state.suppliers.current.pricePerUnit * state.cart.units
           ).toFixed(2)
         : '0.00',
+    supplier: state.suppliers.current,
+    totalUnits: state.cart.units,
+    deliveryPrice: parseFloat(state.suppliers.current.pricePerUnit * state.cart.units).toFixed(2),
 });
 
 Review.propTypes = {
