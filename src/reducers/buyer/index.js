@@ -14,13 +14,13 @@ const initialIds = [
 
 const initialData = {
     customerId: {
-        value: 'guest',
+        value: '',
         required: false,
         type: 'hidden',
         label: 'Id kupującego',
     },
     extCustomerId: {
-        value: 'guest',
+        value: '',
         required: false,
         type: 'hidden',
         label: 'Identyfikator kupującego używany w systemie klienta',

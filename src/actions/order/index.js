@@ -69,10 +69,13 @@ export const createOrder = paymentDataFromGooglePay => {
                 return acc;
             }, []);
             const buyer = state.buyer.ids.reduce((acc, i) => {
-                acc[i] = state.buyer.data[i].value;
+                const {value} = state.buyer.data[i];
+                if (value.trim()) {
+                    acc[i] = value;
+                }
                 return acc;
             }, {});
-            buyer['buyer.delivery'] = state.buyerDelivery.ids.reduce((acc, i) => {
+            const buyerDelivery = state.buyerDelivery.ids.reduce((acc, i) => {
                 acc[i] = state.buyerDelivery.data[i].value;
                 return acc;
             }, {});
@@ -84,6 +87,7 @@ export const createOrder = paymentDataFromGooglePay => {
                 products,
                 description,
                 buyer,
+                buyerDelivery,
             });
             const orderData = await orderResponse.json();
             if (!orderResponse.ok) {

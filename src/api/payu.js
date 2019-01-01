@@ -32,6 +32,7 @@ export const orderCreateRequest = params =>
             currencyCode: process.env.REACT_APP_CURRENCY_CODE,
             notifyUrl: 'https://localhost:3000',
             buyer: params.buyer,
+            buyerDelivery: params.buyerDelivery,
             settings: {
                 invoiceDisabled: true,
             },
