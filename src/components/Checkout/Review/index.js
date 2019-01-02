@@ -132,12 +132,12 @@ const mapStateToProps = state => ({
     totalPrice: state.cart.totalPrice
         ? parseFloat(
               state.cart.totalPrice +
-                  state.suppliers.current.pricePerUnit * state.cart.units
+                  state.suppliers.data[state.suppliers.currentId].pricePerUnit * state.cart.units
           ).toFixed(2)
         : '0.00',
-    supplier: state.suppliers.current,
+    supplier: state.suppliers.data[state.suppliers.currentId],
     totalUnits: state.cart.units,
-    deliveryPrice: parseFloat(state.suppliers.current.pricePerUnit * state.cart.units).toFixed(2),
+    deliveryPrice: parseFloat(state.suppliers.data[state.suppliers.currentId].pricePerUnit * state.cart.units).toFixed(2),
 });
 
 Review.propTypes = {

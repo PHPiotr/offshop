@@ -28,9 +28,9 @@ class Checkout extends Component {
 const mapStateToProps = state => ({
     activeStep: state.checkout.activeStep || 0,
     steps: state.checkout.steps,
-    supplier: state.suppliers.current,
+    supplier: state.suppliers.data[state.suppliers.currentId],
     cart: state.cart,
-    totalPrice: state.cart.totalPrice + state.suppliers.current.pricePerUnit * state.cart.units,
+    totalPrice: state.cart.totalPrice + state.suppliers.data[state.suppliers.currentId].pricePerUnit * state.cart.units,
     products: state.products.items.filter(p => p.inCart > 0),
     shipping: state.shipping,
     validBuyerData: !state.buyer.ids.reduce((acc, i) => {

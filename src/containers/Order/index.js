@@ -22,15 +22,6 @@ class Order extends Component {
             <Fragment>
                 <SubHeader content="Dziękujemy za zakupy"/>
                 <Typography variant="subtitle1">
-                    {`Dziękujemy za zakupy, zamówienie zostanie zrealizowane po zaksięgowaniu wpłaty.`}
-                </Typography>
-                <Typography variant="subtitle1">
-                    {`PRZEJDŹ DO TWOJEGO PANELU KLIENTA, ABY ZWERYFIKOWAĆ STAN ZAMÓWIENIA.`}
-                </Typography>
-                <Typography variant="subtitle1">
-                    {`SKONTAKTUJ SIE Z DZIAŁEM OBSŁUGI KLIENTA, W PRZYPADKU PROBLEMÓW DOTYCZĄCYCH TEJ TRANSAKCJI`}
-                </Typography>
-                <Typography variant="subtitle1">
                     {`Numer Twojego zamówienia: ${this.props.orderData.extOrderId}`}
                 </Typography>
                 <Typography variant="subtitle1">
