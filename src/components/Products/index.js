@@ -37,7 +37,7 @@ function ProductsGridList(props) {
             <GridList cellHeight={`auto`}>
                 {products.map(product => (
                     <Grid item key={product._id} xs={12} sm={6} md={4} lg={3}>
-                        <GridListTile key={product._id} className={classes.gridListTitle}>
+                        <GridListTile className={classes.gridListTitle}>
                             <img
                                 src={require(`../../../public/images/${product.img}`)}
                                 alt={product.name}

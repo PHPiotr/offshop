@@ -1,3 +1,5 @@
+import {normalize} from 'normalizr';
+import * as productSchema from '../../schemas/productsSchema';
 import {getProducts} from "../../api/products";
 
 export const RETRIEVE_PRODUCTS_REQUEST = 'RETRIEVE_PRODUCTS_REQUEST';
@@ -7,7 +9,7 @@ export const RETRIEVE_PRODUCTS_FAILURE = 'RETRIEVE_PRODUCTS_FAILURE';
 export const getProductsIfNeeded = params => {
     return async (dispatch, getState) => {
         const {products} = getState();
-        if (products.items.length) {
+        if (products.ids.length) {
             return;
         }
 
@@ -18,9 +20,10 @@ export const getProductsIfNeeded = params => {
                 throw Error(response.errorMessage);
             }
             const items = await response.json();
-            dispatch({type: RETRIEVE_PRODUCTS_SUCCESS, payload: {items}});
+            const payload = normalize(items, productSchema.productList);
+            dispatch({type: RETRIEVE_PRODUCTS_SUCCESS, payload});
 
-            return Promise.resolve(items);
+            return Promise.resolve(payload);
         } catch (error) {
             dispatch({type: RETRIEVE_PRODUCTS_FAILURE});
             return Promise.reject(error);

@@ -1,6 +1,6 @@
 import React, {Component, Fragment} from 'react';
 import {connect} from 'react-redux';
-import Products from '../../components/Products';
+import ProductsView from '../../components/Products';
 import AddedToCartDialog from '../../components/Dialog/AddedToCart';
 import {addToCart, removeFromCart} from '../../actions/cart';
 import {
@@ -9,7 +9,7 @@ import {
 } from '../../actions/addedToCartDialog';
 import {getProductsIfNeeded} from "../../actions/products";
 
-class Home extends Component {
+class Products extends Component {
     componentDidMount() {
         this.props.handleFetchProducts();
     }
@@ -17,7 +17,7 @@ class Home extends Component {
     render() {
         return (
             <Fragment>
-                <Products {...this.props} />
+                <ProductsView {...this.props} />
                 <AddedToCartDialog
                     open={this.props.addedToCartDialog.open}
                     onContinueShoppingClick={this.props.continueShopping}
@@ -29,12 +29,8 @@ class Home extends Component {
 }
 
 const mapStateToProps = state => ({
-    category: state.categories.items.find(
-        c => c.id === state.categories.currentId
-    ),
-    products: state.products.items.filter(
-        p => p.categoryId === state.categories.currentId
-    ),
+    category: state.categories.items.find(c => c.id === state.categories.currentId),
+    products: state.products.ids.map(i => state.products.data[i]),
     addedToCartDialog: state.addedToCartDialog,
 });
 
@@ -58,7 +54,4 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
     },
 });
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(Home);
+export default connect(mapStateToProps, mapDispatchToProps)(Products);

@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import { Route, Switch } from 'react-router-dom';
 import Navigation from './containers/Navigation';
-import Home from './containers/Home';
+import Products from './containers/Products';
 import Cart from './containers/Cart';
 import Checkout from './containers/Checkout';
 import Order from './containers/Order';
@@ -56,7 +56,7 @@ class App extends Component {
                             alignItems="center"
                         >
                             <Switch>
-                                <Route path="/" exact component={Home} />
+                                <Route path="/" exact component={Products} />
                                 <Route path="/cart" exact component={Cart} />
                                 <Route path="/order" exact component={Order} />
                                 <Route path="/checkout" exact component={Checkout} />

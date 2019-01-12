@@ -31,7 +31,7 @@ const mapStateToProps = state => ({
     supplier: state.suppliers.data[state.suppliers.currentId],
     cart: state.cart,
     totalPrice: state.cart.totalPrice + state.suppliers.data[state.suppliers.currentId].pricePerUnit * state.cart.units,
-    products: state.products.items.filter(p => p.inCart > 0),
+    products: state.cart.ids.map(i => state.products.data[i]),
     shipping: state.shipping,
     validBuyerData: !state.buyer.ids.reduce((acc, i) => {
         const {value, required} = state.buyer.data[i];

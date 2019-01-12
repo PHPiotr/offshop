@@ -104,17 +104,15 @@ const Review = props => {
 };
 
 const mapStateToProps = state => ({
-    products: state.products.items.reduce((accumulator, product) => {
-        if (product.inCart > 0) {
-            const pricePerItem = parseFloat(product.price).toFixed(2);
-            accumulator.push({
-                ...product,
-                pricePerItem,
-                priceTotal: parseFloat(pricePerItem * product.inCart).toFixed(2),
-            });
-        }
-        return accumulator;
-    }, []),
+    products: state.cart.ids.map(i => {
+        const product = state.products.data[i];
+        const pricePerItem = parseFloat(product.price).toFixed(2);
+        return {
+            ...product,
+            pricePerItem,
+            priceTotal: parseFloat(pricePerItem * product.inCart).toFixed(2),
+        };
+    }),
     buyerDetails: state.buyer.ids.reduce((acc, i) => {
         const item = state.buyer.data[i];
         if (item.type !== 'hidden' && item.value.trim()) {

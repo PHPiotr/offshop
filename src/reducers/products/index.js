@@ -1,58 +1,75 @@
 import {ADD_TO_CART, REMOVE_FROM_CART} from '../../actions/cart';
 import {CREATE_ORDER_SUCCESS, RETRIEVE_ORDER_SUCCESS} from "../../actions/order";
 import {RETRIEVE_PRODUCTS_REQUEST, RETRIEVE_PRODUCTS_SUCCESS, RETRIEVE_PRODUCTS_FAILURE} from "../../actions/products";
+import {combineReducers} from "redux";
 
-export const initialState = {
-    isFetching: false,
-    error: null,
-    items: [],
-};
+const initialData = {};
+const initialIds = [];
+const initialIsFetching = false;
+const initialError = null;
 
-const products = (state = initialState, action) => {
-    switch (action.type) {
-        case RETRIEVE_PRODUCTS_REQUEST:
-            return {...state, isFetching: true, error: null};
+const ids = (state = initialIds, {type, payload}) => {
+    switch(type) {
         case RETRIEVE_PRODUCTS_SUCCESS:
-            return {...state, isFetching: false, items: action.payload.items, error: null};
-        case RETRIEVE_PRODUCTS_FAILURE:
-            return {...state, isFetching: false, error: action.payload.error};
-        case ADD_TO_CART:
-            return {
+            return [
                 ...state,
-                items: state.items.map(item => {
-                    if (item._id === action.payload.item._id) {
-                        return {
-                            ...item,
-                            quantity: (item.quantity -= action.payload.quantity),
-                            inCart: (item.inCart += action.payload.quantity),
-                        };
-                    }
-                    return item;
-                }),
-            };
-        case REMOVE_FROM_CART:
-            return {
-                ...state,
-                items: state.items.map(i => {
-                    if (i._id === action.payload.item._id) {
-                        return {
-                            ...i,
-                            quantity: (i.quantity += action.payload.quantity),
-                            inCart: (i.inCart -= action.payload.quantity),
-                        };
-                    }
-                    return i;
-                }),
-            };
-        case RETRIEVE_ORDER_SUCCESS:
-        case CREATE_ORDER_SUCCESS:
-            return {
-                ...state,
-                items: state.items.map(i => ({...i, inCart: 0})),
-            };
+                ...payload.result,
+            ];
         default:
             return state;
     }
 };
+
+const data = (state = initialData, {type, payload}) => {
+    switch(type) {
+        case RETRIEVE_PRODUCTS_SUCCESS:
+            return {
+                ...state,
+                ...payload.entities.products,
+            };
+        case ADD_TO_CART:
+            return {
+                ...state,
+                [payload.item._id]: {
+                    ...state[payload.item._id],
+                    quantity: (state[payload.item._id].quantity -= payload.quantity),
+                    inCart: (state[payload.item._id].inCart += payload.quantity),
+                },
+            };
+        case REMOVE_FROM_CART:
+            return {
+                ...state,
+                [payload.item._id]: {
+                    ...state[payload.item._id],
+                    quantity: (state[payload.item._id].quantity += payload.quantity),
+                    inCart: (state[payload.item._id].inCart -= payload.quantity),
+                },
+            };
+        case RETRIEVE_ORDER_SUCCESS:
+        case CREATE_ORDER_SUCCESS:
+            return state.map(i => ({...i, inCart: 0}));
+        default:
+            return state;
+    }
+};
+
+const error = (state = initialError, {type, payload}) => {
+    switch(type) {
+        case RETRIEVE_PRODUCTS_REQUEST:
+        case RETRIEVE_PRODUCTS_SUCCESS:
+            return null;
+        case RETRIEVE_PRODUCTS_FAILURE:
+            return payload.error;
+        default:
+            return state;
+    }
+};
+
+const products = combineReducers({
+    ids,
+    data,
+    isFetching: (state = initialIsFetching, {type}) => (type === RETRIEVE_PRODUCTS_REQUEST),
+    error,
+});
 
 export default products;

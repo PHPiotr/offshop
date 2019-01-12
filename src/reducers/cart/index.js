@@ -5,6 +5,7 @@ const initialState = {
     quantity: 0,
     units: 0,
     totalPrice: 0,
+    ids: [],
 };
 
 const cart = (state = initialState, { payload, type }) => {
@@ -15,6 +16,7 @@ const cart = (state = initialState, { payload, type }) => {
                 quantity: (state.quantity += payload.quantity),
                 units: (state.units += payload.item.unitsPerProduct * payload.quantity),
                 totalPrice: (state.totalPrice += payload.item.price * payload.quantity),
+                ids: state.ids.find(i => i === payload.item._id) ? state.ids : [...state.ids, payload.item._id],
             };
         case REMOVE_FROM_CART:
             return {
@@ -22,6 +24,7 @@ const cart = (state = initialState, { payload, type }) => {
                 quantity: (state.quantity -= payload.quantity),
                 units: (state.units -= payload.item.unitsPerProduct * payload.quantity),
                 totalPrice: (state.totalPrice -= payload.item.price * payload.quantity),
+                ids: payload.item.inCart - payload.quantity === 0 ? state.ids.filter(i => i !== payload.item._id) : state.ids,
             };
         case RETRIEVE_ORDER_SUCCESS:
         case CREATE_ORDER_SUCCESS:
