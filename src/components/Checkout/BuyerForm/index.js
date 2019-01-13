@@ -18,7 +18,7 @@ const renderTextField = ({input, label, meta, ...custom}) => (
 const validateRequired = value => typeof value === 'string' && value.trim() ? undefined : 'To pole jest wymagane';
 const validateEmail = value => value && /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(value) ? undefined : 'Niepoprawny email';
 
-let Buyer = props => {
+let BuyerForm = props => {
     return (
         <Form onSubmit={() => null}>
             <Grid container spacing={24}>
@@ -68,16 +68,16 @@ const mapStateToProps = state => ({
     inputs: state.buyer.data,
 });
 
-Buyer = connect(mapStateToProps)(Buyer);
+BuyerForm = connect(mapStateToProps)(BuyerForm);
 
-Buyer = reduxForm({
+BuyerForm = reduxForm({
     form: 'buyer',
     destroyOnUnmount: false,
-})(Buyer);
+})(BuyerForm);
 
-Buyer.propTypes = {
+BuyerForm.propTypes = {
     inputKeys: PropTypes.array.isRequired,
     inputs: PropTypes.object.isRequired,
 };
 
-export default Buyer;
+export default BuyerForm;
