@@ -25,9 +25,9 @@ const configureStore = initialState => {
     createdStore.subscribe(throttle(() => {
         const state = store.getState();
         saveState({
-            //cart: state.cart,
-            //order: {...orderInitialState, data: state.order.data, error: state.order.error},
-            //products: {...state.products},
+            cart: state.cart,
+            order: {...orderInitialState, data: state.order.data, error: state.order.error},
+            products: {...state.products},
         });
     }, 1000));
 

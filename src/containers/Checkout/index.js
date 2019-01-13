@@ -35,18 +35,9 @@ const mapStateToProps = state => ({
     products: state.cart.ids.map(i => state.products.data[i]),
     shipping: state.shipping,
     validBuyerData: isValid('buyer')(state),
-    validBuyerDeliveryData: !state.buyerDelivery.ids.reduce((acc, i) => {
-        const {value, required} = state.buyerDelivery.data[i];
-        if (required && (typeof value !== 'string' || !value.trim())) {
-            acc++;
-        }
-        return acc;
-    }, 0),
+    validBuyerDeliveryData: isValid('buyerDelivery')(state),
     buyer: getFormValues('buyer')(state),
-    buyerDelivery: state.buyerDelivery.ids.reduce((acc, key) => {
-        acc[key] = state.buyerDelivery.data[key].value;
-        return acc;
-    }, {}),
+    buyerDelivery: getFormValues('buyerDelivery')(state),
     orderData: state.order.data,
 });
 

@@ -26,13 +26,13 @@ const cart = (state = initialState, { payload, type }) => {
                 totalPrice: (state.totalPrice -= payload.item.price * payload.quantity),
                 ids: payload.item.inCart - payload.quantity === 0 ? state.ids.filter(i => i !== payload.item._id) : state.ids,
             };
-        case RETRIEVE_ORDER_SUCCESS:
         case CREATE_ORDER_SUCCESS:
             return {
                 ...state,
                 quantity: 0,
                 units: 0,
                 totalPrice: 0,
+                ids: [],
             };
         default:
             return state;

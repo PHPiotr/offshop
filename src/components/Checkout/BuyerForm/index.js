@@ -20,7 +20,7 @@ const validateEmail = value => value && /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}
 
 let BuyerForm = props => {
     return (
-        <Form onSubmit={() => null}>
+        <Form onSubmit={props.onSubmit}>
             <Grid container spacing={24}>
                 {props.inputKeys.reduce((acc, itemId) => {
                     const {label, type, validate} = props.inputs[itemId];
@@ -39,7 +39,7 @@ let BuyerForm = props => {
                                 validateFunctions.push(validateEmail);
                                 break;
                             default:
-                                throw Error('Unknow validation rule');
+                                throw Error('Unknown validation rule');
                         }
                     });
                     acc.push(
@@ -78,6 +78,11 @@ BuyerForm = reduxForm({
 BuyerForm.propTypes = {
     inputKeys: PropTypes.array.isRequired,
     inputs: PropTypes.object.isRequired,
+    onSubmit: PropTypes.func,
+};
+
+BuyerForm.defaultProps = {
+    onSubmit: () => null,
 };
 
 export default BuyerForm;

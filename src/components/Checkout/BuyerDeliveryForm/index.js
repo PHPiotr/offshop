@@ -1,37 +1,67 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
+import {Field, Form, reduxForm} from 'redux-form';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
-import {setBuyerDeliveryInputValue} from "../../../actions/buyerDelivery";
 
-const BuyerDeliveryForm = props => {
-    const {inputKeys, inputs, setInputValue} = props;
+const renderTextField = ({input, label, meta, ...custom}) => (
+    <TextField
+        label={label}
+        error={meta.touched && !!meta.error}
+        helperText={meta.touched && meta.error}
+        {...input}
+        {...custom}
+    />
+);
+
+const validateRequired = value => typeof value === 'string' && value.trim() ? undefined : 'To pole jest wymagane';
+const validateEmail = value => value && /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(value) ? undefined : 'Niepoprawny email';
+
+
+let BuyerDeliveryForm = props => {
 
     return (
-        <Grid container spacing={24}>
-            {inputKeys.reduce((acc, itemId) => {
-                const {required, label, value, type} = inputs[itemId];
-                if (type === 'hidden') {
+        <Form onSubmit={props.onSubmit}>
+            <Grid container spacing={24}>
+                {props.inputKeys.reduce((acc, itemId) => {
+                    const {label, type, validate} = props.inputs[itemId];
+                    if (type === 'hidden') {
+                        return acc;
+                    }
+                    const validateFunctions = [];
+                    let required = false;
+                    validate.forEach(rule => {
+                        switch (rule) {
+                            case 'required':
+                                validateFunctions.push(validateRequired);
+                                required = true;
+                                break;
+                            case 'email':
+                                validateFunctions.push(validateEmail);
+                                break;
+                            default:
+                                throw Error('Unknown validation rule');
+                        }
+                    });
+                    acc.push(
+                        <Grid item xs={12} key={itemId}>
+                            <Field
+                                name={itemId}
+                                component={renderTextField}
+                                label={label}
+                                fullWidth
+                                type={type}
+                                required={required}
+                                validate={validateFunctions}
+                                noValidate
+                            />
+                        </Grid>
+                    );
                     return acc;
-                }
-                acc.push(
-                    <Grid item xs={12} key={itemId}>
-                        <TextField
-                            required={required}
-                            id={itemId}
-                            name={itemId}
-                            label={label}
-                            fullWidth
-                            value={value}
-                            type={type}
-                            onChange={setInputValue}
-                        />
-                    </Grid>
-                );
-                return acc;
-            }, [])}
-        </Grid>
+                }, [])}
+            </Grid>
+        </Form>
     );
 };
 
@@ -40,20 +70,22 @@ const mapStateToProps = state => ({
     inputs: state.buyerDelivery.data,
 });
 
-const mapDispatchToProps = dispatch => ({
-    setInputValue: ({target}) => {
-        const {name, value} = target;
-        dispatch(setBuyerDeliveryInputValue(name, value));
-    },
-});
-
 BuyerDeliveryForm.propTypes = {
     inputKeys: PropTypes.array.isRequired,
     inputs: PropTypes.object.isRequired,
-    setInputValue: PropTypes.func.isRequired,
+    onSubmit: PropTypes.func,
 };
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(BuyerDeliveryForm);
+BuyerDeliveryForm.defaultProps = {
+    onSubmit: () => null,
+};
+
+BuyerDeliveryForm = connect(mapStateToProps)(BuyerDeliveryForm);
+
+BuyerDeliveryForm = reduxForm({
+    form: 'buyerDelivery',
+    destroyOnUnmount: false,
+})(BuyerDeliveryForm);
+
+export default BuyerDeliveryForm;
+

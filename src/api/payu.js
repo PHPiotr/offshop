@@ -27,6 +27,7 @@ export const orderCreateRequest = params =>
             },
             totalAmount: params.totalAmount,
             products: params.products,
+            productsIds: params.productsIds,
             description: params.description,
             merchantPosId: process.env.REACT_APP_GOOGLE_PAY_TOKENIZATION_GATEWAY_MERCHANT_ID,
             currencyCode: process.env.REACT_APP_CURRENCY_CODE,

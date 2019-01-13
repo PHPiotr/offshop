@@ -28,13 +28,13 @@ const initialData = {
     email: {
         value: '',
         type: 'text',
-        label: 'Adres email kupującego',
+        label: 'Email kupującego',
         validate: ['required', 'email'],
     },
     phone: {
         value: '',
         type: 'tel',
-        label: 'Numer telefonu',
+        label: 'Telefon kupującego',
         validate: [],
     },
     firstName: {

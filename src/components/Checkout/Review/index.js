@@ -105,6 +105,7 @@ const Review = props => {
 };
 
 let buyerValues;
+let buyerDeliveryValues;
 
 const mapStateToProps = state => ({
     products: state.cart.ids.map(i => {
@@ -127,9 +128,12 @@ const mapStateToProps = state => ({
         return acc;
     }, []),
     buyerDeliveryDetails: state.buyerDelivery.ids.reduce((acc, i) => {
-        const item = state.buyerDelivery.data[i];
-        if (item.type !== 'hidden' && item.value.trim()) {
-            acc.push(item);
+        if (!buyerDeliveryValues) {
+            buyerDeliveryValues = getFormValues('buyerDelivery')(state) || {};
+        }
+        const value = buyerDeliveryValues[i];
+        if (value) {
+            acc.push({label: state.buyerDelivery.data[i].label, value});
         }
         return acc;
     }, []),
