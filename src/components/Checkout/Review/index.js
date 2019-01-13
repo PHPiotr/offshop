@@ -1,5 +1,6 @@
 import React, { Fragment } from 'react';
 import { connect } from 'react-redux';
+import {getFormValues} from 'redux-form';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
@@ -103,6 +104,8 @@ const Review = props => {
     );
 };
 
+let buyerValues;
+
 const mapStateToProps = state => ({
     products: state.cart.ids.map(i => {
         const product = state.products.data[i];
@@ -114,9 +117,12 @@ const mapStateToProps = state => ({
         };
     }),
     buyerDetails: state.buyer.ids.reduce((acc, i) => {
-        const item = state.buyer.data[i];
-        if (item.type !== 'hidden' && item.value.trim()) {
-            acc.push(item);
+        if (!buyerValues) {
+            buyerValues = getFormValues('buyer')(state) || {};
+        }
+        const value = buyerValues[i];
+        if (value) {
+            acc.push({label: state.buyer.data[i].label, value});
         }
         return acc;
     }, []),

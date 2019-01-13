@@ -15,51 +15,51 @@ const initialIds = [
 const initialData = {
     customerId: {
         value: '',
-        required: false,
         type: 'hidden',
         label: 'Id kupującego',
+        validate: [],
     },
     extCustomerId: {
         value: '',
-        required: false,
         type: 'hidden',
         label: 'Identyfikator kupującego używany w systemie klienta',
+        validate: [],
     },
     email: {
         value: '',
-        required: true,
-        type: 'email',
+        type: 'text',
         label: 'Adres email kupującego',
+        validate: ['required', 'email'],
     },
     phone: {
         value: '',
-        required: false,
         type: 'tel',
         label: 'Numer telefonu',
+        validate: [],
     },
     firstName: {
         value: '',
-        required: false,
         type: 'text',
         label: 'Imię kupującego',
+        validate: [],
     },
     lastName: {
         value: '',
-        required: false,
         type: 'text',
         label: 'Nazwisko kupującego',
+        validate: [],
     },
     nin: {
         value: '',
-        required: false,
         type: 'text',
         label: 'PESEL lub zagraniczny ekwiwalent',
+        validate: [],
     },
     language: {
         value: 'pl',
-        required: false,
         type: 'hidden',
         label: '',
+        validate: [],
     },
 };
 

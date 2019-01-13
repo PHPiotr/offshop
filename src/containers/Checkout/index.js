@@ -1,4 +1,5 @@
 import React, {Component, Fragment} from 'react';
+import {getFormValues, isValid} from 'redux-form';
 import CheckoutView from '../../components/Checkout';
 import {connect} from 'react-redux';
 import {stepBack, stepNext, setActiveStep, toggleCreateOrderFailedDialog} from '../../actions/checkout';
@@ -33,13 +34,7 @@ const mapStateToProps = state => ({
     totalPrice: state.cart.totalPrice + state.suppliers.data[state.suppliers.currentId].pricePerUnit * state.cart.units,
     products: state.cart.ids.map(i => state.products.data[i]),
     shipping: state.shipping,
-    validBuyerData: !state.buyer.ids.reduce((acc, i) => {
-        const {value, required} = state.buyer.data[i];
-        if (required && (typeof value !== 'string' || !value.trim())) {
-            acc++;
-        }
-        return acc;
-    }, 0),
+    validBuyerData: isValid('buyer')(state),
     validBuyerDeliveryData: !state.buyerDelivery.ids.reduce((acc, i) => {
         const {value, required} = state.buyerDelivery.data[i];
         if (required && (typeof value !== 'string' || !value.trim())) {
@@ -47,10 +42,7 @@ const mapStateToProps = state => ({
         }
         return acc;
     }, 0),
-    buyer: state.buyer.ids.reduce((acc, key) => {
-        acc[key] = state.buyer.data[key].value;
-        return acc;
-    }, {}),
+    buyer: getFormValues('buyer')(state),
     buyerDelivery: state.buyerDelivery.ids.reduce((acc, key) => {
         acc[key] = state.buyerDelivery.data[key].value;
         return acc;

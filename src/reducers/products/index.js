@@ -1,5 +1,4 @@
 import {ADD_TO_CART, REMOVE_FROM_CART} from '../../actions/cart';
-import {CREATE_ORDER_SUCCESS, RETRIEVE_ORDER_SUCCESS} from "../../actions/order";
 import {RETRIEVE_PRODUCTS_REQUEST, RETRIEVE_PRODUCTS_SUCCESS, RETRIEVE_PRODUCTS_FAILURE} from "../../actions/products";
 import {combineReducers} from "redux";
 
@@ -45,9 +44,6 @@ const data = (state = initialData, {type, payload}) => {
                     inCart: (state[payload.item._id].inCart -= payload.quantity),
                 },
             };
-        case RETRIEVE_ORDER_SUCCESS:
-        case CREATE_ORDER_SUCCESS:
-            return state.map(i => ({...i, inCart: 0}));
         default:
             return state;
     }
