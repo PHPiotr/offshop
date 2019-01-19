@@ -10,6 +10,7 @@
     "bfj": "6.1.1",
     "chalk": "2.4.1",
     "classnames": "^2.2.6",
+    "cypress": "^3.1.4",
     "dotenv": "6.0.0",
     "dotenv-expand": "4.2.0",
     "eslint-plugin-react-hooks": "0.0.0",
