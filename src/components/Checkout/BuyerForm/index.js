@@ -76,12 +76,14 @@ BuyerForm = reduxForm({
 })(BuyerForm);
 
 BuyerForm.propTypes = {
-    inputKeys: PropTypes.array.isRequired,
-    inputs: PropTypes.object.isRequired,
+    inputKeys: PropTypes.array,
+    inputs: PropTypes.object,
     onSubmit: PropTypes.func,
 };
 
 BuyerForm.defaultProps = {
+    inputKeys: [],
+    inputs: {},
     onSubmit: () => null,
 };
 

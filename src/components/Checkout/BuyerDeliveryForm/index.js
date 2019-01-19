@@ -71,12 +71,14 @@ const mapStateToProps = state => ({
 });
 
 BuyerDeliveryForm.propTypes = {
-    inputKeys: PropTypes.array.isRequired,
-    inputs: PropTypes.object.isRequired,
+    inputKeys: PropTypes.array,
+    inputs: PropTypes.object,
     onSubmit: PropTypes.func,
 };
 
 BuyerDeliveryForm.defaultProps = {
+    inputKeys: [],
+    inputs: {},
     onSubmit: () => null,
 };
 
