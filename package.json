@@ -42,7 +42,8 @@
     "build": "node scripts/build.js",
     "test": "node scripts/test.js",
     "format": "pretty-quick",
-    "cypress": "cypress open"
+    "cypress": "cypress open",
+    "cypress:all": "cypress run"
   },
   "eslintConfig": {
     "extends": "react-app",
