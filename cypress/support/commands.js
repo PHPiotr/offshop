@@ -23,3 +23,10 @@
 //
 // -- This is will overwrite an existing command --
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
+
+Cypress.Commands.add('seedProductsAndVisit', (seedData = 'fixture:products') => {
+    cy.server();
+    cy.route('GET', '/products', seedData).as('loadProducts');
+    cy.visit('/');
+    cy.wait('@loadProducts');
+});
