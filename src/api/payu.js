@@ -1,3 +1,5 @@
+import {fetch} from 'whatwg-fetch';
+
 export const authorize = () =>
     fetch(`${process.env.REACT_APP_API_HOST}/authorize`, {
         method: 'POST',

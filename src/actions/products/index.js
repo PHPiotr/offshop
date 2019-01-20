@@ -25,7 +25,7 @@ export const getProductsIfNeeded = params => {
 
             return Promise.resolve(payload);
         } catch (error) {
-            dispatch({type: RETRIEVE_PRODUCTS_FAILURE});
+            dispatch({type: RETRIEVE_PRODUCTS_FAILURE, payload: {error}});
             return Promise.reject(error);
         }
     };
