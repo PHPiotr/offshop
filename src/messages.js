@@ -1,7 +1,7 @@
 export default {
     'en-GB': {
         products: {
-            product_added_to_cart: 'Product has been added to cart.',
+            product_added_to_cart: 'Product has been added to the cart.',
             continue_shopping: 'Continue shopping',
             go_to_cart: 'Go to cart',
         },
