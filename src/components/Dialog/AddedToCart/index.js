@@ -6,11 +6,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import PropTypes from 'prop-types';
-import {
-    ADDED_TO_BASKET_DIALOG_TITLE,
-    CONTINUE_SHOPPING_BUTTON_LABEL,
-    GO_TO_BASKET_BUTTON_LABEL,
-} from '../../../constants/pl/addedToCartDialog';
+import {FormattedMessage} from "react-intl";
 
 const AddedToCart = props => (
     <Dialog
@@ -19,7 +15,7 @@ const AddedToCart = props => (
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
     >
-        <DialogTitle id="alert-dialog-title">{props.title}</DialogTitle>
+        <DialogTitle id="alert-dialog-title"><FormattedMessage id="products.product_added_to_cart"/></DialogTitle>
         {props.content && (
             <DialogContent>
                 <DialogContentText id="alert-dialog-description">
@@ -29,10 +25,10 @@ const AddedToCart = props => (
         )}
         <DialogActions>
             <Button onClick={props.onContinueShoppingClick} color="primary">
-                {props.continueShoppingButtonLabel}
+                <FormattedMessage id="products.continue_shopping"/>
             </Button>
             <Button onClick={props.onGoToCartClick} color="primary">
-                {props.goToCartButtonLabel}
+                <FormattedMessage id="products.go_to_cart"/>
             </Button>
         </DialogActions>
     </Dialog>
@@ -42,16 +38,10 @@ AddedToCart.propTypes = {
     open: PropTypes.bool.isRequired,
     onContinueShoppingClick: PropTypes.func.isRequired,
     onGoToCartClick: PropTypes.func.isRequired,
-    continueShoppingButtonLabel: PropTypes.string,
-    goToCartButtonLabel: PropTypes.string,
-    title: PropTypes.string,
     content: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
 };
 
 AddedToCart.defaultProps = {
-    title: ADDED_TO_BASKET_DIALOG_TITLE,
-    continueShoppingButtonLabel: CONTINUE_SHOPPING_BUTTON_LABEL,
-    goToCartButtonLabel: GO_TO_BASKET_BUTTON_LABEL,
     content: null,
 };
 
