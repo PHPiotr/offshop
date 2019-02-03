@@ -33,13 +33,13 @@ export const orderCreateRequest = params =>
             description: params.description,
             merchantPosId: process.env.REACT_APP_GOOGLE_PAY_TOKENIZATION_GATEWAY_MERCHANT_ID,
             currencyCode: process.env.REACT_APP_CURRENCY_CODE,
-            notifyUrl: 'https://localhost:3000',
+            notifyUrl: `${process.env.REACT_APP_API_HOST}${process.env.REACT_APP_PAYU_NOTIFY_PATH}`,
             buyer: params.buyer,
             buyerDelivery: params.buyerDelivery,
             settings: {
                 invoiceDisabled: true,
             },
-            continueUrl: `https://localhost:3000/order`,
+            continueUrl: process.env.REACT_APP_PAYU_CONTINUE_URL,
         }),
         headers: {
             'Content-Type': 'application/json',
