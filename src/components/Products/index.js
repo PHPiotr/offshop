@@ -39,7 +39,7 @@ function ProductsGridList(props) {
                     <Grid item key={product._id} xs={12} sm={6} md={4} lg={3}>
                         <GridListTile className={classes.gridListTitle}>
                             <img
-                                src={require(`../../../public/images/${product.img}`)}
+                                src={`${process.env.REACT_APP_API_HOST}/images/products/${product.img}`}
                                 alt={product.name}
                                 className={classes.image}
                             />
