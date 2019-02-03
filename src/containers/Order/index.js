@@ -1,31 +1,32 @@
 import React, {Component, Fragment} from 'react';
 import {connect} from "react-redux";
-import {retrieveOrder} from "../../actions/order";
 import Typography from "@material-ui/core/Typography";
 import SubHeader from "../../components/SubHeader";
+
 class Order extends Component {
+
     componentDidMount() {
-        const {extOrderId} = this.props.orderData;
-        if (!extOrderId) {
+        if (!this.props.orderData.extOrderId) {
             this.props.redirectToHome();
-            return;
         }
-        this.props.retrieveOrder(extOrderId);
     }
 
     render() {
-        if (!this.props.orderData.extOrderId) {
+
+        const {extOrderId} = this.props.orderData;
+
+        if (!extOrderId) {
             return null;
         }
 
         return (
             <Fragment>
-                <SubHeader content="Dziękujemy za zakupy"/>
+                <SubHeader content="Dziękujemy za udane zakupy!"/>
                 <Typography variant="subtitle1">
-                    {`Numer Twojego zamówienia: ${this.props.orderData.extOrderId}`}
+                    {`Numer Twojego zamówienia: ${extOrderId}`}
                 </Typography>
                 <Typography variant="subtitle1">
-                    {`Więcej szczegółów znajdziesz w wiadomości, którą wysłaliśmy na Twój adres: ${this.props.orderData.buyer.email}`}
+                    Wszystkie informacje znajdziesz w wiadomości, którą wysłaliśmy na Twój adres e-mail.
                 </Typography>
             </Fragment>
         );
@@ -37,10 +38,6 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
-    retrieveOrder(extOrderId) {
-        dispatch(retrieveOrder(extOrderId))
-            .catch(e => console.log(e));
-    },
     redirectToHome() {
         ownProps.history.replace('/');
     },
