@@ -5,6 +5,7 @@ import CartSummary from '../../components/Cart/Summary';
 import SubHeader from '../../components/SubHeader';
 import { addToCart, removeFromCart } from '../../actions/cart';
 import { setCurrentSupplier } from '../../actions/suppliers';
+import {requireBuyerDeliveryStep, skipBuyerDeliveryStep} from '../../actions/buyerDelivery';
 
 class Cart extends Component {
     render() {
@@ -40,6 +41,13 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
     },
     setCurrentSupplier(supplier) {
         dispatch(setCurrentSupplier(supplier));
+    },
+    toggleBuyerDeliveryStepRequired(required) {
+        if (required) {
+            dispatch(requireBuyerDeliveryStep());
+        } else {
+            dispatch(skipBuyerDeliveryStep());
+        }
     },
     checkout() {
         ownProps.history.push('/checkout');
