@@ -2,6 +2,7 @@ import React, {Component, Fragment} from 'react';
 import {connect} from "react-redux";
 import Typography from "@material-ui/core/Typography";
 import SubHeader from "../../components/SubHeader";
+import {FormattedMessage} from 'react-intl';
 
 class Order extends Component {
 
@@ -21,12 +22,12 @@ class Order extends Component {
 
         return (
             <Fragment>
-                <SubHeader content="Dziękujemy za udane zakupy!"/>
+                <SubHeader content={<FormattedMessage id="order.thanks" />}/>
                 <Typography variant="title">
-                    {`Numer Twojego zamówienia: ${extOrderId}`}
+                    <FormattedMessage id="order.number" values={{extOrderId: extOrderId}} />
                 </Typography>
                 <Typography variant="subheading">
-                    Wszystkie informacje znajdziesz w wiadomości, którą wysłaliśmy na Twój adres e-mail.
+                    <FormattedMessage id="order.info" />
                 </Typography>
             </Fragment>
         );

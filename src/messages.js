@@ -9,7 +9,10 @@ export default {
             notification: {
                 completed: 'Order has been completed',
                 canceled: 'Order has been canceled',
-            }
+            },
+            thanks: 'Thanks for shopping!',
+            number: 'Number of your order: {extOrderId}',
+            info: 'You will find all relevant information in an e-mail message.',
         },
     },
     'pl-PL': {
@@ -22,7 +25,10 @@ export default {
             notification: {
                 completed: 'Zamówienie zostało zaakceptowane',
                 canceled: 'Zamówienie zostało anulowane',
-            }
+            },
+            thanks: 'Dziękujemy za udane zakupy!',
+            number: 'Numer Twojego zamówienia: {extOrderId}',
+            info: 'Wszystkie informacje znajdziesz w wiadomości, którą wysłaliśmy na Twój adres e-mail.',
         },
     },
 };
