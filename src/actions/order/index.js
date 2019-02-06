@@ -69,6 +69,10 @@ export const createOrder = paymentDataFromGooglePay => {
                 return acc;
             }, {});
 
+            const buyer =  getFormValues('buyer')(state);
+            buyer.delivery = getFormValues('buyerDelivery')(state);
+            buyer.delivery.countryCode = 'PL';
+
             const orderResponse = await orderCreateRequest({
                 accessToken: access_token,
                 authorizationCode,
@@ -76,8 +80,7 @@ export const createOrder = paymentDataFromGooglePay => {
                 productsIds: state.cart.ids,
                 products,
                 description: paymentMethodData.description,
-                buyer: getFormValues('buyer')(state),
-                buyerDelivery: getFormValues('buyerDelivery')(state),
+                buyer,
             });
             const orderData = await orderResponse.json();
             if (!orderResponse.ok) {
