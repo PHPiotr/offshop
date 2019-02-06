@@ -22,10 +22,10 @@ class Order extends Component {
         return (
             <Fragment>
                 <SubHeader content="Dziękujemy za udane zakupy!"/>
-                <Typography variant="subtitle1">
+                <Typography variant="title">
                     {`Numer Twojego zamówienia: ${extOrderId}`}
                 </Typography>
-                <Typography variant="subtitle1">
+                <Typography variant="subheading">
                     Wszystkie informacje znajdziesz w wiadomości, którą wysłaliśmy na Twój adres e-mail.
                 </Typography>
             </Fragment>
