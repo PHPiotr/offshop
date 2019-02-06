@@ -79,7 +79,7 @@ export const createOrder = paymentDataFromGooglePay => {
                 totalAmount,
                 productsIds: state.cart.ids,
                 products,
-                description: paymentMethodData.description,
+                description: 'OFFSHOP - transakcja',
                 buyer,
             });
             const orderData = await orderResponse.json();
