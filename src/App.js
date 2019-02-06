@@ -12,6 +12,7 @@ import Typography from '@material-ui/core/Typography';
 import classNames from 'classnames';
 import Grid from '@material-ui/core/Grid';
 import { hot } from 'react-hot-loader';
+import Notification from './containers/Notification';
 
 const styles = theme => ({
     root: {
@@ -75,6 +76,7 @@ class App extends Component {
                         Stworzone z miłości do żony
                     </Typography>
                 </footer>
+                <Notification/>
             </Fragment>
         );
     }
