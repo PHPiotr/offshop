@@ -2,7 +2,8 @@ import React, {Component, Fragment} from 'react';
 import {connect} from "react-redux";
 import Typography from "@material-ui/core/Typography";
 import SubHeader from "../../components/SubHeader";
-import {FormattedMessage} from 'react-intl';
+import {injectIntl, FormattedMessage} from 'react-intl';
+import Grid from "@material-ui/core/Grid";
 
 class Order extends Component {
 
@@ -22,13 +23,17 @@ class Order extends Component {
 
         return (
             <Fragment>
-                <SubHeader content={<FormattedMessage id="order.thanks" />}/>
-                <Typography variant="title">
-                    <FormattedMessage id="order.number" values={{extOrderId: extOrderId}} />
-                </Typography>
-                <Typography variant="subheading">
-                    <FormattedMessage id="order.info" />
-                </Typography>
+                <SubHeader content={this.props.intl.formatMessage({id: 'order.thanks'})}/>
+                <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
+                    <Typography variant="subheading">
+                        <FormattedMessage id="order.number" values={{extOrderId: extOrderId}}/>
+                    </Typography>
+                </Grid>
+                <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
+                    <Typography variant="subheading">
+                        <FormattedMessage id="order.info"/>
+                    </Typography>
+                </Grid>
             </Fragment>
         );
     }
@@ -44,4 +49,4 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(Order);
+export default connect(mapStateToProps, mapDispatchToProps)(injectIntl(Order));
