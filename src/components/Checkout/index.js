@@ -36,8 +36,8 @@ const styles = theme => ({
     },
 });
 
-const getStepContent = activeStep => {
-    switch (activeStep) {
+const getStepContent = activeStepId => {
+    switch (activeStepId) {
         case 0:
         default:
             return <BuyerForm/>;
@@ -49,29 +49,33 @@ const getStepContent = activeStep => {
 };
 
 const Checkout = props => {
-    const {classes, activeStep, steps, products} = props;
+    const {classes, activeStepId, stepsIds, steps, products} = props;
 
-    const canProceed = activeStep === 0 ? props.validBuyerData : props.validBuyerDeliveryData;
+    const activeStepValue = steps[activeStepId].value;
+    let canProceed = false;
+    if (activeStepValue === 'buyer') {
+        canProceed = props.validBuyerData;
+    } else if (activeStepValue === 'buyerDelivery') {
+        canProceed = props.validBuyerData && props.validBuyerDeliveryData;
+    }
 
     return (
         <Paper className={classes.paper}>
-            <Stepper activeStep={activeStep} className={classes.stepper}>
-                {steps.map(label => (
-                    <Step key={label}>
-                        <StepLabel>{label}</StepLabel>
+            <Stepper activeStep={activeStepId} className={classes.stepper}>
+                {stepsIds.map(id => (
+                    <Step key={id}>
+                        <StepLabel>{steps[id].label}</StepLabel>
                     </Step>
                 ))}
             </Stepper>
             <Fragment>
                 <Typography variant="h6" gutterBottom>
-                    {steps[activeStep]}
+                    {steps[activeStepId].label}
                 </Typography>
-                {getStepContent(props.activeStep)}
+                {getStepContent(activeStepId)}
                 <div className={classes.buttons}>
-                    {activeStep !== 0 && (
-                        <Button onClick={props.handleBack} className={classes.button}>Wróć</Button>
-                    )}
-                    {activeStep < steps.length - 1 && (
+                    <Button onClick={activeStepId === stepsIds[0] ? props.redirectToCart : props.handleBack} className={classes.button}>Wróć</Button>
+                    {activeStepId != stepsIds[stepsIds.length - 1] && (
                         <Button
                             variant="contained"
                             color="primary"
@@ -87,7 +91,7 @@ const Checkout = props => {
                         className={classes.button}
                         style={{
                             display:
-                                activeStep === steps.length - 1 &&
+                                activeStepId === stepsIds[stepsIds.length - 1] &&
                                 props.validBuyerData &&
                                 props.validBuyerDeliveryData &&
                                 products.length > 0
@@ -103,10 +107,12 @@ const Checkout = props => {
 
 Checkout.propTypes = {
     classes: PropTypes.object.isRequired,
-    activeStep: PropTypes.number.isRequired,
-    steps: PropTypes.array.isRequired,
+    activeStepId: PropTypes.number.isRequired,
+    steps: PropTypes.object.isRequired,
+    stepsIds: PropTypes.array.isRequired,
     handleBack: PropTypes.func.isRequired,
     handleNext: PropTypes.func.isRequired,
+    redirectToCart: PropTypes.func.isRequired,
 };
 
 export default withStyles(styles)(Checkout);

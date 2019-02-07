@@ -1,32 +1,39 @@
 import React, {Component, Fragment} from 'react';
 import {connect} from "react-redux";
-import {retrieveOrder} from "../../actions/order";
 import Typography from "@material-ui/core/Typography";
 import SubHeader from "../../components/SubHeader";
+import {injectIntl, FormattedMessage} from 'react-intl';
+import Grid from "@material-ui/core/Grid";
+
 class Order extends Component {
+
     componentDidMount() {
-        const {extOrderId} = this.props.orderData;
-        if (!extOrderId) {
+        if (!this.props.orderData.extOrderId) {
             this.props.redirectToHome();
-            return;
         }
-        this.props.retrieveOrder(extOrderId);
     }
 
     render() {
-        if (!this.props.orderData.extOrderId) {
+
+        const {extOrderId} = this.props.orderData;
+
+        if (!extOrderId) {
             return null;
         }
 
         return (
             <Fragment>
-                <SubHeader content="Dziękujemy za zakupy"/>
-                <Typography variant="subtitle1">
-                    {`Numer Twojego zamówienia: ${this.props.orderData.extOrderId}`}
-                </Typography>
-                <Typography variant="subtitle1">
-                    {`Więcej szczegółów znajdziesz w wiadomości, którą wysłaliśmy na Twój adres: ${this.props.orderData.buyer.email}`}
-                </Typography>
+                <SubHeader content={this.props.intl.formatMessage({id: 'order.thanks'})}/>
+                <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
+                    <Typography variant="subheading">
+                        <FormattedMessage id="order.number" values={{extOrderId: extOrderId}}/>
+                    </Typography>
+                </Grid>
+                <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
+                    <Typography variant="subheading">
+                        <FormattedMessage id="order.info"/>
+                    </Typography>
+                </Grid>
             </Fragment>
         );
     }
@@ -37,13 +44,9 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
-    retrieveOrder(extOrderId) {
-        dispatch(retrieveOrder(extOrderId))
-            .catch(e => console.log(e));
-    },
     redirectToHome() {
         ownProps.history.replace('/');
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(Order);
+export default connect(mapStateToProps, mapDispatchToProps)(injectIntl(Order));

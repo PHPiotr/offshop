@@ -2,7 +2,7 @@ import React, {Component, Fragment} from 'react';
 import {getFormValues, isValid} from 'redux-form';
 import CheckoutView from '../../components/Checkout';
 import {connect} from 'react-redux';
-import {stepBack, stepNext, setActiveStep, toggleCreateOrderFailedDialog} from '../../actions/checkout';
+import {stepBack, stepNext, setActiveStepId, toggleCreateOrderFailedDialog} from '../../actions/checkout';
 import {createOrder} from '../../actions/order';
 import SubHeader from '../../components/SubHeader';
 import OrderCreateFailedDialog from '../../components/Checkout/OrderCreateFailedDialog';
@@ -27,7 +27,8 @@ class Checkout extends Component {
 }
 
 const mapStateToProps = state => ({
-    activeStep: state.checkout.activeStep || 0,
+    activeStepId: state.checkout.activeStepId || 0,
+    stepsIds: state.checkout.stepsIds,
     steps: state.checkout.steps,
     supplier: state.suppliers.data[state.suppliers.currentId],
     cart: state.cart,
@@ -48,8 +49,8 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
     handleBack() {
         dispatch(stepBack());
     },
-    handleRestoreActiveStep(activeStep) {
-        dispatch(setActiveStep(activeStep));
+    handleRestoreActiveStepId(activeStepId) {
+        dispatch(setActiveStepId(activeStepId));
     },
     redirectToCart() {
         ownProps.history.replace('/cart');
@@ -61,7 +62,7 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
             if (redirectUri) {
                 window.location.href = redirectUri;
             } else {
-                dispatch(setActiveStep(0));
+                dispatch(setActiveStepId(0));
                 ownProps.history.replace('/order');
             }
         } catch (orderError) {

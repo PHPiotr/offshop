@@ -1,8 +1,8 @@
-import React, { Fragment } from 'react';
-import { connect } from 'react-redux';
+import React, {Fragment} from 'react';
+import {connect} from 'react-redux';
 import {getFormValues} from 'redux-form';
 import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
+import {withStyles} from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -23,13 +23,13 @@ const styles = theme => ({
 });
 
 const Review = props => {
-    const { classes, products, buyerDetails, buyerDeliveryDetails, totalPrice, currency } = props;
+    const {classes, products, buyerDetails, buyerDeliveryDetails, totalPrice, currency} = props;
 
     return (
         <Fragment>
             <List disablePadding>
                 {products.map(
-                    ({ _id, name, inCart, pricePerItem, priceTotal }) => (
+                    ({_id, name, inCart, pricePerItem, priceTotal}) => (
                         <Fragment key={_id}>
                             <ListItem className={classes.listItem}>
                                 <ListItemText
@@ -40,28 +40,26 @@ const Review = props => {
                                     {`${pricePerItem} x ${inCart} = ${priceTotal} ${currency}`}
                                 </Typography>
                             </ListItem>
-                            <Divider />
+                            <Divider/>
                         </Fragment>
                     )
                 )}
-                {props.supplier.pricePerUnit > 0 &&
-                    <Fragment>
-                        <ListItem className={classes.listItem}>
-                            <ListItemText primary="Dostawa" secondary={props.supplier.title}/>
-                            <Typography variant="body2">
-                                {`${props.deliveryPrice} zł`}
-                            </Typography>
-                        </ListItem>
-                        <Divider/>
-                    </Fragment>
-                }
+                <Fragment>
+                    <ListItem className={classes.listItem}>
+                        <ListItemText primary="Dostawa" secondary={props.supplier.title}/>
+                        <Typography variant="body2">
+                            {`${props.deliveryPrice} zł`}
+                        </Typography>
+                    </ListItem>
+                    <Divider/>
+                </Fragment>
                 <ListItem className={classes.listItem}>
-                    <ListItemText primary="Do zapłaty" />
+                    <ListItemText primary="Do zapłaty"/>
                     <Typography variant="subtitle1" className={classes.total}>
                         {`${totalPrice} ${currency}`}
                     </Typography>
                 </ListItem>
-                <Divider />
+                <Divider/>
             </List>
 
             <Grid container spacing={16}>
@@ -70,7 +68,7 @@ const Review = props => {
                         Dane kupującego
                     </Typography>
                     <Grid container>
-                        {buyerDetails.map(({ label, value }) => (
+                        {buyerDetails.map(({label, value}) => (
                             <Fragment key={label}>
                                 <Grid item xs={6}>
                                     <Typography gutterBottom>{label}</Typography>
@@ -82,23 +80,25 @@ const Review = props => {
                         ))}
                     </Grid>
                 </Grid>
-                <Grid item container direction="column" xs={12} sm={6}>
-                    <Typography variant="h6" gutterBottom className={classes.title}>
-                        Dane do wysyłki
-                    </Typography>
-                    <Grid container>
-                        {buyerDeliveryDetails.map(({ label, value }) => (
-                            <Fragment key={label}>
-                                <Grid item xs={6}>
-                                    <Typography gutterBottom>{label}</Typography>
-                                </Grid>
-                                <Grid item xs={6}>
-                                    <Typography gutterBottom>{value}</Typography>
-                                </Grid>
-                            </Fragment>
-                        ))}
+                {props.supplier.pricePerUnit > 0 && (
+                    <Grid item container direction="column" xs={12} sm={6}>
+                        <Typography variant="h6" gutterBottom className={classes.title}>
+                            Dane do wysyłki
+                        </Typography>
+                        <Grid container>
+                            {buyerDeliveryDetails.map(({label, value}) => (
+                                <Fragment key={label}>
+                                    <Grid item xs={6}>
+                                        <Typography gutterBottom>{label}</Typography>
+                                    </Grid>
+                                    <Grid item xs={6}>
+                                        <Typography gutterBottom>{value}</Typography>
+                                    </Grid>
+                                </Fragment>
+                            ))}
+                        </Grid>
                     </Grid>
-                </Grid>
+                )}
             </Grid>
         </Fragment>
     );
@@ -139,9 +139,9 @@ const mapStateToProps = state => ({
     }, []),
     totalPrice: state.cart.totalPrice
         ? parseFloat(
-              state.cart.totalPrice +
-                  state.suppliers.data[state.suppliers.currentId].pricePerUnit * state.cart.units
-          ).toFixed(2)
+            state.cart.totalPrice +
+            state.suppliers.data[state.suppliers.currentId].pricePerUnit * state.cart.units
+        ).toFixed(2)
         : '0.00',
     supplier: state.suppliers.data[state.suppliers.currentId],
     totalUnits: state.cart.units,

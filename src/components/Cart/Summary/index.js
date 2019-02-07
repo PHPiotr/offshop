@@ -29,8 +29,10 @@ const styles = theme => ({
 const CartSummary = props => {
     const { classes, cart, products, suppliers } = props;
 
-    const handleSetCurrentSupplier = e =>
+    const handleSetCurrentSupplier = e => {
         props.setCurrentSupplier(suppliers.find(s => s.id === e.target.value));
+        props.toggleBuyerDeliveryStepRequired(!props.currentSupplier.pricePerUnit);
+    };
 
     return (
         <div className={classes.root}>
