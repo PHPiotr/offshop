@@ -24,7 +24,7 @@ class Cart extends Component {
 
 const mapStateToProps = state => ({
     cart: state.cart,
-    products: state.products.ids.map(i => state.products.data[i]).filter(p => p.inCart > 0),
+    products: state.cart.ids.map(i => state.products.data[i]),
     suppliers: state.suppliers.ids.map(i => state.suppliers.data[i]),
     currentSupplier: state.suppliers.data[state.suppliers.currentId],
 });
