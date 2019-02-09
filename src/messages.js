@@ -1,5 +1,12 @@
 export default {
     'en-GB': {
+        cart: {
+            summary: {
+                choose_delivery: 'Choose delivery option',
+                to_pay: 'Total to pay',
+                order: 'Order',
+            },
+        },
         products: {
             product_added_to_cart: 'Product has been added to the cart.',
             continue_shopping: 'Continue shopping',
@@ -16,6 +23,13 @@ export default {
         },
     },
     'pl-PL': {
+        cart: {
+            summary: {
+                choose_delivery: 'Wybierz sposób dostawy',
+                to_pay: 'Do zapłaty',
+                order: 'Zamów',
+            },
+        },
         products: {
             product_added_to_cart: 'Produkt został dodany do koszyka.',
             continue_shopping: 'Kontynuuj zakupy',
@@ -23,7 +37,7 @@ export default {
         },
         order: {
             notification: {
-                completed: 'Zamówienie zostało zaakceptowane',
+                completed: 'Zamówienie zostało przyjęte do realizacji',
                 canceled: 'Zamówienie zostało anulowane',
             },
             thanks: 'Dziękujemy za udane zakupy!',
