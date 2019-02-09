@@ -1,6 +1,6 @@
-import React, { Fragment } from 'react';
+import React, {Fragment} from 'react';
 import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
+import {withStyles} from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
@@ -33,10 +33,10 @@ const styles = theme => ({
     },
 });
 
-const getItemById = (items, itemId) => items.find(({ _id }) => _id === itemId);
+const getItemById = (items, itemId) => items.find(({_id}) => _id === itemId);
 
 const ProductsInCart = props => {
-    const { classes, products } = props;
+    const {classes, cart, products} = props;
 
     const handleIncrementItemInCart = e =>
         props.incrementItemInCart(getItemById(products, e.currentTarget.id));
@@ -47,61 +47,65 @@ const ProductsInCart = props => {
 
     return (
         <List className={classes.root}>
-            {products.map(p => (
-                <Fragment key={p._id}>
-                    <ListItem key={p._id} alignItems="flex-start">
-                        <ListItemAvatar>
-                            <Avatar src={require(`../../../../public/images/${p.img}`)} alt={p.name}/>
-                        </ListItemAvatar>
-                        <ListItemText
-                            primary={p.name}
-                            secondary={
-                                <React.Fragment>
-                                    <Typography
-                                        component="span"
-                                        className={classes.inline}
-                                        color="textPrimary"
-                                    >
-                                        {`${p.price * p.inCart} zł`}
-                                    </Typography>
-                                    {` (${p.price} zł / szt.)`}
-                                </React.Fragment>
-                            }
-                        />
-                        <ListItemSecondaryAction>
-                            <IconButton
-                                id={p._id}
-                                onClick={handleIncrementItemInCart}
-                                disabled={p.quantity <= 0}
-                            >
-                                <AddShoppingCartIcon />
-                            </IconButton>
-                            <TextField
-                                id={p._id}
-                                className={classes.textField}
-                                value={p.inCart}
-                                helperText={`z ${p.inCart + p.quantity} szt.`}
-                                margin="none"
-                                type="number"
+            {products.map(p => {
+
+                const productInCart = cart.products[p._id];
+                return (
+                    <Fragment key={p._id}>
+                        <ListItem key={p._id} alignItems="flex-start">
+                            <ListItemAvatar>
+                                <Avatar src={require(`../../../../public/images/${p.img}`)} alt={p.name}/>
+                            </ListItemAvatar>
+                            <ListItemText
+                                primary={p.name}
+                                secondary={
+                                    <React.Fragment>
+                                        <Typography
+                                            component="span"
+                                            className={classes.inline}
+                                            color="textPrimary"
+                                        >
+                                            {`${p.price * productInCart.quantity} zł`}
+                                        </Typography>
+                                        {` (${p.price} zł / szt.)`}
+                                    </React.Fragment>
+                                }
                             />
-                            <IconButton
-                                id={p._id}
-                                onClick={handleDecrementItemInCart}
-                                disabled={p.inCart < 2}
-                            >
-                                <RemoveShoppingCartIcon />
-                            </IconButton>
-                            <IconButton
-                                id={p._id}
-                                onClick={handleRemoveItemFromCart}
-                            >
-                                <DeleteIcon />
-                            </IconButton>
-                        </ListItemSecondaryAction>
-                    </ListItem>
-                    <Divider />
-                </Fragment>
-            ))}
+                            <ListItemSecondaryAction>
+                                <IconButton
+                                    id={p._id}
+                                    onClick={handleIncrementItemInCart}
+                                    disabled={p.quantity - productInCart.quantity <= 0}
+                                >
+                                    <AddShoppingCartIcon/>
+                                </IconButton>
+                                <TextField
+                                    id={p._id}
+                                    className={classes.textField}
+                                    value={productInCart.quantity}
+                                    helperText={`z ${p.quantity} szt.`}
+                                    margin="none"
+                                    type="number"
+                                />
+                                <IconButton
+                                    id={p._id}
+                                    onClick={handleDecrementItemInCart}
+                                    disabled={productInCart.quantity < 2}
+                                >
+                                    <RemoveShoppingCartIcon/>
+                                </IconButton>
+                                <IconButton
+                                    id={p._id}
+                                    onClick={handleRemoveItemFromCart}
+                                >
+                                    <DeleteIcon/>
+                                </IconButton>
+                            </ListItemSecondaryAction>
+                        </ListItem>
+                        <Divider/>
+                    </Fragment>
+                )
+            })}
         </List>
     );
 };

@@ -8,6 +8,7 @@ import Typography from '@material-ui/core/Typography';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
+import {FormattedMessage} from "react-intl";
 
 const styles = theme => ({
     root: {
@@ -38,7 +39,7 @@ const CartSummary = props => {
         <div className={classes.root}>
             <div className={classes.section1}>
                 <Typography gutterBottom variant="h6">
-                    Wybierz sposób dostawy
+                    <FormattedMessage id='cart.summary.choose_delivery' />
                 </Typography>
                 <RadioGroup name="position" value={props.currentSupplier.id}>
                     {suppliers.map(({ id, title, pricePerUnit }) => (
@@ -59,13 +60,13 @@ const CartSummary = props => {
                 <Grid container alignItems="center">
                     <Grid item xs>
                         <Typography gutterBottom variant="h6">
-                            Do zapłaty
+                            <FormattedMessage id='cart.summary.to_pay' />
                         </Typography>
                     </Grid>
                     <Grid item align="right">
                         <Typography gutterBottom variant="h6">
                             {`${products.reduce(
-                                (total, p) => p.price * p.inCart + total,
+                                (total, {price, _id}) => price * cart.products[_id].quantity + total,
                                 0
                             ) +
                                 (props.currentSupplier.pricePerUnit > 0
@@ -84,7 +85,7 @@ const CartSummary = props => {
                     variant="contained"
                     color="primary"
                 >
-                    Zamów
+                    <FormattedMessage id='cart.summary.order' />
                 </Button>
             </div>
         </div>

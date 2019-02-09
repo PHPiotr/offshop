@@ -59,19 +59,22 @@ export const createOrder = paymentDataFromGooglePay => {
             const totalPrice = state.cart.totalPrice + state.suppliers.data[state.suppliers.currentId].pricePerUnit * state.cart.units;
             const totalAmount = parseFloat(totalPrice).toFixed(2).toString().replace('.', '');
             const products = state.cart.ids.reduce((acc, _id) => {
-                const {name, price, inCart} = state.products.data[_id];
+                const {name, price} = state.products.data[_id];
                 acc[_id] = {
                     _id,
                     name,
                     unitPrice: parseFloat(price).toFixed(2).toString().replace('.', ''),
-                    quantity: inCart.toString(),
+                    quantity: state.cart.products[_id].quantity.toString(),
                 };
                 return acc;
             }, {});
 
             const buyer =  getFormValues('buyer')(state);
-            buyer.delivery = getFormValues('buyerDelivery')(state);
-            buyer.delivery.countryCode = 'PL';
+            const delivery = getFormValues('buyerDelivery')(state);
+            if (delivery) {
+                buyer.delivery = delivery;
+                buyer.delivery.countryCode = 'PL';
+            }
 
             const orderResponse = await orderCreateRequest({
                 accessToken: access_token,

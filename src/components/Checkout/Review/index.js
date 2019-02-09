@@ -23,21 +23,21 @@ const styles = theme => ({
 });
 
 const Review = props => {
-    const {classes, products, buyerDetails, buyerDeliveryDetails, totalPrice, currency} = props;
+    const {classes, products, buyerDetails, buyerDeliveryDetails, totalPrice, currency, cart} = props;
 
     return (
         <Fragment>
             <List disablePadding>
                 {products.map(
-                    ({_id, name, inCart, pricePerItem, priceTotal}) => (
+                    ({_id, name, pricePerItem, priceTotal}) => (
                         <Fragment key={_id}>
                             <ListItem className={classes.listItem}>
                                 <ListItemText
                                     primary={name}
-                                    secondary={`${inCart} szt.`}
+                                    secondary={`${cart.products[_id].quantity} szt.`}
                                 />
                                 <Typography variant="body2">
-                                    {`${pricePerItem} x ${inCart} = ${priceTotal} ${currency}`}
+                                    {`${pricePerItem} x ${cart.products[_id].quantity} = ${priceTotal} ${currency}`}
                                 </Typography>
                             </ListItem>
                             <Divider/>
@@ -114,7 +114,7 @@ const mapStateToProps = state => ({
         return {
             ...product,
             pricePerItem,
-            priceTotal: parseFloat(pricePerItem * product.inCart).toFixed(2),
+            priceTotal: parseFloat(pricePerItem * state.cart.products[i].quantity).toFixed(2),
         };
     }),
     buyerDetails: state.buyer.ids.reduce((acc, i) => {
@@ -137,6 +137,7 @@ const mapStateToProps = state => ({
         }
         return acc;
     }, []),
+    cart: state.cart,
     totalPrice: state.cart.totalPrice
         ? parseFloat(
             state.cart.totalPrice +
