@@ -29,6 +29,7 @@ class Products extends Component {
 }
 
 const mapStateToProps = state => ({
+    cart: state.cart,
     category: state.categories.items.find(c => c.id === state.categories.currentId),
     products: state.products.ids.map(i => state.products.data[i]),
     addedToCartDialog: state.addedToCartDialog,
