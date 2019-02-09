@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import CartProducts from '../../components/Cart/Products';
 import CartSummary from '../../components/Cart/Summary';
 import SubHeader from '../../components/SubHeader';
-import { addToCart, removeFromCart } from '../../actions/cart';
+import { addToCart, decrementInCart, deleteFromCart } from '../../actions/cart';
 import { setCurrentSupplier } from '../../actions/suppliers';
 import {requireBuyerDeliveryStep, skipBuyerDeliveryStep} from '../../actions/buyerDelivery';
 
@@ -34,10 +34,10 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
         dispatch(addToCart(item));
     },
     decrementItemInCart(item) {
-        dispatch(removeFromCart(item));
+        dispatch(decrementInCart(item));
     },
-    removeItemFromCart(item) {
-        dispatch(removeFromCart(item, item.inCart));
+    removeItemFromCart(itemId) {
+        dispatch(deleteFromCart(itemId));
     },
     setCurrentSupplier(supplier) {
         dispatch(setCurrentSupplier(supplier));

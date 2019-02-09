@@ -1,4 +1,4 @@
-import {ADD_TO_CART, REMOVE_FROM_CART} from '../../actions/cart';
+import {ADD_TO_CART, DECREMENT_IN_CART, DELETE_FROM_CART} from '../../actions/cart';
 import {CREATE_ORDER_SUCCESS, RETRIEVE_ORDER_SUCCESS} from "../../actions/order";
 
 const initialState = {
@@ -32,7 +32,7 @@ const cart = (state = initialState, { payload, type }) => {
                     totalPrice: item.totalPrice + payload.item.price * payload.quantity,
                 }}
             };
-        case REMOVE_FROM_CART:
+        case DECREMENT_IN_CART:
 
             item = state.products[payload.item._id] || {
                 quantity: 0,
@@ -51,6 +51,19 @@ const cart = (state = initialState, { payload, type }) => {
                     units: item.units - payload.item.unitsPerProduct * payload.quantity,
                     totalPrice: item.totalPrice + payload.item.price * payload.quantity,
                 }}
+            };
+        case DELETE_FROM_CART:
+
+            const {itemId} = payload;
+            const {quantity, units, totalPrice} = state.products[itemId];
+
+            return {
+                ...state,
+                quantity: (state.quantity -= quantity),
+                units: (state.units -= units),
+                totalPrice: state.totalPrice -= totalPrice,
+                ids: state.ids.filter(id => id !== itemId),
+                products: {...state.products, [itemId]: undefined},
             };
         case CREATE_ORDER_SUCCESS:
             return initialState;

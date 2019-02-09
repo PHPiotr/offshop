@@ -38,7 +38,7 @@ function ProductsGridList(props) {
                 {products.map(product => {
 
                     const productQuantity = product.quantity;
-                    const productInCart = cart.products[product._id] || {};
+                    const productInCart = cart.products[product._id] || {quantity: 0};
                     const canAddToCart = productQuantity - productInCart.quantity > 0;
 
                     return (

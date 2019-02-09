@@ -2,7 +2,7 @@ import React, {Component, Fragment} from 'react';
 import {connect} from 'react-redux';
 import ProductsView from '../../components/Products';
 import AddedToCartDialog from '../../components/Dialog/AddedToCart';
-import {addToCart, removeFromCart} from '../../actions/cart';
+import {addToCart} from '../../actions/cart';
 import {
     openAddedToCartDialog,
     closeAddedToCartDialog,
@@ -42,9 +42,6 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
     addToCart(item, quantity) {
         dispatch(addToCart(item, quantity));
         dispatch(openAddedToCartDialog());
-    },
-    removeFromCart(e, amount, units) {
-        dispatch(removeFromCart(e.currentTarget.id, amount, units));
     },
     goToCart() {
         dispatch(closeAddedToCartDialog());

@@ -43,7 +43,7 @@ const ProductsInCart = props => {
     const handleDecrementItemInCart = e =>
         props.decrementItemInCart(getItemById(products, e.currentTarget.id));
     const handleRemoveItemFromCart = e =>
-        props.removeItemFromCart(getItemById(products, e.currentTarget.id));
+        props.removeItemFromCart(e.currentTarget.id);
 
     return (
         <List className={classes.root}>
