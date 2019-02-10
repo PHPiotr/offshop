@@ -1,5 +1,6 @@
 import {ADD_TO_CART, DECREMENT_IN_CART, DELETE_FROM_CART} from '../../actions/cart';
-import {CREATE_ORDER_SUCCESS, RETRIEVE_ORDER_SUCCESS} from "../../actions/order";
+import {CREATE_ORDER_SUCCESS} from "../../actions/order";
+import {SYNC_QUANTITIES} from '../../actions/products';
 
 const initialState = {
     quantity: 0,
@@ -65,8 +66,46 @@ const cart = (state = initialState, { payload, type }) => {
                 ids: state.ids.filter(id => id !== itemId),
                 products: {...state.products, [itemId]: undefined},
             };
+        case SYNC_QUANTITIES:
+            if (!state.quantity) {
+                return state;
+            }
+            const newState = {...state};
+            payload.productsIds.forEach(id => {
+                if (state.ids.indexOf(id) > -1) {
+                    const {quantity = 0, unitsPerProduct, price} = payload.productsById[id];
+                    const productInCart = newState.products[id];
+                    const productInCartQuantity = productInCart.quantity;
+                    if (productInCartQuantity > quantity) {
+                        const quantitySubtract = productInCartQuantity - quantity;
+                        newState.quantity -= quantitySubtract;
+                        newState.units -= unitsPerProduct * quantitySubtract;
+                        newState.totalPrice -= price * quantitySubtract;
+                        if (quantity) {
+                            newState.products[id] = {
+                                ...productInCart,
+                                quantity: quantity,
+                                units: unitsPerProduct * quantity,
+                                totalPrice: price * quantity,
+                            };
+                        } else {
+                            newState.products[id] = undefined;
+                            newState.ids = newState.ids.filter(i => i !== id);
+                        }
+                    }
+                }
+            });
+
+            return newState;
+
         case CREATE_ORDER_SUCCESS:
-            return initialState;
+            return {
+                quantity: 0,
+                units: 0,
+                totalPrice: 0,
+                ids: [],
+                products: {},
+            };
         default:
             return state;
     }

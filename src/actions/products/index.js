@@ -5,6 +5,7 @@ import {getProducts} from "../../api/products";
 export const RETRIEVE_PRODUCTS_REQUEST = 'RETRIEVE_PRODUCTS_REQUEST';
 export const RETRIEVE_PRODUCTS_SUCCESS = 'RETRIEVE_PRODUCTS_SUCCESS';
 export const RETRIEVE_PRODUCTS_FAILURE = 'RETRIEVE_PRODUCTS_FAILURE';
+export const SYNC_QUANTITIES = 'SYNC_QUANTITIES';
 
 export const getProductsIfNeeded = params => {
     return async (dispatch, getState) => {
@@ -31,4 +32,4 @@ export const getProductsIfNeeded = params => {
     };
 };
 
-export const retrieveProductsSuccess = items => ({type: RETRIEVE_PRODUCTS_SUCCESS, payload: {items}});
+export const syncQuantities = (productsIds, productsById) => ({type: SYNC_QUANTITIES, payload: {productsIds, productsById}});

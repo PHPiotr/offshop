@@ -1,4 +1,9 @@
-import {RETRIEVE_PRODUCTS_REQUEST, RETRIEVE_PRODUCTS_SUCCESS, RETRIEVE_PRODUCTS_FAILURE} from "../../actions/products";
+import {
+    RETRIEVE_PRODUCTS_REQUEST,
+    RETRIEVE_PRODUCTS_SUCCESS,
+    RETRIEVE_PRODUCTS_FAILURE,
+    SYNC_QUANTITIES,
+} from "../../actions/products";
 import {combineReducers} from "redux";
 
 const initialData = {};
@@ -25,6 +30,10 @@ const data = (state = initialData, {type, payload}) => {
                 ...state,
                 ...payload.entities.products,
             };
+        case SYNC_QUANTITIES:
+            const newState = {...state};
+            payload.productsIds.forEach(id => newState[id].quantity = payload.productsById[id].quantity);
+            return newState;
         default:
             return state;
     }
