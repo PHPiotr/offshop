@@ -3,6 +3,7 @@ import {
     RETRIEVE_PRODUCTS_SUCCESS,
     RETRIEVE_PRODUCTS_FAILURE,
     SYNC_QUANTITIES,
+    ON_CREATE_PRODUCT,
 } from "../../actions/products";
 import {combineReducers} from "redux";
 
@@ -18,6 +19,8 @@ const ids = (state = initialIds, {type, payload}) => {
                 ...state,
                 ...payload.result,
             ];
+        case ON_CREATE_PRODUCT:
+            return [payload.product._id, ...state];
         default:
             return state;
     }
@@ -34,6 +37,8 @@ const data = (state = initialData, {type, payload}) => {
             const newState = {...state};
             payload.productsIds.forEach(id => newState[id].quantity = payload.productsById[id].quantity);
             return newState;
+        case ON_CREATE_PRODUCT:
+            state[payload.product._id] = payload.product;
         default:
             return state;
     }
