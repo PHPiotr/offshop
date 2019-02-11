@@ -3,6 +3,7 @@ import {connect} from 'react-redux';
 import {injectIntl} from 'react-intl';
 import io from 'socket.io-client';
 import NotificationBar from '../../components/NotificationBar';
+import {syncQuantities, onCreateProduct} from '../../actions/products';
 
 const socket = io(process.env.REACT_APP_API_HOST);
 
@@ -17,7 +18,6 @@ class Notification extends Component {
     componentDidMount() {
         const that = this;
         socket.on('order', function(orderData) {
-            // TODO: Decrease relevant amounts of products
             if (that.props.orderData.extOrderId === orderData.extOrderId && ['COMPLETED', 'CANCELED'].indexOf(orderData.status) > -1) {
                 const variant = orderData.status === 'COMPLETED' ? 'success' : 'warning';
                 that.setState({
@@ -26,6 +26,12 @@ class Notification extends Component {
                     variant,
                 });
             }
+        });
+        socket.on('quantities', function({productsIds, productsById}) {
+            that.props.handleSyncQuantities(productsIds, productsById);
+        });
+        socket.on('createProduct', function(product) {
+            that.props.handleOnCreateProduct(product);
         });
     }
 
@@ -39,7 +45,12 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-
+    handleSyncQuantities(productsIds, productsById) {
+        dispatch(syncQuantities(productsIds, productsById));
+    },
+    handleOnCreateProduct(product) {
+        dispatch(onCreateProduct(product));
+    }
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(injectIntl(Notification));
