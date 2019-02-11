@@ -43,7 +43,7 @@ const ProductsInCart = props => {
     const handleDecrementItemInCart = e =>
         props.decrementItemInCart(getItemById(products, e.currentTarget.id));
     const handleRemoveItemFromCart = e =>
-        props.removeItemFromCart(getItemById(products, e.currentTarget.id));
+        props.removeItemFromCart(e.currentTarget.id);
 
     return (
         <List className={classes.root}>
@@ -54,7 +54,7 @@ const ProductsInCart = props => {
                     <Fragment key={p._id}>
                         <ListItem key={p._id} alignItems="flex-start">
                             <ListItemAvatar>
-                                <Avatar src={require(`../../../../public/images/${p.img}`)} alt={p.name}/>
+                                <Avatar src={`${process.env.REACT_APP_API_HOST}/images/products/${p.img}`} alt={p.name}/>
                             </ListItemAvatar>
                             <ListItemText
                                 primary={p.name}

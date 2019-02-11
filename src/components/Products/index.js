@@ -25,7 +25,7 @@ const styles = theme => ({
 });
 
 function ProductsGridList(props) {
-    const {classes, products} = props;
+    const {classes, products, cart} = props;
 
     const handleAddToCart = e => {
         props.addToCart(products.find(p => p._id === e.currentTarget.id), 1);
@@ -35,32 +35,39 @@ function ProductsGridList(props) {
         <Fragment>
             <SubHeader content={props.category.title}/>
             <GridList cellHeight={`auto`}>
-                {products.map(product => (
-                    <Grid item key={product._id} xs={12} sm={6} md={4} lg={3}>
-                        <GridListTile className={classes.gridListTitle}>
-                            <img
-                                src={`${process.env.REACT_APP_API_HOST}/images/products/${product.img}`}
-                                alt={product.name}
-                                className={classes.image}
-                            />
-                            <GridListTileBar
-                                className={classes.gridListTileBar}
-                                title={product.name}
-                                subtitle={<span>{product.price} zł</span>}
-                                actionIcon={
-                                    <IconButton
-                                        id={product._id}
-                                        className={classes.iconButton}
-                                        onClick={handleAddToCart}
-                                        style={{display: product.quantity <= 0 ? 'none' : 'block'}}
-                                    >
-                                        <AddShoppingCartIcon/>
-                                    </IconButton>
-                                }
-                            />
-                        </GridListTile>
-                    </Grid>
-                ))}
+                {products.map(product => {
+
+                    const productQuantity = product.quantity;
+                    const productInCart = cart.products[product._id] || {quantity: 0};
+                    const canAddToCart = productQuantity - productInCart.quantity > 0;
+
+                    return (
+                        <Grid item key={product._id} xs={12} sm={6} md={4} lg={3}>
+                            <GridListTile className={classes.gridListTitle}>
+                                <img
+                                    src={`${process.env.REACT_APP_API_HOST}/images/products/${product.img}`}
+                                    alt={product.name}
+                                    className={classes.image}
+                                />
+                                <GridListTileBar
+                                    className={classes.gridListTileBar}
+                                    title={product.name}
+                                    subtitle={<span>{product.price} zł</span>}
+                                    actionIcon={
+                                        <IconButton
+                                            id={product._id}
+                                            className={classes.iconButton}
+                                            onClick={handleAddToCart}
+                                            style={{display: canAddToCart ? 'block' : 'none'}}
+                                        >
+                                            <AddShoppingCartIcon/>
+                                        </IconButton>
+                                    }
+                                />
+                            </GridListTile>
+                        </Grid>
+                    )
+                })}
             </GridList>
         </Fragment>
     );
@@ -70,6 +77,7 @@ ProductsGridList.propTypes = {
     classes: PropTypes.object.isRequired,
     addToCart: PropTypes.func.isRequired,
     products: PropTypes.array.isRequired,
+    cart: PropTypes.object.isRequired,
 };
 
 export default withStyles(styles)(ProductsGridList);
