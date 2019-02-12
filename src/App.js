@@ -32,7 +32,7 @@ const styles = theme => ({
         },
     },
     grid: {
-        padding: `${theme.spacing.unit * 8}px 0`,
+        padding: 0,
     },
     footer: {
         backgroundColor: theme.palette.background.paper,
