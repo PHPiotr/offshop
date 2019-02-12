@@ -30,7 +30,7 @@ class Login extends Component {
             <Fragment>
                 <SubHeader content="Logowanie"/>
                 <Paper className={this.props.classes.paper}>
-                <LoginForm />
+                    <LoginForm />
                 </Paper>
             </Fragment>
         );
