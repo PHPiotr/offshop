@@ -6,11 +6,49 @@ import SubHeader from '../../components/SubHeader';
 import { addToCart, decrementInCart, deleteFromCart } from '../../actions/cart';
 import { setCurrentSupplier } from '../../actions/suppliers';
 import {requireBuyerDeliveryStep, skipBuyerDeliveryStep} from '../../actions/buyerDelivery';
+import Paper from '@material-ui/core/Paper/Paper';
+import withStyles from '@material-ui/core/styles/withStyles';
+import {injectIntl, FormattedMessage} from 'react-intl';
+import Grid from "@material-ui/core/Grid";
+import Typography from "@material-ui/core/Typography";
+
+const styles = theme => ({
+    paper: {
+        marginTop: theme.spacing.unit * 3,
+        marginBottom: theme.spacing.unit * 3,
+        padding: theme.spacing.unit * 2,
+        [theme.breakpoints.up(600 + theme.spacing.unit * 3 * 2)]: {
+            marginTop: 0,
+            marginBottom: 0,
+            padding: theme.spacing.unit * 3,
+        },
+        width: '100%',
+    },
+    buttons: {
+        display: 'flex',
+        justifyContent: 'flex-end',
+    },
+    button: {
+        marginTop: theme.spacing.unit * 3,
+        marginLeft: theme.spacing.unit,
+    },
+});
 
 class Cart extends Component {
     render() {
         if (!this.props.products.length) {
-            return <SubHeader content="Koszyk jest pusty" />;
+            return (
+                <Fragment>
+                    <SubHeader content={this.props.intl.formatMessage({id: 'cart.heading'})}/>
+                    <Paper className={this.props.classes.paper}>
+                        <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
+                            <Typography variant="subheading">
+                                <FormattedMessage id="cart.empty"/>
+                            </Typography>
+                        </Grid>
+                    </Paper>
+                </Fragment>
+            );
         }
         return (
             <Fragment>
@@ -57,4 +95,4 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
 export default connect(
     mapStateToProps,
     mapDispatchToProps
-)(Cart);
+)(injectIntl(withStyles(styles)(Cart)));
