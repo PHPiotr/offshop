@@ -14,3 +14,14 @@ export const getProducts = (params = {}) => {
         },
     });
 };
+
+export const createProduct = (data = {}, accessToken) => {
+    return fetch(`${process.env.REACT_APP_API_HOST}/products`, {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${accessToken}`,
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+    });
+};
