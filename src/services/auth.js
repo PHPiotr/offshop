@@ -4,7 +4,7 @@ const auth0 = new Auth0.WebAuth({
     domain: process.env.REACT_APP_AUTH0_DOMAIN,
     clientID: process.env.REACT_APP_AUTH0_CLIENT_ID,
     redirectUri: process.env.REACT_APP_AUTH0_REDIRECT_URI,
-    audience: process.env.REACT_APP_API_HOST,
+    audience: process.env.REACT_APP_AUTH0_AUDIENCE,
     responseType: process.env.REACT_APP_AUTH0_RESPONSE_TYPE,
     scope: process.env.REACT_APP_AUTH0_SCOPE,
 });
