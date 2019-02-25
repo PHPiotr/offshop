@@ -6,20 +6,22 @@ import withStyles from '@material-ui/core/styles/withStyles';
 const styles = () => ({
     root: {
         cursor: 'pointer',
-        textAlign: 'center',
-        backgroundColor: '#efebeb',
+        textAlign: 'left',
         height: '100%',
         width: '100%',
     },
     error: {
         border: '2px solid #f44336',
     },
+    photoIcon: {
+        fontSize: 50,
+    },
 });
 
 const Placeholder = ({getInputProps, getRootProps, error, touched, classes}) => (
     <div {...getRootProps()} className={`${classes.root} ${error && touched ? classes.error : ''}`}>
         <input {...getInputProps()} />
-        <AddPhotoIcon style={{ fontSize: 50, marginTop: 140 }}/>
+        <AddPhotoIcon className={classes.photoIcon}/>
     </div>
 );
 

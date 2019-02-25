@@ -134,19 +134,9 @@ class ProductForm extends Component {
                     disabled={false}
                     type="submit"
                 >
-                    Dodaj
+                    Dodaj produkt
                 </Button>
             </div>
-
-            <button
-                type="button"
-                className="uk-button uk-button-default uk-button-large clear"
-                disabled={this.props.pristine || this.props.submitting}
-                onClick={this.resetForm}
-                style={{float: "right"}}
-            >
-                Clear
-            </button>
         </Form>
     );
 }

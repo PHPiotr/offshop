@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Fragment} from 'react';
 import PropTypes from 'prop-types';
 import DropZone from 'react-dropzone';
 import ImagePreview from '../ImagePreview';
@@ -8,9 +8,7 @@ import withStyles from '@material-ui/core/styles/withStyles';
 
 const styles = () => ({
     root: {
-        height: '335px',
-        width: '100%',
-        marginBottom: '40px',
+        float: 'left',
     },
     upload: {
         cursor: 'pointer',
@@ -28,7 +26,15 @@ const DropZoneField = ({handleOnDrop, input: {onChange}, imagefile, meta: {error
         >
             {({getRootProps, getInputProps}) =>
                 imagefile && imagefile.length > 0 ? (
-                    <ImagePreview imagefile={imagefile}/>
+                    <Fragment>
+                        <Placeholder
+                            error={error}
+                            touched={touched}
+                            getInputProps={getInputProps}
+                            getRootProps={getRootProps}
+                        />
+                        <ImagePreview imagefile={imagefile}/>
+                    </Fragment>
                 ) : (
                     <Placeholder
                         error={error}
