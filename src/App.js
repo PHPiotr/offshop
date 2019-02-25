@@ -5,7 +5,7 @@ import Products from './containers/Products';
 import Cart from './containers/Cart';
 import Checkout from './containers/Checkout';
 import Order from './containers/Order';
-import Admin from './containers/Admin';
+import AdminProduct from './containers/Admin/Product';
 import { withStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Typography from '@material-ui/core/Typography';
@@ -53,7 +53,7 @@ const handleAuthentication = async ({history, location}) => {
         try {
             await auth.handleAuthentication();
             localStorage.setItem(LOGGED_IN, 'true');
-            history.replace('/admin');
+            history.replace('/admin/products/new');
         } catch (err) {
             history.replace('/');
             console.log(err);
@@ -95,7 +95,7 @@ class App extends Component {
             <Fragment>
                 <CssBaseline />
                 <header>
-                    <Navigation />
+                    <Navigation authenticated={auth.isAuthenticated()} />
                 </header>
                 <main>
                     <div className={classNames(classes.layout, classes.grid)}>
@@ -123,7 +123,7 @@ class App extends Component {
                                     props.history.replace('/');
                                     return null;
                                 }}/>
-                                <PrivateRoute path="/admin" component={Admin}/>
+                                <PrivateRoute path="/admin/products/new" exact component={AdminProduct}/>
                             </Switch>
                         </Grid>
                     </div>

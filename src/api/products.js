@@ -20,8 +20,7 @@ export const createProduct = (data = {}, accessToken) => {
         method: 'POST',
         headers: {
             'Authorization': `Bearer ${accessToken}`,
-            'Content-Type': 'application/json',
         },
-        body: JSON.stringify(data),
+        body: data,
     });
 };
