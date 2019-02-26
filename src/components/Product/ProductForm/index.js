@@ -3,10 +3,8 @@ import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
 import {Field, Form, reduxForm} from 'redux-form';
 import Grid from '@material-ui/core/Grid';
-import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import withStyles from '@material-ui/core/styles/withStyles';
-import DropZoneField from '../../../components/FileInput/DropzoneField';
 import {createProduct} from '../../../api/products';
 
 const styles = theme => ({
@@ -19,21 +17,6 @@ const styles = theme => ({
         marginLeft: theme.spacing.unit,
     },
 });
-
-const renderTextField = ({input, label, meta, ...custom}) => (
-    <TextField
-        label={label}
-        error={meta.touched && !!meta.error}
-        helperText={meta.touched && meta.error}
-        {...input}
-        {...custom}
-    />
-);
-
-//const validateRequired = value => typeof value === 'string' && value.trim() ? undefined : 'To pole jest wymagane';
-const validateEmail = value => value && /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(value) ? undefined : 'Niepoprawny email';
-
-const validateRequired = value => (!value ? 'To pole jest wymagane' : undefined);
 
 class ProductForm extends Component {
 
@@ -52,11 +35,8 @@ class ProductForm extends Component {
         fd.append('quantity', formProps.quantity);
         fd.append('unit', formProps.unit);
         fd.append('unitsPerProduct', formProps.unitsPerProduct);
-        // append any additional Redux form fields
-        // create an AJAX request here with the created formData
-        createProduct(fd);
 
-        //alert(JSON.stringify(formProps, null, 4));
+        createProduct(fd);
     };
 
     handleOnDrop = (newImageFile, onChange) => {
@@ -70,38 +50,24 @@ class ProductForm extends Component {
         this.setState({imageFile: [imageFile]}, () => onChange(imageFile));
     };
 
-    resetForm = () => this.setState({imageFile: []}, () => this.props.reset());
-
     render = () => (
         <Form onSubmit={this.props.handleSubmit(this.handleFormSubmit)} encType="multipart/form-data">
             <Grid container spacing={24}>
                 {this.props.inputKeys.reduce((acc, itemId) => {
-                    const {label, type, validate, min, max} = this.props.inputs[itemId];
-                    const validateFunctions = [];
-                    let required = false;
-                    validate.forEach(rule => {
-                        switch (rule) {
-                            case 'required':
-                                validateFunctions.push(validateRequired);
-                                required = true;
-                                break;
-                            case 'email':
-                                validateFunctions.push(validateEmail);
-                                break;
-                            default:
-                                throw Error('Unknown validation rule');
-                        }
-                    });
+                    const {label, type, validate, component, min, max, format, normalize} = this.props.inputs[itemId];
+
                     if (type === 'file') {
                         acc.push(
                             <Grid item xs={12} key={itemId}>
                                 <Field
                                     name={itemId}
-                                    component={DropZoneField}
-                                    type="file"
+                                    component={component}
+                                    type={type}
                                     imagefile={this.state.imageFile}
                                     handleOnDrop={this.handleOnDrop}
-                                    validate={[validateRequired]}
+                                    validate={validate}
+                                    format={format}
+                                    normalize={normalize}
                                 />
                             </Grid>
                         );
@@ -110,13 +76,13 @@ class ProductForm extends Component {
                             <Grid item xs={12} key={itemId}>
                                 <Field
                                     name={itemId}
-                                    component={renderTextField}
+                                    component={component}
                                     label={label}
                                     fullWidth
                                     type={type}
-                                    required={required}
-                                    validate={validateFunctions}
-                                    noValidate
+                                    validate={validate}
+                                    format={format}
+                                    normalize={normalize}
                                     InputProps={{inputProps: {min: min, max: max}}}
                                 />
                             </Grid>
@@ -131,7 +97,7 @@ class ProductForm extends Component {
                     color="primary"
                     onClick={this.props.handleNext}
                     className={this.props.classes.button}
-                    disabled={false}
+                    disabled={this.props.submitting}
                     type="submit"
                 >
                     Dodaj produkt

@@ -1,5 +1,12 @@
 import {combineReducers} from 'redux';
 import {SET_PRODUCT_INPUT_VALUE} from '../../actions/product';
+import {
+    formatPrice,
+    normalizePrice,
+    validateRequired,
+    renderTextField as TextField,
+    renderFileInput as FileInput,
+} from '../../utils/form';
 
 const initialIds = [
     'name',
@@ -15,39 +22,47 @@ const initialData = {
         value: '',
         type: 'text',
         label: 'Nazwa',
-        validate: ['required'],
+        validate: [validateRequired],
+        component: TextField,
     },
     quantity: {
         value: '',
         type: 'number',
         min: 0,
         label: 'Ilość',
-        validate: ['required'],
+        validate: [validateRequired],
+        component: TextField,
     },
     price: {
         value: '',
         type: 'text',
         label: 'Cena',
-        validate: ['required'],
+        validate: [validateRequired],
+        format: formatPrice,
+        normalize: normalizePrice,
+        component: TextField,
     },
     unit: {
         value: 'kg',
         type: 'text',
         label: 'Jednostka',
-        validate: ['required'],
+        validate: [validateRequired],
+        component: TextField,
     },
     unitsPerProduct: {
         value: '',
         type: 'number',
         min: 0,
         label: 'Ilość jednostek na produkt',
-        validate: ['required'],
+        validate: [validateRequired],
+        component: TextField,
     },
     img: {
         value: '',
         type: 'file',
         label: 'Zdjęcie produktu',
-        validate: ['required'],
+        validate: [validateRequired],
+        component: FileInput,
     },
 };
 
