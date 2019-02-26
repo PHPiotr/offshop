@@ -54,7 +54,7 @@ const ProductsInCart = props => {
                     <Fragment key={p._id}>
                         <ListItem key={p._id} alignItems="flex-start">
                             <ListItemAvatar>
-                                <Avatar src={`${process.env.REACT_APP_API_HOST}/images/products/${p.img}`} alt={p.name}/>
+                                <Avatar src={`${process.env.REACT_APP_API_HOST}/images/products/${p.slug}.avatar.png`} alt={p.name}/>
                             </ListItemAvatar>
                             <ListItemText
                                 primary={p.name}

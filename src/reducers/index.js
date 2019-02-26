@@ -5,6 +5,7 @@ import cart from './cart';
 import checkout from './checkout';
 import order from './order';
 import categories from './categories';
+import product from './product';
 import products from './products';
 import suppliers from './suppliers';
 import addedToCartDialog from './addedToCartDialog';
@@ -17,6 +18,7 @@ export default combineReducers({
     checkout,
     order,
     categories,
+    product,
     products,
     suppliers,
     addedToCartDialog,
