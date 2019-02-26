@@ -1,5 +1,4 @@
 import TextField from '@material-ui/core/TextField';
-import DropZoneField from '../components/FileInput/DropzoneField';
 import React from 'react';
 
 export const renderTextField = ({input, label, meta, ...custom}) => (
@@ -11,8 +10,6 @@ export const renderTextField = ({input, label, meta, ...custom}) => (
         {...custom}
     />
 );
-
-export const renderFileInput = () => DropZoneField;
 
 export const formatPrice = (input) => {
     if (!input) {

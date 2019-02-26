@@ -5,8 +5,8 @@ import {
     normalizePrice,
     validateRequired,
     renderTextField as TextField,
-    renderFileInput as FileInput,
 } from '../../utils/form';
+import DropZoneField from '../../components/FileInput/DropzoneField';
 
 const initialIds = [
     'name',
@@ -62,7 +62,7 @@ const initialData = {
         type: 'file',
         label: 'Zdjęcie produktu',
         validate: [validateRequired],
-        component: FileInput,
+        component: DropZoneField,
     },
 };
 
