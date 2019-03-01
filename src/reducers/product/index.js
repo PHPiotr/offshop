@@ -78,14 +78,14 @@ const ids = (state = initialIds, {type}) => {
     }
 };
 
-const data = (state = initialData, {type, payload}) => {
+const data = (state = initialData, {type, isCreating}) => {
     switch (type) {
         default:
             return state;
     }
 };
 
-const creating = (state = false, {type}) => {
+const isCreating = (state = false, {type}) => {
     switch (type) {
         case CREATE_PRODUCT_REQUEST:
             return true;
@@ -97,6 +97,6 @@ const creating = (state = false, {type}) => {
     }
 };
 
-const product = combineReducers({ids, data, creating});
+const product = combineReducers({ids, data, isCreating});
 
 export default product;

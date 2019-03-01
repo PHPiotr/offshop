@@ -10,7 +10,6 @@ import products from './products';
 import suppliers from './suppliers';
 import addedToCartDialog from './addedToCartDialog';
 import {reducer as form} from 'redux-form';
-import {CREATE_PRODUCT_SUCCESS} from '../actions/product';
 
 export default combineReducers({
     buyer,
