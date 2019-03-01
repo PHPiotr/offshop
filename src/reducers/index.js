@@ -26,6 +26,28 @@ export default combineReducers({
     form: form.plugin({
         product: (state, action) => {
             switch(action.type) {
+                case '@@redux-form/FOCUS':
+                    if (action.meta.field === 'price' && /\d+\.\d{2}/.test(state.values.price)) {
+                        return {
+                            ...state,
+                            values: {
+                                ...state.values,
+                                price: state.values.price ? state.values.price.substring(0, state.values.price.indexOf('.')) : state.values.price,
+                            },
+                        };
+                    }
+                    return state;
+                case '@@redux-form/BLUR':
+                    if (action.meta.field === 'price' && !/\d+\.\d{2}/.test(action.payload)) {
+                        return {
+                            ...state,
+                            values: {
+                                ...state.values,
+                                price: state.values.price ? state.values.price += '.00' : state.values.price,
+                            },
+                        };
+                    }
+                    return state;
                 case CREATE_PRODUCT_SUCCESS:
                     return undefined;
                 default:

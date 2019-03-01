@@ -4,8 +4,7 @@ export const CREATE_PRODUCT_REQUEST = 'CREATE_PRODUCT_REQUEST';
 export const CREATE_PRODUCT_SUCCESS = 'CREATE_PRODUCT_SUCCESS';
 export const CREATE_PRODUCT_FAILURE = 'CREATE_PRODUCT_FAILURE';
 
-export const createNewProductIfNeeded = (formProps, accessToken) => {
-    return async (dispatch) => {
+export const createNewProductIfNeeded = (formProps, accessToken) => async dispatch => {
         debugger;
         dispatch(() => ({type: CREATE_PRODUCT_REQUEST}));
         debugger;
@@ -23,5 +22,4 @@ export const createNewProductIfNeeded = (formProps, accessToken) => {
         } else {
             dispatch(() => ({type: CREATE_PRODUCT_SUCCESS}));
         }
-    }
 };

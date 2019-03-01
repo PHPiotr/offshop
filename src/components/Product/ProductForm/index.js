@@ -5,7 +5,7 @@ import {Field, Form, reduxForm} from 'redux-form';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import withStyles from '@material-ui/core/styles/withStyles';
-import {CREATE_PRODUCT_REQUEST, CREATE_PRODUCT_SUCCESS, createNewProductIfNeeded} from "../../../actions/product/index";
+import {CREATE_PRODUCT_SUCCESS, createNewProductIfNeeded} from "../../../actions/product/index";
 
 const styles = theme => ({
     buttons: {
@@ -18,18 +18,14 @@ const styles = theme => ({
     },
 });
 
+const submit = (formValues, dispatch, props) => {
+    dispatch(() => ({type: CREATE_PRODUCT_SUCCESS}));
+    dispatch(createNewProductIfNeeded(formValues, props.accessToken));
+};
+
 class ProductForm extends Component {
 
     state = {imageFile: []};
-
-    constructor(props) {
-        super(props);
-        this.handleFormSubmit.bind(this);
-    }
-
-    handleFormSubmit = (formProps, dispatch) => {
-        dispatch(createNewProductIfNeeded(formProps, this.props.accessToken));
-    };
 
     handleOnDrop = (newImageFile, onChange) => {
         const imageFile = {
@@ -43,7 +39,7 @@ class ProductForm extends Component {
     };
 
     render = () => (
-        <Form onSubmit={this.props.handleSubmit} encType="multipart/form-data">
+        <Form onSubmit={this.props.handleSubmit(submit)} encType="multipart/form-data">
             <Grid container spacing={24}>
                 {this.props.inputKeys.reduce((acc, itemId) => {
                     const {label, type, validate, component, min, max, format, normalize} = this.props.inputs[itemId];
@@ -87,7 +83,6 @@ class ProductForm extends Component {
                 <Button
                     variant="contained"
                     color="primary"
-                    onClick={this.props.handleNext}
                     className={this.props.classes.button}
                     disabled={this.props.submitting}
                     type="submit"
@@ -99,12 +94,6 @@ class ProductForm extends Component {
     );
 }
 
-function submit(formProps, dispatch, props) {
-    dispatch(() => ({type: CREATE_PRODUCT_REQUEST}));
-    dispatch(() => ({type: CREATE_PRODUCT_SUCCESS}));
-    dispatch(createNewProductIfNeeded(formProps, props.accessToken));
-}
-
 ProductForm = reduxForm({
     form: 'product',
     destroyOnUnmount: true,
@@ -114,7 +103,7 @@ ProductForm = reduxForm({
         unitsPerProduct: 1,
 
     },
-    onSubmit: submit
+    submit,
 })(ProductForm);
 
 ProductForm.propTypes = {
@@ -131,6 +120,14 @@ const mapStateToProps = state => ({
     inputKeys: state.product.ids,
     inputs: state.product.data,
 });
+
+// const mapDispatchToProps = dispatch => ({
+//     handleSubmit: (formProps, _, props) => {
+//         debugger;
+//         dispatch(() => ({type: 'CREATE_PRODUCT_SUCCESS'}));
+//         dispatch(createNewProductIfNeeded(formProps, ''));
+//     },
+// });
 
 ProductForm = connect(mapStateToProps)(ProductForm);
 

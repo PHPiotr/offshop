@@ -16,13 +16,16 @@ export const formatPrice = (input) => {
         return;
     }
 
-    if (isNaN(parseInt(input[input.length - 1], 10))) {
+    const lastChar = input[input.length - 1];
+
+    if (isNaN(parseInt(lastChar, 10)) && lastChar !== '.') {
         return input.slice(0, -1);
     }
 
-    return input
-        .replace(/,/g , '')
-        .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    return input;
+    // return input
+    //     .replace(/,/g , '')
+    //     .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 };
 
 export const normalizePrice = (val) => {
