@@ -1,4 +1,4 @@
-import { combineReducers } from 'redux';
+import {combineReducers} from 'redux';
 import buyer from './buyer';
 import buyerDelivery from './buyerDelivery';
 import cart from './cart';
@@ -9,7 +9,7 @@ import product from './product';
 import products from './products';
 import suppliers from './suppliers';
 import addedToCartDialog from './addedToCartDialog';
-import { reducer as form } from'redux-form';
+import {reducer as form} from 'redux-form';
 import {CREATE_PRODUCT_SUCCESS} from '../actions/product';
 
 export default combineReducers({
@@ -25,9 +25,9 @@ export default combineReducers({
     addedToCartDialog,
     form: form.plugin({
         product: (state, action) => {
-            switch(action.type) {
+            switch (action.type) {
                 case '@@redux-form/FOCUS':
-                    if (action.meta.field === 'price' && /\d+\.\d{2}/.test(state.values.price)) {
+                    if (action.meta && state.values && action.meta.field === 'price' && /\d+\.\d{2}/.test(state.values.price)) {
                         return {
                             ...state,
                             values: {
@@ -37,8 +37,9 @@ export default combineReducers({
                         };
                     }
                     return state;
+
                 case '@@redux-form/BLUR':
-                    if (action.meta.field === 'price' && !/\d+\.\d{2}/.test(action.payload)) {
+                    if (action.meta && state.values && action.meta.field === 'price' && !/\d+\.\d{2}/.test(action.payload)) {
                         return {
                             ...state,
                             values: {
@@ -48,8 +49,7 @@ export default combineReducers({
                         };
                     }
                     return state;
-                case CREATE_PRODUCT_SUCCESS:
-                    return undefined;
+
                 default:
                     return state;
             }

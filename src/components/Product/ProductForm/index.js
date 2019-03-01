@@ -1,11 +1,13 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
-import {Field, Form, reduxForm} from 'redux-form';
+import {Field, Form, reduxForm, formValueSelector} from 'redux-form';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import withStyles from '@material-ui/core/styles/withStyles';
-import {CREATE_PRODUCT_SUCCESS, createNewProductIfNeeded} from "../../../actions/product/index";
+import {createNewProductIfNeeded} from "../../../actions/product/index";
+
+window.URL = window.URL || window.webkitURL;
 
 const styles = theme => ({
     buttons: {
@@ -18,28 +20,21 @@ const styles = theme => ({
     },
 });
 
-const submit = (formValues, dispatch, props) => {
-    dispatch(() => ({type: CREATE_PRODUCT_SUCCESS}));
-    dispatch(createNewProductIfNeeded(formValues, props.accessToken));
-};
-
 class ProductForm extends Component {
 
-    state = {imageFile: []};
-
-    handleOnDrop = (newImageFile, onChange) => {
+    handleOnDrop = ([newImageFile], onChange) => {
         const imageFile = {
-            file: newImageFile[0],
-            name: newImageFile[0].name,
-            preview: URL.createObjectURL(newImageFile[0]),
-            size: newImageFile[0].size
+            file: newImageFile,
+            name: newImageFile.name,
+            preview: URL.createObjectURL(newImageFile),
+            size: newImageFile.size
         };
-
-        this.setState({imageFile: [imageFile]}, () => onChange(imageFile));
+        onChange(imageFile);
+        window.URL.revokeObjectURL(newImageFile);
     };
 
     render = () => (
-        <Form onSubmit={this.props.handleSubmit(submit)} encType="multipart/form-data">
+        <Form onSubmit={this.props.handleSubmit} encType="multipart/form-data">
             <Grid container spacing={24}>
                 {this.props.inputKeys.reduce((acc, itemId) => {
                     const {label, type, validate, component, min, max, format, normalize} = this.props.inputs[itemId];
@@ -51,7 +46,7 @@ class ProductForm extends Component {
                                     name={itemId}
                                     component={component}
                                     type={type}
-                                    imagefile={this.state.imageFile}
+                                    imagefile={this.props.imageFile || []}
                                     handleOnDrop={this.handleOnDrop}
                                     validate={validate}
                                     format={format}
@@ -94,16 +89,18 @@ class ProductForm extends Component {
     );
 }
 
+const FORM_NAME = 'product';
+
 ProductForm = reduxForm({
-    form: 'product',
-    destroyOnUnmount: true,
+    form: FORM_NAME,
     initialValues: {
         quantity: 1,
         unit: 'kg',
         unitsPerProduct: 1,
 
     },
-    submit,
+    enableReinitialize: true,
+    keepDirtyOnReinitialize: true,
 })(ProductForm);
 
 ProductForm.propTypes = {
@@ -116,19 +113,24 @@ ProductForm.defaultProps = {
     inputs: {},
 };
 
-const mapStateToProps = state => ({
-    inputKeys: state.product.ids,
-    inputs: state.product.data,
+const selector = formValueSelector(FORM_NAME);
+
+const mapStateToProps = state => {
+    const imageFile = selector(state, 'img');
+    return {
+        inputKeys: state.product.ids,
+        inputs: state.product.data,
+        imageFile: imageFile ? [imageFile] : [],
+    };
+};
+
+const mapDispatchToProps = dispatch => ({
+    onSubmit: (formProps, _, {accessToken, reset}) => {
+        dispatch(createNewProductIfNeeded(formProps, accessToken))
+            .then(() => reset());
+    },
 });
 
-// const mapDispatchToProps = dispatch => ({
-//     handleSubmit: (formProps, _, props) => {
-//         debugger;
-//         dispatch(() => ({type: 'CREATE_PRODUCT_SUCCESS'}));
-//         dispatch(createNewProductIfNeeded(formProps, ''));
-//     },
-// });
-
-ProductForm = connect(mapStateToProps)(ProductForm);
+ProductForm = connect(mapStateToProps, mapDispatchToProps)(ProductForm);
 
 export default withStyles(styles)(ProductForm);
