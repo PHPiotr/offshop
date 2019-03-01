@@ -1,5 +1,10 @@
 import {combineReducers} from 'redux';
-import {SET_PRODUCT_INPUT_VALUE} from '../../actions/product';
+import {
+    CREATE_PRODUCT_FAILURE,
+    CREATE_PRODUCT_REQUEST,
+    CREATE_PRODUCT_SUCCESS,
+    SET_PRODUCT_INPUT_VALUE
+} from '../../actions/product';
 import {
     formatPrice,
     normalizePrice,
@@ -75,19 +80,23 @@ const ids = (state = initialIds, {type}) => {
 
 const data = (state = initialData, {type, payload}) => {
     switch (type) {
-        case SET_PRODUCT_INPUT_VALUE:
-            return {
-                ...state,
-                [payload.name]: {
-                    ...state[payload.name],
-                    value: payload.value,
-                },
-            };
         default:
             return state;
     }
 };
 
-const product = combineReducers({ids, data});
+const creating = (state = false, {type}) => {
+    switch (type) {
+        case CREATE_PRODUCT_REQUEST:
+            return true;
+        case CREATE_PRODUCT_SUCCESS:
+        case CREATE_PRODUCT_FAILURE:
+            return false;
+        default:
+            return state;
+    }
+};
+
+const product = combineReducers({ids, data, creating});
 
 export default product;

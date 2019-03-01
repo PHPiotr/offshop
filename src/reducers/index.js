@@ -10,6 +10,7 @@ import products from './products';
 import suppliers from './suppliers';
 import addedToCartDialog from './addedToCartDialog';
 import { reducer as form } from'redux-form';
+import {CREATE_PRODUCT_SUCCESS} from '../actions/product';
 
 export default combineReducers({
     buyer,
@@ -22,5 +23,14 @@ export default combineReducers({
     products,
     suppliers,
     addedToCartDialog,
-    form,
+    form: form.plugin({
+        product: (state, action) => {
+            switch(action.type) {
+                case CREATE_PRODUCT_SUCCESS:
+                    return undefined;
+                default:
+                    return state;
+            }
+        }
+    })
 });

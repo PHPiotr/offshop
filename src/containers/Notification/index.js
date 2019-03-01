@@ -32,6 +32,11 @@ class Notification extends Component {
         });
         socket.on('createProduct', function(product) {
             that.props.handleOnCreateProduct(product);
+            that.setState({
+                message: 'Dodano nowy produkt',
+                open: true,
+                variant: 'success',
+            });
         });
     }
 

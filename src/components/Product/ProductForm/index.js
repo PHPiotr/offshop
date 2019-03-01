@@ -5,7 +5,7 @@ import {Field, Form, reduxForm} from 'redux-form';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import withStyles from '@material-ui/core/styles/withStyles';
-import {createProduct} from '../../../api/products';
+import {CREATE_PRODUCT_REQUEST, CREATE_PRODUCT_SUCCESS, createNewProductIfNeeded} from "../../../actions/product/index";
 
 const styles = theme => ({
     buttons: {
@@ -27,16 +27,8 @@ class ProductForm extends Component {
         this.handleFormSubmit.bind(this);
     }
 
-    handleFormSubmit = formProps => {
-        const fd = new FormData();
-        fd.append('img', formProps.img.file);
-        fd.append('name', formProps.name);
-        fd.append('price', formProps.price);
-        fd.append('quantity', formProps.quantity);
-        fd.append('unit', formProps.unit);
-        fd.append('unitsPerProduct', formProps.unitsPerProduct);
-
-        createProduct(fd);
+    handleFormSubmit = (formProps, dispatch) => {
+        dispatch(createNewProductIfNeeded(formProps, this.props.accessToken));
     };
 
     handleOnDrop = (newImageFile, onChange) => {
@@ -51,7 +43,7 @@ class ProductForm extends Component {
     };
 
     render = () => (
-        <Form onSubmit={this.props.handleSubmit(this.handleFormSubmit)} encType="multipart/form-data">
+        <Form onSubmit={this.props.handleSubmit} encType="multipart/form-data">
             <Grid container spacing={24}>
                 {this.props.inputKeys.reduce((acc, itemId) => {
                     const {label, type, validate, component, min, max, format, normalize} = this.props.inputs[itemId];
@@ -107,27 +99,32 @@ class ProductForm extends Component {
     );
 }
 
+function submit(formProps, dispatch, props) {
+    dispatch(() => ({type: CREATE_PRODUCT_REQUEST}));
+    dispatch(() => ({type: CREATE_PRODUCT_SUCCESS}));
+    dispatch(createNewProductIfNeeded(formProps, props.accessToken));
+}
+
 ProductForm = reduxForm({
     form: 'product',
-    destroyOnUnmount: false,
+    destroyOnUnmount: true,
     initialValues: {
         quantity: 1,
         unit: 'kg',
         unitsPerProduct: 1,
 
     },
+    onSubmit: submit
 })(ProductForm);
 
 ProductForm.propTypes = {
     inputKeys: PropTypes.array,
     inputs: PropTypes.object,
-    onSubmit: PropTypes.func,
 };
 
 ProductForm.defaultProps = {
     inputKeys: [],
     inputs: {},
-    onSubmit: () => null,
 };
 
 const mapStateToProps = state => ({
@@ -135,8 +132,6 @@ const mapStateToProps = state => ({
     inputs: state.product.data,
 });
 
-const mapDispatchToProps = dispatch => ({});
-
-ProductForm = connect(mapStateToProps, mapDispatchToProps)(ProductForm);
+ProductForm = connect(mapStateToProps)(ProductForm);
 
 export default withStyles(styles)(ProductForm);
