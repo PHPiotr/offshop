@@ -10,7 +10,7 @@ class Product extends Component {
             <Fragment>
                 {this.props.isCreating && <ProgressIndicator/>}
                 <SubHeader content="Dodaj produkt"/>
-                <ProductForm accessToken={this.props.auth.getAccessToken()}/>
+                <ProductForm/>
             </Fragment>
         );
     }

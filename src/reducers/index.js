@@ -1,4 +1,5 @@
 import {combineReducers} from 'redux';
+import auth from './auth';
 import buyer from './buyer';
 import buyerDelivery from './buyerDelivery';
 import cart from './cart';
@@ -12,6 +13,7 @@ import addedToCartDialog from './addedToCartDialog';
 import {reducer as form} from 'redux-form';
 
 export default combineReducers({
+    auth,
     buyer,
     buyerDelivery,
     cart,

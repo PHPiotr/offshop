@@ -14,6 +14,8 @@ import Grid from '@material-ui/core/Grid';
 import { hot } from 'react-hot-loader';
 import Notification from './containers/Notification';
 import Auth from './services/auth';
+import store from './store';
+import {updateAccessToken} from './actions/auth';
 
 const auth = new Auth();
 const {isAuthenticated, renewSession} = auth;
@@ -34,7 +36,7 @@ const PrivateRoute = ({component: Component, ...rest}) => {
             {...rest}
             render={props => {
                 return isAuthenticated() ? (
-                    <Component {...props} auth={auth}/>
+                    <Component {...props}/>
                 ) : (
                     <Redirect
                         to={{
@@ -53,8 +55,10 @@ const handleAuthentication = async ({history, location}) => {
         try {
             await auth.handleAuthentication();
             localStorage.setItem(LOGGED_IN, 'true');
+            store.dispatch(updateAccessToken(auth.getAccessToken()));
             history.replace('/admin/products/new');
         } catch (err) {
+            store.dispatch(updateAccessToken(''));
             history.replace('/');
             console.log(err);
             alert(`Error: ${err.error}. Check the console for further details.`);

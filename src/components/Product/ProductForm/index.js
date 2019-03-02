@@ -121,6 +121,7 @@ const mapStateToProps = state => {
         inputKeys: state.product.ids,
         inputs: state.product.data,
         imageFile: imageFile ? [imageFile] : [],
+        accessToken: state.auth.accessToken,
     };
 };
 
