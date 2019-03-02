@@ -9,6 +9,7 @@ import categories from './categories';
 import product from './product';
 import products from './products';
 import suppliers from './suppliers';
+import notification from './notification';
 import addedToCartDialog from './addedToCartDialog';
 import {reducer as form} from 'redux-form';
 
@@ -23,6 +24,7 @@ export default combineReducers({
     product,
     products,
     suppliers,
+    notification,
     addedToCartDialog,
     form: form.plugin({
         product: (state, action) => {

@@ -4,25 +4,19 @@ import {injectIntl} from 'react-intl';
 import io from 'socket.io-client';
 import NotificationBar from '../../components/NotificationBar';
 import {syncQuantities, onCreateProduct} from '../../actions/products';
+import {showNotification} from "../../actions/notification";
 
 const socket = io(process.env.REACT_APP_API_HOST);
 
 class Notification extends Component {
-
-    state = {
-        message: '',
-        open: false,
-        variant: 'info',
-    };
 
     componentDidMount() {
         const that = this;
         socket.on('order', function(orderData) {
             if (that.props.orderData.extOrderId === orderData.extOrderId && ['COMPLETED', 'CANCELED'].indexOf(orderData.status) > -1) {
                 const variant = orderData.status === 'COMPLETED' ? 'success' : 'warning';
-                that.setState({
+                that.props.handleShowNotification({
                     message: that.props.intl.formatMessage({id: `order.notification.${orderData.status.toLowerCase()}`}),
-                    open: true,
                     variant,
                 });
             }
@@ -32,21 +26,21 @@ class Notification extends Component {
         });
         socket.on('createProduct', function(product) {
             that.props.handleOnCreateProduct(product);
-            that.setState({
+            that.props.handleShowNotification({
                 message: 'Dodano nowy produkt',
-                open: true,
                 variant: 'success',
             });
         });
     }
 
     render() {
-        return <NotificationBar message={this.state.message} open={this.state.open} variant={this.state.variant} />;
+        return <NotificationBar/>;
     }
 }
 
 const mapStateToProps = (state) => ({
     orderData: state.order.data || {},
+    notification: state.notification,
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -55,6 +49,9 @@ const mapDispatchToProps = (dispatch) => ({
     },
     handleOnCreateProduct(product) {
         dispatch(onCreateProduct(product));
+    },
+    handleShowNotification(payload) {
+        dispatch(showNotification(payload));
     }
 });
 
