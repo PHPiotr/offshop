@@ -9,6 +9,7 @@ import {
     formatPrice,
     normalizePrice,
     validateRequired,
+    validatePrice,
     renderTextField as TextField,
 } from '../../utils/form';
 import DropZoneField from '../../components/FileInput/DropzoneField';
@@ -42,7 +43,7 @@ const initialData = {
         value: '',
         type: 'text',
         label: 'Cena',
-        validate: [validateRequired],
+        validate: [validateRequired, validatePrice],
         format: formatPrice,
         normalize: normalizePrice,
         component: TextField,

@@ -49,7 +49,6 @@ class ProductForm extends Component {
                                     imagefile={this.props.imageFile || []}
                                     handleOnDrop={this.handleOnDrop}
                                     validate={validate}
-                                    format={format}
                                     normalize={normalize}
                                 />
                             </Grid>
@@ -64,7 +63,6 @@ class ProductForm extends Component {
                                     fullWidth
                                     type={type}
                                     validate={validate}
-                                    format={format}
                                     normalize={normalize}
                                     InputProps={{inputProps: {min: min, max: max}}}
                                 />
