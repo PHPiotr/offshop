@@ -18,6 +18,8 @@ const styles = theme => ({
         margin: theme.spacing.unit * 2,
         top: '50%',
         left: '50%',
+        marginLeft: -20,
+        marginTop: -20,
     },
 });
 
