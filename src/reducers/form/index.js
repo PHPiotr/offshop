@@ -3,33 +3,22 @@ import {reducer as form} from 'redux-form';
 export default form.plugin({
     product: (state, action) => {
         switch (action.type) {
-            case '@@redux-form/FOCUS':
-                if (action.meta && state.values && action.meta.field === 'price') {
-                    // return {
-                    //     ...state,
-                    //     values: {
-                    //         ...state.values,
-                    //         price: state.values.price ? state.values.price.substring(0, state.values.price.indexOf('.')) : state.values.price,
-                    //     },
-                    // };
-                }
-                return state;
-
             case '@@redux-form/BLUR':
-                if (action.meta && state.values && state.values.price && action.meta.field === 'price') {
+                if (action.meta && state.values && state.values.unitPrice && action.meta.field === 'unitPrice') {
 
                     if (action.payload.indexOf('.') === -1) {
-                        const price = parseInt(state.values.price, 10);
+                        const unitPrice = parseInt(state.values.unitPrice, 10);
+
                         return {
                             ...state,
                             values: {
                                 ...state.values,
-                                price: price > 0 ? `${price}.00` : '00.00',
+                                unitPrice: unitPrice > 0 ? `${unitPrice}.00` : '',
                             },
                         };
                     }
 
-                    const match = state.values.price.match(/^\D*(\d*)\D*\.\D*(\d*)\D*\.*$/);
+                    const match = state.values && state.values.unitPrice.match(/^\D*(\d*)\D*\.\D*(\d*)\D*\.*$/);
                     if (match) {
                         const [_, integral, fractional] = match;
                         let integer, fraction;
@@ -41,23 +30,22 @@ export default form.plugin({
                         }
 
                         if (fractional.length === 0) {
-                            fraction = `${fractional}00`;
+                            fraction = `00`;
                         } else if (fractional.length === 1) {
                             fraction = `${fractional}0`;
                         } else {
                             fraction = fractional.substring(0, 2);
                         }
+                        const unitPrice = `${integer}.${fraction}`;
                         return {
                             ...state,
                             values: {
                                 ...state.values,
-                                price: `${integer}.${fraction}`,
+                                unitPrice: unitPrice > 0 ? unitPrice : '',
                             },
                         };
                     }
                 }
-                return state;
-
             default:
                 return state;
         }

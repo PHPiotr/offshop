@@ -3,11 +3,8 @@ import {
     CREATE_PRODUCT_FAILURE,
     CREATE_PRODUCT_REQUEST,
     CREATE_PRODUCT_SUCCESS,
-    SET_PRODUCT_INPUT_VALUE
 } from '../../actions/product';
 import {
-    formatPrice,
-    normalizePrice,
     validateRequired,
     validatePrice,
     renderTextField as TextField,
@@ -16,59 +13,47 @@ import DropZoneField from '../../components/FileInput/DropzoneField';
 
 const initialIds = [
     'name',
-    'quantity',
-    'price',
-    'unit',
-    'unitsPerProduct',
+    'stock',
+    'unitPrice',
+    'weight',
     'img',
 ];
 
 const initialData = {
     name: {
-        value: '',
         type: 'text',
-        label: 'Nazwa',
+        label: 'Nazwa produktu',
         validate: [validateRequired],
         component: TextField,
+        inputProps: {},
     },
-    quantity: {
-        value: '',
+    stock: {
         type: 'number',
-        min: 0,
-        label: 'Ilość',
+        label: 'Dostępna ilość',
         validate: [validateRequired],
         component: TextField,
+        inputProps: {inputProps: {min: 1}},
     },
-    price: {
-        value: '',
+    unitPrice: {
         type: 'text',
-        label: 'Cena',
+        label: 'Cena produktu (zł)',
         validate: [validateRequired, validatePrice],
-        format: formatPrice,
-        normalize: normalizePrice,
         component: TextField,
+        inputProps: {},
     },
-    unit: {
-        value: 'kg',
-        type: 'text',
-        label: 'Jednostka',
-        validate: [validateRequired],
-        component: TextField,
-    },
-    unitsPerProduct: {
-        value: '',
+    weight: {
         type: 'number',
-        min: 0,
-        label: 'Ilość jednostek na produkt',
+        label: 'Waga produktu (kg)',
         validate: [validateRequired],
         component: TextField,
+        inputProps: {inputProps: {min: 1.0, step: 0.1}},
     },
     img: {
-        value: '',
         type: 'file',
         label: 'Zdjęcie produktu',
         validate: [validateRequired],
         component: DropZoneField,
+        inputProps: {},
     },
 };
 
@@ -79,7 +64,7 @@ const ids = (state = initialIds, {type}) => {
     }
 };
 
-const data = (state = initialData, {type, isCreating}) => {
+const data = (state = initialData, {type}) => {
     switch (type) {
         default:
             return state;

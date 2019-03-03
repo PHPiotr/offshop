@@ -17,6 +17,7 @@ const styles = theme => ({
     },
     button: {
         marginTop: theme.spacing.unit * 3,
+        marginBottom: theme.spacing.unit * 3,
         marginLeft: theme.spacing.unit,
     },
 });
@@ -38,7 +39,7 @@ class ProductForm extends Component {
         <Form onSubmit={this.props.handleSubmit} encType="multipart/form-data">
             <Grid container spacing={24}>
                 {this.props.inputKeys.reduce((acc, itemId) => {
-                    const {label, type, validate, component, min, max, format, normalize} = this.props.inputs[itemId];
+                    const {label, type, validate, component, inputProps, normalize} = this.props.inputs[itemId];
 
                     if (type === 'file') {
                         acc.push(
@@ -50,7 +51,6 @@ class ProductForm extends Component {
                                     imagefile={this.props.imageFile || []}
                                     handleOnDrop={this.handleOnDrop}
                                     validate={validate}
-                                    normalize={normalize}
                                 />
                             </Grid>
                         );
@@ -64,8 +64,7 @@ class ProductForm extends Component {
                                     fullWidth
                                     type={type}
                                     validate={validate}
-                                    normalize={normalize}
-                                    InputProps={{inputProps: {min: min, max: max}}}
+                                    InputProps={inputProps}
                                 />
                             </Grid>
                         );
@@ -93,10 +92,8 @@ const FORM_NAME = 'product';
 ProductForm = reduxForm({
     form: FORM_NAME,
     initialValues: {
-        quantity: 1,
-        unit: 'kg',
-        unitsPerProduct: 1,
-
+        stock: 1,
+        weight: 1,
     },
     enableReinitialize: true,
     keepDirtyOnReinitialize: true,
