@@ -15,14 +15,15 @@ export const createNewProductIfNeeded = (formProps, accessToken) => async dispat
     fd.append('unitsPerProduct', formProps.unitsPerProduct);
 
     try {
-        const {ok} = await createProduct(fd, accessToken);
-        if (ok) {
+        const response = await createProduct(fd, accessToken);
+        if (response.ok) {
             return dispatch(createProductSuccess());
         }
-        throw Error;
-    } catch (err) {
-        await dispatch(createProductFailure());
-        return Promise.reject();
+        const {message} = await response.json();
+        throw Error(message);
+    } catch (error) {
+        dispatch(createProductFailure({payload: error}));
+        return Promise.reject(error);
     }
 };
 

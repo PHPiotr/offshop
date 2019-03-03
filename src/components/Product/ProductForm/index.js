@@ -6,6 +6,7 @@ import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import withStyles from '@material-ui/core/styles/withStyles';
 import {createNewProductIfNeeded} from "../../../actions/product/index";
+import {showNotification} from "../../../actions/notification";
 
 window.URL = window.URL || window.webkitURL;
 
@@ -124,9 +125,13 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => ({
-    onSubmit: (formProps, _, {accessToken, reset}) => {
-        dispatch(createNewProductIfNeeded(formProps, accessToken))
-            .then(() => reset());
+    onSubmit: async (formProps, _, {accessToken, reset}) => {
+        try {
+            await dispatch(createNewProductIfNeeded(formProps, accessToken));
+            reset();
+        } catch (e) {
+            dispatch(showNotification({message: e.message, variant: 'error'}));
+        }
     },
 });
 
