@@ -67,7 +67,7 @@ const ProductsInCart = props => {
                                         >
                                             {`${p.price * productInCart.quantity} zł`}
                                         </Typography>
-                                        {` (${p.price} zł / szt.)`}
+                                        {productInCart.quantity > 1 && ` (${p.price} zł / szt.)`}
                                     </React.Fragment>
                                 }
                             />
