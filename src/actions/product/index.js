@@ -9,7 +9,7 @@ export const createNewProductIfNeeded = (formProps, accessToken) => async dispat
     const fd = new FormData();
     fd.append('img', formProps.img.file);
     fd.append('name', formProps.name);
-    fd.append('price', formProps.price.toString().replace('.', ''));
+    fd.append('price', formProps.price * 100);
     fd.append('quantity', formProps.quantity);
     fd.append('unit', formProps.unit);
     fd.append('unitsPerProduct', formProps.unitsPerProduct);
