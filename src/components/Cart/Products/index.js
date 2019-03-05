@@ -65,9 +65,9 @@ const ProductsInCart = props => {
                                             className={classes.inline}
                                             color="textPrimary"
                                         >
-                                            {`${p.price * productInCart.quantity} zł`}
+                                            {`${(p.unitPrice * productInCart.quantity).toFixed(2)} zł`}
                                         </Typography>
-                                        {productInCart.quantity > 1 && ` (${p.price} zł / szt.)`}
+                                        {productInCart.quantity > 1 && ` (${p.unitPrice} zł / szt.)`}
                                     </React.Fragment>
                                 }
                             />
@@ -75,7 +75,7 @@ const ProductsInCart = props => {
                                 <IconButton
                                     id={p._id}
                                     onClick={handleIncrementItemInCart}
-                                    disabled={p.quantity - productInCart.quantity <= 0}
+                                    disabled={p.stock - productInCart.quantity <= 0}
                                 >
                                     <AddShoppingCartIcon/>
                                 </IconButton>
@@ -83,7 +83,7 @@ const ProductsInCart = props => {
                                     id={p._id}
                                     className={classes.textField}
                                     value={productInCart.quantity}
-                                    helperText={`z ${p.quantity} szt.`}
+                                    helperText={`z ${p.stock} szt.`}
                                     margin="none"
                                     type="number"
                                 />

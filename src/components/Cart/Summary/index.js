@@ -65,14 +65,14 @@ const CartSummary = props => {
                     </Grid>
                     <Grid item align="right">
                         <Typography gutterBottom variant="h6">
-                            {`${products.reduce(
-                                (total, {price, _id}) => price * cart.products[_id].quantity + total,
+                            {`${(products.reduce(
+                                (total, {unitPrice, _id}) => unitPrice * cart.products[_id].quantity + total,
                                 0
                             ) +
                                 (props.currentSupplier.pricePerUnit > 0
                                     ? cart.units *
                                       props.currentSupplier.pricePerUnit
-                                    : 0)} zł`}
+                                    : 0)).toFixed(2)} zł`}
                         </Typography>
                     </Grid>
                 </Grid>
