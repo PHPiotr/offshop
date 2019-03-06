@@ -11,6 +11,7 @@ import withStyles from '@material-ui/core/styles/withStyles';
 import {injectIntl, FormattedMessage} from 'react-intl';
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
+import {getDeliveryMethodsIfNeeded} from "../../actions/deliveryMethods";
 
 const styles = theme => ({
     paper: {
@@ -35,6 +36,11 @@ const styles = theme => ({
 });
 
 class Cart extends Component {
+
+    componentDidMount() {
+        this.props.handleGetDeliveryMethodsIfNeeded();
+    }
+
     render() {
         if (!this.props.products.length) {
             return (
@@ -63,8 +69,8 @@ class Cart extends Component {
 const mapStateToProps = state => ({
     cart: state.cart,
     products: state.cart.ids.map(i => state.products.data[i]),
-    suppliers: state.suppliers.ids.map(i => state.suppliers.data[i]),
-    currentSupplier: state.suppliers.data[state.suppliers.currentId],
+    deliveryMethods: state.deliveryMethods.ids.map(i => state.deliveryMethods.data[i]),
+    currentDeliveryMethod: state.deliveryMethods.data[state.deliveryMethods.currentId],
 });
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
@@ -90,6 +96,9 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
     checkout() {
         ownProps.history.push('/checkout');
     },
+    handleGetDeliveryMethodsIfNeeded() {
+        dispatch(getDeliveryMethodsIfNeeded());
+    }
 });
 
 export default connect(

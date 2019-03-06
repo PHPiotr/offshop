@@ -32,7 +32,7 @@ const CartSummary = props => {
 
     const handleSetCurrentSupplier = e => {
         props.setCurrentSupplier(suppliers.find(s => s.id === e.target.value));
-        props.toggleBuyerDeliveryStepRequired(!props.currentSupplier.pricePerUnit);
+        props.toggleBuyerDeliveryStepRequired(!props.currentDeliveryMethod.unitPrice);
     };
 
     return (
@@ -41,7 +41,7 @@ const CartSummary = props => {
                 <Typography gutterBottom variant="h6">
                     <FormattedMessage id='cart.summary.choose_delivery' />
                 </Typography>
-                <RadioGroup name="position" value={props.currentSupplier.id}>
+                <RadioGroup name="position" value={props.currentDeliveryMethod.id}>
                     {suppliers.map(({ id, title, pricePerUnit }) => (
                         <FormControlLabel
                             key={id}
@@ -49,7 +49,7 @@ const CartSummary = props => {
                             control={<Radio color="primary" />}
                             label={`${title}: ${pricePerUnit * cart.units} zł`}
                             labelPlacement="end"
-                            checked={id === props.currentSupplier.id}
+                            checked={id === props.currentDeliveryMethod.id}
                             onChange={handleSetCurrentSupplier}
                         />
                     ))}
@@ -69,9 +69,9 @@ const CartSummary = props => {
                                 (total, {unitPrice, _id}) => unitPrice * cart.products[_id].quantity + total,
                                 0
                             ) +
-                                (props.currentSupplier.pricePerUnit > 0
+                                (props.currentDeliveryMethod.unitPrice > 0
                                     ? cart.units *
-                                      props.currentSupplier.pricePerUnit
+                                      props.currentDeliveryMethod.unitPrice
                                     : 0)).toFixed(2)} zł`}
                         </Typography>
                     </Grid>
@@ -81,7 +81,7 @@ const CartSummary = props => {
             <div className={classes.section3}>
                 <Button
                     onClick={props.checkout}
-                    disabled={!props.currentSupplier.id}
+                    disabled={!props.currentDeliveryMethod.id}
                     variant="contained"
                     color="primary"
                 >
@@ -97,7 +97,7 @@ CartSummary.propTypes = {
     cart: PropTypes.object.isRequired,
     products: PropTypes.array.isRequired,
     suppliers: PropTypes.array.isRequired,
-    currentSupplier: PropTypes.object.isRequired,
+    currentDeliveryMethod: PropTypes.object.isRequired,
 };
 
 export default withStyles(styles)(CartSummary);

@@ -2,6 +2,7 @@ import {combineReducers} from 'redux';
 import auth from './auth';
 import buyer from './buyer';
 import buyerDelivery from './buyerDelivery';
+import deliveryMethods from './deliveryMethods';
 import cart from './cart';
 import checkout from './checkout';
 import order from './order';
@@ -20,6 +21,7 @@ export default combineReducers({
     cart,
     categories,
     checkout,
+    deliveryMethods,
     dialog,
     form,
     notification,
