@@ -73,7 +73,7 @@ const CartSummary = props => {
                                 0
                             ) +
                                 (props.currentDeliveryMethod.unitPrice > 0
-                                    ? cart.units *
+                                    ? cart.quantity *
                                       props.currentDeliveryMethod.unitPrice
                                     : 0)).toFixed(2)} zł`}
                         </Typography>
