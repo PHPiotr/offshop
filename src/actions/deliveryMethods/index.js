@@ -16,9 +16,9 @@ export const setCurrentDeliveryMethod = current => ({
 
 export const getDeliveryMethodsIfNeeded = params => {
     return async (dispatch, getState) => {
-        const {deliveryMethods} = getState();
-        if (deliveryMethods.ids.length) {
-            return;
+        const {deliveryMethods: {isFetching}} = getState();
+        if (isFetching) {
+            Promise.resolve();
         }
 
         dispatch({type: RETRIEVE_DELIVERY_METHODS_REQUEST});
