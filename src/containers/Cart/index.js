@@ -1,17 +1,14 @@
-import React, { Component, Fragment } from 'react';
-import { connect } from 'react-redux';
+import React, {Component, Fragment} from 'react';
+import {connect} from 'react-redux';
 import CartProducts from '../../components/Cart/Products';
 import CartSummary from '../../components/Cart/Summary';
 import SubHeader from '../../components/SubHeader';
-import { addToCart, decrementInCart, deleteFromCart } from '../../actions/cart';
-import { setCurrentDeliveryMethod } from '../../actions/deliveryMethods';
-import {requireBuyerDeliveryStep, skipBuyerDeliveryStep} from '../../actions/buyerDelivery';
 import Paper from '@material-ui/core/Paper/Paper';
 import withStyles from '@material-ui/core/styles/withStyles';
 import {injectIntl, FormattedMessage} from 'react-intl';
-import Grid from "@material-ui/core/Grid";
-import Typography from "@material-ui/core/Typography";
-import {getDeliveryMethodsIfNeeded} from "../../actions/deliveryMethods";
+import Grid from '@material-ui/core/Grid';
+import Typography from '@material-ui/core/Typography';
+import {getDeliveryMethodsIfNeeded} from '../../actions/deliveryMethods';
 
 const styles = theme => ({
     paper: {
@@ -58,9 +55,9 @@ class Cart extends Component {
         }
         return (
             <Fragment>
-                <SubHeader content="Koszyk" />
-                <CartProducts {...this.props} />
-                <CartSummary {...this.props} />
+                <SubHeader content="Koszyk"/>
+                <CartProducts/>
+                <CartSummary/>
             </Fragment>
         );
     }
@@ -74,25 +71,6 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
-    incrementItemInCart(item) {
-        dispatch(addToCart(item));
-    },
-    decrementItemInCart(item) {
-        dispatch(decrementInCart(item));
-    },
-    removeItemFromCart(itemId) {
-        dispatch(deleteFromCart(itemId));
-    },
-    setCurrentSupplier(deliveryMethod) {
-        dispatch(setCurrentDeliveryMethod(deliveryMethod));
-    },
-    toggleBuyerDeliveryStepRequired(required) {
-        if (required) {
-            dispatch(requireBuyerDeliveryStep());
-        } else {
-            dispatch(skipBuyerDeliveryStep());
-        }
-    },
     checkout() {
         ownProps.history.push('/checkout');
     },
@@ -101,7 +79,4 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
     }
 });
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(injectIntl(withStyles(styles)(Cart)));
+export default connect(mapStateToProps, mapDispatchToProps)(injectIntl(withStyles(styles)(Cart)));

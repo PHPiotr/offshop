@@ -9,6 +9,9 @@ import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import {FormattedMessage} from "react-intl";
+import {connect} from 'react-redux';
+import {setCurrentDeliveryMethod} from '../../../actions/deliveryMethods';
+import {requireBuyerDeliveryStep, skipBuyerDeliveryStep} from '../../../actions/buyerDelivery';
 
 const styles = theme => ({
     root: {
@@ -30,8 +33,8 @@ const styles = theme => ({
 const CartSummary = props => {
     const { classes, cart, products, deliveryMethods } = props;
 
-    const handleSetCurrentSupplier = e => {
-        props.setCurrentSupplier(deliveryMethods.find(s => s.id === e.target.value));
+    const handleSetCurrentDeliveryMethod = e => {
+        props.handleSetCurrentDeliveryMethod(deliveryMethods.find(s => s.id === e.target.value));
         props.toggleBuyerDeliveryStepRequired(!props.currentDeliveryMethod.unitPrice);
     };
 
@@ -50,7 +53,7 @@ const CartSummary = props => {
                             label={`${name}: ${unitPrice * cart.quantity} zł`}
                             labelPlacement="end"
                             checked={id === props.currentDeliveryMethod.id}
-                            onChange={handleSetCurrentSupplier}
+                            onChange={handleSetCurrentDeliveryMethod}
                         />
                     ))}
                 </RadioGroup>
@@ -100,4 +103,24 @@ CartSummary.propTypes = {
     currentDeliveryMethod: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(CartSummary);
+const mapStateToProps = state => ({
+    cart: state.cart,
+    products: state.cart.ids.map(i => state.products.data[i]),
+    deliveryMethods: state.deliveryMethods.ids.map(i => state.deliveryMethods.data[i]),
+    currentDeliveryMethod: state.deliveryMethods.data[state.deliveryMethods.currentId] || {},
+});
+
+const mapDispatchToProps = dispatch => ({
+    handleSetCurrentDeliveryMethod(deliveryMethod) {
+        dispatch(setCurrentDeliveryMethod(deliveryMethod));
+    },
+    toggleBuyerDeliveryStepRequired(required) {
+        if (required) {
+            dispatch(requireBuyerDeliveryStep());
+        } else {
+            dispatch(skipBuyerDeliveryStep());
+        }
+    },
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(CartSummary));

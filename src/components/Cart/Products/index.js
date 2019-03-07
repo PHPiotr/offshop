@@ -14,6 +14,8 @@ import RemoveShoppingCartIcon from '@material-ui/icons/RemoveShoppingCart';
 import DeleteIcon from '@material-ui/icons/Delete';
 import Divider from '@material-ui/core/Divider';
 import TextField from '@material-ui/core/TextField';
+import {connect} from 'react-redux';
+import {addToCart, decrementInCart, deleteFromCart} from "../../../actions/cart";
 
 const styles = theme => ({
     root: {
@@ -118,4 +120,21 @@ ProductsInCart.propTypes = {
     removeItemFromCart: PropTypes.func.isRequired,
 };
 
-export default withStyles(styles)(ProductsInCart);
+const mapStateToProps = state => ({
+    cart: state.cart,
+    products: state.cart.ids.map(i => state.products.data[i]),
+});
+
+const mapDispatchToProps = dispatch => ({
+    incrementItemInCart(item) {
+        dispatch(addToCart(item));
+    },
+    decrementItemInCart(item) {
+        dispatch(decrementInCart(item));
+    },
+    removeItemFromCart(itemId) {
+        dispatch(deleteFromCart(itemId));
+    },
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(ProductsInCart));
