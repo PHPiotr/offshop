@@ -10,7 +10,7 @@ import withGooglePay from '../../hoc/withGooglePay';
 
 class Checkout extends Component {
     componentDidMount() {
-        if (!this.props.supplier.id || !this.props.cart.quantity) {
+        if (!this.props.deliveryMethod.id || !this.props.cart.quantity) {
             this.props.redirectToCart();
         }
     }
@@ -30,9 +30,9 @@ const mapStateToProps = state => ({
     activeStepId: state.checkout.activeStepId || 0,
     stepsIds: state.checkout.stepsIds,
     steps: state.checkout.steps,
-    supplier: state.suppliers.data[state.suppliers.currentId],
+    deliveryMethod: state.deliveryMethods.data[state.deliveryMethods.currentId],
     cart: state.cart,
-    totalPrice: state.cart.totalPrice + state.suppliers.data[state.suppliers.currentId].pricePerUnit * state.cart.units,
+    totalPrice: state.cart.totalPrice + state.deliveryMethods.data[state.deliveryMethods.currentId].unitPrice * state.cart.quantity,
     products: state.cart.ids.map(i => state.products.data[i]),
     shipping: state.shipping,
     validBuyerData: isValid('buyer')(state),

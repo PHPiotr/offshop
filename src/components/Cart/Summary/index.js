@@ -28,10 +28,10 @@ const styles = theme => ({
 });
 
 const CartSummary = props => {
-    const { classes, cart, products, suppliers } = props;
+    const { classes, cart, products, deliveryMethods } = props;
 
     const handleSetCurrentSupplier = e => {
-        props.setCurrentSupplier(suppliers.find(s => s.id === e.target.value));
+        props.setCurrentSupplier(deliveryMethods.find(s => s.id === e.target.value));
         props.toggleBuyerDeliveryStepRequired(!props.currentDeliveryMethod.unitPrice);
     };
 
@@ -42,12 +42,12 @@ const CartSummary = props => {
                     <FormattedMessage id='cart.summary.choose_delivery' />
                 </Typography>
                 <RadioGroup name="position" value={props.currentDeliveryMethod.id}>
-                    {suppliers.map(({ id, title, pricePerUnit }) => (
+                    {deliveryMethods.map(({ id, name, unitPrice }) => (
                         <FormControlLabel
                             key={id}
                             value={id}
                             control={<Radio color="primary" />}
-                            label={`${title}: ${pricePerUnit * cart.units} zł`}
+                            label={`${name}: ${unitPrice * cart.quantity} zł`}
                             labelPlacement="end"
                             checked={id === props.currentDeliveryMethod.id}
                             onChange={handleSetCurrentSupplier}
@@ -96,7 +96,7 @@ CartSummary.propTypes = {
     classes: PropTypes.object.isRequired,
     cart: PropTypes.object.isRequired,
     products: PropTypes.array.isRequired,
-    suppliers: PropTypes.array.isRequired,
+    deliveryMethods: PropTypes.array.isRequired,
     currentDeliveryMethod: PropTypes.object.isRequired,
 };
 

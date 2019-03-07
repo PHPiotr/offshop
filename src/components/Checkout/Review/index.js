@@ -46,7 +46,7 @@ const Review = props => {
                 )}
                 <Fragment>
                     <ListItem className={classes.listItem}>
-                        <ListItemText primary="Dostawa" secondary={props.supplier.title}/>
+                        <ListItemText primary="Dostawa" secondary={props.deliveryMethod.name}/>
                         <Typography variant="body2">
                             {`${props.deliveryPrice} zł`}
                         </Typography>
@@ -80,7 +80,7 @@ const Review = props => {
                         ))}
                     </Grid>
                 </Grid>
-                {props.supplier.pricePerUnit > 0 && (
+                {props.deliveryMethod.unitPrice > 0 && (
                     <Grid item container direction="column" xs={12} sm={6}>
                         <Typography variant="h6" gutterBottom className={classes.title}>
                             Dane do wysyłki
@@ -141,12 +141,12 @@ const mapStateToProps = state => ({
     totalPrice: state.cart.totalPrice
         ? parseFloat(
             state.cart.totalPrice +
-            state.suppliers.data[state.suppliers.currentId].pricePerUnit * state.cart.units
+            state.deliveryMethods.data[state.deliveryMethods.currentId].unitPrice * state.cart.quantity
         ).toFixed(2)
         : '0.00',
-    supplier: state.suppliers.data[state.suppliers.currentId],
+    deliveryMethod: state.deliveryMethods.data[state.deliveryMethods.currentId],
     totalUnits: state.cart.units,
-    deliveryPrice: parseFloat(state.suppliers.data[state.suppliers.currentId].pricePerUnit * state.cart.units).toFixed(2),
+    deliveryPrice: parseFloat(state.deliveryMethods.data[state.deliveryMethods.currentId].unitPrice * state.cart.quantity).toFixed(2),
 });
 
 Review.propTypes = {

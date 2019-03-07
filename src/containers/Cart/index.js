@@ -4,7 +4,7 @@ import CartProducts from '../../components/Cart/Products';
 import CartSummary from '../../components/Cart/Summary';
 import SubHeader from '../../components/SubHeader';
 import { addToCart, decrementInCart, deleteFromCart } from '../../actions/cart';
-import { setCurrentSupplier } from '../../actions/suppliers';
+import { setCurrentDeliveryMethod } from '../../actions/deliveryMethods';
 import {requireBuyerDeliveryStep, skipBuyerDeliveryStep} from '../../actions/buyerDelivery';
 import Paper from '@material-ui/core/Paper/Paper';
 import withStyles from '@material-ui/core/styles/withStyles';
@@ -70,7 +70,7 @@ const mapStateToProps = state => ({
     cart: state.cart,
     products: state.cart.ids.map(i => state.products.data[i]),
     deliveryMethods: state.deliveryMethods.ids.map(i => state.deliveryMethods.data[i]),
-    currentDeliveryMethod: state.deliveryMethods.data[state.deliveryMethods.currentId],
+    currentDeliveryMethod: state.deliveryMethods.data[state.deliveryMethods.currentId] || {},
 });
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
@@ -83,8 +83,8 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
     removeItemFromCart(itemId) {
         dispatch(deleteFromCart(itemId));
     },
-    setCurrentSupplier(supplier) {
-        dispatch(setCurrentSupplier(supplier));
+    setCurrentSupplier(deliveryMethod) {
+        dispatch(setCurrentDeliveryMethod(deliveryMethod));
     },
     toggleBuyerDeliveryStepRequired(required) {
         if (required) {
