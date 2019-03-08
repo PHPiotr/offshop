@@ -42,13 +42,19 @@ export const createOrder = paymentDataFromGooglePay => {
 
     return async (dispatch, getState) => {
 
+        const {order: {isCreating}} = getState();
+
+        if (isCreating) {
+            return Promise.resolve();
+        }
+
         dispatch({type: CREATE_ORDER_REQUEST});
 
         try {
             const authResponse = await authorize();
             const authData = await authResponse.json();
             if (!authResponse.ok) {
-                throw Error(authData.errorMessage);
+                throw new Error(authData.errorMessage);
             }
 
             const state = getState();
@@ -56,14 +62,13 @@ export const createOrder = paymentDataFromGooglePay => {
             const { paymentMethodData } = paymentDataFromGooglePay;
             const authorizationCode = btoa(paymentMethodData.tokenizationData.token);
 
-            const totalPrice = state.cart.totalPrice + state.deliveryMethods.data[state.deliveryMethods.currentId].unitPrice * state.cart.quantity;
-            const totalAmount = parseFloat(totalPrice).toFixed(2).toString().replace('.', '');
+            const totalAmount = state.cart.totalPrice + state.deliveryMethods.data[state.deliveryMethods.currentId].unitPrice * 100 * state.cart.quantity;
             const products = state.cart.ids.reduce((acc, _id) => {
-                const {name, price} = state.products.data[_id];
+                const {name, unitPrice} = state.products.data[_id];
                 acc[_id] = {
                     _id,
                     name,
-                    unitPrice: parseFloat(price).toFixed(2).toString().replace('.', ''),
+                    unitPrice: unitPrice * 100,
                     quantity: state.cart.products[_id].quantity.toString(),
                 };
                 return acc;
@@ -79,7 +84,7 @@ export const createOrder = paymentDataFromGooglePay => {
             const orderResponse = await orderCreateRequest({
                 accessToken: access_token,
                 authorizationCode,
-                totalAmount,
+                totalAmount: totalAmount.toFixed(),
                 productsIds: state.cart.ids,
                 products,
                 description: 'OFFSHOP - transakcja',
@@ -87,14 +92,14 @@ export const createOrder = paymentDataFromGooglePay => {
             });
             const orderData = await orderResponse.json();
             if (!orderResponse.ok) {
-                throw Error(orderData.errorMessage);
+                throw new Error(orderData.message);
             }
             dispatch({type: CREATE_ORDER_SUCCESS, payload: {orderData}});
 
             return Promise.resolve(orderData);
 
         } catch (orderError) {
-            dispatch({type: CREATE_ORDER_FAILURE, payload: {orderError: orderError.message}});
+            dispatch({type: CREATE_ORDER_FAILURE});
 
             return Promise.reject(orderError);
         }

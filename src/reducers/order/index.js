@@ -10,7 +10,7 @@ import {
 
 export const initialState = {
     retrievingOrder: false,
-    creatingOrder: false,
+    isCreating: false,
     data: null,
     error: null,
     errorDialogOpen: false,
@@ -41,21 +41,20 @@ const order = (state = initialState, action) => {
         case CREATE_ORDER_REQUEST:
             return {
                 ...state,
-                creatingOrder: true,
+                isCreating: true,
                 error: null,
             };
         case CREATE_ORDER_SUCCESS:
             return {
                 ...state,
-                creatingOrder: false,
+                isCreating: false,
                 data: action.payload.orderData,
                 error: null,
             };
         case CREATE_ORDER_FAILURE:
             return {
                 ...state,
-                creatingOrder: false,
-                error: action.payload.orderError,
+                isCreating: false,
             };
         default:
             return state;

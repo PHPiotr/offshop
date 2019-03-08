@@ -38,7 +38,7 @@ const data = (state = initialData, {type, payload}) => {
 const currentId = (state = initialCurrentId, {type, payload}) => {
     switch (type) {
         case actions.SET_CURRENT_DELIVERY_METHOD:
-            return payload.currentId;
+            return payload.current.id;
         default:
             return state;
     }

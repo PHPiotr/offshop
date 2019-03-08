@@ -2,11 +2,12 @@ import React, {Component, Fragment} from 'react';
 import {getFormValues, isValid} from 'redux-form';
 import CheckoutView from '../../components/Checkout';
 import {connect} from 'react-redux';
-import {stepBack, stepNext, setActiveStepId, toggleCreateOrderFailedDialog} from '../../actions/checkout';
+import {stepBack, stepNext, setActiveStepId} from '../../actions/checkout';
 import {createOrder} from '../../actions/order';
 import SubHeader from '../../components/SubHeader';
-import OrderCreateFailedDialog from '../../components/Checkout/OrderCreateFailedDialog';
 import withGooglePay from '../../hoc/withGooglePay';
+import ProgressIndicator from '../../components/ProgressIndicator';
+import {showNotification} from '../../actions/notification';
 
 class Checkout extends Component {
     componentDidMount() {
@@ -18,9 +19,9 @@ class Checkout extends Component {
     render() {
         return (
             <Fragment>
+                {this.props.order.isCreating && <ProgressIndicator/>}
                 <SubHeader content="Zamówienie"/>
                 <CheckoutView {...this.props} />
-                <OrderCreateFailedDialog/>
             </Fragment>
         );
     }
@@ -39,7 +40,7 @@ const mapStateToProps = state => ({
     validBuyerDeliveryData: isValid('buyerDelivery')(state),
     buyer: getFormValues('buyer')(state),
     buyerDelivery: getFormValues('buyerDelivery')(state),
-    orderData: state.order.data,
+    order: state.order,
 });
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
@@ -58,6 +59,7 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
     async onGooglePayButtonClick(paymentDataFromGooglePay) {
         try {
             const payload = await dispatch(createOrder(paymentDataFromGooglePay));
+            debugger;
             const {redirectUri} = payload;
             if (redirectUri) {
                 window.location.href = redirectUri;
@@ -65,8 +67,9 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
                 dispatch(setActiveStepId(0));
                 ownProps.history.replace('/order');
             }
-        } catch (orderError) {
-            dispatch(toggleCreateOrderFailedDialog());
+        } catch (e) {
+            dispatch(setActiveStepId(2));
+            dispatch(showNotification({message: e.message, variant: 'error'}));
         }
     },
 });

@@ -11,7 +11,7 @@ export const ON_CREATE_DELIVERY_METHOD = 'ON_CREATE_DELIVERY_METHOD';
 
 export const setCurrentDeliveryMethod = current => ({
     type: SET_CURRENT_DELIVERY_METHOD,
-    payload: { currentId: current.id },
+    payload: { current },
 });
 
 export const getDeliveryMethodsIfNeeded = params => {

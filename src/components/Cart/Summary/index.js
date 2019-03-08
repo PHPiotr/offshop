@@ -11,7 +11,6 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import {FormattedMessage} from "react-intl";
 import {connect} from 'react-redux';
 import {setCurrentDeliveryMethod} from '../../../actions/deliveryMethods';
-import {requireBuyerDeliveryStep, skipBuyerDeliveryStep} from '../../../actions/buyerDelivery';
 import {withRouter} from 'react-router-dom';
 
 const styles = theme => ({
@@ -36,7 +35,6 @@ const CartSummary = props => {
 
     const handleSetCurrentDeliveryMethod = e => {
         props.handleSetCurrentDeliveryMethod(deliveryMethods.find(s => s.id === e.target.value));
-        props.toggleBuyerDeliveryStepRequired(!props.currentDeliveryMethod.unitPrice);
     };
 
     return (
@@ -117,13 +115,6 @@ const mapDispatchToProps = (dispatch, {history}) => ({
     },
     handleSetCurrentDeliveryMethod(deliveryMethod) {
         dispatch(setCurrentDeliveryMethod(deliveryMethod));
-    },
-    toggleBuyerDeliveryStepRequired(required) {
-        if (required) {
-            dispatch(requireBuyerDeliveryStep());
-        } else {
-            dispatch(skipBuyerDeliveryStep());
-        }
     },
 });
 
