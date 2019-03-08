@@ -12,6 +12,7 @@ import {FormattedMessage} from "react-intl";
 import {connect} from 'react-redux';
 import {setCurrentDeliveryMethod} from '../../../actions/deliveryMethods';
 import {requireBuyerDeliveryStep, skipBuyerDeliveryStep} from '../../../actions/buyerDelivery';
+import {withRouter} from 'react-router-dom';
 
 const styles = theme => ({
     root: {
@@ -110,7 +111,10 @@ const mapStateToProps = state => ({
     currentDeliveryMethod: state.deliveryMethods.data[state.deliveryMethods.currentId] || {},
 });
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch, {history}) => ({
+    checkout() {
+        history.push('/checkout');
+    },
     handleSetCurrentDeliveryMethod(deliveryMethod) {
         dispatch(setCurrentDeliveryMethod(deliveryMethod));
     },
@@ -123,4 +127,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(CartSummary));
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(CartSummary)));

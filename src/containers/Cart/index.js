@@ -70,10 +70,7 @@ const mapStateToProps = state => ({
     currentDeliveryMethod: state.deliveryMethods.data[state.deliveryMethods.currentId] || {},
 });
 
-const mapDispatchToProps = (dispatch, ownProps) => ({
-    checkout() {
-        ownProps.history.push('/checkout');
-    },
+const mapDispatchToProps = dispatch => ({
     handleGetDeliveryMethodsIfNeeded() {
         dispatch(getDeliveryMethodsIfNeeded());
     }
