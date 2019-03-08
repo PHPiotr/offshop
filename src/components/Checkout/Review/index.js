@@ -29,7 +29,7 @@ const Review = props => {
         <Fragment>
             <List disablePadding>
                 {products.map(
-                    ({_id, name, unitPrice, priceTotal}) => (
+                    ({_id, name, unitPrice, totalPrice}) => (
                         <Fragment key={_id}>
                             <ListItem className={classes.listItem}>
                                 <ListItemText
@@ -37,7 +37,7 @@ const Review = props => {
                                     secondary={`${cart.products[_id].quantity} szt.`}
                                 />
                                 <Typography variant="body2">
-                                    {`${unitPrice} x ${cart.products[_id].quantity} = ${priceTotal} ${currency}`}
+                                    {`${unitPrice} x ${cart.products[_id].quantity} = ${(totalPrice/100).toFixed(2)} ${currency}`}
                                 </Typography>
                             </ListItem>
                             <Divider/>
@@ -110,11 +110,10 @@ let buyerDeliveryValues;
 const mapStateToProps = state => ({
     products: state.cart.ids.map(i => {
         const product = state.products.data[i];
-        const pricePerItem = product.unitPrice;
+        const productInCart = state.cart.products[i];
         return {
             ...product,
-            pricePerItem: pricePerItem.toFixed(2),
-            priceTotal: (pricePerItem * state.cart.products[i].quantity).toFixed(2),
+            ...productInCart,
         };
     }),
     buyerDetails: state.buyer.ids.reduce((acc, i) => {
@@ -139,10 +138,7 @@ const mapStateToProps = state => ({
     }, []),
     cart: state.cart,
     totalPrice: state.cart.totalPrice
-        ? (
-            state.cart.totalPrice +
-            state.deliveryMethods.data[state.deliveryMethods.currentId].unitPrice * state.cart.quantity
-        ).toFixed(2)
+        ? ((state.cart.totalPrice + state.deliveryMethods.data[state.deliveryMethods.currentId].unitPrice * 100 * state.cart.quantity) / 100).toFixed(2)
         : '0.00',
     deliveryMethod: state.deliveryMethods.data[state.deliveryMethods.currentId],
     weight: state.cart.weight,

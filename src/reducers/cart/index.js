@@ -30,7 +30,7 @@ const cart = (state = initialState, { payload, type }) => {
                 products: {...state.products, [payload.item._id]: {
                     quantity: item.quantity + 1,
                     weight: item.weight + payload.item.weight * payload.quantity,
-                    totalPrice: item.totalPrice + payload.item.unitPrice * payload.quantity * 100,
+                    totalPrice: item.totalPrice + payload.item.unitPrice * 100 * payload.quantity,
                 }}
             };
         case DECREMENT_IN_CART:
