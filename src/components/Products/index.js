@@ -37,9 +37,9 @@ function ProductsGridList(props) {
             <GridList cellHeight={`auto`}>
                 {products.map(product => {
 
-                    const productQuantity = product.stock;
-                    const productInCart = cart.products[product._id] || {stock: 0};
-                    const canAddToCart = productQuantity - productInCart.stock > 0;
+                    const productInStockQuantity = product.stock;
+                    const productInCart = cart.products[product._id] || {quantity: 0};
+                    const canAddToCart = productInStockQuantity - productInCart.quantity > 0;
 
                     return (
                         <Grid item key={product._id} xs={12} sm={6} md={4} lg={3}>
