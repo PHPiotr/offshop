@@ -9,10 +9,7 @@ const initialIsFetching = false;
 const ids = (state = initialIds, {type, payload}) => {
     switch(type) {
         case actions.RETRIEVE_DELIVERY_METHODS_SUCCESS:
-            return [
-                ...state,
-                ...payload.result,
-            ];
+            return payload.result;
         case actions.ON_CREATE_DELIVERY_METHOD:
             return [payload.deliveryMethod._id, ...state];
         default:
