@@ -16,6 +16,8 @@ import {setActiveStepId, stepBack, stepNext} from '../../actions/checkout';
 import {createOrder} from '../../actions/order';
 import {showNotification} from '../../actions/notification';
 import withGooglePay from '../../hoc/withGooglePay';
+import {withRouter} from 'react-router-dom';
+import GooglePayButton from './GooglePayButton';
 
 const styles = theme => ({
     paper: {
@@ -55,7 +57,7 @@ const getStepContent = activeStepId => {
 };
 
 const Checkout = props => {
-    const {classes, activeStepId, stepsIds, steps, products} = props;
+    const {classes, activeStepId, stepsIds, steps, showGooglePayButton} = props;
 
     const activeStepValue = steps[activeStepId].value;
     let canProceed = false;
@@ -92,19 +94,7 @@ const Checkout = props => {
                             Dalej
                         </Button>
                     )}
-                    <div
-                        id="google-pay-btn-wrapper"
-                        className={classes.button}
-                        style={{
-                            display:
-                                activeStepId === stepsIds[stepsIds.length - 1] &&
-                                props.validBuyerData &&
-                                props.validBuyerDeliveryData &&
-                                products.length > 0
-                                    ? 'block'
-                                    : 'none',
-                        }}
-                    />
+                    <GooglePayButton show={showGooglePayButton}/>
                 </div>
             </Fragment>
         </Paper>
@@ -123,21 +113,15 @@ Checkout.propTypes = {
     validBuyerDeliveryData: PropTypes.bool.isRequired,
 };
 
-
 const mapStateToProps = state => ({
     activeStepId: state.checkout.activeStepId || 0,
     stepsIds: state.checkout.stepsIds,
     steps: state.checkout.steps,
-    deliveryMethod: state.deliveryMethods.data[state.deliveryMethods.currentId],
-    deliveryMethods: state.deliveryMethods,
-    cart: state.cart,
-    products: state.cart.ids.map(i => state.products.data[i]),
-    shipping: state.shipping,
     validBuyerData: isValid('buyer')(state),
     validBuyerDeliveryData: isValid('buyerDelivery')(state),
     buyer: getFormValues('buyer')(state),
     buyerDelivery: getFormValues('buyerDelivery')(state),
-    order: state.order,
+    showGooglePayButton: state.checkout.activeStepId === state.checkout.stepsIds[state.checkout.stepsIds.length - 1],
     totalPrice: state.deliveryMethods.currentId ? state.cart.totalPrice + state.deliveryMethods.data[state.deliveryMethods.currentId].unitPrice * state.cart.quantity : state.cart.totalPrice,
 });
 
@@ -157,7 +141,6 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
     async onGooglePayButtonClick(paymentDataFromGooglePay) {
         try {
             const payload = await dispatch(createOrder(paymentDataFromGooglePay));
-            debugger;
             const {redirectUri} = payload;
             if (redirectUri) {
                 window.location.href = redirectUri;
@@ -172,4 +155,4 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(withGooglePay(Checkout)));
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(withGooglePay(Checkout))));

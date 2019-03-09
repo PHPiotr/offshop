@@ -28,7 +28,6 @@ const initialState = {
             value: 'review',
         }
     },
-    createOrderFailedDialogOpen: false,
 };
 
 const checkout = (state = initialState, action) => {

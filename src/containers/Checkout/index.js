@@ -6,7 +6,7 @@ import ProgressIndicator from '../../components/ProgressIndicator';
 
 class Checkout extends Component {
     componentDidMount() {
-        if (!this.props.deliveryMethodId) {
+        if (!this.props.hasProductsInCart) {
             this.props.redirectToCart();
         }
     }
@@ -23,7 +23,7 @@ class Checkout extends Component {
 }
 
 const mapStateToProps = state => ({
-    deliveryMethodId: state.deliveryMethods.currentId,
+    hasProductsInCart: state.cart.ids.length > 0,
     isCreatingOrder: state.order.isCreating,
 });
 
