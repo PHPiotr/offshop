@@ -25,7 +25,7 @@ const cart = (state = initialState, { payload, type }) => {
                 ...state,
                 quantity: (state.quantity += payload.quantity),
                 weight: (state.weight += payload.item.weight * payload.quantity),
-                totalPrice: state.totalPrice += payload.item.unitPrice * payload.quantity * 100,
+                totalPrice: state.totalPrice += payload.item.unitPrice * 100 * payload.quantity,
                 ids: state.ids.find(i => i === payload.item._id) ? state.ids : [...state.ids, payload.item._id],
                 products: {...state.products, [payload.item._id]: {
                     quantity: item.quantity + 1,
@@ -45,12 +45,12 @@ const cart = (state = initialState, { payload, type }) => {
                 ...state,
                 quantity: (state.quantity -= payload.quantity),
                 weight: (state.weight -= payload.item.weight * payload.quantity),
-                totalPrice: state.totalPrice -= (payload.item.unitPrice * payload.quantity * 100),
+                totalPrice: state.totalPrice -= (payload.item.unitPrice * 100 * payload.quantity),
                 ids: item.quantity - payload.quantity <= 0 ? state.ids.filter(i => i !== payload.item._id) : state.ids,
                 products: {...state.products, [payload.item._id]: {
                     quantity: item.quantity - payload.quantity,
                     weight: item.weight - payload.item.weight * payload.quantity,
-                    totalPrice: item.totalPrice + payload.item.unitPrice * payload.quantity * 100,
+                    totalPrice: item.totalPrice + payload.item.unitPrice * 100 * payload.quantity,
                 }}
             };
         case DELETE_FROM_CART:
@@ -62,7 +62,7 @@ const cart = (state = initialState, { payload, type }) => {
                 ...state,
                 quantity: (state.quantity -= quantity),
                 weight: (state.weight -= weight),
-                totalPrice: state.totalPrice -= totalPrice * 100,
+                totalPrice: state.totalPrice -= totalPrice,
                 ids: state.ids.filter(id => id !== itemId),
                 products: {...state.products, [itemId]: undefined},
             };
@@ -80,13 +80,13 @@ const cart = (state = initialState, { payload, type }) => {
                         const quantitySubtract = productInCartQuantity - stock;
                         newState.quantity -= quantitySubtract;
                         newState.weight -= weight * quantitySubtract;
-                        newState.totalPrice -= unitPrice * quantitySubtract;
+                        newState.totalPrice -= unitPrice * 100 * quantitySubtract;
                         if (stock) {
                             newState.products[id] = {
                                 ...productInCart,
                                 quantity: quantity,
                                 weight: weight * stock,
-                                totalPrice: unitPrice * stock,
+                                totalPrice: unitPrice * 100 * stock,
                             };
                         } else {
                             newState.products[id] = undefined;
