@@ -1,16 +1,14 @@
-import React, { Component, Fragment } from 'react';
-import { connect } from 'react-redux';
+import React, {Component, Fragment} from 'react';
+import {connect} from 'react-redux';
 import CartProducts from '../../components/Cart/Products';
 import CartSummary from '../../components/Cart/Summary';
 import SubHeader from '../../components/SubHeader';
-import { addToCart, decrementInCart, deleteFromCart } from '../../actions/cart';
-import { setCurrentSupplier } from '../../actions/suppliers';
-import {requireBuyerDeliveryStep, skipBuyerDeliveryStep} from '../../actions/buyerDelivery';
 import Paper from '@material-ui/core/Paper/Paper';
 import withStyles from '@material-ui/core/styles/withStyles';
 import {injectIntl, FormattedMessage} from 'react-intl';
-import Grid from "@material-ui/core/Grid";
-import Typography from "@material-ui/core/Typography";
+import Grid from '@material-ui/core/Grid';
+import Typography from '@material-ui/core/Typography';
+import {getDeliveryMethodsIfNeeded} from '../../actions/deliveryMethods';
 
 const styles = theme => ({
     paper: {
@@ -35,6 +33,11 @@ const styles = theme => ({
 });
 
 class Cart extends Component {
+
+    componentDidMount() {
+        this.props.handleGetDeliveryMethodsIfNeeded();
+    }
+
     render() {
         if (!this.props.products.length) {
             return (
@@ -52,9 +55,9 @@ class Cart extends Component {
         }
         return (
             <Fragment>
-                <SubHeader content="Koszyk" />
-                <CartProducts {...this.props} />
-                <CartSummary {...this.props} />
+                <SubHeader content="Koszyk"/>
+                <CartProducts/>
+                <CartSummary/>
             </Fragment>
         );
     }
@@ -63,36 +66,14 @@ class Cart extends Component {
 const mapStateToProps = state => ({
     cart: state.cart,
     products: state.cart.ids.map(i => state.products.data[i]),
-    suppliers: state.suppliers.ids.map(i => state.suppliers.data[i]),
-    currentSupplier: state.suppliers.data[state.suppliers.currentId],
+    deliveryMethods: state.deliveryMethods.ids.map(i => state.deliveryMethods.data[i]),
+    currentDeliveryMethod: state.deliveryMethods.data[state.deliveryMethods.currentId] || {},
 });
 
-const mapDispatchToProps = (dispatch, ownProps) => ({
-    incrementItemInCart(item) {
-        dispatch(addToCart(item));
-    },
-    decrementItemInCart(item) {
-        dispatch(decrementInCart(item));
-    },
-    removeItemFromCart(itemId) {
-        dispatch(deleteFromCart(itemId));
-    },
-    setCurrentSupplier(supplier) {
-        dispatch(setCurrentSupplier(supplier));
-    },
-    toggleBuyerDeliveryStepRequired(required) {
-        if (required) {
-            dispatch(requireBuyerDeliveryStep());
-        } else {
-            dispatch(skipBuyerDeliveryStep());
-        }
-    },
-    checkout() {
-        ownProps.history.push('/checkout');
-    },
+const mapDispatchToProps = dispatch => ({
+    handleGetDeliveryMethodsIfNeeded() {
+        dispatch(getDeliveryMethodsIfNeeded());
+    }
 });
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(injectIntl(withStyles(styles)(Cart)));
+export default connect(mapStateToProps, mapDispatchToProps)(injectIntl(withStyles(styles)(Cart)));

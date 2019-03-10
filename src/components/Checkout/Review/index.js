@@ -29,7 +29,7 @@ const Review = props => {
         <Fragment>
             <List disablePadding>
                 {products.map(
-                    ({_id, name, pricePerItem, priceTotal}) => (
+                    ({_id, name, unitPrice, totalPrice}) => (
                         <Fragment key={_id}>
                             <ListItem className={classes.listItem}>
                                 <ListItemText
@@ -37,7 +37,7 @@ const Review = props => {
                                     secondary={`${cart.products[_id].quantity} szt.`}
                                 />
                                 <Typography variant="body2">
-                                    {`${pricePerItem} x ${cart.products[_id].quantity} = ${priceTotal} ${currency}`}
+                                    {`${unitPrice} x ${cart.products[_id].quantity} = ${(totalPrice/100).toFixed(2)} ${currency}`}
                                 </Typography>
                             </ListItem>
                             <Divider/>
@@ -46,7 +46,7 @@ const Review = props => {
                 )}
                 <Fragment>
                     <ListItem className={classes.listItem}>
-                        <ListItemText primary="Dostawa" secondary={props.supplier.title}/>
+                        <ListItemText primary="Dostawa" secondary={props.deliveryMethod.name}/>
                         <Typography variant="body2">
                             {`${props.deliveryPrice} zł`}
                         </Typography>
@@ -80,7 +80,7 @@ const Review = props => {
                         ))}
                     </Grid>
                 </Grid>
-                {props.supplier.pricePerUnit > 0 && (
+                {props.deliveryMethod.unitPrice > 0 && (
                     <Grid item container direction="column" xs={12} sm={6}>
                         <Typography variant="h6" gutterBottom className={classes.title}>
                             Dane do wysyłki
@@ -110,11 +110,10 @@ let buyerDeliveryValues;
 const mapStateToProps = state => ({
     products: state.cart.ids.map(i => {
         const product = state.products.data[i];
-        const pricePerItem = parseFloat(product.price).toFixed(2);
+        const productInCart = state.cart.products[i];
         return {
             ...product,
-            pricePerItem,
-            priceTotal: parseFloat(pricePerItem * state.cart.products[i].quantity).toFixed(2),
+            ...productInCart,
         };
     }),
     buyerDetails: state.buyer.ids.reduce((acc, i) => {
@@ -139,14 +138,11 @@ const mapStateToProps = state => ({
     }, []),
     cart: state.cart,
     totalPrice: state.cart.totalPrice
-        ? parseFloat(
-            state.cart.totalPrice +
-            state.suppliers.data[state.suppliers.currentId].pricePerUnit * state.cart.units
-        ).toFixed(2)
+        ? ((state.cart.totalPrice + state.deliveryMethods.data[state.deliveryMethods.currentId].unitPrice * 100 * state.cart.quantity) / 100).toFixed(2)
         : '0.00',
-    supplier: state.suppliers.data[state.suppliers.currentId],
-    totalUnits: state.cart.units,
-    deliveryPrice: parseFloat(state.suppliers.data[state.suppliers.currentId].pricePerUnit * state.cart.units).toFixed(2),
+    deliveryMethod: state.deliveryMethods.data[state.deliveryMethods.currentId],
+    weight: state.cart.weight,
+    deliveryPrice: (state.deliveryMethods.data[state.deliveryMethods.currentId].unitPrice * state.cart.quantity).toFixed(2),
 });
 
 Review.propTypes = {

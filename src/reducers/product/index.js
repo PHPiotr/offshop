@@ -1,68 +1,59 @@
 import {combineReducers} from 'redux';
-import {SET_PRODUCT_INPUT_VALUE} from '../../actions/product';
 import {
-    formatPrice,
-    normalizePrice,
+    CREATE_PRODUCT_FAILURE,
+    CREATE_PRODUCT_REQUEST,
+    CREATE_PRODUCT_SUCCESS,
+} from '../../actions/product';
+import {
     validateRequired,
+    validatePrice,
     renderTextField as TextField,
-    renderFileInput as FileInput,
 } from '../../utils/form';
+import DropZoneField from '../../components/FileInput/DropzoneField';
 
 const initialIds = [
     'name',
-    'quantity',
-    'price',
-    'unit',
-    'unitsPerProduct',
+    'stock',
+    'unitPrice',
+    'weight',
     'img',
 ];
 
 const initialData = {
     name: {
-        value: '',
         type: 'text',
-        label: 'Nazwa',
+        label: 'Nazwa produktu',
         validate: [validateRequired],
         component: TextField,
+        inputProps: {},
     },
-    quantity: {
-        value: '',
+    stock: {
         type: 'number',
-        min: 0,
-        label: 'Ilość',
+        label: 'Dostępna ilość',
         validate: [validateRequired],
         component: TextField,
+        inputProps: {inputProps: {min: 1}},
     },
-    price: {
-        value: '',
+    unitPrice: {
         type: 'text',
-        label: 'Cena',
-        validate: [validateRequired],
-        format: formatPrice,
-        normalize: normalizePrice,
+        label: 'Cena produktu (zł)',
+        validate: [validateRequired, validatePrice],
         component: TextField,
+        inputProps: {},
     },
-    unit: {
-        value: 'kg',
-        type: 'text',
-        label: 'Jednostka',
-        validate: [validateRequired],
-        component: TextField,
-    },
-    unitsPerProduct: {
-        value: '',
+    weight: {
         type: 'number',
-        min: 0,
-        label: 'Ilość jednostek na produkt',
+        label: 'Waga produktu (kg)',
         validate: [validateRequired],
         component: TextField,
+        inputProps: {inputProps: {min: 1.0, step: 0.1}},
     },
     img: {
-        value: '',
         type: 'file',
         label: 'Zdjęcie produktu',
         validate: [validateRequired],
-        component: FileInput,
+        component: DropZoneField,
+        inputProps: {},
     },
 };
 
@@ -73,21 +64,25 @@ const ids = (state = initialIds, {type}) => {
     }
 };
 
-const data = (state = initialData, {type, payload}) => {
+const data = (state = initialData, {type}) => {
     switch (type) {
-        case SET_PRODUCT_INPUT_VALUE:
-            return {
-                ...state,
-                [payload.name]: {
-                    ...state[payload.name],
-                    value: payload.value,
-                },
-            };
         default:
             return state;
     }
 };
 
-const product = combineReducers({ids, data});
+const isCreating = (state = false, {type}) => {
+    switch (type) {
+        case CREATE_PRODUCT_REQUEST:
+            return true;
+        case CREATE_PRODUCT_SUCCESS:
+        case CREATE_PRODUCT_FAILURE:
+            return false;
+        default:
+            return state;
+    }
+};
+
+const product = combineReducers({ids, data, isCreating});
 
 export default product;

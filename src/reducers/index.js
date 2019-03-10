@@ -1,26 +1,30 @@
-import { combineReducers } from 'redux';
+import {combineReducers} from 'redux';
+import auth from './auth';
 import buyer from './buyer';
 import buyerDelivery from './buyerDelivery';
+import deliveryMethods from './deliveryMethods';
 import cart from './cart';
 import checkout from './checkout';
 import order from './order';
 import categories from './categories';
 import product from './product';
 import products from './products';
-import suppliers from './suppliers';
-import addedToCartDialog from './addedToCartDialog';
-import { reducer as form } from'redux-form';
+import notification from './notification';
+import dialog from './dialog';
+import form from './form';
 
 export default combineReducers({
+    auth,
     buyer,
     buyerDelivery,
     cart,
-    checkout,
-    order,
     categories,
+    checkout,
+    deliveryMethods,
+    dialog,
+    form,
+    notification,
+    order,
     product,
     products,
-    suppliers,
-    addedToCartDialog,
-    form,
 });

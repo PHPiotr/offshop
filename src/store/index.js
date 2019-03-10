@@ -26,8 +26,10 @@ const configureStore = initialState => {
         const state = store.getState();
         saveState({
             cart: state.cart,
+            checkout: state.checkout,
             order: {...orderInitialState, data: state.order.data, error: state.order.error},
             products: {...state.products},
+            deliveryMethods: {...state.deliveryMethods},
             form: {...state.form},
         });
     }, 1000));

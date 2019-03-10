@@ -39,6 +39,7 @@ const data = (state = initialData, {type, payload}) => {
             return newState;
         case ON_CREATE_PRODUCT:
             state[payload.product._id] = payload.product;
+            return state;
         default:
             return state;
     }

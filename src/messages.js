@@ -4,7 +4,7 @@ export default {
             heading: 'Cart',
             empty: 'Cart is empty',
             summary: {
-                choose_delivery: 'Choose delivery option',
+                choose_delivery: 'Choose delivery method',
                 to_pay: 'Total to pay',
                 order: 'Order',
             },
