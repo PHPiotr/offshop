@@ -30,6 +30,7 @@ const data = (state = initialData, {type, payload}) => {
             return newState;
         case actions.ON_CREATE_DELIVERY_METHOD:
             state[payload.deliveryMethod._id] = payload.deliveryMethod;
+            return state;
         default:
             return state;
     }

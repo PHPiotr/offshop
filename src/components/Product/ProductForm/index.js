@@ -39,7 +39,7 @@ class ProductForm extends Component {
         <Form onSubmit={this.props.handleSubmit} encType="multipart/form-data">
             <Grid container spacing={24}>
                 {this.props.inputKeys.reduce((acc, itemId) => {
-                    const {label, type, validate, component, inputProps, normalize} = this.props.inputs[itemId];
+                    const {label, type, validate, component, inputProps} = this.props.inputs[itemId];
 
                     if (type === 'file') {
                         acc.push(

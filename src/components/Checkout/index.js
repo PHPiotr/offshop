@@ -83,7 +83,7 @@ const Checkout = props => {
                 {getStepContent(activeStepId)}
                 <div className={classes.buttons}>
                     <Button onClick={activeStepId === stepsIds[0] ? props.redirectToCart : props.handleBack} className={classes.button}>Wróć</Button>
-                    {activeStepId != stepsIds[stepsIds.length - 1] && (
+                    {activeStepId !== stepsIds[stepsIds.length - 1] && (
                         <Button
                             variant="contained"
                             color="primary"
