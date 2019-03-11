@@ -35,11 +35,11 @@ const initialData = {
         inputProps: {inputProps: {min: 1}},
     },
     unitPrice: {
-        type: 'text',
+        type: 'number',
         label: 'Cena produktu (zł)',
         validate: [validateRequired, validatePrice],
         component: TextField,
-        inputProps: {},
+        inputProps: {inputProps: {min: 0.01, step: 0.01}},
     },
     weight: {
         type: 'number',
