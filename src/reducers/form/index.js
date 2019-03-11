@@ -7,7 +7,7 @@ export default form.plugin({
                 if (!action.meta || !state.values || !state.values.unitPrice || action.meta.field !== 'unitPrice') {
                     return state;
                 }
-                if (action.payload.indexOf('.') === -1) {
+                if (action.payload.indexOf('.') === -1 && action.payload.indexOf(',') === -1) {
                     const unitPrice = parseInt(state.values.unitPrice, 10);
 
                     return {
@@ -19,7 +19,7 @@ export default form.plugin({
                     };
                 }
 
-                const match = state.values && state.values.unitPrice.match(/^\D*(\d*)\D*\.\D*(\d*)\D*\.*$/);
+                const match = state.values && state.values.unitPrice.match(/^\D*(\d*)\D*[.,]+\D*(\d*)\D*\.*$/);
                 if (match) {
                     match.shift();
                     const [integral, fractional] = match;
