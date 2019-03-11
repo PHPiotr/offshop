@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
-import {Field, Form, reduxForm, formValueSelector} from 'redux-form';
+import {Field, Form, reduxForm, formValueSelector, isValid} from 'redux-form';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import withStyles from '@material-ui/core/styles/withStyles';
@@ -77,7 +77,7 @@ class ProductForm extends Component {
                     variant="contained"
                     color="primary"
                     className={this.props.classes.button}
-                    disabled={this.props.submitting}
+                    disabled={this.props.submitting || !this.props.isValidProduct}
                     type="submit"
                 >
                     Dodaj produkt
@@ -102,11 +102,13 @@ ProductForm = reduxForm({
 ProductForm.propTypes = {
     inputKeys: PropTypes.array,
     inputs: PropTypes.object,
+    isValidProduct: PropTypes.bool,
 };
 
 ProductForm.defaultProps = {
     inputKeys: [],
     inputs: {},
+    isValidProduct: false,
 };
 
 const selector = formValueSelector(FORM_NAME);
@@ -118,6 +120,7 @@ const mapStateToProps = state => {
         inputs: state.product.data,
         imageFile: imageFile ? [imageFile] : [],
         accessToken: state.auth.accessToken,
+        isValidProduct: isValid(FORM_NAME)(state),
     };
 };
 
