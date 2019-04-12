@@ -3,6 +3,7 @@ import auth from './auth';
 import buyer from './buyer';
 import buyerDelivery from './buyerDelivery';
 import deliveryMethods from './deliveryMethods';
+import payMethods from './payMethods';
 import cart from './cart';
 import checkout from './checkout';
 import order from './order';
@@ -21,6 +22,7 @@ export default combineReducers({
     categories,
     checkout,
     deliveryMethods,
+    payMethods,
     dialog,
     form,
     notification,
