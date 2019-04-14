@@ -19,8 +19,8 @@ import {showNotification} from '../../actions/notification';
 import withGooglePay from '../../hoc/withGooglePay';
 import {withRouter} from 'react-router-dom';
 import GooglePayButton from './GooglePayButton';
-import PayMethods from './PayMethods';
 import withPayU from '../../hoc/withPayU';
+import PayuButton from './PayuButton';
 
 const styles = theme => ({
     paper: {
@@ -56,29 +56,6 @@ const getStepContent = activeStepId => {
             return <BuyerDeliveryForm/>;
         case 2:
             return <Review/>;
-    }
-};
-
-const handleClick = function () {
-
-    debugger;
-
-    const OpenPayU = window.OpenPayU;
-
-    OpenPayU.merchantId = process.env.REACT_APP_POS_ID;
-    let d;
-    var result = OpenPayU.Token.create({}, function (data) {
-        d = data;
-        console.log(data);
-        // obsłuż rezultat tokenizacji, możliwe kody odpowiedzi są poniżej
-    });
-    if (!result) {
-        debugger;
-        // żądanie tokenizacji nie zostało wysłane,
-        // sprawdź błędy walidacji w obiekcie "result"
-    }
-    while (!d) {
-
     }
 };
 
@@ -121,32 +98,7 @@ const Checkout = props => {
                         </Button>
                     )}
                     <GooglePayButton show={showGooglePayButton}/>
-                    <table>
-                        <tr>
-                            <td>Numer karty</td>
-                            <td><input type="text" className="payu-card-number"/></td>
-                        </tr>
-                        <tr>
-                            <td>CVV2/CVC2</td>
-                            <td><input type="text" className="payu-card-cvv"/></td>
-                        </tr>
-                        <tr>
-                            <td>miesiąc</td>
-                            <td><input type="text" className="payu-card-expm"/></td>
-                        </tr>
-                        <tr>
-                            <td>rok</td>
-                            <td><input type="text" className="payu-card-expy"/></td>
-                        </tr>
-                        <tr>
-                            <td>Akceptacja regulaminu Konta PayU i zgoda na zapisanie karty</td>
-                            <td><input type="checkbox" value="false" className="payu-agreement"/></td>
-                        </tr>
-                        {/*<input type="hidden" className="payu-customer-email" value="...@..."/>*/}
-                            <tr>
-                                <td><input type="submit" id="payu-cc-form-submit" onClick={handleClick}/></td>
-                            </tr>
-                    </table>
+                    <PayuButton />
                 </div>
             </Fragment>
         </Paper>
