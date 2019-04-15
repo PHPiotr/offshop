@@ -1,7 +1,21 @@
 import React, {Component, Fragment} from 'react';
-import PropTypes from 'prop-types';
-import {Helmet} from "react-helmet";
 import sha256 from 'crypto-js/sha256';
+import PropTypes from 'prop-types';
+import {Helmet} from 'react-helmet';
+
+const generateSig = ({
+                    currencyCode,
+                    customerEmail,
+                    customerLanguage,
+                    merchantPosId,
+                    payuBrand,
+                    recurringPayment,
+                    shopName,
+                    storeCard,
+                    totalAmount,
+                    widgetMode,
+                    secondKeyMd5
+                }) => sha256(`${currencyCode}${customerEmail}${customerLanguage}${merchantPosId}${payuBrand}${recurringPayment}${shopName}${storeCard}${totalAmount}${widgetMode}${secondKeyMd5}`).toString();
 
 const withPayU = (WrappedComponent) => {
 
@@ -12,8 +26,7 @@ const withPayU = (WrappedComponent) => {
         };
 
         render() {
-debugger;
-            const x = 12345;
+
             return (
                 <Fragment>
                     <Helmet>
@@ -25,31 +38,20 @@ debugger;
                                 }
                             `}
                         </script>
-                        {/*<script*/}
-                        {/*    src="https://secure.payu.com/front/widget/js/payu-bootstrap.js"*/}
-                        {/*    currency-code={process.env.REACT_APP_CURRENCY_CODE}*/}
-                        {/*    customer-email="email@exampledomain.com"*/}
-                        {/*    customer-language="pl"*/}
-                        {/*    merchant-pos-id="145227"*/}
-                        {/*    pay-button="#pay-button"*/}
-                        {/*    shop-name="Nazwa sklepu"*/}
-                        {/*    store-card="true"*/}
-                        {/*    total-amount="9.99"*/}
-                        {/*    sig="250f5f53e465777b6fefb04f171a21b598ccceb2899fc9f229604ad529c69532">*/}
-                        {/*</script>*/}
                         <script
-                            pay-button="#pay-button"
-                            sig={this.props.sig.toString()}
-                            src="https://secure.payu.com/front/widget/js/payu-bootstrap.js"
-                            currency-code={process.env.REACT_APP_CURRENCY_CODE}
-                            customer-email="email@exampledomain.com"
-                            customer-language="pl"
-                            merchant-pos-id={process.env.REACT_APP_POS_ID}
-                            payu-brand="true"
-                            recurring-payment="false"
-                            shop-name="Offshop"
-                            store-card="false"
-                            total-amount="9.99"
+                            pay-button={this.props.payButton}
+                            sig={generateSig(this.props)}
+                            src={this.props.src}
+                            currency-code={this.props.currencyCode}
+                            customer-email={this.props.customerEmail}
+                            customer-language={this.props.customerLanguage}
+                            merchant-pos-id={this.props.merchantPosId}
+                            payu-brand={this.props.payuBrand}
+                            recurring-payment={this.props.recurringPayment}
+                            shop-name={this.props.shopName}
+                            store-card={this.props.storeCard}
+                            total-amount={this.props.totalAmount}
+                            widget-mode={this.props.widgetMode}
                         >
                         </script>
                     </Helmet>
@@ -60,7 +62,28 @@ debugger;
     }
 
     PayU.propTypes = {
-        totalPrice: PropTypes.number.isRequired,
+        payButton: PropTypes.string,
+        sig: PropTypes.string.isRequired,
+        src: PropTypes.string.isRequired,
+        currencyCode: PropTypes.string.isRequired,
+        customerEmail: PropTypes.string.isRequired,
+        customerLanguage: PropTypes.string.isRequired,
+        merchantPosId: PropTypes.string.isRequired,
+        payuBrand: PropTypes.oneOf(['true', 'false']),
+        recurringPayment: PropTypes.oneOf(['true', 'false']),
+        shopName: PropTypes.string.isRequired,
+        storeCard: PropTypes.oneOf(['true', 'false']),
+        totalAmount: PropTypes.string.isRequired,
+        widgetMode: PropTypes.oneOf(['pay', 'use']),
+        secondKeyMd5: PropTypes.string.isRequired,
+    };
+
+    PayU.defaultProps = {
+        payButton: '#pay-button',
+        payuBrand: 'true',
+        recurringPayment: 'false',
+        storeCard: 'false',
+        widgetMode: 'pay',
     };
 
     return PayU;
