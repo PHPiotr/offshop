@@ -127,7 +127,9 @@ const mapStateToProps = state => ({
     buyerDelivery: getFormValues('buyerDelivery')(state),
     showGooglePayButton: state.checkout.activeStepId === state.checkout.stepsIds[state.checkout.stepsIds.length - 1],
     totalPrice: state.deliveryMethods.currentId ? state.cart.totalPrice + state.deliveryMethods.data[state.deliveryMethods.currentId].unitPrice * 100 * state.cart.quantity : state.cart.totalPrice,
-    sig: sha256(process.env.REACT_APP_CURRENCY_CODE + formValueSelector('buyer')(state, 'email') + 'pl' + process.env.REACT_APP_POS_ID + 'true' + 'false' + process.env.REACT_APP_MERCHANT_NAME + 'false' + (state.deliveryMethods.currentId ? state.cart.totalPrice + state.deliveryMethods.data[state.deliveryMethods.currentId].unitPrice * 100 * state.cart.quantity : state.cart.totalPrice) + 'pay'),
+    //sig: sha256(process.env.REACT_APP_CURRENCY_CODE + formValueSelector('buyer')(state, 'email') + 'pl' + process.env.REACT_APP_POS_ID + 'true' + 'false' + process.env.REACT_APP_MERCHANT_NAME + 'false' + (state.deliveryMethods.currentId ? state.cart.totalPrice + state.deliveryMethods.data[state.deliveryMethods.currentId].unitPrice * 100 * state.cart.quantity : state.cart.totalPrice) + 'pay'),
+    sig: sha256('PLN' + 'test@test.com' + 'pl' + process.env.REACT_APP_POS_ID + 'true' + 'false' + process.env.REACT_APP_MERCHANT_NAME + 'true' + 'false' + 'Offshop' + 'false' + '9.99' + 'pay' + process.env.REACT_APP_SECOND_KEY)//  (state.deliveryMethods.currentId ? state.cart.totalPrice + state.deliveryMethods.data[state.deliveryMethods.currentId].unitPrice * 100 * state.cart.quantity : state.cart.totalPrice) + 'pay'),
+    // currency-code=PLN customer-email=test@test.com customer-language=pl merchant-pos-id payu-brand=true recurring-payment=false shop-name=Offshop store-card=false total-amount widget-mode=pay
 });
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
