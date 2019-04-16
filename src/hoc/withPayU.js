@@ -12,10 +12,10 @@ const generateSig = ({
                     recurringPayment,
                     shopName,
                     storeCard,
-                    totalAmount,
+                    total,
                     widgetMode,
                     secondKeyMd5
-                }) => sha256(`${currencyCode}${customerEmail}${customerLanguage}${merchantPosId}${payuBrand}${recurringPayment}${shopName}${storeCard}${totalAmount}${widgetMode}${secondKeyMd5}`).toString();
+                }) => sha256(`${currencyCode}${customerEmail}${customerLanguage}${merchantPosId}${payuBrand}${recurringPayment}${shopName}${storeCard}${total}${widgetMode}${secondKeyMd5}`).toString();
 
 const withPayU = (WrappedComponent) => {
 
@@ -26,7 +26,6 @@ const withPayU = (WrappedComponent) => {
         };
 
         render() {
-
             return (
                 <Fragment>
                     <Helmet>
@@ -43,7 +42,7 @@ const withPayU = (WrappedComponent) => {
                             recurring-payment={this.props.recurringPayment}
                             shop-name={this.props.shopName}
                             store-card={this.props.storeCard}
-                            total-amount={this.props.totalAmount}
+                            total-amount={this.props.total}
                             widget-mode={this.props.widgetMode}
                         >
                         </script>
@@ -66,7 +65,7 @@ const withPayU = (WrappedComponent) => {
         recurringPayment: PropTypes.oneOf(['true', 'false']),
         shopName: PropTypes.string.isRequired,
         storeCard: PropTypes.oneOf(['true', 'false']),
-        totalAmount: PropTypes.string.isRequired,
+        total: PropTypes.string.isRequired,
         widgetMode: PropTypes.oneOf(['pay', 'use']),
         secondKeyMd5: PropTypes.string.isRequired,
     };

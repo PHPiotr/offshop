@@ -8,9 +8,11 @@ const styles = theme => ({
         marginLeft: theme.spacing.unit,
         border: 0,
         height: '50px',
-        width: '313px',
+        width: '291px',
         background: 'url(http://static.payu.com/pl/standard/partners/buttons/payu_account_button_long_03.png) no-repeat',
         cursor: 'pointer',
+        margin: 0,
+        padding: 0,
     },
 });
 

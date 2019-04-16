@@ -12,6 +12,11 @@ import Grid from "@material-ui/core/Grid";
 import withPayU from '../../../hoc/withPayU';
 import PayuButton from "../PayuButton";
 import {Helmet} from "react-helmet";
+import GooglePayButton from "../GooglePayButton";
+import withGooglePay from "../../../hoc/withGooglePay";
+import {createOrder} from "../../../actions/order";
+import {setActiveStepId} from "../../../actions/checkout";
+import {showNotification} from "../../../actions/notification";
 
 const styles = theme => ({
     listItem: {
@@ -23,10 +28,14 @@ const styles = theme => ({
     title: {
         marginTop: theme.spacing.unit * 2,
     },
+    buttons: {
+        display: 'block',
+        textAlign: 'right',
+    },
 });
 
-const Review = props => {
-    const {classes, products, buyerDetails, buyerDeliveryDetails, totalPrice, currency, cart} = props;
+let Review = props => {
+    const {classes, products, buyerDetails, buyerDeliveryDetails, totalAmount, currency, cart} = props;
 
     return (
         <Fragment>
@@ -69,7 +78,7 @@ const Review = props => {
                 <ListItem className={classes.listItem}>
                     <ListItemText primary="Do zapłaty"/>
                     <Typography variant="subtitle1" className={classes.total}>
-                        {`${totalPrice} ${currency}`}
+                        {`${(totalAmount / 100).toFixed(2)} ${currency}`}
                     </Typography>
                 </ListItem>
                 <Divider/>
@@ -113,7 +122,10 @@ const Review = props => {
                     </Grid>
                 )}
             </Grid>
-            <PayuButton />
+            <div className={classes.buttons}>
+                <PayuButton />
+                <GooglePayButton show={props.showGooglePayButton}/>
+            </div>
         </Fragment>
     );
 };
@@ -153,12 +165,12 @@ const mapStateToProps = state => ({
         return acc;
     }, []),
     cart: state.cart,
-    totalPrice: state.cart.totalPrice
-        ? ((state.cart.totalPrice + state.deliveryMethods.data[state.deliveryMethods.currentId].unitPrice * 100 * state.cart.quantity) / 100).toFixed(2)
-        : '0.00',
+    totalAmount: state.cart.totalPrice + state.deliveryMethods.data[state.deliveryMethods.currentId].unitPrice * 100 * state.cart.quantity,
+    total: ((state.cart.totalPrice + state.deliveryMethods.data[state.deliveryMethods.currentId].unitPrice * 100 * state.cart.quantity) / 100).toFixed(2),
     deliveryMethod: state.deliveryMethods.data[state.deliveryMethods.currentId],
     weight: state.cart.weight,
     deliveryPrice: (state.deliveryMethods.data[state.deliveryMethods.currentId].unitPrice * state.cart.quantity).toFixed(2),
+    showGooglePayButton: state.checkout.activeStepId === state.checkout.stepsIds[state.checkout.stepsIds.length - 1],
     src: `${process.env.REACT_APP_PAYU_BASE_URL}/front/widget/js/payu-bootstrap.js`,
     successCallback: 'test',
     currencyCode: process.env.REACT_APP_CURRENCY_CODE,
@@ -166,17 +178,33 @@ const mapStateToProps = state => ({
     customerLanguage: 'pl',
     merchantPosId: process.env.REACT_APP_POS_ID,
     shopName: process.env.REACT_APP_MERCHANT_NAME,
-    totalAmount: state.cart.totalPrice
-        ? ((state.cart.totalPrice + state.deliveryMethods.data[state.deliveryMethods.currentId].unitPrice * 100 * state.cart.quantity) / 100).toFixed(2)
-        : '0.00',
     secondKeyMd5: process.env.REACT_APP_SECOND_KEY,
+});
+
+const mapDispatchToProps = (dispatch, ownProps) => ({
+    async onGooglePayButtonClick(paymentDataFromGooglePay) {
+        try {
+            const payload = await dispatch(createOrder(paymentDataFromGooglePay));
+            const {redirectUri} = payload;
+            if (redirectUri) {
+                window.location.href = redirectUri;
+            } else {
+                dispatch(setActiveStepId(0));
+                ownProps.history.replace('/order');
+            }
+        } catch (e) {
+            dispatch(setActiveStepId(2));
+            dispatch(showNotification({message: e.message, variant: 'error'}));
+        }
+    },
 });
 
 Review.propTypes = {
     products: PropTypes.array.isRequired,
     buyerDetails: PropTypes.array.isRequired,
     buyerDeliveryDetails: PropTypes.array.isRequired,
-    totalPrice: PropTypes.string.isRequired,
+    totalAmount: PropTypes.number.isRequired,
+    total: PropTypes.string.isRequired,
     currency: PropTypes.string,
 };
 
@@ -184,4 +212,4 @@ Review.defaultProps = {
     currency: 'zł',
 };
 
-export default connect(mapStateToProps)(withStyles(styles)(withPayU(Review)));
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(withGooglePay(withPayU(Review))));

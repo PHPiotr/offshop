@@ -62,13 +62,13 @@ export const createOrder = paymentDataFromGooglePay => {
             const { paymentMethodData } = paymentDataFromGooglePay;
             const authorizationCode = btoa(paymentMethodData.tokenizationData.token);
 
-            const totalAmount = state.cart.totalPrice + state.deliveryMethods.data[state.deliveryMethods.currentId].unitPrice * 100 * state.cart.quantity;
+            const totalAmount = state.cart.totalPrice + parseInt(state.deliveryMethods.data[state.deliveryMethods.currentId].unitPrice.replace('.', ''), 10) * state.cart.quantity;
             const products = state.cart.ids.reduce((acc, _id) => {
                 const {name, unitPrice} = state.products.data[_id];
                 acc[_id] = {
                     _id,
                     name,
-                    unitPrice: unitPrice * 100,
+                    unitPrice: unitPrice.replace('.', ''),
                     quantity: state.cart.products[_id].quantity.toString(),
                 };
                 return acc;
