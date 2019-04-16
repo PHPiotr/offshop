@@ -11,16 +11,13 @@ import Review from './Review';
 import PropTypes from 'prop-types';
 import BuyerForm from "./BuyerForm";
 import BuyerDeliveryForm from "./BuyerDeliveryForm";
-import {getFormValues, isValid, formValueSelector} from 'redux-form';
-import sha256 from 'crypto-js/sha256';
+import {getFormValues, isValid} from 'redux-form';
 import {setActiveStepId, stepBack, stepNext} from '../../actions/checkout';
 import {createOrder} from '../../actions/order';
 import {showNotification} from '../../actions/notification';
 import withGooglePay from '../../hoc/withGooglePay';
 import {withRouter} from 'react-router-dom';
 import GooglePayButton from './GooglePayButton';
-import withPayU from '../../hoc/withPayU';
-import PayuButton from './PayuButton';
 
 const styles = theme => ({
     paper: {
@@ -98,7 +95,6 @@ const Checkout = props => {
                         </Button>
                     )}
                     <GooglePayButton show={showGooglePayButton}/>
-                    <PayuButton />
                 </div>
             </Fragment>
         </Paper>
@@ -127,14 +123,6 @@ const mapStateToProps = state => ({
     buyerDelivery: getFormValues('buyerDelivery')(state),
     showGooglePayButton: state.checkout.activeStepId === state.checkout.stepsIds[state.checkout.stepsIds.length - 1],
     totalPrice: state.deliveryMethods.currentId ? state.cart.totalPrice + state.deliveryMethods.data[state.deliveryMethods.currentId].unitPrice * 100 * state.cart.quantity : state.cart.totalPrice,
-    src: `${process.env.REACT_APP_PAYU_BASE_URL}/front/widget/js/payu-bootstrap.js`,
-    currencyCode: process.env.REACT_APP_CURRENCY_CODE,
-    customerEmail: 'test@test.com',
-    customerLanguage: 'pl',
-    merchantPosId: process.env.REACT_APP_POS_ID,
-    shopName: process.env.REACT_APP_MERCHANT_NAME,
-    totalAmount: '9.99',
-    secondKeyMd5: process.env.REACT_APP_SECOND_KEY,
 });
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
@@ -164,4 +152,4 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
     },
 });
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(withGooglePay(withPayU(Checkout)))));
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(withGooglePay(Checkout))));

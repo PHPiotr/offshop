@@ -30,18 +30,11 @@ const withPayU = (WrappedComponent) => {
             return (
                 <Fragment>
                     <Helmet>
-                        <script type="text/javascript">
-                            {`
-                                function test(data) {
-                                    console.log("callback");
-                                    console.log(data);
-                                }
-                            `}
-                        </script>
                         <script
                             pay-button={this.props.payButton}
                             sig={generateSig(this.props)}
                             src={this.props.src}
+                            success-callback={this.props.successCallback}
                             currency-code={this.props.currencyCode}
                             customer-email={this.props.customerEmail}
                             customer-language={this.props.customerLanguage}
@@ -63,8 +56,8 @@ const withPayU = (WrappedComponent) => {
 
     PayU.propTypes = {
         payButton: PropTypes.string,
-        sig: PropTypes.string.isRequired,
         src: PropTypes.string.isRequired,
+        successCallback: PropTypes.string.isRequired,
         currencyCode: PropTypes.string.isRequired,
         customerEmail: PropTypes.string.isRequired,
         customerLanguage: PropTypes.string.isRequired,

@@ -1,6 +1,6 @@
 import React, {Fragment} from 'react';
 import {connect} from 'react-redux';
-import {getFormValues} from 'redux-form';
+import {getFormValues, formValueSelector} from 'redux-form';
 import PropTypes from 'prop-types';
 import {withStyles} from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
@@ -9,6 +9,9 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Divider from '@material-ui/core/Divider';
 import Grid from "@material-ui/core/Grid";
+import withPayU from '../../../hoc/withPayU';
+import PayuButton from "../PayuButton";
+import {Helmet} from "react-helmet";
 
 const styles = theme => ({
     listItem: {
@@ -27,6 +30,16 @@ const Review = props => {
 
     return (
         <Fragment>
+            <Helmet>
+                <script type="text/javascript">
+                    {`
+                                function test(data) {
+                                    console.log("callback");
+                                    console.log(data);
+                                }
+                            `}
+                </script>
+            </Helmet>
             <List disablePadding>
                 {products.map(
                     ({_id, name, unitPrice, totalPrice}) => (
@@ -100,12 +113,15 @@ const Review = props => {
                     </Grid>
                 )}
             </Grid>
+            <PayuButton />
         </Fragment>
     );
 };
 
 let buyerValues;
 let buyerDeliveryValues;
+
+const selector = formValueSelector('buyer');
 
 const mapStateToProps = state => ({
     products: state.cart.ids.map(i => {
@@ -143,6 +159,17 @@ const mapStateToProps = state => ({
     deliveryMethod: state.deliveryMethods.data[state.deliveryMethods.currentId],
     weight: state.cart.weight,
     deliveryPrice: (state.deliveryMethods.data[state.deliveryMethods.currentId].unitPrice * state.cart.quantity).toFixed(2),
+    src: `${process.env.REACT_APP_PAYU_BASE_URL}/front/widget/js/payu-bootstrap.js`,
+    successCallback: 'test',
+    currencyCode: process.env.REACT_APP_CURRENCY_CODE,
+    customerEmail: selector(state, 'email'),
+    customerLanguage: 'pl',
+    merchantPosId: process.env.REACT_APP_POS_ID,
+    shopName: process.env.REACT_APP_MERCHANT_NAME,
+    totalAmount: state.cart.totalPrice
+        ? ((state.cart.totalPrice + state.deliveryMethods.data[state.deliveryMethods.currentId].unitPrice * 100 * state.cart.quantity) / 100).toFixed(2)
+        : '0.00',
+    secondKeyMd5: process.env.REACT_APP_SECOND_KEY,
 });
 
 Review.propTypes = {
@@ -157,4 +184,4 @@ Review.defaultProps = {
     currency: 'zł',
 };
 
-export default connect(mapStateToProps)(withStyles(styles)(Review));
+export default connect(mapStateToProps)(withStyles(styles)(withPayU(Review)));
