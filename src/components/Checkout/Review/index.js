@@ -13,7 +13,7 @@ import withPayU from '../../../hoc/withPayU';
 import PayuButton from "../PayuButton";
 import GooglePayButton from "../GooglePayButton";
 import withGooglePay from "../../../hoc/withGooglePay";
-import {createOrder, createOrderPayuExpress} from "../../../actions/order";
+import {createOrder} from "../../../actions/order";
 import {setActiveStepId} from "../../../actions/checkout";
 import {showNotification} from "../../../actions/notification";
 import {withRouter} from 'react-router-dom';
@@ -172,24 +172,9 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
-    async onGooglePayButtonClick(paymentDataFromGooglePay) {
+    async handleCreateOrderRequest(payMethods) {
         try {
-            const payload = await dispatch(createOrder(paymentDataFromGooglePay));
-            const {redirectUri} = payload;
-            if (redirectUri) {
-                window.location.href = redirectUri;
-            } else {
-                dispatch(setActiveStepId(0));
-                ownProps.history.replace('/order');
-            }
-        } catch (e) {
-            dispatch(setActiveStepId(2));
-            dispatch(showNotification({message: e.message, variant: 'error'}));
-        }
-    },
-    async handleCreateOrderRequest(payuExpressData) {
-        try {
-            const payload = await dispatch(createOrderPayuExpress(payuExpressData));
+            const payload = await dispatch(createOrder(payMethods));
             const {redirectUri} = payload;
             if (redirectUri) {
                 window.location.href = redirectUri;

@@ -54,7 +54,18 @@ let googlePayButton = null;
 const onButtonClick = (paymentsClient, totalAmount, callback) => {
     paymentDataRequest.transactionInfo.totalPrice = (totalAmount / 100).toFixed(2).toString();
     paymentsClient.loadPaymentData(paymentDataRequest)
-        .then(paymentData => callback(paymentData))
+        .then(paymentData => {
+            const { paymentMethodData } = paymentData;
+            const payMethods = {
+                payMethod: {
+                    value: process.env.REACT_APP_PAYU_METHOD_VALUE_GOOGLE_PAY,
+                    type: process.env.REACT_APP_PAYU_METHOD_TYPE_GOOGLE_PAY,
+                    authorizationCode: btoa(paymentMethodData.tokenizationData.token),
+                }
+            };
+
+            return callback(payMethods)
+        })
         .catch(e => console.error(e));
 };
 
@@ -78,7 +89,7 @@ const withGooglePay = (WrappedComponent) => {
         };
 
         setUpGooglePay = () => {
-            const {totalAmount, onGooglePayButtonClick} = this.props;
+            const {totalAmount, handleCreateOrderRequest} = this.props;
             const script = document.createElement('script');
             script.src = 'https://pay.google.com/gp/p/js/pay.js';
             script.type = 'text/javascript';
@@ -99,7 +110,7 @@ const withGooglePay = (WrappedComponent) => {
 
                 paymentsClient.isReadyToPay(isReadyToPayRequest)
                     .then(response => {
-                        googlePayButton = createButton(response, paymentsClient, totalAmount, onGooglePayButtonClick);
+                        googlePayButton = createButton(response, paymentsClient, totalAmount, handleCreateOrderRequest);
                         const buttonWrapperElem = document.getElementById(this.props.googlePayButtonParentId);
                         googlePayButton && buttonWrapperElem && buttonWrapperElem.appendChild(googlePayButton);
                     })
@@ -121,7 +132,7 @@ const withGooglePay = (WrappedComponent) => {
     }
 
     GooglePay.propTypes = {
-        onGooglePayButtonClick: PropTypes.func.isRequired,
+        handleCreateOrderRequest: PropTypes.func.isRequired,
         googlePayButtonParentId: PropTypes.string,
         totalAmount: PropTypes.number.isRequired,
     };

@@ -51,7 +51,14 @@ const withPayU = (WrappedComponent) => {
                 e.data.message.data &&
                 e.data.message.data
             ) {
-                this.props.handleCreateOrderRequest(e.data.message.data);
+                const {value, type} = e.data.message.data;
+                const payMethods = {
+                    payMethod: {
+                        value,
+                        type,
+                    }
+                };
+                this.props.handleCreateOrderRequest(payMethods);
             }
         }
 
