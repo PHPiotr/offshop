@@ -11,12 +11,12 @@ import Divider from '@material-ui/core/Divider';
 import Grid from "@material-ui/core/Grid";
 import withPayU from '../../../hoc/withPayU';
 import PayuButton from "../PayuButton";
-import {Helmet} from "react-helmet";
 import GooglePayButton from "../GooglePayButton";
 import withGooglePay from "../../../hoc/withGooglePay";
-import {createOrder} from "../../../actions/order";
+import {createOrder, createOrderPayuExpress} from "../../../actions/order";
 import {setActiveStepId} from "../../../actions/checkout";
 import {showNotification} from "../../../actions/notification";
+import {withRouter} from 'react-router-dom';
 
 const styles = theme => ({
     listItem: {
@@ -39,16 +39,6 @@ let Review = props => {
 
     return (
         <Fragment>
-            <Helmet>
-                <script type="text/javascript">
-                    {`
-                                function test(data) {
-                                    console.log("callback");
-                                    console.log(data);
-                                }
-                            `}
-                </script>
-            </Helmet>
             <List disablePadding>
                 {products.map(
                     ({_id, name, unitPrice, totalPrice}) => (
@@ -197,6 +187,21 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
             dispatch(showNotification({message: e.message, variant: 'error'}));
         }
     },
+    async handleCreateOrderRequest(payuExpressData) {
+        try {
+            const payload = await dispatch(createOrderPayuExpress(payuExpressData));
+            const {redirectUri} = payload;
+            if (redirectUri) {
+                window.location.href = redirectUri;
+            } else {
+                dispatch(setActiveStepId(0));
+                ownProps.history.replace('/order');
+            }
+        } catch (e) {
+            dispatch(setActiveStepId(2));
+            dispatch(showNotification({message: e.message, variant: 'error'}));
+        }
+    }
 });
 
 Review.propTypes = {
@@ -212,4 +217,4 @@ Review.defaultProps = {
     currency: 'zł',
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(withGooglePay(withPayU(Review))));
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(withGooglePay(withPayU(Review)))));

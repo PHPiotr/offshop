@@ -60,7 +60,6 @@ export const createOrder = paymentDataFromGooglePay => {
             const state = getState();
             const { access_token } = authData;
             const { paymentMethodData } = paymentDataFromGooglePay;
-            const authorizationCode = btoa(paymentMethodData.tokenizationData.token);
 
             const totalAmount = state.cart.totalPrice + parseInt(state.deliveryMethods.data[state.deliveryMethods.currentId].unitPrice.replace('.', ''), 10) * state.cart.quantity;
             const products = state.cart.ids.reduce((acc, _id) => {
@@ -82,8 +81,85 @@ export const createOrder = paymentDataFromGooglePay => {
             }
 
             const orderResponse = await orderCreateRequest({
+                payMethods: {
+                    payMethod: {
+                        value: process.env.REACT_APP_PAYU_METHOD_VALUE_GOOGLE_PAY,
+                        type: process.env.REACT_APP_PAYU_METHOD_TYPE_GOOGLE_PAY,
+                        authorizationCode: btoa(paymentMethodData.tokenizationData.token),
+                    }
+                },
                 accessToken: access_token,
-                authorizationCode,
+                totalAmount: totalAmount.toFixed(),
+                productsIds: state.cart.ids,
+                products,
+                description: 'OFFSHOP - transakcja',
+                buyer,
+            });
+            const orderData = await orderResponse.json();
+            if (!orderResponse.ok) {
+                throw new Error(orderData.message);
+            }
+            dispatch({type: CREATE_ORDER_SUCCESS, payload: {orderData}});
+
+            return Promise.resolve(orderData);
+
+        } catch (orderError) {
+            dispatch({type: CREATE_ORDER_FAILURE});
+
+            return Promise.reject(orderError);
+        }
+    }
+};
+
+export const createOrderPayuExpress = payuExpressData => {
+
+    return async (dispatch, getState) => {
+
+        const {order: {isCreating}} = getState();
+
+        if (isCreating) {
+            return Promise.resolve();
+        }
+
+        dispatch({type: CREATE_ORDER_REQUEST});
+
+        try {
+            const authResponse = await authorize();
+            const authData = await authResponse.json();
+            if (!authResponse.ok) {
+                throw new Error(authData.errorMessage);
+            }
+
+            const state = getState();
+            const { access_token } = authData;
+
+            const totalAmount = state.cart.totalPrice + parseInt(state.deliveryMethods.data[state.deliveryMethods.currentId].unitPrice.replace('.', ''), 10) * state.cart.quantity;
+            const products = state.cart.ids.reduce((acc, _id) => {
+                const {name, unitPrice} = state.products.data[_id];
+                acc[_id] = {
+                    _id,
+                    name,
+                    unitPrice: unitPrice.replace('.', ''),
+                    quantity: state.cart.products[_id].quantity.toString(),
+                };
+                return acc;
+            }, {});
+
+            const buyer =  getFormValues('buyer')(state);
+            const delivery = getFormValues('buyerDelivery')(state);
+            if (delivery) {
+                buyer.delivery = delivery;
+                buyer.delivery.countryCode = 'PL';
+            }
+
+            const orderResponse = await orderCreateRequest({
+                payMethods: {
+                    payMethod: {
+                        value: payuExpressData.value,
+                        type: payuExpressData.type,
+                    }
+                },
+                accessToken: access_token,
                 totalAmount: totalAmount.toFixed(),
                 productsIds: state.cart.ids,
                 products,

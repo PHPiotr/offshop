@@ -20,13 +20,7 @@ export const orderCreateRequest = params =>
         mode: 'cors',
         cache: 'no-cache',
         body: JSON.stringify({
-            payMethods: {
-                payMethod: {
-                    value: process.env.REACT_APP_PAYU_METHOD_VALUE_GOOGLE_PAY,
-                    type: process.env.REACT_APP_PAYU_METHOD_TYPE_GOOGLE_PAY,
-                    authorizationCode: params.authorizationCode,
-                }
-            },
+            payMethods: params.payMethods,
             totalAmount: params.totalAmount,
             products: params.products,
             productsIds: params.productsIds,

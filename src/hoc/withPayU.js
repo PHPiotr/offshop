@@ -22,8 +22,36 @@ const withPayU = (WrappedComponent) => {
     class PayU extends Component {
 
         state = {
-            payUButton: null,
+            sig: "",
         };
+
+        constructor(props) {
+            super(props);
+            this.onSuccess = this.onSuccess.bind(this);
+        }
+
+        componentDidMount() {
+            this.setState({sig: generateSig(this.props)});
+            window.addEventListener('message', this.onSuccess);
+        }
+
+        componentWillReceiveProps(nextProps, nextContext) {
+            this.setState({sig: generateSig(nextProps)});
+        }
+
+        onSuccess(e) {
+            if (
+                e.data &&
+                e.data.service === 'MerchantService' &&
+                e.target &&
+                e.target.PayU &&
+                e.target.PayU.Merchant &&
+                e.target.PayU.Merchant.sig === this.state.sig
+            ) {
+                const data = e.data.message && e.data.message.data && e.data.message.data;
+                this.props.handleCreateOrderRequest(data);
+            }
+        }
 
         render() {
             return (
@@ -31,9 +59,8 @@ const withPayU = (WrappedComponent) => {
                     <Helmet>
                         <script
                             pay-button={this.props.payButton}
-                            sig={generateSig(this.props)}
+                            sig={this.state.sig}
                             src={this.props.src}
-                            success-callback={this.props.successCallback}
                             currency-code={this.props.currencyCode}
                             customer-email={this.props.customerEmail}
                             customer-language={this.props.customerLanguage}
@@ -56,7 +83,7 @@ const withPayU = (WrappedComponent) => {
     PayU.propTypes = {
         payButton: PropTypes.string,
         src: PropTypes.string.isRequired,
-        successCallback: PropTypes.string.isRequired,
+        handleCreateOrderRequest: PropTypes.func.isRequired,
         currencyCode: PropTypes.string.isRequired,
         customerEmail: PropTypes.string.isRequired,
         customerLanguage: PropTypes.string.isRequired,
