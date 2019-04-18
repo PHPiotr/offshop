@@ -46,10 +46,12 @@ const withPayU = (WrappedComponent) => {
                 e.target &&
                 e.target.PayU &&
                 e.target.PayU.Merchant &&
-                e.target.PayU.Merchant.sig === this.state.sig
+                e.target.PayU.Merchant.sig === this.state.sig &&
+                e.data.message &&
+                e.data.message.data &&
+                e.data.message.data
             ) {
-                const data = e.data.message && e.data.message.data && e.data.message.data;
-                this.props.handleCreateOrderRequest(data);
+                this.props.handleCreateOrderRequest(e.data.message.data);
             }
         }
 
