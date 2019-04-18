@@ -30,7 +30,7 @@ const withGooglePay = (WrappedComponent) => {
             transactionInfo: {
                 totalPriceStatus: this.props.totalPriceStatus,
                 currencyCode: this.props.currencyCode,
-                totalPrice: this.props.total,
+                totalPrice: this.props.totalPrice,
             }
         };
 
@@ -123,7 +123,6 @@ const withGooglePay = (WrappedComponent) => {
         googlePayButtonParentId: PropTypes.string,
         handleCreateOrderRequest: PropTypes.func.isRequired,
         handleGooglePayError: PropTypes.func.isRequired,
-        totalAmount: PropTypes.number.isRequired,
         apiVersion: PropTypes.number.isRequired,
         apiVersionMinor: PropTypes.number.isRequired,
         baseCardPaymentMethodType: PropTypes.string.isRequired,
@@ -135,7 +134,7 @@ const withGooglePay = (WrappedComponent) => {
         merchantName: PropTypes.string.isRequired,
         totalPriceStatus: PropTypes.string.isRequired,
         currencyCode: PropTypes.string.isRequired,
-        total: PropTypes.string.isRequired,
+        totalPrice: PropTypes.string.isRequired,
         googlePayScriptSrc: PropTypes.string,
         googlePayScriptId: PropTypes.string,
         googlePayMethodValue: PropTypes.string.isRequired,
