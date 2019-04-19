@@ -139,8 +139,8 @@ const withGooglePay = (WrappedComponent) => {
 
     GooglePay.defaultProps = {
         environment: 'TEST',
-        googlePayScriptSrc: 'https://pay.google.com/gp/p/js/pay.js',
         googlePayScriptId: 'google-pay-script',
+        googlePayScriptSrc: 'https://pay.google.com/gp/p/js/pay.js',
     };
 
     return GooglePay;
