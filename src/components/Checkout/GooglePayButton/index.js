@@ -9,16 +9,15 @@ const styles = theme => ({
     },
 });
 
-const GooglePayButton = ({classes, show}) => (
+const GooglePayButton = ({classes}) => (
     <div
         id="google-pay-btn-wrapper"
         className={classes.button}
-        style={{display: show ? 'block' : 'none'}}
     />
 );
 
 GooglePayButton.propTypes = {
-    show: PropTypes.bool.isRequired,
+    classes: PropTypes.object.isRequired,
 };
 
 export default withStyles(styles)(GooglePayButton);
