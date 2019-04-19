@@ -1,6 +1,5 @@
 import {authorize, orderCreateRequest, orderRetrieveRequest} from "../../api/payu";
 import {getFormValues} from 'redux-form';
-import {setActiveStepId} from '../checkout';
 import {showNotification} from '../notification';
 
 export const RETRIEVE_ORDER_REQUEST = 'RETRIEVE_ORDER_REQUEST';
@@ -99,10 +98,10 @@ export const createOrderIfNeeded = payMethods => {
 
             return Promise.resolve(orderData);
 
-        } catch (orderError) {
-            dispatch({type: CREATE_ORDER_FAILURE});
+        } catch (e) {
+            dispatch({type: CREATE_ORDER_FAILURE, payload: {orderError: e.message || 'Something went wrong'}});
 
-            return Promise.reject(orderError);
+            return Promise.reject(e);
         }
     }
 };
@@ -110,24 +109,5 @@ export const createOrderIfNeeded = payMethods => {
 export const handleCreateOrderError = e => {
     return async dispatch => dispatch(showNotification({message: e.message, variant: 'error'}));
 };
-
-// const handleCreateOrderRequest = payMethods => {
-//     return async dispatch => {
-//         debugger;
-//         try {
-//             const {redirectUri} = await dispatch(createOrderIfNeeded(payMethods));
-//             if (redirectUri) {
-//                 window.location.href = redirectUri;
-//             } else {
-//                 dispatch(setActiveStepId(0));
-//                 window.location.href = '/order';
-//                 //ownProps.history.replace('/order');
-//             }
-//         } catch (e) {
-//             dispatch(setActiveStepId(2));
-//             dispatch(showNotification({message: e.message, variant: 'error'}));
-//         }
-//     };
-// };
 
 export const resetOrderData = () => ({type: RESET_ORDER_DATA});

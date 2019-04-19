@@ -4,23 +4,31 @@ import {connect} from 'react-redux';
 import SubHeader from '../../components/SubHeader';
 import ProgressIndicator from '../../components/ProgressIndicator';
 import {setActiveStepId} from '../../actions/checkout';
+import {resetOrderData} from '../../actions/order';
+import {showNotification} from '../../actions/notification';
 
 class Checkout extends Component {
     componentDidMount() {
+        if (this.props.orderData.extOrderId) {
+            this.props.resetOrderData();
+        }
         if (!this.props.hasProductsInCart) {
-            this.props.redirectToCart();
+            this.props.history.replace('/');
         }
     }
 
     componentWillReceiveProps(nextProps,nextContext) {
-        if (nextProps.orderData) {
-            debugger;
+        if (nextProps.orderData.extOrderId) {
             if (nextProps.orderData.redirectUri) {
                 window.location.href = nextProps.orderData.redirectUri;
             } else {
                 this.props.setActiveStepId(0);
-                nextProps.history.replace('/order');
+                this.props.history.replace('/order');
             }
+        }
+        if (nextProps.orderError) {
+            this.props.setActiveStepId(2);
+            this.props.showNotification({message: nextProps.orderError, variant: 'error'});
         }
     }
 
@@ -36,19 +44,10 @@ class Checkout extends Component {
 }
 
 const mapStateToProps = state => ({
-    order: state.order,
-    orderData: state.order.data,
+    orderData: state.order.data || {},
+    orderError: state.order.error || '',
     hasProductsInCart: state.cart.ids.length > 0,
     isCreatingOrder: state.order.isCreating,
 });
 
-const mapDispatchToProps = (dispatch, ownProps) => ({
-    redirectToCart() {
-        ownProps.history.replace('/cart');
-    },
-    setActiveStepId(step) {
-        dispatch(setActiveStepId(step));
-    }
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(Checkout);
+export default connect(mapStateToProps, {setActiveStepId, resetOrderData, showNotification})(Checkout);

@@ -4,9 +4,10 @@ import {
     RETRIEVE_ORDER_SUCCESS,
     CREATE_ORDER_REQUEST,
     CREATE_ORDER_SUCCESS,
-    CREATE_ORDER_FAILURE, RESET_ORDER_DATA,
+    CREATE_ORDER_FAILURE,
+    RESET_ORDER_DATA,
 
-} from "../../actions/order";
+} from '../../actions/order';
 
 export const initialState = {
     retrievingOrder: false,
@@ -33,10 +34,8 @@ const order = (state = initialState, action) => {
               };
         case RETRIEVE_ORDER_FAILURE:
               return {
-                  ...state,
-                  retrievingOrder: false,
+                  ...initialState,
                   error: action.payload.orderError,
-                  data: action.payload.data,
               };
         case CREATE_ORDER_REQUEST:
             return {
@@ -53,8 +52,8 @@ const order = (state = initialState, action) => {
             };
         case CREATE_ORDER_FAILURE:
             return {
-                ...state,
-                isCreating: false,
+                ...initialState,
+                error: action.payload.orderError,
             };
         case RESET_ORDER_DATA:
             return {
