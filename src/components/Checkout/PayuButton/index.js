@@ -59,10 +59,6 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
             dispatch(showNotification({message: e.message, variant: 'error'}));
         }
     },
-
-    handleGooglePayError(err) {
-        console.log(err);
-    }
 });
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(withPayU(PayuButton))));
