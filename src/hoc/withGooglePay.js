@@ -6,46 +6,46 @@ const withGooglePay = (WrappedComponent) => {
     class GooglePay extends Component {
 
         paymentDataRequest = {
-            apiVersion: this.props.apiVersion,
-            apiVersionMinor: this.props.apiVersionMinor,
             allowedPaymentMethods: [
                 {
-                    type: this.props.baseCardPaymentMethodType,
                     parameters: {
                         allowedAuthMethods: this.props.baseCardPaymentMethodAllowedAuthMethods,
                         allowedCardNetworks: this.props.baseCardPaymentMethodAllowedCardNetworks,
                     },
                     tokenizationSpecification: {
-                        type: this.props.tokenizationSpecificationType,
                         parameters: {
                             gateway: this.props.tokenizationSpecificationGateway,
                             gatewayMerchantId: this.props.tokenizationSpecificationGatewayMerchantId,
                         },
+                        type: this.props.tokenizationSpecificationType,
                     },
+                    type: this.props.baseCardPaymentMethodType,
                 }
             ],
+            apiVersion: this.props.apiVersion,
+            apiVersionMinor: this.props.apiVersionMinor,
             merchantInfo: {
                 merchantName: this.props.merchantName,
             },
             transactionInfo: {
-                totalPriceStatus: this.props.totalPriceStatus,
                 currencyCode: this.props.currencyCode,
                 totalPrice: this.props.totalPrice,
+                totalPriceStatus: this.props.totalPriceStatus,
             }
         };
 
         isReadyToPayRequest = {
-            apiVersion: this.props.apiVersion,
-            apiVersionMinor: this.props.apiVersionMinor,
             allowedPaymentMethods: [
                 {
-                    type: this.props.baseCardPaymentMethodType,
                     parameters: {
                         allowedAuthMethods: this.props.baseCardPaymentMethodAllowedAuthMethods,
                         allowedCardNetworks: this.props.baseCardPaymentMethodAllowedCardNetworks,
                     },
+                    type: this.props.baseCardPaymentMethodType,
                 }
             ],
+            apiVersion: this.props.apiVersion,
+            apiVersionMinor: this.props.apiVersionMinor,
         };
 
         constructor(props) {
@@ -102,9 +102,9 @@ const withGooglePay = (WrappedComponent) => {
                 const {paymentMethodData} = paymentData;
                 const payMethods = {
                     payMethod: {
-                        value: this.props.googlePayMethodValue,
-                        type: this.props.googlePayMethodType,
                         authorizationCode: btoa(paymentMethodData.tokenizationData.token),
+                        type: this.props.googlePayMethodType,
+                        value: this.props.googlePayMethodValue,
                     },
                 };
                 await this.props.createOrderIfNeeded(payMethods);
@@ -115,32 +115,32 @@ const withGooglePay = (WrappedComponent) => {
     }
 
     GooglePay.propTypes = {
-        googlePayButtonParentId: PropTypes.string.isRequired,
-        createOrderIfNeeded: PropTypes.func.isRequired,
-        handleCreateOrderError: PropTypes.func.isRequired,
         apiVersion: PropTypes.number.isRequired,
         apiVersionMinor: PropTypes.number.isRequired,
-        baseCardPaymentMethodType: PropTypes.string.isRequired,
         baseCardPaymentMethodAllowedAuthMethods: PropTypes.arrayOf(PropTypes.string).isRequired,
         baseCardPaymentMethodAllowedCardNetworks: PropTypes.arrayOf(PropTypes.string).isRequired,
-        tokenizationSpecificationType: PropTypes.string.isRequired,
-        tokenizationSpecificationGateway: PropTypes.string.isRequired,
-        tokenizationSpecificationGatewayMerchantId: PropTypes.string.isRequired,
-        merchantName: PropTypes.string.isRequired,
-        totalPriceStatus: PropTypes.string.isRequired,
+        baseCardPaymentMethodType: PropTypes.string.isRequired,
+        createOrderIfNeeded: PropTypes.func.isRequired,
         currencyCode: PropTypes.string.isRequired,
-        totalPrice: PropTypes.string.isRequired,
-        googlePayScriptSrc: PropTypes.string,
-        googlePayScriptId: PropTypes.string,
+        environment: PropTypes.string,
+        googlePayButtonParentId: PropTypes.string.isRequired,
         googlePayMethodValue: PropTypes.string.isRequired,
         googlePayMethodType: PropTypes.string.isRequired,
-        environment: PropTypes.string,
+        googlePayScriptId: PropTypes.string,
+        googlePayScriptSrc: PropTypes.string,
+        handleCreateOrderError: PropTypes.func.isRequired,
+        merchantName: PropTypes.string.isRequired,
+        tokenizationSpecificationGateway: PropTypes.string.isRequired,
+        tokenizationSpecificationGatewayMerchantId: PropTypes.string.isRequired,
+        tokenizationSpecificationType: PropTypes.string.isRequired,
+        totalPrice: PropTypes.string.isRequired,
+        totalPriceStatus: PropTypes.string.isRequired,
     };
 
     GooglePay.defaultProps = {
+        environment: 'TEST',
         googlePayScriptSrc: 'https://pay.google.com/gp/p/js/pay.js',
         googlePayScriptId: 'google-pay-script',
-        environment: 'TEST',
     };
 
     return GooglePay;

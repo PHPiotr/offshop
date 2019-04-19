@@ -71,16 +71,16 @@ const withPayuExpress = (WrappedComponent) => {
                 <Fragment>
                     <Helmet>
                         <script
-                            pay-button={this.props.payButton}
-                            sig={this.state.sig}
-                            src={this.props.src}
                             currency-code={this.props.currencyCode}
                             customer-email={this.props.customerEmail}
                             customer-language={this.props.customerLanguage}
                             merchant-pos-id={this.props.merchantPosId}
                             payu-brand={this.props.payuBrand}
+                            pay-button={this.props.payButton}
                             recurring-payment={this.props.recurringPayment}
                             shop-name={this.props.shopName}
+                            sig={this.state.sig}
+                            src={this.props.src}
                             store-card={this.props.storeCard}
                             total-amount={this.props.totalAmount}
                             widget-mode={this.props.widgetMode}
@@ -94,21 +94,21 @@ const withPayuExpress = (WrappedComponent) => {
     }
 
     PayU.propTypes = {
-        payButton: PropTypes.string,
-        src: PropTypes.string.isRequired,
         createOrderIfNeeded: PropTypes.func.isRequired,
-        handleCreateOrderError: PropTypes.func.isRequired,
         currencyCode: PropTypes.string.isRequired,
         customerEmail: PropTypes.string.isRequired,
         customerLanguage: PropTypes.string.isRequired,
+        handleCreateOrderError: PropTypes.func.isRequired,
         merchantPosId: PropTypes.string.isRequired,
+        payButton: PropTypes.string,
         payuBrand: PropTypes.oneOf(['true', 'false']),
         recurringPayment: PropTypes.oneOf(['true', 'false']),
+        secondKeyMd5: PropTypes.string.isRequired,
         shopName: PropTypes.string.isRequired,
+        src: PropTypes.string.isRequired,
         storeCard: PropTypes.oneOf(['true', 'false']),
         totalAmount: PropTypes.string.isRequired,
         widgetMode: PropTypes.oneOf(['pay', 'use']),
-        secondKeyMd5: PropTypes.string.isRequired,
     };
 
     PayU.defaultProps = {
