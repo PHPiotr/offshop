@@ -3,8 +3,8 @@ import withStyles from '@material-ui/core/styles/withStyles';
 import * as PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import {withRouter} from 'react-router-dom';
-import withGooglePay from '../../../hoc/withGooglePay';
-import {createOrderIfNeeded, handleCreateOrderError} from '../../../actions/order';
+import withGooglePay from '../../../../hoc/withGooglePay';
+import {createOrderIfNeeded, handleCreateOrderError} from '../../../../actions/order';
 
 const styles = theme => ({
     button: {
@@ -13,14 +13,14 @@ const styles = theme => ({
     },
 });
 
-const GooglePayButton = ({classes, googlePayButtonParentId}) => (
+const GooglePay = ({classes, googlePayButtonParentId}) => (
     <div
         id={googlePayButtonParentId}
         className={classes.button}
     />
 );
 
-GooglePayButton.propTypes = {
+GooglePay.propTypes = {
     classes: PropTypes.object.isRequired,
     googlePayButtonParentId: PropTypes.string.isRequired,
 };
@@ -43,4 +43,4 @@ const mapStateToProps = state => ({
     currencyCode: process.env.REACT_APP_CURRENCY_CODE,
 });
 
-export default withRouter(connect(mapStateToProps, {createOrderIfNeeded, handleCreateOrderError})(withStyles(styles)(withGooglePay(GooglePayButton))));
+export default withRouter(connect(mapStateToProps, {createOrderIfNeeded, handleCreateOrderError})(withStyles(styles)(withGooglePay(GooglePay))));

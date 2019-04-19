@@ -9,8 +9,8 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Divider from '@material-ui/core/Divider';
 import Grid from "@material-ui/core/Grid";
-import PayuButton from "../PayuButton";
-import GooglePayButton from "../GooglePayButton";
+import PayuExpress from "../PayMethods/PayuExpress";
+import GooglePay from "../PayMethods/GooglePay";
 
 const styles = theme => ({
     listItem: {
@@ -22,7 +22,7 @@ const styles = theme => ({
     title: {
         marginTop: theme.spacing.unit * 2,
     },
-    buttons: {
+    payMethods: {
         display: 'block',
         textAlign: 'right',
     },
@@ -106,9 +106,9 @@ let Review = props => {
                     </Grid>
                 )}
             </Grid>
-            <div className={classes.buttons}>
-                <PayuButton />
-                <GooglePayButton />
+            <div className={classes.payMethods}>
+                <PayuExpress />
+                <GooglePay />
             </div>
         </Fragment>
     );

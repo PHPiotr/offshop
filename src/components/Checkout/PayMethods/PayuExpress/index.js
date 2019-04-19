@@ -4,8 +4,8 @@ import * as PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import {formValueSelector} from 'redux-form';
 import {withRouter} from 'react-router-dom';
-import {createOrderIfNeeded, handleCreateOrderError} from '../../../actions/order';
-import withPayU from '../../../hoc/withPayU';
+import {createOrderIfNeeded, handleCreateOrderError} from '../../../../actions/order';
+import withPayU from '../../../../hoc/withPayU';
 
 const styles = theme => ({
     button: {
@@ -21,11 +21,11 @@ const styles = theme => ({
     },
 });
 
-const PayuButton = ({classes}) => (
+const PayuExpress = ({classes}) => (
     <button id="pay-button" className={classes.button}></button>
 );
 
-PayuButton.propTypes = {
+PayuExpress.propTypes = {
     classes: PropTypes.object.isRequired,
 };
 
@@ -41,4 +41,4 @@ const mapStateToProps = state => ({
     secondKeyMd5: process.env.REACT_APP_SECOND_KEY,
 });
 
-export default withRouter(connect(mapStateToProps, {createOrderIfNeeded, handleCreateOrderError})(withStyles(styles)(withPayU(PayuButton))));
+export default withRouter(connect(mapStateToProps, {createOrderIfNeeded, handleCreateOrderError})(withStyles(styles)(withPayU(PayuExpress))));
