@@ -39,7 +39,7 @@ const withPayU = (WrappedComponent) => {
             this.setState({sig: generateSig(nextProps)});
         }
 
-        onSuccess(e) {
+        async onSuccess(e) {
             if (
                 e.data &&
                 e.data.service === 'MerchantService' &&
@@ -58,7 +58,11 @@ const withPayU = (WrappedComponent) => {
                         type,
                     }
                 };
-                this.props.handleCreateOrderRequest(payMethods);
+                try {
+                    await this.props.createOrderIfNeeded(payMethods);
+                } catch(e) {
+                    this.props.handleCreateOrderError(e);
+                }
             }
         }
 
@@ -92,7 +96,8 @@ const withPayU = (WrappedComponent) => {
     PayU.propTypes = {
         payButton: PropTypes.string,
         src: PropTypes.string.isRequired,
-        handleCreateOrderRequest: PropTypes.func.isRequired,
+        createOrderIfNeeded: PropTypes.func.isRequired,
+        handleCreateOrderError: PropTypes.func.isRequired,
         currencyCode: PropTypes.string.isRequired,
         customerEmail: PropTypes.string.isRequired,
         customerLanguage: PropTypes.string.isRequired,

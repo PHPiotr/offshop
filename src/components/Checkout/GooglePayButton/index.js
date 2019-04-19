@@ -4,9 +4,7 @@ import * as PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import {withRouter} from 'react-router-dom';
 import withGooglePay from '../../../hoc/withGooglePay';
-import {createOrder} from '../../../actions/order';
-import {setActiveStepId} from '../../../actions/checkout';
-import {showNotification} from '../../../actions/notification';
+import {createOrderIfNeeded, handleCreateOrderError} from '../../../actions/order';
 
 const styles = theme => ({
     button: {
@@ -15,18 +13,20 @@ const styles = theme => ({
     },
 });
 
-const GooglePayButton = ({classes}) => (
+const GooglePayButton = ({classes, googlePayButtonParentId}) => (
     <div
-        id="google-pay-btn-wrapper"
+        id={googlePayButtonParentId}
         className={classes.button}
     />
 );
 
 GooglePayButton.propTypes = {
     classes: PropTypes.object.isRequired,
+    googlePayButtonParentId: PropTypes.string.isRequired,
 };
 
 const mapStateToProps = state => ({
+    googlePayButtonParentId: 'google-pay-btn-wrapper',
     totalPrice: ((state.cart.totalPrice + state.deliveryMethods.data[state.deliveryMethods.currentId].unitPrice * 100 * state.cart.quantity) / 100).toFixed(2),
     apiVersion: parseInt(process.env.REACT_APP_GOOGLE_PAY_API_VERSION, 10),
     apiVersionMinor: parseInt(process.env.REACT_APP_GOOGLE_PAY_API_VERSION_MINOR, 10),
@@ -43,27 +43,4 @@ const mapStateToProps = state => ({
     currencyCode: process.env.REACT_APP_CURRENCY_CODE,
 });
 
-const mapDispatchToProps = (dispatch, ownProps) => ({
-    async handleCreateOrderRequest(payMethods) {
-        try {
-            const payload = await dispatch(createOrder(payMethods));
-            const {redirectUri} = payload;
-            if (redirectUri) {
-                window.location.href = redirectUri;
-            } else {
-                dispatch(setActiveStepId(0));
-                ownProps.history.replace('/order');
-            }
-        } catch (e) {
-            dispatch(setActiveStepId(2));
-            dispatch(showNotification({message: e.message, variant: 'error'}));
-        }
-    },
-
-    handleGooglePayError(err) {
-        console.log(err);
-    }
-});
-
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(withGooglePay(GooglePayButton))));
-
+export default withRouter(connect(mapStateToProps, {createOrderIfNeeded, handleCreateOrderError})(withStyles(styles)(withGooglePay(GooglePayButton))));

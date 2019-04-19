@@ -111,18 +111,17 @@ const withGooglePay = (WrappedComponent) => {
                         authorizationCode: btoa(paymentMethodData.tokenizationData.token),
                     },
                 };
-
-                return this.props.handleCreateOrderRequest(payMethods);
-            } catch(err) {
-                this.props.handleGooglePayError(err);
+                await this.props.createOrderIfNeeded(payMethods);
+            } catch(e) {
+                this.props.handleCreateOrderError(e);
             }
         }
     }
 
     GooglePay.propTypes = {
-        googlePayButtonParentId: PropTypes.string,
-        handleCreateOrderRequest: PropTypes.func.isRequired,
-        handleGooglePayError: PropTypes.func.isRequired,
+        googlePayButtonParentId: PropTypes.string.isRequired,
+        createOrderIfNeeded: PropTypes.func.isRequired,
+        handleCreateOrderError: PropTypes.func.isRequired,
         apiVersion: PropTypes.number.isRequired,
         apiVersionMinor: PropTypes.number.isRequired,
         baseCardPaymentMethodType: PropTypes.string.isRequired,
@@ -143,7 +142,6 @@ const withGooglePay = (WrappedComponent) => {
     };
 
     GooglePay.defaultProps = {
-        googlePayButtonParentId: 'google-pay-btn-wrapper',
         googlePayScriptSrc: 'https://pay.google.com/gp/p/js/pay.js',
         googlePayScriptId: 'google-pay-script',
         environment: 'TEST',

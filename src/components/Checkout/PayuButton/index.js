@@ -4,9 +4,7 @@ import * as PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import {formValueSelector} from 'redux-form';
 import {withRouter} from 'react-router-dom';
-import {createOrder} from '../../../actions/order';
-import {setActiveStepId} from '../../../actions/checkout';
-import {showNotification} from '../../../actions/notification';
+import {createOrderIfNeeded, handleCreateOrderError} from '../../../actions/order';
 import withPayU from '../../../hoc/withPayU';
 
 const styles = theme => ({
@@ -43,22 +41,4 @@ const mapStateToProps = state => ({
     secondKeyMd5: process.env.REACT_APP_SECOND_KEY,
 });
 
-const mapDispatchToProps = (dispatch, ownProps) => ({
-    async handleCreateOrderRequest(payMethods) {
-        try {
-            const payload = await dispatch(createOrder(payMethods));
-            const {redirectUri} = payload;
-            if (redirectUri) {
-                window.location.href = redirectUri;
-            } else {
-                dispatch(setActiveStepId(0));
-                ownProps.history.replace('/order');
-            }
-        } catch (e) {
-            dispatch(setActiveStepId(2));
-            dispatch(showNotification({message: e.message, variant: 'error'}));
-        }
-    },
-});
-
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(withPayU(PayuButton))));
+export default withRouter(connect(mapStateToProps, {createOrderIfNeeded, handleCreateOrderError})(withStyles(styles)(withPayU(PayuButton))));

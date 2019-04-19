@@ -6,6 +6,7 @@ import withStyles from '@material-ui/core/styles/withStyles';
 import SubHeader from "../../components/SubHeader";
 import {injectIntl, FormattedMessage} from 'react-intl';
 import Grid from "@material-ui/core/Grid";
+import {resetOrderData} from '../../actions/order';
 
 const styles = theme => ({
     paper: {
@@ -25,8 +26,12 @@ class Order extends Component {
 
     componentDidMount() {
         if (!this.props.orderData.extOrderId) {
-            this.props.redirectToHome();
+            this.props.history.replace('/');
         }
+    }
+
+    componentWillUnmount() {
+        this.props.resetOrderData();
     }
 
     render() {
@@ -61,10 +66,4 @@ const mapStateToProps = state => ({
     orderData: state.order.data || {},
 });
 
-const mapDispatchToProps = (dispatch, ownProps) => ({
-    redirectToHome() {
-        ownProps.history.replace('/');
-    },
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(injectIntl(withStyles(styles)(Order)));
+export default connect(mapStateToProps, {resetOrderData})(injectIntl(withStyles(styles)(Order)));

@@ -4,7 +4,7 @@ import {
     RETRIEVE_ORDER_SUCCESS,
     CREATE_ORDER_REQUEST,
     CREATE_ORDER_SUCCESS,
-    CREATE_ORDER_FAILURE,
+    CREATE_ORDER_FAILURE, RESET_ORDER_DATA,
 
 } from "../../actions/order";
 
@@ -55,6 +55,10 @@ const order = (state = initialState, action) => {
             return {
                 ...state,
                 isCreating: false,
+            };
+        case RESET_ORDER_DATA:
+            return {
+                ...initialState,
             };
         default:
             return state;
