@@ -3,7 +3,6 @@ import withStyles from '@material-ui/core/styles/withStyles';
 import * as PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import {formValueSelector} from 'redux-form';
-import {withRouter} from 'react-router-dom';
 import {createOrderIfNeeded, handleCreateOrderError} from '../../../../actions/order';
 import withPayuExpress from '../../../../hoc/withPayuExpress';
 
@@ -41,4 +40,4 @@ const mapStateToProps = state => ({
     secondKeyMd5: process.env.REACT_APP_SECOND_KEY,
 });
 
-export default withRouter(connect(mapStateToProps, {createOrderIfNeeded, handleCreateOrderError})(withStyles(styles)(withPayuExpress(PayuExpress))));
+export default connect(mapStateToProps, {createOrderIfNeeded, handleCreateOrderError})(withStyles(styles)(withPayuExpress(PayuExpress)));
