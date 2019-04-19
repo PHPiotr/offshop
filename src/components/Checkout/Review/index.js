@@ -9,7 +9,6 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Divider from '@material-ui/core/Divider';
 import Grid from "@material-ui/core/Grid";
-import withPayU from '../../../hoc/withPayU';
 import PayuButton from "../PayuButton";
 import GooglePayButton from "../GooglePayButton";
 import withGooglePay from "../../../hoc/withGooglePay";
@@ -114,7 +113,7 @@ let Review = props => {
             </Grid>
             <div className={classes.buttons}>
                 <PayuButton />
-                <GooglePayButton show={props.showGooglePayButton}/>
+                <GooglePayButton />
             </div>
         </Fragment>
     );
@@ -161,7 +160,6 @@ const mapStateToProps = state => ({
     deliveryMethod: state.deliveryMethods.data[state.deliveryMethods.currentId],
     weight: state.cart.weight,
     deliveryPrice: (state.deliveryMethods.data[state.deliveryMethods.currentId].unitPrice * state.cart.quantity).toFixed(2),
-    showGooglePayButton: state.checkout.activeStepId === state.checkout.stepsIds[state.checkout.stepsIds.length - 1],
     apiVersion: parseInt(process.env.REACT_APP_GOOGLE_PAY_API_VERSION, 10),
     apiVersionMinor: parseInt(process.env.REACT_APP_GOOGLE_PAY_API_VERSION_MINOR, 10),
     baseCardPaymentMethodType: process.env.REACT_APP_GOOGLE_PAY_BASE_CARD_PAYMENT_METHOD_TYPE,
@@ -174,14 +172,7 @@ const mapStateToProps = state => ({
     totalPriceStatus: process.env.REACT_APP_TOTAL_PRICE_STATUS,
     googlePayMethodValue: process.env.REACT_APP_PAYU_METHOD_VALUE_GOOGLE_PAY,
     googlePayMethodType: process.env.REACT_APP_PAYU_METHOD_TYPE_GOOGLE_PAY,
-    src: `${process.env.REACT_APP_PAYU_BASE_URL}/front/widget/js/payu-bootstrap.js`,
-    successCallback: 'test',
     currencyCode: process.env.REACT_APP_CURRENCY_CODE,
-    customerEmail: selector(state, 'email'),
-    customerLanguage: 'pl',
-    merchantPosId: process.env.REACT_APP_POS_ID,
-    shopName: process.env.REACT_APP_MERCHANT_NAME,
-    secondKeyMd5: process.env.REACT_APP_SECOND_KEY,
 });
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
@@ -219,4 +210,4 @@ Review.defaultProps = {
     currency: 'zł',
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(withGooglePay(withPayU(Review)))));
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(withGooglePay(Review))));
