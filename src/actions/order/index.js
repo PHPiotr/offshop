@@ -106,8 +106,6 @@ export const createOrderIfNeeded = payMethods => {
     }
 };
 
-export const handleCreateOrderError = e => {
-    return async dispatch => dispatch(showNotification({message: e.message, variant: 'error'}));
-};
+export const handleCreateOrderError = e => showNotification({message: e.message || 'Something went wrong', variant: 'error'});
 
 export const resetOrderData = () => ({type: RESET_ORDER_DATA});

@@ -86,17 +86,13 @@ const withGooglePay = (WrappedComponent) => {
                     throw new Error('Problem creating google pay button');
                 }
 
-                const handleOnClickGooglePayButton = this.handleOnClickGooglePayButton;
-                const googlePayButton = await paymentsClient.createButton({
-                    async onClick() {
-                        return handleOnClickGooglePayButton(paymentsClient);
-                    },
-                });
+                const onClick = () => this.handleOnClickGooglePayButton(paymentsClient);
+                const googlePayButton = paymentsClient.createButton({onClick});
 
                 const buttonWrapperElem = document.getElementById(this.props.googlePayButtonParentId);
                 googlePayButton && buttonWrapperElem && buttonWrapperElem.appendChild(googlePayButton);
-            } catch (err) {
-                this.props.handleGooglePayError(err);
+            } catch (e) {
+                this.props.handleCreateOrderError(e);
             }
         }
 

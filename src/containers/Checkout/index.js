@@ -6,7 +6,6 @@ import SubHeader from '../../components/SubHeader';
 import ProgressIndicator from '../../components/ProgressIndicator';
 import {setActiveStepId} from '../../actions/checkout';
 import {resetOrderData} from '../../actions/order';
-import {showNotification} from '../../actions/notification';
 
 class Checkout extends Component {
     componentDidMount() {
@@ -26,10 +25,6 @@ class Checkout extends Component {
                 this.props.setActiveStepId(0);
                 this.props.history.replace('/order');
             }
-        }
-        if (nextProps.order.error) {
-            this.props.setActiveStepId(2);
-            this.props.showNotification({message: nextProps.order.error, variant: 'error'});
         }
     }
 
@@ -53,8 +48,7 @@ Checkout.propTypes = {
     order: PropTypes.shape({
         data: PropTypes.object,
         isCreating: PropTypes.bool,
-        error: PropTypes.string,
     }).isRequired,
 };
 
-export default connect(mapStateToProps, {setActiveStepId, resetOrderData, showNotification})(Checkout);
+export default connect(mapStateToProps, {setActiveStepId, resetOrderData})(Checkout);
