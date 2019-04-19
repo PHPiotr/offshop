@@ -1,6 +1,6 @@
 import React, {Fragment} from 'react';
 import {connect} from 'react-redux';
-import {getFormValues, formValueSelector} from 'redux-form';
+import {getFormValues} from 'redux-form';
 import PropTypes from 'prop-types';
 import {withStyles} from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
@@ -152,11 +152,9 @@ const mapStateToProps = state => ({
     }, []),
     cart: state.cart,
     totalAmount: state.cart.totalPrice + state.deliveryMethods.data[state.deliveryMethods.currentId].unitPrice * 100 * state.cart.quantity,
-    total: ((state.cart.totalPrice + state.deliveryMethods.data[state.deliveryMethods.currentId].unitPrice * 100 * state.cart.quantity) / 100).toFixed(2),
     deliveryMethod: state.deliveryMethods.data[state.deliveryMethods.currentId],
     weight: state.cart.weight,
     deliveryPrice: (state.deliveryMethods.data[state.deliveryMethods.currentId].unitPrice * state.cart.quantity).toFixed(2),
-    currencyCode: process.env.REACT_APP_CURRENCY_CODE,
 });
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
@@ -186,7 +184,6 @@ Review.propTypes = {
     buyerDetails: PropTypes.array.isRequired,
     buyerDeliveryDetails: PropTypes.array.isRequired,
     totalAmount: PropTypes.number.isRequired,
-    total: PropTypes.string.isRequired,
     currency: PropTypes.string,
 };
 
