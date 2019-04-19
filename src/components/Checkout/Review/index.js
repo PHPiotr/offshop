@@ -11,7 +11,6 @@ import Divider from '@material-ui/core/Divider';
 import Grid from "@material-ui/core/Grid";
 import PayuButton from "../PayuButton";
 import GooglePayButton from "../GooglePayButton";
-import withGooglePay from "../../../hoc/withGooglePay";
 import {createOrder} from "../../../actions/order";
 import {setActiveStepId} from "../../../actions/checkout";
 import {showNotification} from "../../../actions/notification";
@@ -122,8 +121,6 @@ let Review = props => {
 let buyerValues;
 let buyerDeliveryValues;
 
-const selector = formValueSelector('buyer');
-
 const mapStateToProps = state => ({
     products: state.cart.ids.map(i => {
         const product = state.products.data[i];
@@ -156,22 +153,9 @@ const mapStateToProps = state => ({
     cart: state.cart,
     totalAmount: state.cart.totalPrice + state.deliveryMethods.data[state.deliveryMethods.currentId].unitPrice * 100 * state.cart.quantity,
     total: ((state.cart.totalPrice + state.deliveryMethods.data[state.deliveryMethods.currentId].unitPrice * 100 * state.cart.quantity) / 100).toFixed(2),
-    totalPrice: ((state.cart.totalPrice + state.deliveryMethods.data[state.deliveryMethods.currentId].unitPrice * 100 * state.cart.quantity) / 100).toFixed(2),
     deliveryMethod: state.deliveryMethods.data[state.deliveryMethods.currentId],
     weight: state.cart.weight,
     deliveryPrice: (state.deliveryMethods.data[state.deliveryMethods.currentId].unitPrice * state.cart.quantity).toFixed(2),
-    apiVersion: parseInt(process.env.REACT_APP_GOOGLE_PAY_API_VERSION, 10),
-    apiVersionMinor: parseInt(process.env.REACT_APP_GOOGLE_PAY_API_VERSION_MINOR, 10),
-    baseCardPaymentMethodType: process.env.REACT_APP_GOOGLE_PAY_BASE_CARD_PAYMENT_METHOD_TYPE,
-    baseCardPaymentMethodAllowedAuthMethods: process.env.REACT_APP_GOOGLE_PAY_ALLOWED_CARD_AUTH_METHODS.split(','),
-    baseCardPaymentMethodAllowedCardNetworks: process.env.REACT_APP_GOOGLE_PAY_ALLOWED_CARD_NETWORKS.split(','),
-    tokenizationSpecificationType: process.env.REACT_APP_GOOGLE_PAY_TOKENIZATION_TYPE,
-    tokenizationSpecificationGateway: process.env.REACT_APP_GOOGLE_PAY_TOKENIZATION_GATEWAY,
-    tokenizationSpecificationGatewayMerchantId: process.env.REACT_APP_GOOGLE_PAY_TOKENIZATION_GATEWAY_MERCHANT_ID,
-    merchantName: process.env.REACT_APP_MERCHANT_NAME,
-    totalPriceStatus: process.env.REACT_APP_TOTAL_PRICE_STATUS,
-    googlePayMethodValue: process.env.REACT_APP_PAYU_METHOD_VALUE_GOOGLE_PAY,
-    googlePayMethodType: process.env.REACT_APP_PAYU_METHOD_TYPE_GOOGLE_PAY,
     currencyCode: process.env.REACT_APP_CURRENCY_CODE,
 });
 
@@ -210,4 +194,4 @@ Review.defaultProps = {
     currency: 'zł',
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(withGooglePay(Review))));
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(Review)));
