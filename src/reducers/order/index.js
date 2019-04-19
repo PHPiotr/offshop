@@ -12,8 +12,8 @@ import {
 export const initialState = {
     retrievingOrder: false,
     isCreating: false,
-    data: null,
-    error: null,
+    data: {},
+    error: '',
     errorDialogOpen: false,
 };
 

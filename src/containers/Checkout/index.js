@@ -1,4 +1,5 @@
 import React, {Component, Fragment} from 'react';
+import PropTypes from 'prop-types';
 import CheckoutView from '../../components/Checkout';
 import {connect} from 'react-redux';
 import SubHeader from '../../components/SubHeader';
@@ -9,7 +10,7 @@ import {showNotification} from '../../actions/notification';
 
 class Checkout extends Component {
     componentDidMount() {
-        if (this.props.orderData.extOrderId) {
+        if (this.props.order.data.extOrderId) {
             this.props.resetOrderData();
         }
         if (!this.props.hasProductsInCart) {
@@ -18,24 +19,24 @@ class Checkout extends Component {
     }
 
     componentWillReceiveProps(nextProps,nextContext) {
-        if (nextProps.orderData.extOrderId) {
-            if (nextProps.orderData.redirectUri) {
-                window.location.href = nextProps.orderData.redirectUri;
+        if (nextProps.order.data.extOrderId) {
+            if (nextProps.order.data.redirectUri) {
+                window.location.href = nextProps.order.data.redirectUri;
             } else {
                 this.props.setActiveStepId(0);
                 this.props.history.replace('/order');
             }
         }
-        if (nextProps.orderError) {
+        if (nextProps.order.error) {
             this.props.setActiveStepId(2);
-            this.props.showNotification({message: nextProps.orderError, variant: 'error'});
+            this.props.showNotification({message: nextProps.order.error, variant: 'error'});
         }
     }
 
     render() {
         return (
             <Fragment>
-                {this.props.isCreatingOrder && <ProgressIndicator/>}
+                {this.props.order.isCreating && <ProgressIndicator/>}
                 <SubHeader content="Zamówienie"/>
                 <CheckoutView />
             </Fragment>
@@ -44,10 +45,16 @@ class Checkout extends Component {
 }
 
 const mapStateToProps = state => ({
-    orderData: state.order.data || {},
-    orderError: state.order.error || '',
+    order: state.order,
     hasProductsInCart: state.cart.ids.length > 0,
-    isCreatingOrder: state.order.isCreating,
 });
+
+Checkout.propTypes = {
+    order: PropTypes.shape({
+        data: PropTypes.object,
+        isCreating: PropTypes.bool,
+        error: PropTypes.string,
+    }).isRequired,
+};
 
 export default connect(mapStateToProps, {setActiveStepId, resetOrderData, showNotification})(Checkout);
