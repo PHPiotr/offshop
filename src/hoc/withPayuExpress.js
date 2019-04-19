@@ -17,7 +17,7 @@ const generateSig = ({
                     secondKeyMd5
                 }) => sha256(`${currencyCode}${customerEmail}${customerLanguage}${merchantPosId}${payuBrand}${recurringPayment}${shopName}${storeCard}${totalAmount}${widgetMode}${secondKeyMd5}`).toString();
 
-const withPayU = (WrappedComponent) => {
+const withPayuExpress = (WrappedComponent) => {
 
     class PayU extends Component {
 
@@ -122,4 +122,4 @@ const withPayU = (WrappedComponent) => {
     return PayU;
 };
 
-export default withPayU;
+export default withPayuExpress;

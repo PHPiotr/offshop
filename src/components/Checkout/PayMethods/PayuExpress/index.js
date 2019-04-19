@@ -5,7 +5,7 @@ import {connect} from 'react-redux';
 import {formValueSelector} from 'redux-form';
 import {withRouter} from 'react-router-dom';
 import {createOrderIfNeeded, handleCreateOrderError} from '../../../../actions/order';
-import withPayU from '../../../../hoc/withPayU';
+import withPayuExpress from '../../../../hoc/withPayuExpress';
 
 const styles = theme => ({
     button: {
@@ -41,4 +41,4 @@ const mapStateToProps = state => ({
     secondKeyMd5: process.env.REACT_APP_SECOND_KEY,
 });
 
-export default withRouter(connect(mapStateToProps, {createOrderIfNeeded, handleCreateOrderError})(withStyles(styles)(withPayU(PayuExpress))));
+export default withRouter(connect(mapStateToProps, {createOrderIfNeeded, handleCreateOrderError})(withStyles(styles)(withPayuExpress(PayuExpress))));
