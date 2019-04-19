@@ -2,10 +2,11 @@ import React from 'react';
 import withStyles from '@material-ui/core/styles/withStyles';
 import * as PropTypes from 'prop-types';
 import {connect} from 'react-redux';
+import {formValueSelector} from 'redux-form';
+import {withRouter} from 'react-router-dom';
 import {createOrder} from '../../../actions/order';
 import {setActiveStepId} from '../../../actions/checkout';
 import {showNotification} from '../../../actions/notification';
-import {formValueSelector} from 'redux-form';
 import withPayU from '../../../hoc/withPayU';
 
 const styles = theme => ({
@@ -64,4 +65,4 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
     }
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(withPayU(PayuButton)));
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(withPayU(PayuButton))));

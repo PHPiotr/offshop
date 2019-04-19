@@ -2,6 +2,7 @@ import React from 'react';
 import withStyles from '@material-ui/core/styles/withStyles';
 import * as PropTypes from 'prop-types';
 import {connect} from 'react-redux';
+import {withRouter} from 'react-router-dom';
 import withGooglePay from '../../../hoc/withGooglePay';
 import {createOrder} from '../../../actions/order';
 import {setActiveStepId} from '../../../actions/checkout';
@@ -64,5 +65,5 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
     }
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(withGooglePay(GooglePayButton)));
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(withGooglePay(GooglePayButton))));
 

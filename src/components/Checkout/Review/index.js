@@ -14,7 +14,6 @@ import GooglePayButton from "../GooglePayButton";
 import {createOrder} from "../../../actions/order";
 import {setActiveStepId} from "../../../actions/checkout";
 import {showNotification} from "../../../actions/notification";
-import {withRouter} from 'react-router-dom';
 
 const styles = theme => ({
     listItem: {
@@ -191,4 +190,4 @@ Review.defaultProps = {
     currency: 'zł',
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(Review)));
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(Review));
