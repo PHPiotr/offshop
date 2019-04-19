@@ -11,9 +11,6 @@ import Divider from '@material-ui/core/Divider';
 import Grid from "@material-ui/core/Grid";
 import PayuButton from "../PayuButton";
 import GooglePayButton from "../GooglePayButton";
-import {createOrder} from "../../../actions/order";
-import {setActiveStepId} from "../../../actions/checkout";
-import {showNotification} from "../../../actions/notification";
 
 const styles = theme => ({
     listItem: {
@@ -156,28 +153,6 @@ const mapStateToProps = state => ({
     deliveryPrice: (state.deliveryMethods.data[state.deliveryMethods.currentId].unitPrice * state.cart.quantity).toFixed(2),
 });
 
-const mapDispatchToProps = (dispatch, ownProps) => ({
-    async handleCreateOrderRequest(payMethods) {
-        try {
-            const payload = await dispatch(createOrder(payMethods));
-            const {redirectUri} = payload;
-            if (redirectUri) {
-                window.location.href = redirectUri;
-            } else {
-                dispatch(setActiveStepId(0));
-                ownProps.history.replace('/order');
-            }
-        } catch (e) {
-            dispatch(setActiveStepId(2));
-            dispatch(showNotification({message: e.message, variant: 'error'}));
-        }
-    },
-
-    handleGooglePayError(err) {
-        console.log(err);
-    }
-});
-
 Review.propTypes = {
     products: PropTypes.array.isRequired,
     buyerDetails: PropTypes.array.isRequired,
@@ -190,4 +165,4 @@ Review.defaultProps = {
     currency: 'zł',
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(Review));
+export default connect(mapStateToProps)(withStyles(styles)(Review));
