@@ -17,12 +17,8 @@ export const getProductsIfNeeded = params => {
 
         dispatch({type: RETRIEVE_PRODUCTS_REQUEST});
         try {
-            const response = await getProducts();
-            if (!response.ok) {
-                throw Error(response.errorMessage);
-            }
-            const items = await response.json();
-            const payload = normalize(items, productSchema.productList);
+            const {data} = await getProducts();
+            const payload = normalize(data, productSchema.productList);
             dispatch({type: RETRIEVE_PRODUCTS_SUCCESS, payload});
 
             return Promise.resolve(payload);

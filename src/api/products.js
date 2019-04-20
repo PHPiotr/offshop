@@ -1,4 +1,4 @@
-import {fetch} from 'whatwg-fetch';
+import axios from 'axios';
 import {stringify} from 'query-string';
 
 export const getProducts = (params = {}) => {
@@ -7,7 +7,7 @@ export const getProducts = (params = {}) => {
     if (queryString) {
         url += `?${queryString}`;
     }
-    return fetch(url, {
+    return axios(url, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
@@ -16,11 +16,12 @@ export const getProducts = (params = {}) => {
 };
 
 export const createProduct = (data = {}, accessToken) => {
-    return fetch(`${process.env.REACT_APP_API_HOST}/products`, {
+    return axios(`${process.env.REACT_APP_API_HOST}/products`, {
         method: 'POST',
         headers: {
             'Authorization': `Bearer ${accessToken}`,
+            'Content-Type': 'multipart/form-data',
         },
-        body: data,
+        data,
     });
 };
