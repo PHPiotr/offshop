@@ -17,21 +17,12 @@ export const retrieveOrder = extOrderId => {
         dispatch({type: RETRIEVE_ORDER_REQUEST});
 
         try {
-            const authResponse = await authorize();
-            const authData = await authResponse.json();
-            if (!authResponse.ok) {
-                throw Error(authData.errorMessage);
-            }
-            const { access_token } = authData;
+            const {data: {access_token}} = await authorize();
 
-            const orderResponse = await orderRetrieveRequest({accessToken: access_token, extOrderId});
-            const orderData = await orderResponse.json();
-            if (!orderResponse.ok) {
-                throw Error(orderData.errorMessage);
-            }
-            dispatch({type: RETRIEVE_ORDER_SUCCESS, payload: {orderData}});
+            const {data} = await orderRetrieveRequest({accessToken: access_token, extOrderId});
+            dispatch({type: RETRIEVE_ORDER_SUCCESS, payload: {orderData: data}});
 
-            return Promise.resolve(orderData);
+            return Promise.resolve(data);
 
         } catch (orderError) {
             dispatch({type: RETRIEVE_ORDER_FAILURE, payload: {orderError}});
@@ -53,14 +44,8 @@ export const createOrderIfNeeded = payMethods => {
         dispatch({type: CREATE_ORDER_REQUEST});
 
         try {
-            const authResponse = await authorize();
-            const authData = await authResponse.json();
-            if (!authResponse.ok) {
-                throw new Error(authData.errorMessage);
-            }
-
+            const {data: {access_token}} = await authorize();
             const state = getState();
-            const { access_token } = authData;
 
             const totalAmount = state.cart.totalPrice + parseInt(state.deliveryMethods.data[state.deliveryMethods.currentId].unitPrice.replace('.', ''), 10) * state.cart.quantity;
             const products = state.cart.ids.reduce((acc, _id) => {
@@ -81,7 +66,7 @@ export const createOrderIfNeeded = payMethods => {
                 buyer.delivery.countryCode = 'PL';
             }
 
-            const orderResponse = await orderCreateRequest({
+            const {data} = await orderCreateRequest({
                 payMethods,
                 accessToken: access_token,
                 totalAmount: totalAmount.toFixed(),
@@ -90,13 +75,10 @@ export const createOrderIfNeeded = payMethods => {
                 description: 'OFFSHOP - transakcja',
                 buyer,
             });
-            const orderData = await orderResponse.json();
-            if (!orderResponse.ok) {
-                throw new Error(orderData.message);
-            }
-            dispatch({type: CREATE_ORDER_SUCCESS, payload: {orderData}});
 
-            return Promise.resolve(orderData);
+            dispatch({type: CREATE_ORDER_SUCCESS, payload: {orderData: data}});
+
+            return Promise.resolve(data);
 
         } catch (e) {
             dispatch({type: CREATE_ORDER_FAILURE, payload: {orderError: e.message || 'Something went wrong'}});

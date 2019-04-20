@@ -4,15 +4,18 @@ import ListItem from '@material-ui/core/ListItem';
 import Divider from '@material-ui/core/Divider';
 import PayByLink from './PayByLink';
 import {getPayMethods} from '../../../api/payMethods';
+import {authorize} from '../../../api/payu';
 
 const PayMethods = () => {
 
     const [payByLinksMethods, setPayByLinksMethods] = useState([]);
 
     useEffect(() => {
-        getPayMethods()
-            .then(({data: {payByLinks}}) => setPayByLinksMethods(payByLinks))
-            .catch(e => console.error(e));
+        authorize().then(({data: {access_token}}) => {
+            getPayMethods(access_token)
+                .then(({data: {payByLinks}}) => setPayByLinksMethods(payByLinks))
+                .catch(e => console.error(e));
+        }).catch(e => console.error(e));
     }, [payByLinksMethods.length]);
 
     return (

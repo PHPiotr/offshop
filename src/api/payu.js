@@ -1,25 +1,25 @@
-import {fetch} from 'whatwg-fetch';
+import axios from 'axios';
 
 export const authorize = () =>
-    fetch(`${process.env.REACT_APP_API_HOST}/authorize`, {
+    axios(`${process.env.REACT_APP_API_HOST}/authorize`, {
         method: 'POST',
         mode: 'cors',
         cache: 'no-cache',
-        body: JSON.stringify({
+        data: {
             client_id: process.env.REACT_APP_PAYU_CLIENT_ID,
             client_secret: process.env.REACT_APP_PAYU_CLIENT_SECRET,
-        }),
+        },
         headers: {
             'Content-Type': 'application/json',
         },
     });
 
 export const orderCreateRequest = params =>
-    fetch(`${process.env.REACT_APP_API_HOST}/orders`, {
+    axios(`${process.env.REACT_APP_API_HOST}/orders`, {
         method: 'POST',
         mode: 'cors',
         cache: 'no-cache',
-        body: JSON.stringify({
+        data: {
             payMethods: params.payMethods,
             totalAmount: params.totalAmount,
             products: params.products,
@@ -34,7 +34,7 @@ export const orderCreateRequest = params =>
                 invoiceDisabled: true,
             },
             continueUrl: process.env.REACT_APP_PAYU_CONTINUE_URL,
-        }),
+        },
         headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${params.accessToken}`,
@@ -42,7 +42,7 @@ export const orderCreateRequest = params =>
     });
 
 export const orderRetrieveRequest = params =>
-    fetch(`${process.env.REACT_APP_API_HOST}/orders/${params.extOrderId}`, {
+    axios(`${process.env.REACT_APP_API_HOST}/orders/${params.extOrderId}`, {
         method: 'GET',
         mode: 'cors',
         cache: 'no-cache',
