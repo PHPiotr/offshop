@@ -23,12 +23,8 @@ export const getDeliveryMethodsIfNeeded = params => {
 
         dispatch({type: RETRIEVE_DELIVERY_METHODS_REQUEST});
         try {
-            const response = await getDeliveryMethods();
-            if (!response.ok) {
-                throw Error(response.errorMessage);
-            }
-            const items = await response.json();
-            const payload = normalize(items, deliveryMethodsSchema.deliveryMethodList);
+            const {data} = await getDeliveryMethods();
+            const payload = normalize(data, deliveryMethodsSchema.deliveryMethodList);
             dispatch({type: RETRIEVE_DELIVERY_METHODS_SUCCESS, payload});
 
             return Promise.resolve(payload);
