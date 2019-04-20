@@ -105,16 +105,7 @@ let Review = props => {
                     </Grid>
                 )}
             </Grid>
-            <Grid container spacing={16}>
-                <Grid item xs={12} sm={6}>
-                    <Typography variant="h6" gutterBottom className={classes.title}>
-                        Wybierz metodę płatności
-                    </Typography>
-                    <Grid container>
-                        <PayMethods />
-                    </Grid>
-                </Grid>
-            </Grid>
+            <PayMethods />
         </Fragment>
     );
 };

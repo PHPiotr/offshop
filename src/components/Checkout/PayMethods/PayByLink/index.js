@@ -4,20 +4,18 @@ import * as PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import {createOrderIfNeeded, handleCreateOrderError} from '../../../../actions/order';
 
-const styles = theme => ({
+const styles = () => ({
     button: {
-        marginTop: 0,
-        marginLeft: 0,
-        border: 'none',
-        height: 'auto',
-        auto: 'auto',
         cursor: 'pointer',
-        margin: 0,
-        padding: 0,
+        background: 'none',
+        border: 'none',
     },
 });
 
 const PayByLink = props => {
+    const handleOnClick = (payMethods) => () => {
+        props.createOrderIfNeeded(payMethods);
+    };
     const payMethods = {
         payMethod: {
             value: props.value,
@@ -25,7 +23,7 @@ const PayByLink = props => {
         }
     };
     return (
-        <button id="pay-button" className={props.classes.button} onClick={() => props.createOrderIfNeeded(payMethods)}>
+        <button id="pay-button" className={props.classes.button} onClick={handleOnClick(payMethods)}>
             <img height="50" src={props.brandImageUrl} title={props.name} alt={props.name} />
         </button>
     );
