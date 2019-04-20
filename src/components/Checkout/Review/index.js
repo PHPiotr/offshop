@@ -9,8 +9,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Divider from '@material-ui/core/Divider';
 import Grid from "@material-ui/core/Grid";
-import PayuExpress from "../PayMethods/PayuExpress";
-import GooglePay from "../PayMethods/GooglePay";
+import PayMethods from '../PayMethods';
 
 const styles = theme => ({
     listItem: {
@@ -106,10 +105,16 @@ let Review = props => {
                     </Grid>
                 )}
             </Grid>
-            <div className={classes.payMethods}>
-                <PayuExpress />
-                <GooglePay />
-            </div>
+            <Grid container spacing={16}>
+                <Grid item xs={12} sm={6}>
+                    <Typography variant="h6" gutterBottom className={classes.title}>
+                        Wybierz metodę płatności
+                    </Typography>
+                    <Grid container>
+                        <PayMethods />
+                    </Grid>
+                </Grid>
+            </Grid>
         </Fragment>
     );
 };

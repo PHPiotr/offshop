@@ -1,8 +1,8 @@
-import {fetch} from 'whatwg-fetch';
+import axios from 'axios';
 
 export const getPayMethods = () => {
     let url = `${process.env.REACT_APP_API_HOST}/pay-methods`;
-    return fetch(url, {
+    return axios(url, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
