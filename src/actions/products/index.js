@@ -10,9 +10,9 @@ export const ON_CREATE_PRODUCT = 'ON_CREATE_PRODUCT';
 
 export const getProductsIfNeeded = params => {
     return async (dispatch, getState) => {
-        const {products} = getState();
-        if (products.ids.length) {
-            return;
+        const {products: {isFetching}} = getState();
+        if (isFetching) {
+            return Promise.resolve();
         }
 
         dispatch({type: RETRIEVE_PRODUCTS_REQUEST});
