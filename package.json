@@ -46,7 +46,7 @@
   "scripts": {
     "start": "node scripts/start.js",
     "dev:hot": "npm start -- --hot",
-    "dev:serve": "ssh -o ServerAliveInterval=600 -R offshop-front-end.serveo.net:80:localhost:3001 serveo.net",
+    "dev:serve": "node scripts/serve.js",
     "build": "node scripts/build.js",
     "test": "node scripts/test.js",
     "format": "pretty-quick",
