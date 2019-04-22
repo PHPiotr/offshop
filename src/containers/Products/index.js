@@ -1,13 +1,12 @@
 import React, {Component, Fragment} from 'react';
 import {connect} from 'react-redux';
 import ProductsView from '../../components/Products';
-import AddedToCartDialog from '../../components/Dialog/AddedToCart';
+import Dialog from '../../components/Dialog';
 import {addToCart} from '../../actions/cart';
-import {
-    openAddedToCartDialog,
-    closeAddedToCartDialog,
-} from '../../actions/addedToCartDialog';
-import {getProductsIfNeeded} from "../../actions/products";
+import {openDialog, closeDialog} from '../../actions/dialog';
+import {getProductsIfNeeded} from '../../actions/products';
+import {FormattedMessage} from 'react-intl';
+import Button from '@material-ui/core/Button';
 
 class Products extends Component {
     componentDidMount() {
@@ -18,10 +17,20 @@ class Products extends Component {
         return (
             <Fragment>
                 <ProductsView {...this.props} />
-                <AddedToCartDialog
-                    open={this.props.addedToCartDialog.open}
-                    onContinueShoppingClick={this.props.continueShopping}
-                    onGoToCartClick={this.props.goToCart}
+                <Dialog
+                    open={this.props.open}
+                    onClose={this.props.continueShopping}
+                    title={<FormattedMessage id="products.product_added_to_cart"/>}
+                    actions={
+                        [
+                            <Button key="1" onClick={this.props.continueShopping} color="primary">
+                                <FormattedMessage id="products.continue_shopping"/>
+                            </Button>,
+                            <Button key="2" onClick={this.props.goToCart} color="primary">
+                                <FormattedMessage id="products.go_to_cart"/>
+                            </Button>,
+                        ]
+                    }
                 />
             </Fragment>
         );
@@ -32,7 +41,7 @@ const mapStateToProps = state => ({
     cart: state.cart,
     category: state.categories.items.find(c => c.id === state.categories.currentId),
     products: state.products.ids.map(i => state.products.data[i]),
-    addedToCartDialog: state.addedToCartDialog,
+    open: state.dialog.open,
 });
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
@@ -41,14 +50,14 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
     },
     addToCart(item, quantity) {
         dispatch(addToCart(item, quantity));
-        dispatch(openAddedToCartDialog());
+        dispatch(openDialog());
     },
     goToCart() {
-        dispatch(closeAddedToCartDialog());
+        dispatch(closeDialog());
         ownProps.history.push('/cart');
     },
     continueShopping() {
-        dispatch(closeAddedToCartDialog());
+        dispatch(closeDialog());
     },
 });
 

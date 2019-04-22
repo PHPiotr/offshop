@@ -14,6 +14,8 @@ import RemoveShoppingCartIcon from '@material-ui/icons/RemoveShoppingCart';
 import DeleteIcon from '@material-ui/icons/Delete';
 import Divider from '@material-ui/core/Divider';
 import TextField from '@material-ui/core/TextField';
+import {connect} from 'react-redux';
+import {addToCart, decrementInCart, deleteFromCart} from "../../../actions/cart";
 
 const styles = theme => ({
     root: {
@@ -54,7 +56,7 @@ const ProductsInCart = props => {
                     <Fragment key={p._id}>
                         <ListItem key={p._id} alignItems="flex-start">
                             <ListItemAvatar>
-                                <Avatar src={`${process.env.REACT_APP_API_HOST}/images/products/${p.img}`} alt={p.name}/>
+                                <Avatar src={`${process.env.REACT_APP_API_HOST}/images/products/${p.slug}.avatar.png`} alt={p.name}/>
                             </ListItemAvatar>
                             <ListItemText
                                 primary={p.name}
@@ -65,9 +67,9 @@ const ProductsInCart = props => {
                                             className={classes.inline}
                                             color="textPrimary"
                                         >
-                                            {`${p.price * productInCart.quantity} zł`}
+                                            {`${(p.unitPrice * productInCart.quantity).toFixed(2)} zł`}
                                         </Typography>
-                                        {` (${p.price} zł / szt.)`}
+                                        {productInCart.quantity > 1 && ` (${p.unitPrice} zł / szt.)`}
                                     </React.Fragment>
                                 }
                             />
@@ -75,7 +77,7 @@ const ProductsInCart = props => {
                                 <IconButton
                                     id={p._id}
                                     onClick={handleIncrementItemInCart}
-                                    disabled={p.quantity - productInCart.quantity <= 0}
+                                    disabled={p.stock - productInCart.quantity <= 0}
                                 >
                                     <AddShoppingCartIcon/>
                                 </IconButton>
@@ -83,7 +85,7 @@ const ProductsInCart = props => {
                                     id={p._id}
                                     className={classes.textField}
                                     value={productInCart.quantity}
-                                    helperText={`z ${p.quantity} szt.`}
+                                    helperText={`z ${p.stock} szt.`}
                                     margin="none"
                                     type="number"
                                 />
@@ -118,4 +120,21 @@ ProductsInCart.propTypes = {
     removeItemFromCart: PropTypes.func.isRequired,
 };
 
-export default withStyles(styles)(ProductsInCart);
+const mapStateToProps = state => ({
+    cart: state.cart,
+    products: state.cart.ids.map(i => state.products.data[i]),
+});
+
+const mapDispatchToProps = dispatch => ({
+    incrementItemInCart(item) {
+        dispatch(addToCart(item));
+    },
+    decrementItemInCart(item) {
+        dispatch(decrementInCart(item));
+    },
+    removeItemFromCart(itemId) {
+        dispatch(deleteFromCart(itemId));
+    },
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(ProductsInCart));

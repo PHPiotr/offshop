@@ -5,14 +5,15 @@ import {
     CREATE_ORDER_REQUEST,
     CREATE_ORDER_SUCCESS,
     CREATE_ORDER_FAILURE,
+    RESET_ORDER_DATA,
 
-} from "../../actions/order";
+} from '../../actions/order';
 
 export const initialState = {
     retrievingOrder: false,
-    creatingOrder: false,
-    data: null,
-    error: null,
+    isCreating: false,
+    data: {},
+    error: '',
     errorDialogOpen: false,
 };
 
@@ -33,29 +34,30 @@ const order = (state = initialState, action) => {
               };
         case RETRIEVE_ORDER_FAILURE:
               return {
-                  ...state,
-                  retrievingOrder: false,
+                  ...initialState,
                   error: action.payload.orderError,
-                  data: action.payload.data,
               };
         case CREATE_ORDER_REQUEST:
             return {
                 ...state,
-                creatingOrder: true,
+                isCreating: true,
                 error: null,
             };
         case CREATE_ORDER_SUCCESS:
             return {
                 ...state,
-                creatingOrder: false,
+                isCreating: false,
                 data: action.payload.orderData,
                 error: null,
             };
         case CREATE_ORDER_FAILURE:
             return {
-                ...state,
-                creatingOrder: false,
+                ...initialState,
                 error: action.payload.orderError,
+            };
+        case RESET_ORDER_DATA:
+            return {
+                ...initialState,
             };
         default:
             return state;

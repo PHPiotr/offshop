@@ -10,19 +10,15 @@ export const ON_CREATE_PRODUCT = 'ON_CREATE_PRODUCT';
 
 export const getProductsIfNeeded = params => {
     return async (dispatch, getState) => {
-        const {products} = getState();
-        if (products.ids.length) {
-            return;
+        const {products: {isFetching}} = getState();
+        if (isFetching) {
+            return Promise.resolve();
         }
 
         dispatch({type: RETRIEVE_PRODUCTS_REQUEST});
         try {
-            const response = await getProducts();
-            if (!response.ok) {
-                throw Error(response.errorMessage);
-            }
-            const items = await response.json();
-            const payload = normalize(items, productSchema.productList);
+            const {data} = await getProducts();
+            const payload = normalize(data, productSchema.productList);
             dispatch({type: RETRIEVE_PRODUCTS_SUCCESS, payload});
 
             return Promise.resolve(payload);
