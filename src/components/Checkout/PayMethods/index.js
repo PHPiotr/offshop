@@ -3,6 +3,8 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import Divider from '@material-ui/core/Divider';
 import PayByLink from './PayByLink';
+import PayuExpress from './PayuExpress';
+import GooglePay from './GooglePay';
 import {getPayMethods} from '../../../api/payMethods';
 import {authorize} from '../../../api/payu';
 
@@ -20,6 +22,12 @@ const PayMethods = () => {
 
     return (
         <List disablePadding>
+            <ListItem>
+                <PayuExpress />
+            </ListItem>
+            <ListItem>
+                <GooglePay />
+            </ListItem>
             {payByLinksMethods.map(tile => (
                 <Fragment key={tile.value}>
                     <ListItem>
