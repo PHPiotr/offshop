@@ -1,4 +1,4 @@
-import {fetch} from 'whatwg-fetch';
+import axios from 'axios';
 import {stringify} from 'query-string';
 
 export const getDeliveryMethods = (params = {}) => {
@@ -7,7 +7,7 @@ export const getDeliveryMethods = (params = {}) => {
     if (queryString) {
         url += `?${queryString}`;
     }
-    return fetch(url, {
+    return axios(url, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
@@ -16,11 +16,11 @@ export const getDeliveryMethods = (params = {}) => {
 };
 
 export const createDeliveryMethod = (data = {}, accessToken) => {
-    return fetch(`${process.env.REACT_APP_API_HOST}/delivery-methods`, {
+    return axios(`${process.env.REACT_APP_API_HOST}/delivery-methods`, {
         method: 'POST',
         headers: {
             'Authorization': `Bearer ${accessToken}`,
         },
-        body: data,
+        data,
     });
 };

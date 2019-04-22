@@ -12,12 +12,8 @@ import PropTypes from 'prop-types';
 import BuyerForm from "./BuyerForm";
 import BuyerDeliveryForm from "./BuyerDeliveryForm";
 import {getFormValues, isValid} from 'redux-form';
-import {setActiveStepId, stepBack, stepNext} from '../../actions/checkout';
-import {createOrder} from '../../actions/order';
-import {showNotification} from '../../actions/notification';
-import withGooglePay from '../../hoc/withGooglePay';
+import {stepBack, stepNext} from '../../actions/checkout';
 import {withRouter} from 'react-router-dom';
-import GooglePayButton from './GooglePayButton';
 
 const styles = theme => ({
     paper: {
@@ -57,7 +53,7 @@ const getStepContent = activeStepId => {
 };
 
 const Checkout = props => {
-    const {classes, activeStepId, stepsIds, steps, showGooglePayButton} = props;
+    const {classes, activeStepId, stepsIds, steps} = props;
 
     const activeStepValue = steps[activeStepId].value;
     let canProceed = false;
@@ -94,7 +90,6 @@ const Checkout = props => {
                             Dalej
                         </Button>
                     )}
-                    <GooglePayButton show={showGooglePayButton}/>
                 </div>
             </Fragment>
         </Paper>
@@ -121,8 +116,6 @@ const mapStateToProps = state => ({
     validBuyerDeliveryData: isValid('buyerDelivery')(state),
     buyer: getFormValues('buyer')(state),
     buyerDelivery: getFormValues('buyerDelivery')(state),
-    showGooglePayButton: state.checkout.activeStepId === state.checkout.stepsIds[state.checkout.stepsIds.length - 1],
-    totalPrice: state.deliveryMethods.currentId ? state.cart.totalPrice + state.deliveryMethods.data[state.deliveryMethods.currentId].unitPrice * state.cart.quantity : state.cart.totalPrice,
 });
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
@@ -132,27 +125,9 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
     handleBack() {
         dispatch(stepBack());
     },
-    handleRestoreActiveStepId(activeStepId) {
-        dispatch(setActiveStepId(activeStepId));
-    },
     redirectToCart() {
         ownProps.history.replace('/cart');
     },
-    async onGooglePayButtonClick(paymentDataFromGooglePay) {
-        try {
-            const payload = await dispatch(createOrder(paymentDataFromGooglePay));
-            const {redirectUri} = payload;
-            if (redirectUri) {
-                window.location.href = redirectUri;
-            } else {
-                dispatch(setActiveStepId(0));
-                ownProps.history.replace('/order');
-            }
-        } catch (e) {
-            dispatch(setActiveStepId(2));
-            dispatch(showNotification({message: e.message, variant: 'error'}));
-        }
-    },
 });
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(withGooglePay(Checkout))));
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(Checkout)));

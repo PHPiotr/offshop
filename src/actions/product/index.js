@@ -14,12 +14,8 @@ export const createNewProductIfNeeded = (formProps, accessToken) => async dispat
     fd.append('weight', formProps.weight);
 
     try {
-        const response = await createProduct(fd, accessToken);
-        if (response.ok) {
-            return dispatch(createProductSuccess());
-        }
-        const {message} = await response.json();
-        throw Error(message);
+        await createProduct(fd, accessToken);
+        return dispatch(createProductSuccess());
     } catch (error) {
         dispatch(createProductFailure({payload: error}));
         return Promise.reject(error);

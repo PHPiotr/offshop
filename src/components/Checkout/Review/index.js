@@ -9,6 +9,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Divider from '@material-ui/core/Divider';
 import Grid from "@material-ui/core/Grid";
+import PayMethods from '../PayMethods';
 
 const styles = theme => ({
     listItem: {
@@ -20,10 +21,14 @@ const styles = theme => ({
     title: {
         marginTop: theme.spacing.unit * 2,
     },
+    payMethods: {
+        display: 'block',
+        textAlign: 'right',
+    },
 });
 
-const Review = props => {
-    const {classes, products, buyerDetails, buyerDeliveryDetails, totalPrice, currency, cart} = props;
+let Review = props => {
+    const {classes, products, buyerDetails, buyerDeliveryDetails, totalAmount, currency, cart} = props;
 
     return (
         <Fragment>
@@ -56,7 +61,7 @@ const Review = props => {
                 <ListItem className={classes.listItem}>
                     <ListItemText primary="Do zapłaty"/>
                     <Typography variant="subtitle1" className={classes.total}>
-                        {`${totalPrice} ${currency}`}
+                        {`${(totalAmount / 100).toFixed(2)} ${currency}`}
                     </Typography>
                 </ListItem>
                 <Divider/>
@@ -100,6 +105,7 @@ const Review = props => {
                     </Grid>
                 )}
             </Grid>
+            <PayMethods />
         </Fragment>
     );
 };
@@ -137,9 +143,7 @@ const mapStateToProps = state => ({
         return acc;
     }, []),
     cart: state.cart,
-    totalPrice: state.cart.totalPrice
-        ? ((state.cart.totalPrice + state.deliveryMethods.data[state.deliveryMethods.currentId].unitPrice * 100 * state.cart.quantity) / 100).toFixed(2)
-        : '0.00',
+    totalAmount: state.cart.totalPrice + state.deliveryMethods.data[state.deliveryMethods.currentId].unitPrice * 100 * state.cart.quantity,
     deliveryMethod: state.deliveryMethods.data[state.deliveryMethods.currentId],
     weight: state.cart.weight,
     deliveryPrice: (state.deliveryMethods.data[state.deliveryMethods.currentId].unitPrice * state.cart.quantity).toFixed(2),
@@ -149,7 +153,7 @@ Review.propTypes = {
     products: PropTypes.array.isRequired,
     buyerDetails: PropTypes.array.isRequired,
     buyerDeliveryDetails: PropTypes.array.isRequired,
-    totalPrice: PropTypes.string.isRequired,
+    totalAmount: PropTypes.number.isRequired,
     currency: PropTypes.string,
 };
 
