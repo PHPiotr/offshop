@@ -16,6 +16,7 @@ const ids = (state = initialIds, {type, payload}) => {
     switch(type) {
         case RETRIEVE_PRODUCTS_SUCCESS:
             return [
+                ...state,
                 ...payload.result,
             ];
         case ON_CREATE_PRODUCT:
@@ -28,14 +29,16 @@ const ids = (state = initialIds, {type, payload}) => {
 const data = (state = initialData, {type, payload}) => {
     switch(type) {
         case RETRIEVE_PRODUCTS_SUCCESS:
-            return {...payload.entities.products};
+            return {
+                ...state,
+                ...payload.entities.products,
+            };
         case SYNC_QUANTITIES:
             const newState = {...state};
-            payload.productsIds.forEach(id => newState[id].stock = payload.productsById[id].stock);
+            payload.productsIds.forEach(id => newState[id].quantity = payload.productsById[id].quantity);
             return newState;
         case ON_CREATE_PRODUCT:
             state[payload.product._id] = payload.product;
-            return state;
         default:
             return state;
     }

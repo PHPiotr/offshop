@@ -1,5 +1,4 @@
 import React, {Fragment} from 'react';
-import {connect} from 'react-redux';
 import withStyles from '@material-ui/core/styles/withStyles';
 import Typography from '@material-ui/core/Typography/Typography';
 import Stepper from '@material-ui/core/Stepper/Stepper';
@@ -11,9 +10,6 @@ import Review from './Review';
 import PropTypes from 'prop-types';
 import BuyerForm from "./BuyerForm";
 import BuyerDeliveryForm from "./BuyerDeliveryForm";
-import {getFormValues, isValid} from 'redux-form';
-import {stepBack, stepNext} from '../../actions/checkout';
-import {withRouter} from 'react-router-dom';
 
 const styles = theme => ({
     paper: {
@@ -53,7 +49,7 @@ const getStepContent = activeStepId => {
 };
 
 const Checkout = props => {
-    const {classes, activeStepId, stepsIds, steps} = props;
+    const {classes, activeStepId, stepsIds, steps, products} = props;
 
     const activeStepValue = steps[activeStepId].value;
     let canProceed = false;
@@ -79,7 +75,7 @@ const Checkout = props => {
                 {getStepContent(activeStepId)}
                 <div className={classes.buttons}>
                     <Button onClick={activeStepId === stepsIds[0] ? props.redirectToCart : props.handleBack} className={classes.button}>Wróć</Button>
-                    {activeStepId !== stepsIds[stepsIds.length - 1] && (
+                    {activeStepId != stepsIds[stepsIds.length - 1] && (
                         <Button
                             variant="contained"
                             color="primary"
@@ -90,6 +86,19 @@ const Checkout = props => {
                             Dalej
                         </Button>
                     )}
+                    <div
+                        id="google-pay-btn-wrapper"
+                        className={classes.button}
+                        style={{
+                            display:
+                                activeStepId === stepsIds[stepsIds.length - 1] &&
+                                props.validBuyerData &&
+                                props.validBuyerDeliveryData &&
+                                products.length > 0
+                                    ? 'block'
+                                    : 'none',
+                        }}
+                    />
                 </div>
             </Fragment>
         </Paper>
@@ -104,30 +113,6 @@ Checkout.propTypes = {
     handleBack: PropTypes.func.isRequired,
     handleNext: PropTypes.func.isRequired,
     redirectToCart: PropTypes.func.isRequired,
-    validBuyerData: PropTypes.bool.isRequired,
-    validBuyerDeliveryData: PropTypes.bool.isRequired,
 };
 
-const mapStateToProps = state => ({
-    activeStepId: state.checkout.activeStepId || 0,
-    stepsIds: state.checkout.stepsIds,
-    steps: state.checkout.steps,
-    validBuyerData: isValid('buyer')(state),
-    validBuyerDeliveryData: isValid('buyerDelivery')(state),
-    buyer: getFormValues('buyer')(state),
-    buyerDelivery: getFormValues('buyerDelivery')(state),
-});
-
-const mapDispatchToProps = (dispatch, ownProps) => ({
-    handleNext() {
-        dispatch(stepNext());
-    },
-    handleBack() {
-        dispatch(stepBack());
-    },
-    redirectToCart() {
-        ownProps.history.replace('/cart');
-    },
-});
-
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(Checkout)));
+export default withStyles(styles)(Checkout);

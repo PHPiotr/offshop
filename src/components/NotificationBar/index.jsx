@@ -1,5 +1,4 @@
 import React from 'react';
-import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
@@ -13,7 +12,6 @@ import Snackbar from '@material-ui/core/Snackbar';
 import SnackbarContent from '@material-ui/core/SnackbarContent';
 import WarningIcon from '@material-ui/icons/Warning';
 import {withStyles} from '@material-ui/core/styles';
-import {hideNotification} from "../../actions/notification";
 
 const variantIcon = {
     success: CheckCircleIcon,
@@ -95,13 +93,22 @@ const styles2 = theme => ({
 });
 
 class NotificationBar extends React.Component {
+    state = {
+        open: false,
+    };
+
+    componentDidUpdate(prevProps) {
+        if (this.props.open !== prevProps.open) {
+            this.setState({open: this.props.open});
+        }
+    }
 
     handleClose = (event, reason) => {
         if (reason === 'clickaway') {
             return;
         }
 
-        this.props.hideNotification();
+        this.setState({open: false});
     };
 
     render() {
@@ -112,7 +119,7 @@ class NotificationBar extends React.Component {
                         vertical: 'bottom',
                         horizontal: 'left',
                     }}
-                    open={this.props.open}
+                    open={this.state.open}
                     autoHideDuration={6000}
                     onClose={this.handleClose}
                 >
@@ -132,9 +139,6 @@ NotificationBar.propTypes = {
     message: PropTypes.string.isRequired,
     open: PropTypes.bool.isRequired,
     variant: PropTypes.oneOf(['success', 'warning', 'error', 'info']).isRequired,
-    hideNotification: PropTypes.func.isRequired,
 };
 
-const mapStateToProps = ({notification}) => ({...notification});
-
-export default connect(mapStateToProps, {hideNotification})(withStyles(styles2)(NotificationBar));
+export default withStyles(styles2)(NotificationBar);

@@ -1,54 +1,74 @@
 import React, {Component, Fragment} from 'react';
-import PropTypes from 'prop-types';
+import {getFormValues, isValid} from 'redux-form';
 import CheckoutView from '../../components/Checkout';
 import {connect} from 'react-redux';
+import {stepBack, stepNext, setActiveStepId, toggleCreateOrderFailedDialog} from '../../actions/checkout';
+import {createOrder} from '../../actions/order';
 import SubHeader from '../../components/SubHeader';
-import ProgressIndicator from '../../components/ProgressIndicator';
-import {setActiveStepId} from '../../actions/checkout';
-import {resetOrderData} from '../../actions/order';
+import OrderCreateFailedDialog from '../../components/Checkout/OrderCreateFailedDialog';
+import withGooglePay from '../../hoc/withGooglePay';
 
 class Checkout extends Component {
     componentDidMount() {
-        if (this.props.order.data.extOrderId) {
-            this.props.resetOrderData();
-        }
-        if (!this.props.hasProductsInCart) {
-            this.props.history.replace('/');
-        }
-    }
-
-    componentWillReceiveProps(nextProps,nextContext) {
-        if (nextProps.order.data.extOrderId) {
-            if (nextProps.order.data.redirectUri) {
-                window.location.href = nextProps.order.data.redirectUri;
-            } else {
-                this.props.setActiveStepId(0);
-                this.props.history.replace('/order');
-            }
+        if (!this.props.supplier.id || !this.props.cart.quantity) {
+            this.props.redirectToCart();
         }
     }
 
     render() {
         return (
             <Fragment>
-                {this.props.order.isCreating && <ProgressIndicator/>}
                 <SubHeader content="Zamówienie"/>
-                <CheckoutView />
+                <CheckoutView {...this.props} />
+                <OrderCreateFailedDialog/>
             </Fragment>
         );
     }
 }
 
 const mapStateToProps = state => ({
-    order: state.order,
-    hasProductsInCart: state.cart.ids.length > 0,
+    activeStepId: state.checkout.activeStepId || 0,
+    stepsIds: state.checkout.stepsIds,
+    steps: state.checkout.steps,
+    supplier: state.suppliers.data[state.suppliers.currentId],
+    cart: state.cart,
+    totalPrice: state.cart.totalPrice + state.suppliers.data[state.suppliers.currentId].pricePerUnit * state.cart.units,
+    products: state.cart.ids.map(i => state.products.data[i]),
+    shipping: state.shipping,
+    validBuyerData: isValid('buyer')(state),
+    validBuyerDeliveryData: isValid('buyerDelivery')(state),
+    buyer: getFormValues('buyer')(state),
+    buyerDelivery: getFormValues('buyerDelivery')(state),
+    orderData: state.order.data,
 });
 
-Checkout.propTypes = {
-    order: PropTypes.shape({
-        data: PropTypes.object,
-        isCreating: PropTypes.bool,
-    }).isRequired,
-};
+const mapDispatchToProps = (dispatch, ownProps) => ({
+    handleNext() {
+        dispatch(stepNext());
+    },
+    handleBack() {
+        dispatch(stepBack());
+    },
+    handleRestoreActiveStepId(activeStepId) {
+        dispatch(setActiveStepId(activeStepId));
+    },
+    redirectToCart() {
+        ownProps.history.replace('/cart');
+    },
+    async onGooglePayButtonClick(paymentDataFromGooglePay) {
+        try {
+            const payload = await dispatch(createOrder(paymentDataFromGooglePay));
+            const {redirectUri} = payload;
+            if (redirectUri) {
+                window.location.href = redirectUri;
+            } else {
+                dispatch(setActiveStepId(0));
+                ownProps.history.replace('/order');
+            }
+        } catch (orderError) {
+            dispatch(toggleCreateOrderFailedDialog());
+        }
+    },
+});
 
-export default connect(mapStateToProps, {setActiveStepId, resetOrderData})(Checkout);
+export default connect(mapStateToProps, mapDispatchToProps)(withGooglePay(Checkout));
