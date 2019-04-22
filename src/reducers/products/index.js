@@ -31,7 +31,7 @@ const data = (state = initialData, {type, payload}) => {
             return {...payload.entities.products};
         case SYNC_QUANTITIES:
             const newState = {...state};
-            payload.productsIds.forEach(id => newState[id].quantity = payload.productsById[id].quantity);
+            payload.productsIds.forEach(id => newState[id].stock = payload.productsById[id].stock);
             return newState;
         case ON_CREATE_PRODUCT:
             state[payload.product._id] = payload.product;

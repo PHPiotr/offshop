@@ -22,6 +22,8 @@ export const orderCreateRequest = params =>
         data: {
             payMethods: params.payMethods,
             totalAmount: params.totalAmount,
+            totalWithoutDelivery: params.totalWithoutDelivery,
+            totalWeight: params.totalWeight,
             products: params.products,
             productsIds: params.productsIds,
             description: params.description,
@@ -29,7 +31,7 @@ export const orderCreateRequest = params =>
             currencyCode: process.env.REACT_APP_CURRENCY_CODE,
             notifyUrl: `${process.env.REACT_APP_API_HOST}${process.env.REACT_APP_PAYU_NOTIFY_PATH}`,
             buyer: params.buyer,
-            buyerDelivery: params.buyerDelivery,
+            deliveryMethod: params.deliveryMethod,
             settings: {
                 invoiceDisabled: true,
             },
