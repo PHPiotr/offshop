@@ -9,7 +9,6 @@ import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import {withStyles} from '@material-ui/core/styles';
 import {Link} from 'react-router-dom';
 import Chip from "@material-ui/core/Chip";
-import AccountCircle from '@material-ui/icons/AccountCircle';
 
 const styles = theme => ({
     root: {
@@ -77,19 +76,8 @@ class PrimaryAppBar extends Component {
                                     <ShoppingCartIcon/>
                                 </Badge>
                             </IconButton>
+                            {this.state.offline && <Chip label="Offline" className={classes.chip} color="secondary"/>}
                         </div>
-                        {this.props.authenticated && <div>
-                            <IconButton
-                                component={Link}
-                                to="/admin/products/new"
-                                color="inherit"
-                            >
-                                <AccountCircle />
-                            </IconButton>
-                        </div>}
-                        {this.state.offline && <div>
-                            <Chip label="Offline" className={classes.chip} color="secondary"/>
-                        </div>}
                     </Toolbar>
                 </AppBar>
             </div>

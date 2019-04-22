@@ -1,16 +1,16 @@
 import {
     STEP_NEXT,
     STEP_BACK,
-    SET_ACTIVE_STEP_ID,
+    SET_ACTIVE_STEP_ID, TOGGLE_CREATE_ORDER_FAILED_DIALOG,
 } from '../../actions/checkout';
-import {SET_CURRENT_DELIVERY_METHOD} from "../../actions/deliveryMethods";
+import {BUYER_DELIVERY_REQUIRED, BUYER_DELIVERY_SKIPPED} from "../../actions/buyerDelivery";
 
 const stepsIdsWithBuyerDeliveryRequired = [0, 1, 2];
 const stepsIdsWithBuyerDeliverySkipped = [0, 2];
 
 const initialState = {
     activeStepId: 0,
-    stepsIds: [],
+    stepsIds: stepsIdsWithBuyerDeliverySkipped,
     steps: {
         0: {
             id: 0,
@@ -28,6 +28,7 @@ const initialState = {
             value: 'review',
         }
     },
+    createOrderFailedDialogOpen: false,
 };
 
 const checkout = (state = initialState, action) => {
@@ -51,10 +52,20 @@ const checkout = (state = initialState, action) => {
                 ...state,
                 activeStepId: action.payload.activeStepId,
             };
-        case SET_CURRENT_DELIVERY_METHOD:
+        case TOGGLE_CREATE_ORDER_FAILED_DIALOG:
             return {
                 ...state,
-                stepsIds: action.payload.current.unitPrice > 0 ? stepsIdsWithBuyerDeliveryRequired : stepsIdsWithBuyerDeliverySkipped,
+                createOrderFailedDialogOpen: !state.createOrderFailedDialogOpen,
+            };
+        case BUYER_DELIVERY_SKIPPED:
+            return {
+                ...state,
+                stepsIds: stepsIdsWithBuyerDeliverySkipped,
+            };
+        case BUYER_DELIVERY_REQUIRED:
+            return {
+                ...state,
+                stepsIds: stepsIdsWithBuyerDeliveryRequired,
             };
         default:
             return state;

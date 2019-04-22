@@ -1,37 +1,52 @@
-import React, {Component} from 'react';
-import PropTypes from 'prop-types';
+import React, {Component, Fragment} from 'react';
 import {connect} from "react-redux";
-import ProgressIndicator from '../../components/ProgressIndicator';
-import OrderView from '../../components/Order';
+import Typography from "@material-ui/core/Typography";
+import SubHeader from "../../components/SubHeader";
+import {injectIntl, FormattedMessage} from 'react-intl';
+import Grid from "@material-ui/core/Grid";
 
 class Order extends Component {
 
     componentDidMount() {
-        if (!this.props.order.data.extOrderId) {
-            this.props.history.replace('/');
+        if (!this.props.orderData.extOrderId) {
+            this.props.redirectToHome();
         }
     }
 
     render() {
-        if (this.props.order.isCreating) {
-            return <ProgressIndicator/>;
-        }
-        if (!this.props.order.data.extOrderId) {
+
+        const {extOrderId} = this.props.orderData;
+
+        if (!extOrderId) {
             return null;
         }
-        return <OrderView extOrderId={this.props.order.data.extOrderId}/>;
+
+        return (
+            <Fragment>
+                <SubHeader content={this.props.intl.formatMessage({id: 'order.thanks'})}/>
+                <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
+                    <Typography variant="subheading">
+                        <FormattedMessage id="order.number" values={{extOrderId: extOrderId}}/>
+                    </Typography>
+                </Grid>
+                <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
+                    <Typography variant="subheading">
+                        <FormattedMessage id="order.info"/>
+                    </Typography>
+                </Grid>
+            </Fragment>
+        );
     }
 }
 
 const mapStateToProps = state => ({
-    order: state.order,
+    orderData: state.order.data || {},
 });
 
-Order.propTypes = {
-    order: PropTypes.shape({
-        data: PropTypes.object,
-        isCreating: PropTypes.bool,
-    }).isRequired,
-};
+const mapDispatchToProps = (dispatch, ownProps) => ({
+    redirectToHome() {
+        ownProps.history.replace('/');
+    },
+});
 
-export default connect(mapStateToProps)(Order);
+export default connect(mapStateToProps, mapDispatchToProps)(injectIntl(Order));
