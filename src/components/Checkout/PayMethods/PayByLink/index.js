@@ -41,7 +41,7 @@ PayByLink.propTypes = {
 };
 
 const mapStateToProps = state => ({
-    totalAmount: ((state.cart.totalPrice + state.deliveryMethods.data[state.deliveryMethods.currentId].unitPrice * 100 * state.cart.quantity) / 100).toFixed(2),
+    totalAmount: ((state.cart.totalPrice + state.deliveryMethods.data[state.deliveryMethods.currentId].unitPrice * 100 * state.cart.weight) / 100).toFixed(2),
 });
 
 export default connect(mapStateToProps, {createOrderIfNeeded, handleCreateOrderError})(withStyles(styles)(PayByLink));

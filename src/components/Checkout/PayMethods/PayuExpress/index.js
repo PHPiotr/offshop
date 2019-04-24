@@ -29,7 +29,7 @@ PayuExpress.propTypes = {
 };
 
 const mapStateToProps = state => ({
-    totalAmount: ((state.cart.totalPrice + state.deliveryMethods.data[state.deliveryMethods.currentId].unitPrice * 100 * state.cart.quantity) / 100).toFixed(2),
+    totalAmount: ((state.cart.totalPrice + state.deliveryMethods.data[state.deliveryMethods.currentId].unitPrice * 100 * state.cart.weight) / 100).toFixed(2),
     src: `${process.env.REACT_APP_PAYU_BASE_URL}/front/widget/js/payu-bootstrap.js`,
     successCallback: 'test',
     currencyCode: process.env.REACT_APP_CURRENCY_CODE,

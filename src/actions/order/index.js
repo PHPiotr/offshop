@@ -47,7 +47,7 @@ export const createOrderIfNeeded = payMethods => {
             const {data: {access_token}} = await authorize();
             const state = getState();
 
-            const totalAmount = state.cart.totalPrice + parseInt(state.deliveryMethods.data[state.deliveryMethods.currentId].unitPrice.replace('.', ''), 10) * state.cart.quantity;
+            const totalAmount = state.cart.totalPrice + parseInt(state.deliveryMethods.data[state.deliveryMethods.currentId].unitPrice.replace('.', ''), 10) * state.cart.weight;
             const products = state.cart.ids.reduce((acc, _id) => {
                 const {name, slug, unitPrice} = state.products.data[_id];
                 acc[_id] = {
