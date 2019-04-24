@@ -6,6 +6,7 @@ import Cart from './containers/Cart';
 import Checkout from './containers/Checkout';
 import Order from './containers/Order';
 import AdminProduct from './containers/Admin/Product';
+import AdminProducts from './containers/Admin/Products';
 import { withStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Typography from '@material-ui/core/Typography';
@@ -56,7 +57,7 @@ const handleAuthentication = async ({history, location}) => {
             await auth.handleAuthentication();
             localStorage.setItem(LOGGED_IN, 'true');
             store.dispatch(updateAccessToken(auth.getAccessToken()));
-            history.replace('/admin/products/new');
+            history.replace('/admin/products/list');
         } catch (err) {
             store.dispatch(updateAccessToken(''));
             history.replace('/');
@@ -128,6 +129,7 @@ class App extends Component {
                                     return null;
                                 }}/>
                                 <PrivateRoute path="/admin/products/new" exact component={AdminProduct}/>
+                                <PrivateRoute path="/admin/products/list" exact component={AdminProducts}/>
                             </Switch>
                         </Grid>
                     </div>
