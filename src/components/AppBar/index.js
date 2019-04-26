@@ -10,10 +10,23 @@ import {withStyles} from '@material-ui/core/styles';
 import {Link} from 'react-router-dom';
 import Chip from "@material-ui/core/Chip";
 import AccountCircle from '@material-ui/icons/AccountCircle';
+import CssBaseline from '@material-ui/core/CssBaseline';
+import Divider from "@material-ui/core/Divider";
+import MenuIcon from '@material-ui/icons/Menu';
+import Drawer from '@material-ui/core/Drawer';
+import AdminNav from '../Admin/Nav';
 
 const styles = theme => ({
     root: {
-        width: '100%',
+        display: 'flex',
+    },
+    menuButton: {
+        marginRight: 20,
+    },
+    toolbar: theme.mixins.toolbar,
+    content: {
+        flexGrow: 1,
+        padding: theme.spacing.unit * 3,
     },
     grow: {
         flexGrow: 1,
@@ -27,6 +40,11 @@ class PrimaryAppBar extends Component {
 
     state = {
         offline: !navigator.onLine,
+        mobileOpen: false,
+    };
+
+    handleDrawerToggle = () => {
+        this.setState(state => ({mobileOpen: !state.mobileOpen}));
     };
 
     setOfflineStatus = () => {
@@ -45,12 +63,28 @@ class PrimaryAppBar extends Component {
 
 
     render() {
-        const {classes, cart} = this.props;
+        const {classes, cart, auth} = this.props;
+
+        const drawer = (
+            <div>
+                {auth.isAuthenticated() && <AdminNav />}
+                <Divider/>
+            </div>
+        );
 
         return (
             <div className={classes.root}>
-                <AppBar position="static">
+                <CssBaseline/>
+                <AppBar position="static" className={classes.appBar}>
                     <Toolbar>
+                        <IconButton
+                            color="inherit"
+                            aria-label="Open drawer"
+                            onClick={this.handleDrawerToggle}
+                            className={classes.menuButton}
+                        >
+                            <MenuIcon/>
+                        </IconButton>
                         <Typography variant="h5" color="inherit" noWrap>
                             <Link
                                 style={{
@@ -78,20 +112,25 @@ class PrimaryAppBar extends Component {
                                 </Badge>
                             </IconButton>
                         </div>
-                        {this.props.authenticated && <div>
-                            <IconButton
-                                component={Link}
-                                to="/admin/products/new"
-                                color="inherit"
-                            >
-                                <AccountCircle />
-                            </IconButton>
-                        </div>}
                         {this.state.offline && <div>
                             <Chip label="Offline" className={classes.chip} color="secondary"/>
                         </div>}
                     </Toolbar>
                 </AppBar>
+                <nav className={classes.drawer}>
+                        <Drawer
+                            container={this.props.container}
+                            variant="temporary"
+                            anchor="left"
+                            open={this.state.mobileOpen}
+                            onClose={this.handleDrawerToggle}
+                            classes={{
+                                paper: classes.drawerPaper,
+                            }}
+                        >
+                            {drawer}
+                        </Drawer>
+                </nav>
             </div>
         );
     }
@@ -100,6 +139,8 @@ class PrimaryAppBar extends Component {
 PrimaryAppBar.propTypes = {
     classes: PropTypes.object.isRequired,
     cart: PropTypes.object.isRequired,
+    container: PropTypes.object,
+    theme: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(PrimaryAppBar);
+export default withStyles(styles, {withTheme: true})(PrimaryAppBar);

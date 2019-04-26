@@ -100,7 +100,7 @@ class App extends Component {
             <Fragment>
                 <CssBaseline />
                 <header>
-                    <Navigation authenticated={auth.isAuthenticated()} />
+                    <Navigation auth={auth} />
                 </header>
                 <main>
                     <div className={classNames(classes.layout, classes.grid)}>
