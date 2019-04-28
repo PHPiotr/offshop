@@ -9,6 +9,7 @@ import order from './order';
 import categories from './categories';
 import product from './product';
 import products from './products';
+import adminProducts from './admin/products';
 import notification from './notification';
 import dialog from './dialog';
 import form from './form';
@@ -27,4 +28,5 @@ export default combineReducers({
     order,
     product,
     products,
+    adminProducts,
 });
