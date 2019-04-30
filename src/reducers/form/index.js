@@ -3,6 +3,8 @@ import {reducer as form} from 'redux-form';
 export default form.plugin({
     product: (state, action) => {
         switch (action.type) {
+            case '@@redux-form/RESET':
+                return undefined;
             case '@@redux-form/BLUR':
                 if (!action.meta || !state.values || !state.values.unitPrice || action.meta.field !== 'unitPrice') {
                     return state;

@@ -63,7 +63,7 @@ const ProductsList = props => {
             <List className={props.classes.root}>
                 {props.products.map((p, i) => (
                     <Fragment key={p._id}>
-                        <ListItem key={p._id} alignItems="flex-start" button component={Link} to={`/admin/products/${p.slug}`}>
+                        <ListItem key={p._id} alignItems="flex-start" button component={Link} to={`/admin/products/${p.id}`}>
                             <ListItemAvatar>
                                 <Avatar src={`${process.env.REACT_APP_API_HOST}/images/products/${p.slug}.avatar.png`}
                                         alt={p.name}/>

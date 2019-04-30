@@ -5,8 +5,8 @@ import Products from './containers/Products';
 import Cart from './containers/Cart';
 import Checkout from './containers/Checkout';
 import Order from './containers/Order';
-import AdminProduct from './containers/Admin/Product';
-import AdminProducts from './containers/Admin/Products';
+import AdminProductForm from './components/Admin/ProductForm';
+import AdminProducts from './components/Admin/ProductsList';
 import { withStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Typography from '@material-ui/core/Typography';
@@ -128,8 +128,9 @@ class App extends Component {
                                     props.history.replace('/');
                                     return null;
                                 }}/>
-                                <PrivateRoute path="/admin/products/new" exact component={AdminProduct}/>
                                 <PrivateRoute path="/admin/products/list" exact component={AdminProducts}/>
+                                <PrivateRoute path="/admin/products/new" exact component={AdminProductForm} />
+                                <PrivateRoute path="/admin/products/:productId" exact component={AdminProductForm}/>
                             </Switch>
                         </Grid>
                     </div>
