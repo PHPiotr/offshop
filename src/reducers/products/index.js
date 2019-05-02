@@ -4,6 +4,8 @@ import {
     RETRIEVE_PRODUCTS_FAILURE,
     SYNC_QUANTITIES,
     ON_CREATE_PRODUCT,
+    ON_UPDATE_PRODUCT,
+    ON_DELETE_PRODUCT,
 } from "../../actions/products";
 import {combineReducers} from "redux";
 
@@ -20,6 +22,17 @@ const ids = (state = initialIds, {type, payload}) => {
             ];
         case ON_CREATE_PRODUCT:
             return [payload.product._id, ...state];
+        case ON_UPDATE_PRODUCT:
+            if (payload.product.active) {
+                if (state.indexOf(payload.product._id) === -1) {
+                    return [...state, payload.product._id];
+                }
+            } else {
+                return state.filter(id => id !== payload.product._id);
+            }
+            return state;
+        case ON_DELETE_PRODUCT:
+            return state.filter(id => id !== payload.product._id);
         default:
             return state;
     }
@@ -34,8 +47,8 @@ const data = (state = initialData, {type, payload}) => {
             payload.productsIds.forEach(id => newState[id].stock = payload.productsById[id].stock);
             return newState;
         case ON_CREATE_PRODUCT:
-            state[payload.product._id] = payload.product;
-            return state;
+        case ON_UPDATE_PRODUCT:
+            return {...state, [payload.product._id]: payload.product};
         default:
             return state;
     }

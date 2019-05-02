@@ -65,7 +65,6 @@ export const inputs = {
     active: {
         type: 'switch',
         label: 'Aktywny',
-        validate: [validateRequired],
         component: SwitchField,
         inputProps: {},
     },

@@ -118,7 +118,7 @@ ProductsList.propTypes = {
 };
 
 const mapStateToProps = state => ({
-    products: state.adminProducts.ids.map(i => state.products.data[i]),
+    products: state.adminProducts.ids.map(i => state.adminProducts.data[i]),
     isFetching: state.adminProducts.isFetching,
 });
 

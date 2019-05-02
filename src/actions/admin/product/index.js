@@ -24,11 +24,13 @@ export const createProductIfNeeded = (formProps, accessToken) => async dispatch 
     fd.append('weight', formProps.weight);
 
     try {
-        await createProduct(fd, accessToken);
-        return dispatch({type: CREATE_PRODUCT_SUCCESS});
+        const {data} = await createProduct(fd, accessToken);
+        const payload = normalize(data, productSchema.product);
+        dispatch({type: CREATE_PRODUCT_SUCCESS, payload});
+        return payload;
     } catch (error) {
         dispatch({type: CREATE_PRODUCT_FAILURE});
-        return Promise.reject(error);
+        return error;
     }
 };
 
@@ -38,7 +40,9 @@ export const updateProductIfNeeded = (formProps, accessToken) => async (dispatch
 
     dispatch({type: UPDATE_PRODUCT_REQUEST});
     const fd = new FormData();
-    fd.append('img', formProps.img.file);
+    if (formProps.img) {
+        fd.append('img', formProps.img.file);
+    }
     fd.append('name', formProps.name);
     fd.append('slug', formProps.slug);
     fd.append('unitPrice', formProps.unitPrice * 100);
@@ -47,11 +51,13 @@ export const updateProductIfNeeded = (formProps, accessToken) => async (dispatch
     fd.append('active', formProps.active);
 
     try {
-        await updateProduct(id, fd, accessToken);
-        return dispatch({type: UPDATE_PRODUCT_SUCCESS});
+        const {data} = await updateProduct(id, fd, accessToken);
+        const payload = normalize(data, productSchema.product);
+        dispatch({type: UPDATE_PRODUCT_SUCCESS, payload});
+        return payload;
     } catch (error) {
         dispatch({type: UPDATE_PRODUCT_FAILURE});
-        return Promise.reject(error);
+        return error;
     }
 };
 
@@ -59,7 +65,7 @@ export const getAdminProductIfNeeded = productId => {
     return async (dispatch, getState) => {
         const {adminProducts: {isFetching}, auth: {accessToken}} = getState();
         if (isFetching) {
-            return Promise.resolve();
+            return;
         }
 
         dispatch({type: RETRIEVE_ADMIN_PRODUCT_REQUEST});
@@ -68,11 +74,11 @@ export const getAdminProductIfNeeded = productId => {
             const payload = normalize(data, productSchema.product);
             dispatch({type: RETRIEVE_ADMIN_PRODUCT_SUCCESS, payload});
 
-            return Promise.resolve(payload);
+            return payload;
         } catch (error) {
             dispatch({type: RETRIEVE_ADMIN_PRODUCT_FAILURE, payload: {error}});
 
-            return Promise.reject(error);
+            return error;
         }
     };
 };

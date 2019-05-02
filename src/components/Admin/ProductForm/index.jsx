@@ -1,16 +1,17 @@
-import React, {Fragment, useEffect} from 'react';
+import React, {Fragment, useEffect, useState} from 'react';
 import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
 import {Field, Form, reduxForm, formValueSelector, isValid, reset} from 'redux-form';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import withStyles from '@material-ui/core/styles/withStyles';
-import {createNewProductIfNeeded} from "../../../actions/product/index";
+import {createProductIfNeeded, updateProductIfNeeded} from "../../../actions/admin/product/index";
 import {showNotification} from "../../../actions/notification";
 import SubHeader from '../../../components/SubHeader';
 import ProgressIndicator from '../../../components/ProgressIndicator';
 import {getAdminProductIfNeeded} from '../../../actions/admin/product';
 import {inputs, inputKeys, initialValues} from './config';
+import ImagePreview from '../../FileInput/ImagePreview';
 
 const FORM_NAME = 'product';
 
@@ -29,6 +30,7 @@ const styles = theme => ({
 });
 
 const handleOnDrop = ([newImageFile], onChange) => {
+    debugger;
     const imageFile = {
         file: newImageFile,
         name: newImageFile.name,
@@ -40,18 +42,16 @@ const handleOnDrop = ([newImageFile], onChange) => {
 };
 
 let ProductForm = props => {
+    const [currentImageName, setCurrentImageName] = useState(null);
     useEffect(() => {
         if (props.match.params.productId) {
-            props.getAdminProductIfNeeded(props.match.params.productId);
-            return () => console.log('hello', !!props.match.params.productId) || props.dispatch(reset('product'));
+            props.getAdminProductIfNeeded(props.match.params.productId)
+                .then(({entities, result}) => {
+                    setCurrentImageName(entities.products[result].slug);
+                });
         }
     }, [props.match.params.productId]);
-    // useEffect(() => {
-    //     if (props.match.params.productId) {
-    //         props.getAdminProductIfNeeded(props.match.params.productId);
-    //         return () => props.dispatch(reset('product'));
-    //     }
-    // }, []);
+
     return (
         <Fragment>
             {props.isRequestInProgress && <ProgressIndicator/>}
@@ -62,6 +62,11 @@ let ProductForm = props => {
                         const {label, type, validate, component, inputProps} = inputs[itemId];
 
                         if (type === 'file') {
+                            let validation = validate;
+                            if (props.match.params.productId) {
+                                validation = [];
+                            }
+                            currentImageName && acc.push(<ImagePreview imagefile={[{name: 'hello', preview: `${process.env.REACT_APP_API_HOST}/images/products/${currentImageName}.tile.png`, size: 100}]}/>);
                             acc.push(
                                 <Grid item xs={12} key={itemId}>
                                     <Field
@@ -70,7 +75,7 @@ let ProductForm = props => {
                                         type={type}
                                         imagefile={props.imageFile || []}
                                         handleOnDrop={handleOnDrop}
-                                        validate={validate}
+                                        validate={validation}
                                     />
                                 </Grid>
                             );
@@ -112,7 +117,7 @@ let ProductForm = props => {
                         disabled={props.submitting || !props.isValidProduct}
                         type="submit"
                     >
-                        Dodaj produkt
+                        {`${props.match.params.productId ? 'Edytuj' : 'Dodaj'} produkt`}
                     </Button>
                 </div>
             </Form>
@@ -150,13 +155,17 @@ const mapStateToProps = state => {
     };
 };
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch, ownProps) => ({
     getAdminProductIfNeeded(productId) {
-        dispatch(getAdminProductIfNeeded(productId));
+        return dispatch(getAdminProductIfNeeded(productId));
     },
     onSubmit: async (formProps, _, {accessToken, reset}) => {
         try {
-            await dispatch(createNewProductIfNeeded(formProps, accessToken));
+            if (ownProps.match.params.productId) {
+                await dispatch(updateProductIfNeeded(formProps, accessToken));
+            } else {
+                await dispatch(createProductIfNeeded(formProps, accessToken));
+            }
             reset();
         } catch (e) {
             dispatch(showNotification({message: e.message, variant: 'error'}));
