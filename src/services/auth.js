@@ -78,6 +78,6 @@ export default class Auth {
     }
 
     isAuthenticated() {
-        return true;//new Date().getTime() < this.expiresAt;
+        return new Date().getTime() < this.expiresAt;
     }
 }
