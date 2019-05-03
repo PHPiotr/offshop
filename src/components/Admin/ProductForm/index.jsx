@@ -30,7 +30,6 @@ const styles = theme => ({
 });
 
 const handleOnDrop = ([newImageFile], onChange) => {
-    debugger;
     const imageFile = {
         file: newImageFile,
         name: newImageFile.name,
@@ -66,7 +65,7 @@ let ProductForm = props => {
                             if (props.match.params.productId) {
                                 validation = [];
                             }
-                            currentImageName && acc.push(<ImagePreview imagefile={[{name: 'hello', preview: `${process.env.REACT_APP_API_HOST}/images/products/${currentImageName}.tile.png`, size: 100}]}/>);
+                            currentImageName && acc.push(<ImagePreview key="currentImage" imagefile={[{name: 'hello', preview: `${process.env.REACT_APP_API_HOST}/images/products/${currentImageName}.tile.png`, size: 100}]}/>);
                             acc.push(
                                 <Grid item xs={12} key={itemId}>
                                     <Field
