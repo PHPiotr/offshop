@@ -71,7 +71,14 @@ let ProductForm = props => {
                                         name={itemId}
                                         component={component}
                                         type={type}
-                                        imagefile={(!props.imageFile || props.imageFile.length === 0) ? (currentSlug && [{name: '', preview: `${process.env.REACT_APP_API_HOST}/images/products/${currentSlug}.tile.png`, size: 0}]) : props.imageFile}
+                                        imagefile={
+                                            (!props.imageFile || props.imageFile.length === 0)
+                                                ? (
+                                                    (props.match.params.productId && currentSlug)
+                                                        ? [{name: '', preview: `${process.env.REACT_APP_API_HOST}/images/products/${currentSlug}.tile.png`, size: 0}]
+                                                        : []
+                                                ) : props.imageFile
+                                        }
                                         handleOnDrop={handleOnDrop}
                                         validate={validation}
                                     />
