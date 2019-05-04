@@ -16,7 +16,7 @@ import { hot } from 'react-hot-loader';
 import Notification from './containers/Notification';
 import Auth from './services/auth';
 import store from './store';
-import {updateAccessToken} from './actions/auth';
+import {updateAuth} from './actions/auth';
 
 const auth = new Auth();
 const {isAuthenticated, renewSession} = auth;
@@ -26,10 +26,14 @@ const PrivateRoute = ({component: Component, ...rest}) => {
 
     try {
         if (localStorage.getItem(LOGGED_IN) === 'true') {
+            const authState = store.getState().auth;
+            auth.accessToken = authState.accessToken;
+            auth.idToken = authState.idToken;
+            auth.expiresAt = authState.expiresAt;
             renewSession();
         }
-    } catch (err) {
-
+    } catch (error) {
+        console.error(error);
     }
 
     return (
@@ -56,13 +60,22 @@ const handleAuthentication = async ({history, location}) => {
         try {
             await auth.handleAuthentication();
             localStorage.setItem(LOGGED_IN, 'true');
-            store.dispatch(updateAccessToken(auth.getAccessToken()));
+            store.dispatch(updateAuth({
+                accessToken: auth.getAccessToken(),
+                idToken: auth.getIdToken(),
+                expiresAt: auth.getExpiresAt(),
+            }));
             history.replace('/admin/products/list');
-        } catch (err) {
-            store.dispatch(updateAccessToken(''));
+        } catch (error) {
+            auth.logout();
+            store.dispatch(updateAuth({
+                accessToken: auth.getAccessToken(),
+                idToken: auth.getIdToken(),
+                expiresAt: auth.getExpiresAt(),
+            }));
             history.replace('/');
-            console.log(err);
-            alert(`Error: ${err.error}. Check the console for further details.`);
+            console.error(error);
+            alert(`Error while handling authentication. Check the console for further details.`);
         }
     }
 };
@@ -124,6 +137,11 @@ class App extends Component {
                                 }}/>
                                 <Route path="/logout" render={props => {
                                     auth.logout();
+                                    store.dispatch(updateAuth({
+                                        accessToken: auth.getAccessToken(),
+                                        idToken: auth.getIdToken(),
+                                        expiresAt: auth.getExpiresAt(),
+                                    }));
                                     localStorage.removeItem(LOGGED_IN);
                                     props.history.replace('/');
                                     return null;

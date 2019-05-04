@@ -25,6 +25,7 @@ const configureStore = initialState => {
     createdStore.subscribe(throttle(() => {
         const state = store.getState();
         saveState({
+            auth: state.auth,
             cart: state.cart,
             checkout: state.checkout,
             order: {...orderInitialState, data: state.order.data, error: state.order.error},

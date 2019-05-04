@@ -9,7 +9,6 @@ import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import {withStyles} from '@material-ui/core/styles';
 import {Link} from 'react-router-dom';
 import Chip from "@material-ui/core/Chip";
-import AccountCircle from '@material-ui/icons/AccountCircle';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Divider from "@material-ui/core/Divider";
 import MenuIcon from '@material-ui/icons/Menu';
@@ -38,13 +37,22 @@ const styles = theme => ({
 
 class PrimaryAppBar extends Component {
 
+    constructor(props) {
+        super(props);
+        this.handleDrawerOpen = this.handleDrawerOpen.bind(this);
+    }
+
     state = {
         offline: !navigator.onLine,
         mobileOpen: false,
     };
 
-    handleDrawerToggle = () => {
-        this.setState(state => ({mobileOpen: !state.mobileOpen}));
+    handleDrawerOpen = () => {
+        this.props.isAuthenticated && this.setState({mobileOpen: true});
+    };
+
+    handleDrawerClose = () => {
+        this.setState({mobileOpen: false});
     };
 
     setOfflineStatus = () => {
@@ -63,11 +71,11 @@ class PrimaryAppBar extends Component {
 
 
     render() {
-        const {classes, cart, auth} = this.props;
+        const {classes, cart, isAuthenticated} = this.props;
 
         const drawer = (
             <div>
-                {auth.isAuthenticated() && <AdminNav />}
+                {isAuthenticated && <AdminNav />}
                 <Divider/>
             </div>
         );
@@ -80,7 +88,7 @@ class PrimaryAppBar extends Component {
                         <IconButton
                             color="inherit"
                             aria-label="Open drawer"
-                            onClick={this.handleDrawerToggle}
+                            onClick={this.handleDrawerOpen}
                             className={classes.menuButton}
                         >
                             <MenuIcon/>
@@ -123,7 +131,8 @@ class PrimaryAppBar extends Component {
                             variant="temporary"
                             anchor="left"
                             open={this.state.mobileOpen}
-                            onClose={this.handleDrawerToggle}
+                            onClose={this.handleDrawerClose}
+                            onClick={this.handleDrawerClose}
                             classes={{
                                 paper: classes.drawerPaper,
                             }}

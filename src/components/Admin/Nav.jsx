@@ -51,6 +51,12 @@ const Nav = props => (
                 </IconButton>
             </ListItemSecondaryAction>
         </ListItem>
+        <Divider />
+        <ListItem dense button className={props.classes.listItem}>
+            <Link className={props.classes.link} to="/logout">
+                <ListItemText primary={`Wyloguj`} />
+            </Link>
+        </ListItem>
     </List>
 );
 

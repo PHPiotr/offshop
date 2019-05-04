@@ -41,12 +41,12 @@ const handleOnDrop = ([newImageFile], onChange) => {
 };
 
 let ProductForm = props => {
-    const [currentImageName, setCurrentImageName] = useState(null);
+    const [currentSlug, setCurrentSlug] = useState(null);
     useEffect(() => {
         if (props.match.params.productId) {
             props.getAdminProductIfNeeded(props.match.params.productId)
                 .then(({entities, result}) => {
-                    setCurrentImageName(entities.products[result].slug);
+                    setCurrentSlug(entities.products[result].slug);
                 });
         }
     }, [props.match.params.productId]);
@@ -65,14 +65,13 @@ let ProductForm = props => {
                             if (props.match.params.productId) {
                                 validation = [];
                             }
-                            currentImageName && acc.push(<ImagePreview key="currentImage" imagefile={[{name: 'hello', preview: `${process.env.REACT_APP_API_HOST}/images/products/${currentImageName}.tile.png`, size: 100}]}/>);
                             acc.push(
                                 <Grid item xs={12} key={itemId}>
                                     <Field
                                         name={itemId}
                                         component={component}
                                         type={type}
-                                        imagefile={props.imageFile || []}
+                                        imagefile={(!props.imageFile || props.imageFile.length === 0) ? (currentSlug && [{name: '', preview: `${process.env.REACT_APP_API_HOST}/images/products/${currentSlug}.tile.png`, size: 0}]) : props.imageFile}
                                         handleOnDrop={handleOnDrop}
                                         validate={validation}
                                     />
