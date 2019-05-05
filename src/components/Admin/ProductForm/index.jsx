@@ -170,6 +170,7 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
             } else {
                 await dispatch(createProductIfNeeded(formProps, accessToken));
             }
+            ownProps.history.push('/admin/products/list');
             reset();
         } catch (e) {
             dispatch(showNotification({message: e.message, variant: 'error'}));
