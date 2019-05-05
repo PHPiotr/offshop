@@ -55,7 +55,8 @@
     "test": "node scripts/test.js",
     "format": "pretty-quick",
     "cypress": "cypress open",
-    "cypress:all": "cypress run"
+    "cypress:all": "cypress run",
+    "heroku-prebuild": "npm install --production=false"
   },
   "eslintConfig": {
     "extends": "react-app",
