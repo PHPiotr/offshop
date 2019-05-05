@@ -2,6 +2,8 @@ import React, {Fragment, useState, useEffect} from 'react';
 import PropTypes from 'prop-types';
 import {withStyles} from '@material-ui/core/styles';
 import {Link} from 'react-router-dom';
+import Badge from '@material-ui/core/Badge';
+import Tooltip from '@material-ui/core/Tooltip';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
@@ -65,8 +67,17 @@ const ProductsList = props => {
                     <Fragment key={p._id}>
                         <ListItem key={p._id} alignItems="flex-start" button component={Link} to={`/admin/products/${p.id}`}>
                             <ListItemAvatar>
+                            {!p.active ? (
+                                <Tooltip title="Produkt nieaktywny">
+                                    <Badge variant="dot" color="error">
+                                        <Avatar src={`${process.env.REACT_APP_API_HOST}/images/products/${p.slug}.avatar.png`}
+                                                alt={p.name}/>
+                                    </Badge>
+                                </Tooltip>
+                            ) : (
                                 <Avatar src={`${process.env.REACT_APP_API_HOST}/images/products/${p.slug}.avatar.png`}
                                         alt={p.name}/>
+                            )}
                             </ListItemAvatar>
                             <ListItemText
                                 primary={p.name}
