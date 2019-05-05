@@ -1,13 +1,15 @@
-import {LOGGED_IN_SUCCESS} from '../../actions/auth';
+import {UPDATE_AUTH} from '../../actions/auth';
 
 const initialState = {
-    accessToken: '',
+    accessToken: null,
+    idToken: null,
+    expiresAt: 0,
 };
 
 export default (state = initialState, action) => {
     switch (action.type) {
-        case LOGGED_IN_SUCCESS:
-            return {...state, accessToken: action.payload.accessToken};
+        case UPDATE_AUTH:
+            return {...action.payload};
         default:
             return state;
     }

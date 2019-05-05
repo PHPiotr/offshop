@@ -1,3 +1,3 @@
-export const LOGGED_IN_SUCCESS = 'LOGGED_IN_SUCCESS';
+export const UPDATE_AUTH = 'UPDATE_AUTH';
 
-export const updateAccessToken = (accessToken = '') => ({type: LOGGED_IN_SUCCESS, payload: {accessToken}});
+export const updateAuth = payload => ({type: UPDATE_AUTH, payload});

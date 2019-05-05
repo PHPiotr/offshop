@@ -60,6 +60,10 @@ export default class Auth {
         return this.idToken;
     }
 
+    getExpiresAt() {
+        return this.expiresAt;
+    }
+
     setSession(authResult) {
         let expiresAt = (authResult.expiresIn * 1000) + new Date().getTime();
         this.accessToken = authResult.accessToken;
@@ -78,7 +82,6 @@ export default class Auth {
     }
 
     isAuthenticated() {
-        let expiresAt = this.expiresAt;
-        return new Date().getTime() < expiresAt;
+        return new Date().getTime() < this.expiresAt;
     }
 }

@@ -3,7 +3,7 @@ import {connect} from 'react-redux';
 import {injectIntl} from 'react-intl';
 import io from 'socket.io-client';
 import NotificationBar from '../../components/NotificationBar';
-import {syncQuantities, onCreateProduct} from '../../actions/products';
+import {syncQuantities, onCreateProduct, onUpdateProduct, onDeleteProduct} from '../../actions/products';
 import {showNotification} from "../../actions/notification";
 
 const socket = io(process.env.REACT_APP_API_HOST);
@@ -31,6 +31,20 @@ class Notification extends Component {
                 variant: 'success',
             });
         });
+        socket.on('updateProduct', function(product) {
+            that.props.handleOnUpdateProduct(product);
+            that.props.handleShowNotification({
+                message: 'Zmodyfikowano produkt',
+                variant: 'success',
+            });
+        });
+        socket.on('deleteProduct', function(product) {
+            that.props.handleOnDeleteProduct(product);
+            that.props.handleShowNotification({
+                message: 'Usunięto produkt',
+                variant: 'warning',
+            });
+        });
     }
 
     render() {
@@ -49,6 +63,12 @@ const mapDispatchToProps = (dispatch) => ({
     },
     handleOnCreateProduct(product) {
         dispatch(onCreateProduct(product));
+    },
+    handleOnUpdateProduct(product) {
+        dispatch(onUpdateProduct(product));
+    },
+    handleOnDeleteProduct(product) {
+        dispatch(onDeleteProduct(product));
     },
     handleShowNotification(payload) {
         dispatch(showNotification(payload));

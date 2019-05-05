@@ -1,5 +1,7 @@
-import TextField from '@material-ui/core/TextField';
 import React from 'react';
+import TextField from '@material-ui/core/TextField';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Switch from '@material-ui/core/Switch';
 
 export const renderTextField = ({input, label, meta, ...custom}) => (
     <TextField
@@ -8,6 +10,18 @@ export const renderTextField = ({input, label, meta, ...custom}) => (
         helperText={meta.touched && meta.error}
         {...input}
         {...custom}
+    />
+);
+
+export const renderSwitch = ({input, label, meta, ...custom}) => (
+    <FormControlLabel
+        control={
+            <Switch
+                {...input}
+                {...custom}
+            />
+        }
+        label={label}
     />
 );
 
