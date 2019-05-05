@@ -18,10 +18,12 @@ export const createProductIfNeeded = (formProps, accessToken) => async dispatch 
     dispatch({type: CREATE_PRODUCT_REQUEST});
     const fd = new FormData();
     fd.append('img', formProps.img.file);
+    fd.append('slug', formProps.slug);
     fd.append('name', formProps.name);
     fd.append('unitPrice', formProps.unitPrice * 100);
     fd.append('stock', formProps.stock);
     fd.append('weight', formProps.weight);
+    fd.append('active', formProps.active);
 
     try {
         const {data} = await createProduct(fd, accessToken);
