@@ -31,6 +31,7 @@ const adminProducts = (state = initialState, action) => {
             return {
                 ...state,
                 error: action.payload.error,
+                isFetching: false,
             };
 
         case DELETE_PRODUCT_REQUEST:

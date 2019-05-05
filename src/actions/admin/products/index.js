@@ -22,12 +22,8 @@ export const getAdminProductsIfNeeded = (params = {}) => {
             const {data} = await getAdminProducts(params, accessToken);
             const payload = normalize(data, productSchema.productList);
             dispatch({type: RETRIEVE_ADMIN_PRODUCTS_SUCCESS, payload});
-
-            return Promise.resolve(payload);
         } catch (error) {
             dispatch({type: RETRIEVE_ADMIN_PRODUCTS_FAILURE, payload: {error}});
-
-            return Promise.reject(error);
         }
     };
 };
