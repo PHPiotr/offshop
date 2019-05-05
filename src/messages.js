@@ -1,8 +1,10 @@
 export default {
     'en-GB': {
         cart: {
+            heading: 'Cart',
+            empty: 'Cart is empty',
             summary: {
-                choose_delivery: 'Choose delivery option',
+                choose_delivery: 'Choose delivery method',
                 to_pay: 'Total to pay',
                 order: 'Order',
             },
@@ -24,6 +26,8 @@ export default {
     },
     'pl-PL': {
         cart: {
+            heading: 'Koszyk',
+            empty: 'Koszyk jest pusty',
             summary: {
                 choose_delivery: 'Wybierz sposób dostawy',
                 to_pay: 'Do zapłaty',

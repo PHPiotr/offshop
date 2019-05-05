@@ -4,6 +4,8 @@ import {
     RETRIEVE_PRODUCTS_FAILURE,
     SYNC_QUANTITIES,
     ON_CREATE_PRODUCT,
+    ON_UPDATE_PRODUCT,
+    ON_DELETE_PRODUCT,
 } from "../../actions/products";
 import {combineReducers} from "redux";
 
@@ -16,11 +18,21 @@ const ids = (state = initialIds, {type, payload}) => {
     switch(type) {
         case RETRIEVE_PRODUCTS_SUCCESS:
             return [
-                ...state,
                 ...payload.result,
             ];
         case ON_CREATE_PRODUCT:
             return [payload.product._id, ...state];
+        case ON_UPDATE_PRODUCT:
+            if (payload.product.active) {
+                if (state.indexOf(payload.product._id) === -1) {
+                    return [...state, payload.product._id];
+                }
+            } else {
+                return state.filter(id => id !== payload.product._id);
+            }
+            return state;
+        case ON_DELETE_PRODUCT:
+            return state.filter(id => id !== payload.product._id);
         default:
             return state;
     }
@@ -29,16 +41,14 @@ const ids = (state = initialIds, {type, payload}) => {
 const data = (state = initialData, {type, payload}) => {
     switch(type) {
         case RETRIEVE_PRODUCTS_SUCCESS:
-            return {
-                ...state,
-                ...payload.entities.products,
-            };
+            return {...payload.entities.products};
         case SYNC_QUANTITIES:
             const newState = {...state};
-            payload.productsIds.forEach(id => newState[id].quantity = payload.productsById[id].quantity);
+            payload.productsIds.forEach(id => newState[id].stock = payload.productsById[id].stock);
             return newState;
         case ON_CREATE_PRODUCT:
-            state[payload.product._id] = payload.product;
+        case ON_UPDATE_PRODUCT:
+            return {...state, [payload.product._id]: payload.product};
         default:
             return state;
     }

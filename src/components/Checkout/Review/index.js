@@ -9,6 +9,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Divider from '@material-ui/core/Divider';
 import Grid from "@material-ui/core/Grid";
+import PayMethods from '../PayMethods';
 
 const styles = theme => ({
     listItem: {
@@ -20,16 +21,20 @@ const styles = theme => ({
     title: {
         marginTop: theme.spacing.unit * 2,
     },
+    payMethods: {
+        display: 'block',
+        textAlign: 'right',
+    },
 });
 
-const Review = props => {
-    const {classes, products, buyerDetails, buyerDeliveryDetails, totalPrice, currency, cart} = props;
+let Review = props => {
+    const {classes, products, buyerDetails, buyerDeliveryDetails, totalAmount, currency, cart} = props;
 
     return (
         <Fragment>
             <List disablePadding>
                 {products.map(
-                    ({_id, name, pricePerItem, priceTotal}) => (
+                    ({_id, name, unitPrice, totalPrice}) => (
                         <Fragment key={_id}>
                             <ListItem className={classes.listItem}>
                                 <ListItemText
@@ -37,7 +42,7 @@ const Review = props => {
                                     secondary={`${cart.products[_id].quantity} szt.`}
                                 />
                                 <Typography variant="body2">
-                                    {`${pricePerItem} x ${cart.products[_id].quantity} = ${priceTotal} ${currency}`}
+                                    {`${unitPrice} x ${cart.products[_id].quantity} = ${(totalPrice/100).toFixed(2)} ${currency}`}
                                 </Typography>
                             </ListItem>
                             <Divider/>
@@ -46,7 +51,7 @@ const Review = props => {
                 )}
                 <Fragment>
                     <ListItem className={classes.listItem}>
-                        <ListItemText primary="Dostawa" secondary={props.supplier.title}/>
+                        <ListItemText primary="Dostawa" secondary={props.deliveryMethod.name}/>
                         <Typography variant="body2">
                             {`${props.deliveryPrice} zł`}
                         </Typography>
@@ -56,7 +61,7 @@ const Review = props => {
                 <ListItem className={classes.listItem}>
                     <ListItemText primary="Do zapłaty"/>
                     <Typography variant="subtitle1" className={classes.total}>
-                        {`${totalPrice} ${currency}`}
+                        {`${(totalAmount / 100).toFixed(2)} ${currency}`}
                     </Typography>
                 </ListItem>
                 <Divider/>
@@ -80,7 +85,7 @@ const Review = props => {
                         ))}
                     </Grid>
                 </Grid>
-                {props.supplier.pricePerUnit > 0 && (
+                {props.deliveryMethod.unitPrice > 0 && (
                     <Grid item container direction="column" xs={12} sm={6}>
                         <Typography variant="h6" gutterBottom className={classes.title}>
                             Dane do wysyłki
@@ -100,6 +105,7 @@ const Review = props => {
                     </Grid>
                 )}
             </Grid>
+            <PayMethods />
         </Fragment>
     );
 };
@@ -110,11 +116,10 @@ let buyerDeliveryValues;
 const mapStateToProps = state => ({
     products: state.cart.ids.map(i => {
         const product = state.products.data[i];
-        const pricePerItem = parseFloat(product.price).toFixed(2);
+        const productInCart = state.cart.products[i];
         return {
             ...product,
-            pricePerItem,
-            priceTotal: parseFloat(pricePerItem * state.cart.products[i].quantity).toFixed(2),
+            ...productInCart,
         };
     }),
     buyerDetails: state.buyer.ids.reduce((acc, i) => {
@@ -138,22 +143,17 @@ const mapStateToProps = state => ({
         return acc;
     }, []),
     cart: state.cart,
-    totalPrice: state.cart.totalPrice
-        ? parseFloat(
-            state.cart.totalPrice +
-            state.suppliers.data[state.suppliers.currentId].pricePerUnit * state.cart.units
-        ).toFixed(2)
-        : '0.00',
-    supplier: state.suppliers.data[state.suppliers.currentId],
-    totalUnits: state.cart.units,
-    deliveryPrice: parseFloat(state.suppliers.data[state.suppliers.currentId].pricePerUnit * state.cart.units).toFixed(2),
+    totalAmount: state.cart.totalPrice + state.deliveryMethods.data[state.deliveryMethods.currentId].unitPrice * 100 * state.cart.weight,
+    deliveryMethod: state.deliveryMethods.data[state.deliveryMethods.currentId],
+    weight: state.cart.weight,
+    deliveryPrice: (state.deliveryMethods.data[state.deliveryMethods.currentId].unitPrice * state.cart.quantity).toFixed(2),
 });
 
 Review.propTypes = {
     products: PropTypes.array.isRequired,
     buyerDetails: PropTypes.array.isRequired,
     buyerDeliveryDetails: PropTypes.array.isRequired,
-    totalPrice: PropTypes.string.isRequired,
+    totalAmount: PropTypes.number.isRequired,
     currency: PropTypes.string,
 };
 

@@ -7,22 +7,20 @@ export const RETRIEVE_PRODUCTS_SUCCESS = 'RETRIEVE_PRODUCTS_SUCCESS';
 export const RETRIEVE_PRODUCTS_FAILURE = 'RETRIEVE_PRODUCTS_FAILURE';
 export const SYNC_QUANTITIES = 'SYNC_QUANTITIES';
 export const ON_CREATE_PRODUCT = 'ON_CREATE_PRODUCT';
+export const ON_UPDATE_PRODUCT = 'ON_UPDATE_PRODUCT';
+export const ON_DELETE_PRODUCT = 'ON_DELETE_PRODUCT';
 
 export const getProductsIfNeeded = params => {
     return async (dispatch, getState) => {
-        const {products} = getState();
-        if (products.ids.length) {
-            return;
+        const {products: {isFetching}} = getState();
+        if (isFetching) {
+            return Promise.resolve();
         }
 
         dispatch({type: RETRIEVE_PRODUCTS_REQUEST});
         try {
-            const response = await getProducts();
-            if (!response.ok) {
-                throw Error(response.errorMessage);
-            }
-            const items = await response.json();
-            const payload = normalize(items, productSchema.productList);
+            const {data} = await getProducts();
+            const payload = normalize(data, productSchema.productList);
             dispatch({type: RETRIEVE_PRODUCTS_SUCCESS, payload});
 
             return Promise.resolve(payload);
@@ -35,3 +33,5 @@ export const getProductsIfNeeded = params => {
 
 export const syncQuantities = (productsIds, productsById) => ({type: SYNC_QUANTITIES, payload: {productsIds, productsById}});
 export const onCreateProduct = (product) => ({type: ON_CREATE_PRODUCT, payload: {product}});
+export const onUpdateProduct = (product) => ({type: ON_UPDATE_PRODUCT, payload: {product}});
+export const onDeleteProduct = (product) => ({type: ON_DELETE_PRODUCT, payload: {product}});

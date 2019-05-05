@@ -6,7 +6,7 @@ import Grid from '@material-ui/core/Grid';
 
 const styles = theme => ({
     subHeader: {
-        padding: theme.spacing.unit * 6,
+        padding: theme.spacing.unit * 2,
     },
 });
 

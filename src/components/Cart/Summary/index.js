@@ -9,6 +9,9 @@ import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import {FormattedMessage} from "react-intl";
+import {connect} from 'react-redux';
+import {setCurrentDeliveryMethod} from '../../../actions/deliveryMethods';
+import {withRouter} from 'react-router-dom';
 
 const styles = theme => ({
     root: {
@@ -28,11 +31,10 @@ const styles = theme => ({
 });
 
 const CartSummary = props => {
-    const { classes, cart, products, suppliers } = props;
+    const { classes, cart, products, deliveryMethods } = props;
 
-    const handleSetCurrentSupplier = e => {
-        props.setCurrentSupplier(suppliers.find(s => s.id === e.target.value));
-        props.toggleBuyerDeliveryStepRequired(!props.currentSupplier.pricePerUnit);
+    const handleSetCurrentDeliveryMethod = e => {
+        props.handleSetCurrentDeliveryMethod(deliveryMethods.find(s => s.id === e.target.value));
     };
 
     return (
@@ -41,16 +43,16 @@ const CartSummary = props => {
                 <Typography gutterBottom variant="h6">
                     <FormattedMessage id='cart.summary.choose_delivery' />
                 </Typography>
-                <RadioGroup name="position" value={props.currentSupplier.id}>
-                    {suppliers.map(({ id, title, pricePerUnit }) => (
+                <RadioGroup name="position" value={props.currentDeliveryMethod.id}>
+                    {deliveryMethods.map(({ id, name, unitPrice }) => (
                         <FormControlLabel
                             key={id}
                             value={id}
                             control={<Radio color="primary" />}
-                            label={`${title}: ${pricePerUnit * cart.units} zł`}
+                            label={`${name}: ${((unitPrice * 100 * cart.quantity) / 100).toFixed(2)} zł`}
                             labelPlacement="end"
-                            checked={id === props.currentSupplier.id}
-                            onChange={handleSetCurrentSupplier}
+                            checked={id === props.currentDeliveryMethod.id}
+                            onChange={handleSetCurrentDeliveryMethod}
                         />
                     ))}
                 </RadioGroup>
@@ -65,14 +67,14 @@ const CartSummary = props => {
                     </Grid>
                     <Grid item align="right">
                         <Typography gutterBottom variant="h6">
-                            {`${products.reduce(
-                                (total, {price, _id}) => price * cart.products[_id].quantity + total,
+                            {`${(products.reduce(
+                                (total, {unitPrice, _id}) => unitPrice * cart.products[_id].quantity + total,
                                 0
                             ) +
-                                (props.currentSupplier.pricePerUnit > 0
-                                    ? cart.units *
-                                      props.currentSupplier.pricePerUnit
-                                    : 0)} zł`}
+                                (props.currentDeliveryMethod.unitPrice > 0
+                                    ? cart.quantity *
+                                      props.currentDeliveryMethod.unitPrice
+                                    : 0)).toFixed(2)} zł`}
                         </Typography>
                     </Grid>
                 </Grid>
@@ -81,7 +83,7 @@ const CartSummary = props => {
             <div className={classes.section3}>
                 <Button
                     onClick={props.checkout}
-                    disabled={!props.currentSupplier.id}
+                    disabled={!props.currentDeliveryMethod.id}
                     variant="contained"
                     color="primary"
                 >
@@ -96,8 +98,24 @@ CartSummary.propTypes = {
     classes: PropTypes.object.isRequired,
     cart: PropTypes.object.isRequired,
     products: PropTypes.array.isRequired,
-    suppliers: PropTypes.array.isRequired,
-    currentSupplier: PropTypes.object.isRequired,
+    deliveryMethods: PropTypes.array.isRequired,
+    currentDeliveryMethod: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(CartSummary);
+const mapStateToProps = state => ({
+    cart: state.cart,
+    products: state.cart.ids.map(i => state.products.data[i]),
+    deliveryMethods: state.deliveryMethods.ids.map(i => state.deliveryMethods.data[i]),
+    currentDeliveryMethod: state.deliveryMethods.data[state.deliveryMethods.currentId] || {},
+});
+
+const mapDispatchToProps = (dispatch, {history}) => ({
+    checkout() {
+        history.push('/checkout');
+    },
+    handleSetCurrentDeliveryMethod(deliveryMethod) {
+        dispatch(setCurrentDeliveryMethod(deliveryMethod));
+    },
+});
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(CartSummary)));
