@@ -11,7 +11,6 @@ import SubHeader from '../../../components/SubHeader';
 import ProgressIndicator from '../../../components/ProgressIndicator';
 import {getAdminProductIfNeeded} from '../../../actions/admin/product';
 import {inputs, inputKeys, initialValues} from './config';
-import ImagePreview from '../../FileInput/ImagePreview';
 
 const FORM_NAME = 'product';
 
