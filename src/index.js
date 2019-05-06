@@ -7,7 +7,7 @@ import en from 'react-intl/locale-data/en';
 import pl from 'react-intl/locale-data/pl';
 import './index.css';
 import App from './App';
-import * as serviceWorker from './serviceWorker';
+//import * as serviceWorker from './serviceWorker';
 import store from './store';
 import messages from './messages';
 import {flattenMessages} from './utils';
