@@ -12,6 +12,13 @@ Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 The page will reload if you make edits.<br>
 You will also see any lint errors in the console.
 
+### `npm run dev:hot`
+
+Runs the app in the development mode with hot-reloading enabled<br>
+Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+
+The page will not reload if you make edits.
+
 ### `npm test`
 
 Launches the test runner in the interactive watch mode.<br>
