@@ -39,7 +39,7 @@ const Nav = props => (
             </ListItemSecondaryAction>
         </ListItem>
         <ListItem dense button className={props.classes.listItem}>
-            <Link className={props.classes.link} to="/admin/delivery-methods">
+            <Link className={props.classes.link} to="/admin/delivery-methods/list">
                 <ListItemText primary={`Opcje dostawy`} />
             </Link>
 
