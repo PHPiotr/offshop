@@ -74,7 +74,7 @@ let ProductForm = props => {
                                             (!props.imageFile || props.imageFile.length === 0)
                                                 ? (
                                                     (props.match.params.productId && currentSlug)
-                                                        ? [{name: '', preview: `${process.env.REACT_APP_PRODUCT_PATH}/${currentSlug}.tile.png`, size: 0}]
+                                                        ? [{name: '', preview: `${process.env.REACT_APP_PRODUCT_PATH}/${props.match.params.productId}.tile.jpg`, size: 0}]
                                                         : []
                                                 ) : props.imageFile
                                         }
