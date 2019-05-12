@@ -70,12 +70,12 @@ const ProductsList = props => {
                             {!p.active ? (
                                 <Tooltip title="Produkt nieaktywny">
                                     <Badge variant="dot" color="error">
-                                        <Avatar src={`${process.env.REACT_APP_API_HOST}/images/products/${p.slug}.avatar.png`}
+                                        <Avatar src={`${process.env.REACT_APP_PRODUCT_PATH}/${p.slug}.avatar.png`}
                                                 alt={p.name}/>
                                     </Badge>
                                 </Tooltip>
                             ) : (
-                                <Avatar src={`${process.env.REACT_APP_API_HOST}/images/products/${p.slug}.avatar.png`}
+                                <Avatar src={`${process.env.REACT_APP_PRODUCT_PATH}/${p.slug}.avatar.png`}
                                         alt={p.name}/>
                             )}
                             </ListItemAvatar>
