@@ -9,6 +9,7 @@ class Navigation extends Component {
 }
 
 const mapStateToProps = state => ({
+    appBar: state.appBar,
     cart: state.cart,
     isAuthenticated: new Date().getTime() < state.auth.expiresAt,
 });

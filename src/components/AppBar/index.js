@@ -16,6 +16,9 @@ import Drawer from '@material-ui/core/Drawer';
 import AdminNav from '../Admin/Nav';
 
 const styles = theme => ({
+    appBar: {
+        marginBottom: '1em',
+    },
     root: {
         display: 'flex',
     },
@@ -101,7 +104,7 @@ class PrimaryAppBar extends Component {
                                 }}
                                 to="/"
                             >
-                                Kwiaty
+                                {this.props.appBar.title}
                             </Link>
                         </Typography>
                         <div className={classes.grow}/>

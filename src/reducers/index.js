@@ -1,4 +1,5 @@
 import {combineReducers} from 'redux';
+import appBar from './appBar';
 import auth from './auth';
 import buyer from './buyer';
 import buyerDelivery from './buyerDelivery';
@@ -18,6 +19,7 @@ import dialog from './dialog';
 import form from './form';
 
 export default combineReducers({
+    appBar,
     auth,
     buyer,
     buyerDelivery,
