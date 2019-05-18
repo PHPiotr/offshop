@@ -81,6 +81,7 @@ const Product = props => {
                             id={props.product.id}
                             onClick={handleAddToCart}
                             className={props.classes.addToCart}
+                            disabled={props.productInCart.quantity >= props.product.stock}
                         >
                             <AddShoppingCartIcon/>
                         </IconButton>
@@ -157,7 +158,7 @@ const Product = props => {
 const mapStateToProps = state => ({
     product: state.product.data[state.product.id] || {},
     isFetching: state.product.isFetching,
-    canAddToCart: true,
+    productInCart: state.cart.products[state.product.id] || {},
 });
 const mapDispatchToProps = {getProductIfNeeded, resetProductData, addToCart};
 
