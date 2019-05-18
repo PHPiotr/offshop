@@ -11,14 +11,16 @@ import Collapse from '@material-ui/core/Collapse';
 import Avatar from '@material-ui/core/Avatar';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
-import red from '@material-ui/core/colors/red';
+import pink from '@material-ui/core/colors/pink';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import ShareIcon from '@material-ui/icons/Share';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
+import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
 import {connect} from 'react-redux';
 import {getProductIfNeeded, resetProductData} from '../actions/product';
 import ProgressIndicator from '../components/ProgressIndicator';
+import {addToCart} from '../actions/cart';
 
 const styles = theme => ({
     card: {
@@ -43,7 +45,10 @@ const styles = theme => ({
         transform: 'rotate(180deg)',
     },
     avatar: {
-        backgroundColor: red[500],
+        backgroundColor: pink[500],
+    },
+    addToCart: {
+        color: theme.palette.background.paper,
     },
 });
 
@@ -59,6 +64,10 @@ const Product = props => {
         setExpanded(!expanded);
     };
 
+    const handleAddToCart = () => {
+        props.addToCart(props.product, 1);
+    };
+
     if (props.isFetching) {
         return <ProgressIndicator/>;
     }
@@ -68,7 +77,13 @@ const Product = props => {
             <CardHeader
                 avatar={
                     <Avatar aria-label={props.product.name} className={props.classes.avatar}>
-                        {props.product.name && props.product.name.charAt(0)}
+                        <IconButton
+                            id={props.product.id}
+                            onClick={handleAddToCart}
+                            className={props.classes.addToCart}
+                        >
+                            <AddShoppingCartIcon/>
+                        </IconButton>
                     </Avatar>
                 }
                 action={
@@ -142,8 +157,9 @@ const Product = props => {
 const mapStateToProps = state => ({
     product: state.product.data[state.product.id] || {},
     isFetching: state.product.isFetching,
+    canAddToCart: true,
 });
-const mapDispatchToProps = {getProductIfNeeded, resetProductData};
+const mapDispatchToProps = {getProductIfNeeded, resetProductData, addToCart};
 
 Product.propTypes = {
     classes: PropTypes.object.isRequired,
