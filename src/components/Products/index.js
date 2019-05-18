@@ -1,4 +1,4 @@
-import React, {Fragment} from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
@@ -29,7 +29,14 @@ const styles = theme => ({
             textDecoration: 'underline',
         }
     },
-
+    image: {
+        left: 0,
+        top: '50%',
+        width: '100%',
+        height: '100%',
+        position: 'relative',
+        transform: 'translateY(-50%)',
+    },
 });
 
 function ProductsGridList(props) {
@@ -39,44 +46,48 @@ function ProductsGridList(props) {
         props.addToCart(products.find(p => p._id === e.currentTarget.id), 1);
     };
 
+    const productsLength = products.length;
+    const sm = productsLength >= 2 ? 6 : 12;
+    const md = productsLength >= 3 ? 4 : 12 / productsLength;
+    const lg = productsLength >= 4 ? 3 : 12 / productsLength;
+
     return (
-        <Fragment>
-            <GridList cellHeight={`auto`}>
-                {products.map(product => {
+        <GridList cellHeight={`auto`}>
+            {products.map(product => {
 
-                    const productInStockQuantity = product.stock;
-                    const productInCart = cart.products[product._id] || {quantity: 0};
-                    const canAddToCart = productInStockQuantity - productInCart.quantity > 0;
+                const productInStockQuantity = product.stock;
+                const productInCart = cart.products[product._id] || {quantity: 0};
+                const canAddToCart = productInStockQuantity - productInCart.quantity > 0;
 
-                    return (
-                        <Grid item key={product._id} xs={12} sm={6} md={4} lg={3}>
-                            <GridListTile className={classes.gridListTitle}>
-                                <img
-                                    src={`${process.env.REACT_APP_PRODUCT_PATH}/${product.id}.tile.jpg`}
-                                    alt={product.name}
-                                    className={classes.image}
-                                />
-                                <GridListTileBar
-                                    className={classes.gridListTileBar}
-                                    title={<Link className={classes.link} to={`/products/${product.slug}`}>{product.name}</Link>}
-                                    subtitle={<span>{product.unitPrice} zł</span>}
-                                    actionIcon={
-                                        <IconButton
-                                            id={product._id}
-                                            className={classes.iconButton}
-                                            onClick={handleAddToCart}
-                                            style={{display: canAddToCart ? 'block' : 'none'}}
-                                        >
-                                            <AddShoppingCartIcon/>
-                                        </IconButton>
-                                    }
-                                />
-                            </GridListTile>
-                        </Grid>
-                    )
-                })}
-            </GridList>
-        </Fragment>
+                return (
+                    <Grid item key={product._id} xs={12} sm={sm} md={md} lg={lg}>
+                        <GridListTile className={classes.gridListTitle}>
+                            <img
+                                src={`${process.env.REACT_APP_PRODUCT_PATH}/${product.id}.tile.jpg`}
+                                alt={product.name}
+                                className={classes.image}
+                            />
+                            <GridListTileBar
+                                className={classes.gridListTileBar}
+                                title={<Link className={classes.link}
+                                             to={`/products/${product.slug}`}>{product.name}</Link>}
+                                subtitle={<span>{product.unitPrice} zł</span>}
+                                actionIcon={
+                                    <IconButton
+                                        id={product._id}
+                                        className={classes.iconButton}
+                                        onClick={handleAddToCart}
+                                        style={{display: canAddToCart ? 'block' : 'none'}}
+                                    >
+                                        <AddShoppingCartIcon/>
+                                    </IconButton>
+                                }
+                            />
+                        </GridListTile>
+                    </Grid>
+                )
+            })}
+        </GridList>
     );
 }
 
