@@ -7,7 +7,6 @@ import IconButton from '@material-ui/core/IconButton';
 import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
 import Grid from '@material-ui/core/Grid';
 import {withStyles} from '@material-ui/core/styles';
-import SubHeader from '../SubHeader';
 
 const styles = theme => ({
     gridListTitle: {
@@ -33,7 +32,6 @@ function ProductsGridList(props) {
 
     return (
         <Fragment>
-            <SubHeader content={props.category.title}/>
             <GridList cellHeight={`auto`}>
                 {products.map(product => {
 
