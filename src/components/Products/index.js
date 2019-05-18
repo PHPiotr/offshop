@@ -7,6 +7,7 @@ import IconButton from '@material-ui/core/IconButton';
 import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
 import Grid from '@material-ui/core/Grid';
 import {withStyles} from '@material-ui/core/styles';
+import {Link} from 'react-router-dom';
 
 const styles = theme => ({
     gridListTitle: {
@@ -21,6 +22,14 @@ const styles = theme => ({
     iconButton: {
         color: theme.palette.background.paper,
     },
+    link: {
+        color: theme.palette.background.paper,
+        textDecoration: 'none',
+        '&:hover': {
+            textDecoration: 'underline',
+        }
+    },
+
 });
 
 function ProductsGridList(props) {
@@ -49,7 +58,7 @@ function ProductsGridList(props) {
                                 />
                                 <GridListTileBar
                                     className={classes.gridListTileBar}
-                                    title={product.name}
+                                    title={<Link className={classes.link} to={`/products/${product.slug}`}>{product.name}</Link>}
                                     subtitle={<span>{product.unitPrice} zł</span>}
                                     actionIcon={
                                         <IconButton

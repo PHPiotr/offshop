@@ -2,6 +2,7 @@ import React, { Component, Fragment } from 'react';
 import {Route, Switch, Redirect} from 'react-router-dom';
 import Navigation from './containers/Navigation';
 import Products from './containers/Products';
+import Product from './containers/Product';
 import Cart from './containers/Cart';
 import Checkout from './containers/Checkout';
 import Order from './containers/Order';
@@ -126,6 +127,7 @@ class App extends Component {
                         >
                             <Switch>
                                 <Route path="/" exact component={Products} />
+                                <Route path="/products/:slug" exact component={Product} />
                                 <Route path="/cart" exact component={Cart} />
                                 <Route path="/order" exact component={Order} />
                                 <Route path="/checkout" exact component={Checkout} />

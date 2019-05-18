@@ -1,27 +1,29 @@
-import {createProduct} from '../../api/products';
+import {normalize} from 'normalizr';
+import * as productSchema from '../../schemas/productsSchema';
+import {getProduct} from '../../api/products';
 
-export const CREATE_PRODUCT_REQUEST = 'CREATE_PRODUCT_REQUEST';
-export const CREATE_PRODUCT_SUCCESS = 'CREATE_PRODUCT_SUCCESS';
-export const CREATE_PRODUCT_FAILURE = 'CREATE_PRODUCT_FAILURE';
+export const RETRIEVE_PRODUCT_REQUEST = 'RETRIEVE_PRODUCT_REQUEST';
+export const RETRIEVE_PRODUCT_SUCCESS = 'RETRIEVE_PRODUCT_SUCCESS';
+export const RETRIEVE_PRODUCT_FAILURE = 'RETRIEVE_PRODUCT_FAILURE';
 
-export const createNewProductIfNeeded = (formProps, accessToken) => async dispatch => {
-    dispatch(createProductRequest());
-    const fd = new FormData();
-    fd.append('img', formProps.img.file);
-    fd.append('name', formProps.name);
-    fd.append('unitPrice', formProps.unitPrice * 100);
-    fd.append('stock', formProps.stock);
-    fd.append('weight', formProps.weight);
+export const getProductIfNeeded = slug => async (dispatch, getState) => {
+    const {product: {isFetching}} = getState();
 
+    if (isFetching) {
+        return Promise.resolve();
+    }
+
+    dispatch({type: RETRIEVE_PRODUCT_REQUEST});
     try {
-        await createProduct(fd, accessToken);
-        return dispatch(createProductSuccess());
+        const {data} = await getProduct(slug);
+        const payload = normalize(data, productSchema.product);
+        dispatch({type: RETRIEVE_PRODUCT_SUCCESS, payload});
+        return Promise.resolve(payload);
     } catch (error) {
-        dispatch(createProductFailure({payload: error}));
+        dispatch({type: RETRIEVE_PRODUCT_FAILURE, payload: {error}});
         return Promise.reject(error);
     }
 };
 
-const createProductRequest = () => ({type: CREATE_PRODUCT_REQUEST});
-const createProductSuccess = () => ({type: CREATE_PRODUCT_SUCCESS});
-const createProductFailure = () => ({type: CREATE_PRODUCT_FAILURE});
+export const RESET_PRODUCT_DATA = 'RESET_PRODUCT_DATA';
+export const resetProductData = () => ({type: RESET_PRODUCT_DATA});

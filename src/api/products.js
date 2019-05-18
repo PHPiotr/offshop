@@ -15,6 +15,16 @@ export const getProducts = (params = {}) => {
     });
 };
 
+export const getProduct = (slug) => axios(
+    `${process.env.REACT_APP_API_HOST}/products/${slug}`,
+    {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    }
+);
+
 export const getAdminProducts = (params = {}, accessToken) => {
     const queryString = stringify(params);
     let url = `${process.env.REACT_APP_API_HOST}/admin/products`;
