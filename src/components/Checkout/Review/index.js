@@ -146,7 +146,7 @@ const mapStateToProps = state => ({
     totalAmount: state.cart.totalPrice + state.deliveryMethods.data[state.deliveryMethods.currentId].unitPrice * 100 * state.cart.weight,
     deliveryMethod: state.deliveryMethods.data[state.deliveryMethods.currentId],
     weight: state.cart.weight,
-    deliveryPrice: (state.deliveryMethods.data[state.deliveryMethods.currentId].unitPrice * state.cart.quantity).toFixed(2),
+    deliveryPrice: ((state.deliveryMethods.data[state.deliveryMethods.currentId].unitPrice * 100) * state.cart.weight / 100).toFixed(2),
 });
 
 Review.propTypes = {

@@ -49,7 +49,7 @@ const CartSummary = props => {
                             key={id}
                             value={id}
                             control={<Radio color="primary" />}
-                            label={`${name}: ${((unitPrice * 100 * cart.quantity) / 100).toFixed(2)} zł`}
+                            label={`${name}: ${((unitPrice * 100 * cart.weight) / 100).toFixed(2)} zł`}
                             labelPlacement="end"
                             checked={id === props.currentDeliveryMethod.id}
                             onChange={handleSetCurrentDeliveryMethod}
@@ -67,14 +67,7 @@ const CartSummary = props => {
                     </Grid>
                     <Grid item align="right">
                         <Typography gutterBottom variant="h6">
-                            {`${(products.reduce(
-                                (total, {unitPrice, _id}) => unitPrice * cart.products[_id].quantity + total,
-                                0
-                            ) +
-                                (props.currentDeliveryMethod.unitPrice > 0
-                                    ? cart.quantity *
-                                      props.currentDeliveryMethod.unitPrice
-                                    : 0)).toFixed(2)} zł`}
+                            {`${((cart.totalPrice + props.currentDeliveryMethod.unitPrice * 100 * cart.weight) / 100).toFixed(2)} zł`}
                         </Typography>
                     </Grid>
                 </Grid>
