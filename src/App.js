@@ -1,5 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import {Route, Switch, Redirect} from 'react-router-dom';
+import {Helmet} from 'react-helmet';
 import Navigation from './containers/Navigation';
 import Products from './containers/Products';
 import Product from './containers/Product';
@@ -114,6 +115,9 @@ class App extends Component {
         const { classes } = this.props;
         return (
             <Fragment>
+                <Helmet>
+                    <title>Offshop</title>
+                </Helmet>
                 <CssBaseline />
                 <header>
                     <Navigation auth={auth} />
