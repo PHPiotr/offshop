@@ -50,7 +50,7 @@ const cart = (state = initialState, { payload, type }) => {
                 products: {...state.products, [payload.item._id]: {
                     quantity: item.quantity - payload.quantity,
                     weight: item.weight - payload.item.weight * payload.quantity,
-                    totalPrice: item.totalPrice + payload.item.unitPrice * 100 * payload.quantity,
+                    totalPrice: item.totalPrice - payload.item.unitPrice * 100 * payload.quantity,
                 }}
             };
         case DELETE_FROM_CART:
@@ -60,9 +60,9 @@ const cart = (state = initialState, { payload, type }) => {
 
             return {
                 ...state,
-                quantity: (state.quantity -= quantity),
-                weight: (state.weight -= weight),
-                totalPrice: state.totalPrice -= totalPrice,
+                quantity: state.quantity - quantity,
+                weight: state.weight - weight,
+                totalPrice: state.totalPrice - totalPrice,
                 ids: state.ids.filter(id => id !== itemId),
                 products: {...state.products, [itemId]: undefined},
             };
