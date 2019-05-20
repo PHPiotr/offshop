@@ -3,12 +3,16 @@ import {
     renderSwitch as SwitchField,
     validatePrice,
     validateRequired,
+    validateMinLength,
+    validateMaxLength,
 } from '../../../utils/form';
 import DropZoneField from '../../../components/FileInput/DropzoneField';
 
 export const inputKeys = [
     'name',
     'slug',
+    'description',
+    'longDescription',
     'stock',
     'unitPrice',
     'weight',
@@ -40,6 +44,32 @@ export const inputs = {
         validate: [validateRequired],
         component: TextField,
         inputProps: {},
+    },
+    description: {
+        type: 'text',
+        label: 'Opis produktu',
+        validate: [validateRequired, validateMinLength(100), validateMaxLength(160)],
+        component: TextField,
+        inputProps: {
+            minlength: 100,
+            maxlength: 160,
+            multiline: true,
+            rows: 2,
+            maxRows: 4,
+        },
+    },
+    longDescription: {
+        type: 'text',
+        label: 'Opis produktu',
+        validate: [validateMinLength(250), validateMaxLength(1000)],
+        component: TextField,
+        inputProps: {
+            minlength: 250,
+            maxlength: 1000,
+            multiline: true,
+            rows: 5,
+            maxRows: 10,
+        },
     },
     stock: {
         type: 'number',

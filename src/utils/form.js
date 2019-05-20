@@ -28,6 +28,8 @@ export const renderSwitch = ({input, label, meta, ...custom}) => (
 export const validateEmail = value => value && /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(value) ? undefined : 'Niepoprawny email';
 
 export const validateRequired = value => (!value ? 'To pole jest wymagane' : undefined);
+export const validateMinLength = minlength => value => (value && value.toString().trim().length >= minlength ? undefined : `Minimalna ilość znaków: ${minlength}`);
+export const validateMaxLength = maxlength => value => (value && value.toString().trim().length <= maxlength ? undefined : `Maksymalna ilość znaków: ${maxlength}`);
 
 export const validatePrice = value => {
     if (!value) {

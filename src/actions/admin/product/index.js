@@ -19,6 +19,8 @@ export const createProductIfNeeded = (formProps, accessToken) => async dispatch 
     const fd = new FormData();
     fd.append('img', formProps.img.file);
     fd.append('slug', formProps.slug);
+    fd.append('description', formProps.description);
+    fd.append('longDescription', formProps.longDescription);
     fd.append('name', formProps.name);
     fd.append('unitPrice', formProps.unitPrice * 100);
     fd.append('stock', formProps.stock);
@@ -47,6 +49,8 @@ export const updateProductIfNeeded = (formProps, accessToken) => async (dispatch
     }
     fd.append('name', formProps.name);
     fd.append('slug', formProps.slug);
+    fd.append('description', formProps.description);
+    fd.append('longDescription', formProps.longDescription);
     fd.append('unitPrice', formProps.unitPrice * 100);
     fd.append('stock', formProps.stock);
     fd.append('weight', formProps.weight);
