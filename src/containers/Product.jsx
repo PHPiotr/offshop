@@ -19,6 +19,8 @@ import MoreVertIcon from '@material-ui/icons/MoreVert';
 import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
 import {connect} from 'react-redux';
 import {Helmet} from 'react-helmet';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
 import {getProductIfNeeded, resetProductData} from '../actions/product';
 import ProgressIndicator from '../components/ProgressIndicator';
 import {addToCart} from '../actions/cart';
@@ -56,6 +58,7 @@ const styles = theme => ({
 const Product = props => {
 
     const [expanded, setExpanded] = useState(false);
+    const [anchorEl, setAnchorEl] = useState(null);
     useEffect(() => {
         props.getProductIfNeeded(props.match.params.slug);
         return props.resetProductData;
@@ -63,6 +66,14 @@ const Product = props => {
 
     const handleExpandClick = () => {
         setExpanded(!expanded);
+    };
+
+    const handleClick = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleClose = () => {
+        setAnchorEl(null);
     };
 
     const handleAddToCart = () => {
@@ -94,13 +105,21 @@ const Product = props => {
                         </Avatar>
                     }
                     action={
-                        <IconButton>
-                            <MoreVertIcon/>
+                        <IconButton
+                            onClick={handleClick}
+                            aria-owns={anchorEl ? 'more-menu' : undefined}
+                            aria-haspopup="true"
+                        >
+                            <MoreVertIcon />
                         </IconButton>
                     }
                     title={props.product.name}
                     subheader={`${props.product.unitPrice} zł`}
                 />
+                <Menu id="more-menu" anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleClose}>
+                    <MenuItem onClick={handleClose}>{`Waga: ${props.product.weight} kg`}</MenuItem>
+                    <MenuItem onClick={handleClose}>{`Dostępnść: ${props.product.stock} szt.`}</MenuItem>
+                </Menu>
                 <CardMedia
                     className={props.classes.media}
                     image={`${process.env.REACT_APP_PRODUCT_PATH}/${props.product.id}.card.jpg`}
