@@ -85,13 +85,14 @@ export const createOrderIfNeeded = payMethods => {
             return Promise.resolve(data);
 
         } catch (e) {
-            dispatch({type: CREATE_ORDER_FAILURE, payload: {orderError: e.message || 'Something went wrong'}});
+            dispatch({type: CREATE_ORDER_FAILURE, payload: {
+                orderError: (e.response && e.response.data && e.response.data.message) || e.message || 'Something went wrong'}});
 
             return Promise.reject(e);
         }
     }
 };
 
-export const handleCreateOrderError = e => showNotification({message: e.message || 'Something went wrong', variant: 'error'});
+export const handleCreateOrderError = e => showNotification({message: (e.response && e.response.data && e.response.data.message) || e.message || 'Something went wrong', variant: 'error'});
 
 export const resetOrderData = () => ({type: RESET_ORDER_DATA});
