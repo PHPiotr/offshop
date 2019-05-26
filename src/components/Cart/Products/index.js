@@ -15,7 +15,8 @@ import DeleteIcon from '@material-ui/icons/RemoveShoppingCart';
 import Divider from '@material-ui/core/Divider';
 import TextField from '@material-ui/core/TextField';
 import {connect} from 'react-redux';
-import {Link} from 'react-router-dom';
+import { Link as RouterLink } from 'react-router-dom';
+import Link from '@material-ui/core/Link';
 import {addToCart, decrementInCart, deleteFromCart} from "../../../actions/cart";
 
 const styles = theme => ({
@@ -33,13 +34,6 @@ const styles = theme => ({
         textAlign: 'center',
         borderRadius: 0,
         padding: 0,
-    },
-    link: {
-        color: 'rgba(0, 0, 0, 0.87)',
-        textDecoration: 'none',
-        '&:hover': {
-            textDecoration: 'underline',
-        }
     },
 });
 
@@ -67,7 +61,7 @@ const ProductsInCart = props => {
                                 <Avatar src={`${process.env.REACT_APP_PRODUCT_PATH}/${p.id}.avatar.jpg`} alt={p.name}/>
                             </ListItemAvatar>
                             <ListItemText
-                                primary={<Link className={classes.link} to={`/products/${p.slug}`}>{p.name}</Link>}
+                                primary={<Link component={RouterLink} to={`/products/${p.slug}`}>{p.name}</Link>}
                                 secondary={
                                     <React.Fragment>
                                         <Typography

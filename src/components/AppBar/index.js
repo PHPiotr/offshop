@@ -7,7 +7,8 @@ import IconButton from '@material-ui/core/IconButton';
 import Badge from '@material-ui/core/Badge';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import {withStyles} from '@material-ui/core/styles';
-import {Link} from 'react-router-dom';
+import { Link as RouterLink } from 'react-router-dom';
+import Link from '@material-ui/core/Link';
 import Chip from "@material-ui/core/Chip";
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Divider from "@material-ui/core/Divider";
@@ -97,15 +98,7 @@ class PrimaryAppBar extends Component {
                             <MenuIcon/>
                         </IconButton>
                         <Typography variant="h5" color="inherit" noWrap>
-                            <Link
-                                style={{
-                                    color: '#fff',
-                                    textDecoration: 'none',
-                                }}
-                                to="/"
-                            >
-                                {this.props.appBar.title}
-                            </Link>
+                            <Link color="inherit" underline="none" component={RouterLink} to="/">{this.props.appBar.title}</Link>
                         </Typography>
                         <div className={classes.grow}/>
                         <div>

@@ -7,7 +7,8 @@ import IconButton from '@material-ui/core/IconButton';
 import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
 import Grid from '@material-ui/core/Grid';
 import {withStyles} from '@material-ui/core/styles';
-import {Link} from 'react-router-dom';
+import { Link as RouterLink } from 'react-router-dom';
+import Link from '@material-ui/core/Link';
 
 const styles = theme => ({
     gridListTitle: {
@@ -21,13 +22,6 @@ const styles = theme => ({
     },
     iconButton: {
         color: theme.palette.background.paper,
-    },
-    link: {
-        color: theme.palette.background.paper,
-        textDecoration: 'none',
-        '&:hover': {
-            textDecoration: 'underline',
-        }
     },
     image: {
         left: 0,
@@ -69,8 +63,7 @@ function ProductsGridList(props) {
                             />
                             <GridListTileBar
                                 className={classes.gridListTileBar}
-                                title={<Link className={classes.link}
-                                             to={`/products/${product.slug}`}>{product.name}</Link>}
+                                title={<Link color="inherit" component={RouterLink} to={`/products/${product.slug}`}>{product.name}</Link>}
                                 subtitle={<span>{product.unitPrice} zł</span>}
                                 actionIcon={
                                     <IconButton
