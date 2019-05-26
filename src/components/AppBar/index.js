@@ -103,7 +103,7 @@ class PrimaryAppBar extends Component {
                         <div className={classes.grow}/>
                         <div>
                             <IconButton
-                                component={Link}
+                                component={RouterLink}
                                 to="/cart"
                                 color="inherit"
                             >
