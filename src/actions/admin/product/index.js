@@ -24,7 +24,7 @@ export const createProductIfNeeded = (formProps, accessToken) => async dispatch 
     fd.append('name', formProps.name);
     fd.append('unitPrice', formProps.unitPrice * 100);
     fd.append('stock', formProps.stock);
-    fd.append('weight', formProps.weight);
+    fd.append('weight', formProps.weight * 100);
     fd.append('active', formProps.active);
 
     try {
@@ -53,7 +53,7 @@ export const updateProductIfNeeded = (formProps, accessToken) => async (dispatch
     fd.append('longDescription', formProps.longDescription);
     fd.append('unitPrice', formProps.unitPrice * 100);
     fd.append('stock', formProps.stock);
-    fd.append('weight', formProps.weight);
+    fd.append('weight', formProps.weight * 100);
     fd.append('active', formProps.active);
 
     try {
