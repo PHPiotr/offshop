@@ -67,7 +67,7 @@ const CartSummary = props => {
                     </Grid>
                     <Grid item align="right">
                         <Typography gutterBottom variant="h6">
-                            {`${((cart.totalPrice + (props.currentDeliveryMethod.unitPrice || 0) * 100 * (cart.weight / 100)) / 100).toFixed(2)} zł`}
+                            {`${(cart.totalPriceWithDelivery / 100).toFixed(2)} zł`}
                         </Typography>
                     </Grid>
                 </Grid>

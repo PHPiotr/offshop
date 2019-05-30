@@ -26,7 +26,7 @@ GooglePay.propTypes = {
 
 const mapStateToProps = state => ({
     googlePayButtonParentId: 'google-pay-btn-wrapper',
-    totalPrice: ((state.cart.totalPrice + state.deliveryMethods.data[state.deliveryMethods.currentId].unitPrice * 100 * state.cart.quantity) / 100).toFixed(2),
+    totalPrice: (state.cart.totalPriceWithDelivery / 100).toFixed(2),
     apiVersion: parseInt(process.env.REACT_APP_GOOGLE_PAY_API_VERSION, 10),
     apiVersionMinor: parseInt(process.env.REACT_APP_GOOGLE_PAY_API_VERSION_MINOR, 10),
     baseCardPaymentMethodType: process.env.REACT_APP_GOOGLE_PAY_BASE_CARD_PAYMENT_METHOD_TYPE,

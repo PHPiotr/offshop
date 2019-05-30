@@ -1,6 +1,7 @@
 import {ADD_TO_CART, DECREMENT_IN_CART, DELETE_FROM_CART} from '../../actions/cart';
 import {CREATE_ORDER_SUCCESS} from "../../actions/order";
 import {SYNC_QUANTITIES} from '../../actions/products';
+import {SET_CURRENT_DELIVERY_METHOD} from '../../actions/deliveryMethods';
 
 const initialState = {
     quantity: 0,
@@ -8,11 +9,21 @@ const initialState = {
     totalPrice: 0,
     ids: [],
     products: {},
+    deliveryUnitPrice: 0,
+    deliveryTotalPrice: 0,
+    totalPriceWithDelivery: 0,
 };
 
 const cart = (state = initialState, { payload, type }) => {
     let item;
     switch (type) {
+        case SET_CURRENT_DELIVERY_METHOD:
+            return {
+                ...state,
+                deliveryUnitPrice: payload.current.unitPrice * 100,
+                deliveryTotalPrice: payload.current.unitPrice * 100 * state.weight / 100,
+                totalPriceWithDelivery: state.totalPrice + payload.current.unitPrice * 100 * state.weight / 100,
+            };
         case ADD_TO_CART:
 
             item = state.products[payload.item._id] || {
@@ -23,15 +34,17 @@ const cart = (state = initialState, { payload, type }) => {
 
             return {
                 ...state,
-                quantity: (state.quantity += payload.quantity),
-                weight: (state.weight += payload.item.weight * 100 * payload.quantity),
-                totalPrice: state.totalPrice += (parseInt(payload.item.unitPrice.replace('.', ''), 10)) * payload.quantity,
+                quantity: state.quantity + payload.quantity,
+                weight: state.weight + payload.item.weight * 100 * payload.quantity,
+                totalPrice: state.totalPrice + (parseInt(payload.item.unitPrice.replace('.', ''), 10)) * payload.quantity,
                 ids: state.ids.find(i => i === payload.item._id) ? state.ids : [...state.ids, payload.item._id],
                 products: {...state.products, [payload.item._id]: {
                     quantity: item.quantity + 1,
                     weight: item.weight + payload.item.weight * 100 * payload.quantity,
                     totalPrice: item.totalPrice + parseInt(payload.item.unitPrice.replace('.', ''), 10) * payload.quantity,
-                }}
+                }},
+                deliveryTotalPrice: state.deliveryUnitPrice * (state.weight + payload.item.weight * 100 * payload.quantity) / 100,
+                totalPriceWithDelivery: (state.totalPrice + (parseInt(payload.item.unitPrice.replace('.', ''), 10)) * payload.quantity) + (state.deliveryUnitPrice * (state.weight + payload.item.weight * 100 * payload.quantity) / 100),
             };
         case DECREMENT_IN_CART:
 
@@ -43,15 +56,17 @@ const cart = (state = initialState, { payload, type }) => {
 
             return {
                 ...state,
-                quantity: (state.quantity -= payload.quantity),
-                weight: (state.weight -= payload.item.weight * 100 * payload.quantity),
-                totalPrice: state.totalPrice -= (payload.item.unitPrice * 100 * payload.quantity),
+                quantity: state.quantity - payload.quantity,
+                weight: state.weight - payload.item.weight * 100 * payload.quantity,
+                totalPrice: state.totalPrice - (payload.item.unitPrice * 100 * payload.quantity),
                 ids: item.quantity - payload.quantity <= 0 ? state.ids.filter(i => i !== payload.item._id) : state.ids,
                 products: {...state.products, [payload.item._id]: {
                     quantity: item.quantity - payload.quantity,
                     weight: item.weight - payload.item.weight * 100 * payload.quantity,
                     totalPrice: item.totalPrice - payload.item.unitPrice * 100 * payload.quantity,
-                }}
+                }},
+                deliveryTotalPrice: state.deliveryUnitPrice * (state.weight - payload.item.weight * 100 * payload.quantity) / 100,
+                totalPriceWithDelivery: (state.totalPrice - (payload.item.unitPrice * 100 * payload.quantity)) + (state.deliveryUnitPrice * (state.weight - payload.item.weight * 100 * payload.quantity) / 100),
             };
         case DELETE_FROM_CART:
 
@@ -65,6 +80,8 @@ const cart = (state = initialState, { payload, type }) => {
                 totalPrice: state.totalPrice - totalPrice,
                 ids: state.ids.filter(id => id !== itemId),
                 products: {...state.products, [itemId]: undefined},
+                deliveryTotalPrice: state.deliveryUnitPrice * (state.weight - weight) / 100,
+                totalPriceWithDelivery: (state.totalPrice - totalPrice) + (state.deliveryUnitPrice * (state.weight - weight) / 100),
             };
         case SYNC_QUANTITIES:
             if (!state.quantity) {
@@ -78,9 +95,14 @@ const cart = (state = initialState, { payload, type }) => {
                     const productInCartQuantity = productInCart.quantity;
                     if (productInCartQuantity > stock) {
                         const quantitySubtract = productInCartQuantity - stock;
+                        const newWeight = newState.weight - weight * 100 * quantitySubtract;
+                        const newTotalPrice = newState.totalPrice - unitPrice * 100 * quantitySubtract;
+                        const newDeliveryTotalPrice = newState.deliveryUnitPrice * newWeight / 100;
                         newState.quantity -= quantitySubtract;
-                        newState.weight -= weight * 100 * quantitySubtract;
-                        newState.totalPrice -= unitPrice * 100 * quantitySubtract;
+                        newState.weight = newWeight;
+                        newState.totalPrice = newTotalPrice;
+                        newState.deliveryTotalPrice = newDeliveryTotalPrice;
+                        newState.totalPriceWithDelivery = newTotalPrice + newDeliveryTotalPrice;
                         if (stock) {
                             newState.products[id] = {
                                 ...productInCart,
@@ -100,9 +122,12 @@ const cart = (state = initialState, { payload, type }) => {
 
         case CREATE_ORDER_SUCCESS:
             return {
+                ...state,
                 quantity: 0,
                 weight: 0,
                 totalPrice: 0,
+                deliveryTotalPrice: 0,
+                totalPriceWithDelivery: 0,
                 ids: [],
                 products: {},
             };
