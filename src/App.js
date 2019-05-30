@@ -13,7 +13,6 @@ import AdminDeliveryMethodForm from './components/Admin/DeliveryMethodForm';
 import AdminDeliveryMethods from './components/Admin/DeliveryMethodsList';
 import { withStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import Typography from '@material-ui/core/Typography';
 import classNames from 'classnames';
 import Grid from '@material-ui/core/Grid';
 import { hot } from 'react-hot-loader';
@@ -164,16 +163,6 @@ class App extends Component {
                         </Grid>
                     </div>
                 </main>
-                <footer className={classes.footer}>
-                    <Typography
-                        variant="subtitle1"
-                        align="center"
-                        color="textSecondary"
-                        component="p"
-                    >
-                        Stworzone z miłości do żony
-                    </Typography>
-                </footer>
                 <Notification/>
             </Fragment>
         );
