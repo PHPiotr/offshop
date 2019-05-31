@@ -37,7 +37,7 @@ function ProductsGridList(props) {
     const {classes, products, cart} = props;
 
     const handleAddToCart = e => {
-        props.addToCart(products.find(p => p._id === e.currentTarget.id), 1);
+        props.addToCart(products.find(p => p.id === e.currentTarget.id), 1);
     };
 
     const productsLength = products.length;
@@ -50,11 +50,11 @@ function ProductsGridList(props) {
             {products.map(product => {
 
                 const productInStockQuantity = product.stock;
-                const productInCart = cart.products[product._id] || {quantity: 0};
+                const productInCart = cart.products[product.id] || {quantity: 0};
                 const canAddToCart = productInStockQuantity - productInCart.quantity > 0;
 
                 return (
-                    <Grid item key={product._id} xs={12} sm={sm} md={md} lg={lg}>
+                    <Grid item key={product.id} xs={12} sm={sm} md={md} lg={lg}>
                         <GridListTile className={classes.gridListTitle}>
                             <img
                                 src={`${process.env.REACT_APP_PRODUCT_PATH}/${product.id}.tile.jpg`}
@@ -67,7 +67,7 @@ function ProductsGridList(props) {
                                 subtitle={<span>{product.unitPrice} zł</span>}
                                 actionIcon={
                                     <IconButton
-                                        id={product._id}
+                                        id={product.id}
                                         className={classes.iconButton}
                                         onClick={handleAddToCart}
                                         style={{display: canAddToCart ? 'block' : 'none'}}

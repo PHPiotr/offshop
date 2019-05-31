@@ -64,8 +64,8 @@ const ProductsList = props => {
             {props.isFetching && <ProgressIndicator />}
             <List className={props.classes.root}>
                 {props.products.map((p, i) => (
-                    <Fragment key={p._id}>
-                        <ListItem key={p._id} alignItems="flex-start" button component={Link} to={`/admin/products/${p.id}`}>
+                    <Fragment key={p.id}>
+                        <ListItem key={p.id} alignItems="flex-start" button component={Link} to={`/admin/products/${p.id}`}>
                             <ListItemAvatar>
                             {!p.active ? (
                                 <Tooltip title="Produkt nieaktywny">

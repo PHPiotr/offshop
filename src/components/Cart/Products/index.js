@@ -37,7 +37,7 @@ const styles = theme => ({
     },
 });
 
-const getItemById = (items, itemId) => items.find(({_id}) => _id === itemId);
+const getItemById = (items, itemId) => items.find(({id}) => id === itemId);
 
 const ProductsInCart = props => {
     const {classes, cart, products} = props;
@@ -53,10 +53,10 @@ const ProductsInCart = props => {
         <List className={classes.root}>
             {products.map(p => {
 
-                const productInCart = cart.products[p._id];
+                const productInCart = cart.products[p.id];
                 return (
-                    <Fragment key={p._id}>
-                        <ListItem key={p._id} alignItems="flex-start">
+                    <Fragment key={p.id}>
+                        <ListItem key={p.id} alignItems="flex-start">
                             <ListItemAvatar>
                                 <Avatar src={`${process.env.REACT_APP_PRODUCT_PATH}/${p.id}.avatar.jpg`} alt={p.name}/>
                             </ListItemAvatar>
@@ -77,14 +77,14 @@ const ProductsInCart = props => {
                             />
                             <ListItemSecondaryAction>
                                 <IconButton
-                                    id={p._id}
+                                    id={p.id}
                                     onClick={handleIncrementItemInCart}
                                     disabled={p.stock - productInCart.quantity <= 0}
                                 >
                                     <AddShoppingCartIcon/>
                                 </IconButton>
                                 <TextField
-                                    id={p._id}
+                                    id={p.id}
                                     className={classes.textField}
                                     value={productInCart.quantity}
                                     helperText={`z ${p.stock} szt.`}
@@ -92,14 +92,14 @@ const ProductsInCart = props => {
                                     type="number"
                                 />
                                 <IconButton
-                                    id={p._id}
+                                    id={p.id}
                                     onClick={handleDecrementItemInCart}
                                     disabled={productInCart.quantity < 2}
                                 >
                                     <RemoveShoppingCartIcon/>
                                 </IconButton>
                                 <IconButton
-                                    id={p._id}
+                                    id={p.id}
                                     onClick={handleRemoveItemFromCart}
                                 >
                                     <DeleteIcon/>

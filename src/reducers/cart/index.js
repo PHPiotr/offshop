@@ -26,7 +26,7 @@ const cart = (state = initialState, { payload, type }) => {
             };
         case ADD_TO_CART:
 
-            item = state.products[payload.item._id] || {
+            item = state.products[payload.item.id] || {
                 quantity: 0,
                 weight: 0,
                 totalPrice: 0,
@@ -37,8 +37,8 @@ const cart = (state = initialState, { payload, type }) => {
                 quantity: state.quantity + payload.quantity,
                 weight: state.weight + payload.item.weight * 100 * payload.quantity,
                 totalPrice: state.totalPrice + (parseInt(payload.item.unitPrice.replace('.', ''), 10)) * payload.quantity,
-                ids: state.ids.find(i => i === payload.item._id) ? state.ids : [...state.ids, payload.item._id],
-                products: {...state.products, [payload.item._id]: {
+                ids: state.ids.find(i => i === payload.item.id) ? state.ids : [...state.ids, payload.item.id],
+                products: {...state.products, [payload.item.id]: {
                     quantity: item.quantity + 1,
                     weight: item.weight + payload.item.weight * 100 * payload.quantity,
                     totalPrice: item.totalPrice + parseInt(payload.item.unitPrice.replace('.', ''), 10) * payload.quantity,
@@ -48,7 +48,7 @@ const cart = (state = initialState, { payload, type }) => {
             };
         case DECREMENT_IN_CART:
 
-            item = state.products[payload.item._id] || {
+            item = state.products[payload.item.id] || {
                 quantity: 0,
                 weight: 0,
                 totalPrice: 0,
@@ -59,8 +59,8 @@ const cart = (state = initialState, { payload, type }) => {
                 quantity: state.quantity - payload.quantity,
                 weight: state.weight - payload.item.weight * 100 * payload.quantity,
                 totalPrice: state.totalPrice - (payload.item.unitPrice * 100 * payload.quantity),
-                ids: item.quantity - payload.quantity <= 0 ? state.ids.filter(i => i !== payload.item._id) : state.ids,
-                products: {...state.products, [payload.item._id]: {
+                ids: item.quantity - payload.quantity <= 0 ? state.ids.filter(i => i !== payload.item.id) : state.ids,
+                products: {...state.products, [payload.item.id]: {
                     quantity: item.quantity - payload.quantity,
                     weight: item.weight - payload.item.weight * 100 * payload.quantity,
                     totalPrice: item.totalPrice - payload.item.unitPrice * 100 * payload.quantity,

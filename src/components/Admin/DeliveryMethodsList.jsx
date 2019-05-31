@@ -60,8 +60,8 @@ const DeliveryMethodsList = props => {
             {props.isFetching && <ProgressIndicator />}
             <List className={props.classes.root}>
                 {props.data.map((p, i) => (
-                    <Fragment key={p._id}>
-                        <ListItem key={p._id} alignItems="flex-start" button component={Link} to={`/admin/delivery-methods/${p.id}`}>
+                    <Fragment key={p.id}>
+                        <ListItem key={p.id} alignItems="flex-start" button component={Link} to={`/admin/delivery-methods/${p.id}`}>
                             <ListItemText
                                 primary={p.name}
                                 secondary={

@@ -31,7 +31,7 @@ const styles = theme => ({
 });
 
 const CartSummary = props => {
-    const { classes, cart, products, deliveryMethods } = props;
+    const { classes, cart, deliveryMethods } = props;
 
     const handleSetCurrentDeliveryMethod = e => {
         props.handleSetCurrentDeliveryMethod(deliveryMethods.find(s => s.id === e.target.value));

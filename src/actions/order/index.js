@@ -47,14 +47,14 @@ export const createOrderIfNeeded = payMethods => {
             const {data: {access_token}} = await authorize();
             const state = getState();
 
-            const products = state.cart.ids.reduce((acc, _id) => {
-                const {name, slug, unitPrice} = state.products.data[_id];
-                acc[_id] = {
-                    _id,
+            const products = state.cart.ids.reduce((acc, id) => {
+                const {name, slug, unitPrice} = state.products.data[id];
+                acc[id] = {
+                    id,
                     name,
                     slug,
                     unitPrice: unitPrice.replace('.', ''),
-                    quantity: state.cart.products[_id].quantity.toString(),
+                    quantity: state.cart.products[id].quantity.toString(),
                 };
                 return acc;
             }, {});

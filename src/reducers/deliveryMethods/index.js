@@ -11,7 +11,7 @@ const ids = (state = initialIds, {type, payload}) => {
         case actions.RETRIEVE_DELIVERY_METHODS_SUCCESS:
             return payload.result;
         case actions.ON_CREATE_DELIVERY_METHOD:
-            return [payload.deliveryMethod._id, ...state];
+            return [payload.deliveryMethod.id, ...state];
         default:
             return state;
     }
@@ -29,7 +29,7 @@ const data = (state = initialData, {type, payload}) => {
             payload.deliveryMethodsIds.forEach(id => newState[id].quantity = payload.productsById[id].quantity);
             return newState;
         case actions.ON_CREATE_DELIVERY_METHOD:
-            state[payload.deliveryMethod._id] = payload.deliveryMethod;
+            state[payload.deliveryMethod.id] = payload.deliveryMethod;
             return state;
         default:
             return state;
