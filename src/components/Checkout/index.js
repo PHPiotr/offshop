@@ -17,11 +17,11 @@ import {withRouter} from 'react-router-dom';
 
 const styles = theme => ({
     paper: {
-        marginTop: theme.spacing.unit * 3,
+        marginTop: 0,
         marginBottom: theme.spacing.unit * 3,
         padding: theme.spacing.unit * 2,
         [theme.breakpoints.up(600 + theme.spacing.unit * 3 * 2)]: {
-            marginTop: theme.spacing.unit * 6,
+            marginTop: 0,
             marginBottom: theme.spacing.unit * 6,
             padding: theme.spacing.unit * 3,
         },

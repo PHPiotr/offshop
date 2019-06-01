@@ -2,7 +2,6 @@ import React, {Component, Fragment} from 'react';
 import PropTypes from 'prop-types';
 import CheckoutView from '../../components/Checkout';
 import {connect} from 'react-redux';
-import SubHeader from '../../components/SubHeader';
 import ProgressIndicator from '../../components/ProgressIndicator';
 import {setActiveStepId} from '../../actions/checkout';
 import {resetOrderData} from '../../actions/order';
@@ -32,7 +31,6 @@ class Checkout extends Component {
         return (
             <Fragment>
                 {this.props.order.isCreating && <ProgressIndicator/>}
-                <SubHeader content="Zamówienie"/>
                 <CheckoutView />
             </Fragment>
         );

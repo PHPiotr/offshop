@@ -34,15 +34,15 @@ let Review = props => {
         <Fragment>
             <List disablePadding>
                 {products.map(
-                    ({_id, name, unitPrice, totalPrice}) => (
-                        <Fragment key={_id}>
+                    ({id, name, unitPrice, totalPrice}) => (
+                        <Fragment key={id}>
                             <ListItem className={classes.listItem}>
                                 <ListItemText
                                     primary={name}
-                                    secondary={`${cart.products[_id].quantity} szt.`}
+                                    secondary={`${cart.products[id].quantity} szt.`}
                                 />
                                 <Typography variant="body2">
-                                    {`${unitPrice} x ${cart.products[_id].quantity} = ${(totalPrice/100).toFixed(2)} ${currency}`}
+                                    {`${(unitPrice / 100).toFixed(2)} x ${cart.products[id].quantity} = ${(totalPrice/100).toFixed(2)} ${currency}`}
                                 </Typography>
                             </ListItem>
                             <Divider/>

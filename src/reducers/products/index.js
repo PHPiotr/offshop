@@ -21,18 +21,18 @@ const ids = (state = initialIds, {type, payload}) => {
                 ...payload.result,
             ];
         case ON_CREATE_PRODUCT:
-            return [payload.product._id, ...state];
+            return [payload.product.id, ...state];
         case ON_UPDATE_PRODUCT:
             if (payload.product.active) {
-                if (state.indexOf(payload.product._id) === -1) {
-                    return [...state, payload.product._id];
+                if (state.indexOf(payload.product.id) === -1) {
+                    return [...state, payload.product.id];
                 }
             } else {
-                return state.filter(id => id !== payload.product._id);
+                return state.filter(id => id !== payload.product.id);
             }
             return state;
         case ON_DELETE_PRODUCT:
-            return state.filter(id => id !== payload.product._id);
+            return state.filter(id => id !== payload.product.id);
         default:
             return state;
     }
@@ -48,7 +48,7 @@ const data = (state = initialData, {type, payload}) => {
             return newState;
         case ON_CREATE_PRODUCT:
         case ON_UPDATE_PRODUCT:
-            return {...state, [payload.product._id]: payload.product};
+            return {...state, [payload.product.id]: payload.product};
         default:
             return state;
     }

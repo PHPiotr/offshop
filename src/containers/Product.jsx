@@ -114,10 +114,10 @@ const Product = props => {
                         </IconButton>
                     }
                     title={props.product.name}
-                    subheader={`${props.product.unitPrice} zł`}
+                    subheader={`${(props.product.unitPrice / 100).toFixed(2)} zł`}
                 />
                 <Menu id="more-menu" anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleClose}>
-                    <MenuItem onClick={handleClose}>{`Waga: ${props.product.weight} kg`}</MenuItem>
+                    <MenuItem onClick={handleClose}>{`Waga: ${(props.product.weight / 100).toFixed(2)} kg`}</MenuItem>
                     <MenuItem onClick={handleClose}>{`Dostępnść: ${props.product.stock} szt.`}</MenuItem>
                 </Menu>
                 <CardMedia

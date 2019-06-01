@@ -2,7 +2,6 @@ import React, {Component, Fragment} from 'react';
 import {connect} from 'react-redux';
 import CartProducts from '../../components/Cart/Products';
 import CartSummary from '../../components/Cart/Summary';
-import SubHeader from '../../components/SubHeader';
 import Paper from '@material-ui/core/Paper/Paper';
 import withStyles from '@material-ui/core/styles/withStyles';
 import {injectIntl, FormattedMessage} from 'react-intl';
@@ -42,7 +41,6 @@ class Cart extends Component {
         if (!this.props.products.length) {
             return (
                 <Fragment>
-                    <SubHeader content={this.props.intl.formatMessage({id: 'cart.heading'})}/>
                     <Paper className={this.props.classes.paper}>
                         <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
                             <Typography variant="subheading">
@@ -55,7 +53,6 @@ class Cart extends Component {
         }
         return (
             <Fragment>
-                <SubHeader content="Koszyk"/>
                 <CartProducts/>
                 <CartSummary/>
             </Fragment>
