@@ -64,7 +64,7 @@ function ProductsGridList(props) {
                             <GridListTileBar
                                 className={classes.gridListTileBar}
                                 title={<Link color="inherit" component={RouterLink} to={`/products/${product.slug}`}>{product.name}</Link>}
-                                subtitle={<span>{product.unitPrice} zł</span>}
+                                subtitle={<span>{(product.unitPrice / 100).toFixed(2)} zł</span>}
                                 actionIcon={
                                     <IconButton
                                         id={product.id}

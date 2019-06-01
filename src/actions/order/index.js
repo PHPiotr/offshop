@@ -53,8 +53,8 @@ export const createOrderIfNeeded = payMethods => {
                     id,
                     name,
                     slug,
-                    unitPrice: unitPrice.replace('.', ''),
-                    quantity: state.cart.products[id].quantity.toString(),
+                    unitPrice,
+                    quantity: state.cart.products[id].quantity,
                 };
                 return acc;
             }, {});

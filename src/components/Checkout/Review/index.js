@@ -42,7 +42,7 @@ let Review = props => {
                                     secondary={`${cart.products[id].quantity} szt.`}
                                 />
                                 <Typography variant="body2">
-                                    {`${unitPrice} x ${cart.products[id].quantity} = ${(totalPrice/100).toFixed(2)} ${currency}`}
+                                    {`${(unitPrice / 100).toFixed(2)} x ${cart.products[id].quantity} = ${(totalPrice/100).toFixed(2)} ${currency}`}
                                 </Typography>
                             </ListItem>
                             <Divider/>

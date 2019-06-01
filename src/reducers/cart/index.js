@@ -20,9 +20,9 @@ const cart = (state = initialState, { payload, type }) => {
         case SET_CURRENT_DELIVERY_METHOD:
             return {
                 ...state,
-                deliveryUnitPrice: payload.current.unitPrice * 100,
-                deliveryTotalPrice: payload.current.unitPrice * 100 * state.weight / 100,
-                totalPriceWithDelivery: state.totalPrice + payload.current.unitPrice * 100 * state.weight / 100,
+                deliveryUnitPrice: payload.current.unitPrice,
+                deliveryTotalPrice: payload.current.unitPrice * state.weight / 100,
+                totalPriceWithDelivery: state.totalPrice + payload.current.unitPrice * state.weight / 100,
             };
         case ADD_TO_CART:
 
@@ -35,16 +35,16 @@ const cart = (state = initialState, { payload, type }) => {
             return {
                 ...state,
                 quantity: state.quantity + payload.quantity,
-                weight: state.weight + payload.item.weight * 100 * payload.quantity,
-                totalPrice: state.totalPrice + (parseInt(payload.item.unitPrice.replace('.', ''), 10)) * payload.quantity,
+                weight: state.weight + payload.item.weight * payload.quantity,
+                totalPrice: state.totalPrice + payload.item.unitPrice * payload.quantity,
                 ids: state.ids.find(i => i === payload.item.id) ? state.ids : [...state.ids, payload.item.id],
                 products: {...state.products, [payload.item.id]: {
                     quantity: item.quantity + 1,
-                    weight: item.weight + payload.item.weight * 100 * payload.quantity,
-                    totalPrice: item.totalPrice + parseInt(payload.item.unitPrice.replace('.', ''), 10) * payload.quantity,
+                    weight: item.weight + payload.item.weight * payload.quantity,
+                    totalPrice: item.totalPrice + payload.item.unitPrice * payload.quantity,
                 }},
-                deliveryTotalPrice: state.deliveryUnitPrice * (state.weight + payload.item.weight * 100 * payload.quantity) / 100,
-                totalPriceWithDelivery: (state.totalPrice + (parseInt(payload.item.unitPrice.replace('.', ''), 10)) * payload.quantity) + (state.deliveryUnitPrice * (state.weight + payload.item.weight * 100 * payload.quantity) / 100),
+                deliveryTotalPrice: state.deliveryUnitPrice * (state.weight + payload.item.weight * payload.quantity) / 100,
+                totalPriceWithDelivery: (state.totalPrice + payload.item.unitPrice * payload.quantity) + (state.deliveryUnitPrice * (state.weight + payload.item.weight * payload.quantity) / 100),
             };
         case DECREMENT_IN_CART:
 
@@ -57,16 +57,16 @@ const cart = (state = initialState, { payload, type }) => {
             return {
                 ...state,
                 quantity: state.quantity - payload.quantity,
-                weight: state.weight - payload.item.weight * 100 * payload.quantity,
-                totalPrice: state.totalPrice - (payload.item.unitPrice * 100 * payload.quantity),
+                weight: state.weight - payload.item.weight * payload.quantity,
+                totalPrice: state.totalPrice - (payload.item.unitPrice * payload.quantity),
                 ids: item.quantity - payload.quantity <= 0 ? state.ids.filter(i => i !== payload.item.id) : state.ids,
                 products: {...state.products, [payload.item.id]: {
                     quantity: item.quantity - payload.quantity,
-                    weight: item.weight - payload.item.weight * 100 * payload.quantity,
-                    totalPrice: item.totalPrice - payload.item.unitPrice * 100 * payload.quantity,
+                    weight: item.weight - payload.item.weight * payload.quantity,
+                    totalPrice: item.totalPrice - payload.item.unitPrice * payload.quantity,
                 }},
-                deliveryTotalPrice: state.deliveryUnitPrice * (state.weight - payload.item.weight * 100 * payload.quantity) / 100,
-                totalPriceWithDelivery: (state.totalPrice - (payload.item.unitPrice * 100 * payload.quantity)) + (state.deliveryUnitPrice * (state.weight - payload.item.weight * 100 * payload.quantity) / 100),
+                deliveryTotalPrice: state.deliveryUnitPrice * (state.weight - payload.item.weight * payload.quantity) / 100,
+                totalPriceWithDelivery: (state.totalPrice - (payload.item.unitPrice * payload.quantity)) + (state.deliveryUnitPrice * (state.weight - payload.item.weight * payload.quantity) / 100),
             };
         case DELETE_FROM_CART:
 
@@ -95,8 +95,8 @@ const cart = (state = initialState, { payload, type }) => {
                     const productInCartQuantity = productInCart.quantity;
                     if (productInCartQuantity > stock) {
                         const quantitySubtract = productInCartQuantity - stock;
-                        const newWeight = newState.weight - weight * 100 * quantitySubtract;
-                        const newTotalPrice = newState.totalPrice - unitPrice * 100 * quantitySubtract;
+                        const newWeight = newState.weight - weight * quantitySubtract;
+                        const newTotalPrice = newState.totalPrice - unitPrice * quantitySubtract;
                         const newDeliveryTotalPrice = newState.deliveryUnitPrice * newWeight / 100;
                         newState.quantity -= quantitySubtract;
                         newState.weight = newWeight;
@@ -107,8 +107,8 @@ const cart = (state = initialState, { payload, type }) => {
                             newState.products[id] = {
                                 ...productInCart,
                                 quantity: quantity,
-                                weight: weight * 100 * stock,
-                                totalPrice: unitPrice * 100 * stock,
+                                weight: weight * stock,
+                                totalPrice: unitPrice * stock,
                             };
                         } else {
                             newState.products[id] = undefined;

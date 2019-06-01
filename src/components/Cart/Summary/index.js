@@ -49,7 +49,7 @@ const CartSummary = props => {
                             key={id}
                             value={id}
                             control={<Radio color="primary" />}
-                            label={`${name}: ${((unitPrice * 100 * (cart.weight / 100)) / 100).toFixed(2)} zł`}
+                            label={`${name}: ${(unitPrice * (cart.weight / 100) / 100).toFixed(2)} zł`}
                             labelPlacement="end"
                             checked={id === props.currentDeliveryMethod.id}
                             onChange={handleSetCurrentDeliveryMethod}

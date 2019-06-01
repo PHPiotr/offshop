@@ -69,9 +69,9 @@ const ProductsInCart = props => {
                                             className={classes.inline}
                                             color="textPrimary"
                                         >
-                                            {`${(p.unitPrice * productInCart.quantity).toFixed(2)} zł`}
+                                            {`${(p.unitPrice * productInCart.quantity / 100).toFixed(2)} zł`}
                                         </Typography>
-                                        {productInCart.quantity > 1 && ` (${p.unitPrice} zł / szt.)`}
+                                        {productInCart.quantity > 1 && ` (${(p.unitPrice / 100).toFixed(2)} zł / szt.)`}
                                     </React.Fragment>
                                 }
                             />
