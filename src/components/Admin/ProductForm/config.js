@@ -1,3 +1,5 @@
+import React from 'react';
+import InputAdornment from '@material-ui/core/InputAdornment';
 import {
     renderTextField as TextField,
     renderSwitch as SwitchField,
@@ -76,21 +78,38 @@ export const inputs = {
         label: 'Dostępna ilość',
         validate: [validateRequired],
         component: TextField,
-        inputProps: {inputProps: {min: 1}},
+        inputProps: {
+            inputProps: {
+                min: 1,
+            },
+            endAdornment: <InputAdornment position="start">szt.</InputAdornment>
+        },
     },
     unitPrice: {
         type: 'number',
-        label: 'Cena produktu (zł)',
+        label: 'Cena produktu',
         validate: [validateRequired, validatePrice],
         component: TextField,
-        inputProps: {inputProps: {min: 0.01, step: 0.01}},
+        inputProps: {
+            inputProps: {
+                min: 0.01,
+                step: 0.01,
+            },
+            endAdornment: <InputAdornment position="start">zł</InputAdornment>
+        },
     },
     weight: {
         type: 'number',
-        label: 'Waga produktu (kg)',
+        label: 'Waga produktu',
         validate: [validateRequired],
         component: TextField,
-        inputProps: {inputProps: {min: 1.0, step: 0.1}},
+        inputProps: {
+            inputProps: {
+                min: 1.0,
+                step: 0.1,
+            },
+            endAdornment: <InputAdornment position="start">Kg</InputAdornment>
+        },
     },
     active: {
         type: 'switch',
