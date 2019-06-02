@@ -19,6 +19,8 @@ import AdminNav from '../Admin/Nav';
 const styles = theme => ({
     appBar: {
         marginBottom: '1em',
+        color: '#fff !important',
+        backgroundColor: '#3f51b5 !important',
     },
     root: {
         display: 'flex',
@@ -87,7 +89,7 @@ class PrimaryAppBar extends Component {
         return (
             <div className={classes.root}>
                 <CssBaseline/>
-                <AppBar position="static" className={classes.appBar}>
+                <AppBar position="static" color="primary" className={classes.appBar}>
                     <Toolbar>
                         <IconButton
                             color="inherit"
