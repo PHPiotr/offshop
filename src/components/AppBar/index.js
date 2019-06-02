@@ -91,14 +91,16 @@ class PrimaryAppBar extends Component {
                 <CssBaseline/>
                 <AppBar position="static" color="primary" className={classes.appBar}>
                     <Toolbar>
-                        <IconButton
+                        {isAuthenticated && (
+                            <IconButton
                             color="inherit"
                             aria-label="Open drawer"
                             onClick={this.handleDrawerOpen}
                             className={classes.menuButton}
-                        >
-                            <MenuIcon/>
-                        </IconButton>
+                            >
+                                <MenuIcon/>
+                            </IconButton>
+                        )}
                         <Typography variant="h5" color="inherit" noWrap>
                             <Link color="inherit" underline="none" component={RouterLink} to="/">{this.props.appBar.title}</Link>
                         </Typography>
