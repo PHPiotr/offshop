@@ -27,9 +27,6 @@ const styles = theme => ({
         marginBottom: '1rem',
         marginTop: '1rem',
     },
-    inline: {
-        display: 'inline',
-    },
     textField: {
         marginLeft: 0,
         marginRight: 0,
@@ -81,15 +78,7 @@ const ProductsList = props => {
                             </ListItemAvatar>
                             <ListItemText
                                 primary={p.name}
-                                secondary={
-                                    <Typography
-                                        component="span"
-                                        className={props.classes.inline}
-                                        color="textPrimary"
-                                    >
-                                        {`${p.unitPrice} zł`}
-                                    </Typography>
-                                }
+                                secondary={`${(p.unitPrice / 100).toFixed(2)} zł`}
                             />
                             <ListItemSecondaryAction>
                                 <IconButton

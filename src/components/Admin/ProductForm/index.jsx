@@ -148,13 +148,20 @@ const selector = formValueSelector(FORM_NAME);
 
 const mapStateToProps = state => {
     const imageFile = selector(state, 'img');
+    const initialValues = {...state.adminProduct.data[state.adminProduct.id]};
+    if (initialValues.unitPrice) {
+        initialValues.unitPrice = (initialValues.unitPrice / 100).toFixed(2);
+    }
+    if (initialValues.weight) {
+        initialValues.weight = (initialValues.weight / 100).toFixed(2);
+    }
     return {
         isRequestInProgress: state.adminProduct.isCreating || state.adminProduct.isFetching || state.adminProduct.isDeleting,
         imageFile: imageFile ? [imageFile] : [],
         active: selector(state, 'active'),
         accessToken: state.auth.accessToken,
         isValidProduct: isValid(FORM_NAME)(state),
-        initialValues: state.adminProduct.data[state.adminProduct.id],
+        initialValues,
         values: state.adminProduct.data[state.adminProduct.id],
     };
 };
