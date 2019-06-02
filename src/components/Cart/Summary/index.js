@@ -19,13 +19,13 @@ const styles = theme => ({
         backgroundColor: theme.palette.background.paper,
     },
     section1: {
-        margin: `${theme.spacing.unit * 3}px ${theme.spacing.unit * 2}px`,
+        margin: `${theme.spacing(3)}px ${theme.spacing(2)}px`,
     },
     section2: {
-        margin: theme.spacing.unit * 2,
+        margin: theme.spacing(2),
     },
     section3: {
-        margin: `${theme.spacing.unit * 6}px ${theme.spacing.unit * 2}px ${theme
+        margin: `${theme.spacing(6)}px ${theme.spacing(2)}px ${theme
             .spacing.unit * 2}px`,
     },
 });
