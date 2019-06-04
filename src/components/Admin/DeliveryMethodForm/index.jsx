@@ -22,8 +22,8 @@ const styles = theme => ({
         justifyContent: 'flex-end',
     },
     button: {
-        marginTop: theme.spacing.unit * 3,
-        marginBottom: theme.spacing.unit * 3,
+        marginTop: theme.spacing(3),
+        marginBottom: theme.spacing(3),
         marginLeft: theme.spacing.unit,
     },
 });
@@ -91,11 +91,15 @@ DeliveryMethodForm.defaultProps = {
 };
 
 const mapStateToProps = state => {
+    const initialValues = {...state.adminDeliveryMethod.data[state.adminDeliveryMethod.id]};
+    if (initialValues.unitPrice) {
+        initialValues.unitPrice = (initialValues.unitPrice / 100).toFixed(2);
+    }
     return {
         isRequestInProgress: state.adminDeliveryMethod.isCreating || state.adminDeliveryMethod.isFetching || state.adminDeliveryMethod.isDeleting,
         accessToken: state.auth.accessToken,
         isValidDeliveryMethod: isValid(FORM_NAME)(state),
-        initialValues: state.adminDeliveryMethod.data[state.adminDeliveryMethod.id],
+        initialValues: initialValues,
         values: state.adminDeliveryMethod.data[state.adminDeliveryMethod.id],
     };
 };

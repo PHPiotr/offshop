@@ -19,6 +19,8 @@ import AdminNav from '../Admin/Nav';
 const styles = theme => ({
     appBar: {
         marginBottom: '1em',
+        color: '#fff !important',
+        backgroundColor: '#3f51b5 !important',
     },
     root: {
         display: 'flex',
@@ -29,7 +31,7 @@ const styles = theme => ({
     toolbar: theme.mixins.toolbar,
     content: {
         flexGrow: 1,
-        padding: theme.spacing.unit * 3,
+        padding: theme.spacing(3),
     },
     grow: {
         flexGrow: 1,
@@ -87,16 +89,18 @@ class PrimaryAppBar extends Component {
         return (
             <div className={classes.root}>
                 <CssBaseline/>
-                <AppBar position="static" className={classes.appBar}>
+                <AppBar position="static" color="primary" className={classes.appBar}>
                     <Toolbar>
-                        <IconButton
+                        {isAuthenticated && (
+                            <IconButton
                             color="inherit"
                             aria-label="Open drawer"
                             onClick={this.handleDrawerOpen}
                             className={classes.menuButton}
-                        >
-                            <MenuIcon/>
-                        </IconButton>
+                            >
+                                <MenuIcon/>
+                            </IconButton>
+                        )}
                         <Typography variant="h5" color="inherit" noWrap>
                             <Link color="inherit" underline="none" component={RouterLink} to="/">{this.props.appBar.title}</Link>
                         </Typography>

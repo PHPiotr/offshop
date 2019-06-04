@@ -15,7 +15,7 @@ const styles = theme => ({
     },
     progress: {
         position: 'absolute',
-        margin: theme.spacing.unit * 2,
+        margin: theme.spacing(2),
         top: '50%',
         left: '50%',
         marginLeft: -20,

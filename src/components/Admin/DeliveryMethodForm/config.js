@@ -1,3 +1,5 @@
+import React from 'react';
+import InputAdornment from '@material-ui/core/InputAdornment';
 import {
     renderTextField as TextField,
     validatePrice,
@@ -33,9 +35,15 @@ export const inputs = {
     },
     unitPrice: {
         type: 'number',
-        label: 'Cena za kilogram',
+        label: 'Cena za Kg',
         validate: [validateRequired, validatePrice],
         component: TextField,
-        inputProps: {inputProps: {min: 0.00, step: 0.01}},
+        inputProps: {
+            inputProps: {
+                min: 0.00,
+                step: 0.01,
+            },
+            endAdornment: <InputAdornment position="start">zł</InputAdornment>
+        },
     },
 };

@@ -19,7 +19,7 @@ const styles = theme => ({
         fontWeight: '700',
     },
     title: {
-        marginTop: theme.spacing.unit * 2,
+        marginTop: theme.spacing(2),
     },
     payMethods: {
         display: 'block',

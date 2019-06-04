@@ -20,6 +20,7 @@ import Notification from './containers/Notification';
 import Auth from './services/auth';
 import store from './store';
 import {updateAuth} from './actions/auth';
+import Typography from '@material-ui/core/Typography';
 
 const auth = new Auth();
 const {isAuthenticated, renewSession} = auth;
@@ -90,11 +91,15 @@ const styles = theme => ({
         overflow: 'hidden',
         backgroundColor: theme.palette.background.paper,
     },
+    container: {
+        position: 'relative',
+        minHeight: '100vh',
+    },
     layout: {
         width: 'auto',
-        marginLeft: theme.spacing.unit * 3,
-        marginRight: theme.spacing.unit * 3,
-        [theme.breakpoints.up(1100 + theme.spacing.unit * 3 * 2)]: {
+        marginLeft: theme.spacing(3),
+        marginRight: theme.spacing(3),
+        [theme.breakpoints.up(1100 + theme.spacing(6))]: {
             width: 1100,
             marginLeft: 'auto',
             marginRight: 'auto',
@@ -102,10 +107,14 @@ const styles = theme => ({
     },
     grid: {
         padding: 0,
+        paddingBottom: theme.spacing(8),
     },
     footer: {
         backgroundColor: theme.palette.background.paper,
-        padding: theme.spacing.unit * 6,
+        padding: theme.spacing.unit,
+        position: 'absolute',
+        bottom: 0,
+        width: '100%',
     },
 });
 
@@ -117,52 +126,67 @@ class App extends Component {
                 <Helmet>
                     <title>Offshop</title>
                 </Helmet>
-                <CssBaseline />
-                <header>
-                    <Navigation auth={auth} />
-                </header>
-                <main>
-                    <div className={classNames(classes.layout, classes.grid)}>
-                        <Grid
-                            container
-                            alignContent="center"
-                            alignItems="center"
+                <CssBaseline/>
+                <div className={classes.container}>
+                    <header>
+                        <Navigation auth={auth}/>
+                    </header>
+                    <main>
+                        <div className={classNames(classes.layout, classes.grid)}>
+                            <Grid
+                                container
+                                alignContent="center"
+                                alignItems="center"
+                            >
+                                <Switch>
+                                    <Route path="/" exact component={Products}/>
+                                    <Route path="/products/:slug" exact component={Product}/>
+                                    <Route path="/cart" exact component={Cart}/>
+                                    <Route path="/order" exact component={Order}/>
+                                    <Route path="/checkout" exact component={Checkout}/>
+                                    <Route path="/callback" render={props => {
+                                        handleAuthentication(props);
+                                        return null;
+                                    }}/>
+                                    <Route path="/login" render={() => {
+                                        auth.login();
+                                        return null;
+                                    }}/>
+                                    <Route path="/logout" render={props => {
+                                        auth.logout();
+                                        store.dispatch(updateAuth({
+                                            accessToken: auth.getAccessToken(),
+                                            idToken: auth.getIdToken(),
+                                            expiresAt: auth.getExpiresAt(),
+                                        }));
+                                        localStorage.removeItem(LOGGED_IN);
+                                        props.history.replace('/');
+                                        return null;
+                                    }}/>
+                                    <PrivateRoute path="/admin/products/list" exact component={AdminProducts}/>
+                                    <PrivateRoute path="/admin/products/new" exact component={AdminProductForm}/>
+                                    <PrivateRoute path="/admin/products/:productId" exact component={AdminProductForm}/>
+                                    <PrivateRoute path="/admin/delivery-methods/list" exact
+                                                  component={AdminDeliveryMethods}/>
+                                    <PrivateRoute path="/admin/delivery-methods/new" exact
+                                                  component={AdminDeliveryMethodForm}/>
+                                    <PrivateRoute path="/admin/delivery-methods/:id" exact
+                                                  component={AdminDeliveryMethodForm}/>
+                                </Switch>
+                            </Grid>
+                        </div>
+                    </main>
+                    <footer className={classes.footer}>
+                        <Typography
+                            variant="subtitle1"
+                            align="center"
+                            color="textSecondary"
+                            component="p"
                         >
-                            <Switch>
-                                <Route path="/" exact component={Products} />
-                                <Route path="/products/:slug" exact component={Product} />
-                                <Route path="/cart" exact component={Cart} />
-                                <Route path="/order" exact component={Order} />
-                                <Route path="/checkout" exact component={Checkout} />
-                                <Route path="/callback" render={props => {
-                                    handleAuthentication(props);
-                                    return null;
-                                }}/>
-                                <Route path="/login" render={() => {
-                                    auth.login();
-                                    return null;
-                                }}/>
-                                <Route path="/logout" render={props => {
-                                    auth.logout();
-                                    store.dispatch(updateAuth({
-                                        accessToken: auth.getAccessToken(),
-                                        idToken: auth.getIdToken(),
-                                        expiresAt: auth.getExpiresAt(),
-                                    }));
-                                    localStorage.removeItem(LOGGED_IN);
-                                    props.history.replace('/');
-                                    return null;
-                                }}/>
-                                <PrivateRoute path="/admin/products/list" exact component={AdminProducts}/>
-                                <PrivateRoute path="/admin/products/new" exact component={AdminProductForm} />
-                                <PrivateRoute path="/admin/products/:productId" exact component={AdminProductForm}/>
-                                <PrivateRoute path="/admin/delivery-methods/list" exact component={AdminDeliveryMethods}/>
-                                <PrivateRoute path="/admin/delivery-methods/new" exact component={AdminDeliveryMethodForm} />
-                                <PrivateRoute path="/admin/delivery-methods/:id" exact component={AdminDeliveryMethodForm}/>
-                            </Switch>
-                        </Grid>
-                    </div>
-                </main>
+                            Stworzone z miłości do żony
+                        </Typography>
+                    </footer>
+                </div>
                 <Notification/>
             </Fragment>
         );

@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import {Provider} from 'react-redux';
 import {BrowserRouter as Router} from 'react-router-dom';
 import {addLocaleData, IntlProvider} from 'react-intl';
-import en from 'react-intl/locale-data/en';
+//import en from 'react-intl/locale-data/en';
 import pl from 'react-intl/locale-data/pl';
 import './index.css';
 import App from './App';
@@ -12,20 +12,21 @@ import store from './store';
 import messages from './messages';
 import {flattenMessages} from './utils';
 
-if (!window.Intl) {
-    Promise.all([
-        import('intl'),
-        import('intl/locale-data/jsonp/en.js'),
-        import('intl/locale-data/jsonp/pl.js'),
-    ]).then(() => runApp());
-} else {
-    runApp();
-}
+runApp();
+// if (!window.Intl) {
+//     Promise.all([
+//         import('intl'),
+//         import('intl/locale-data/jsonp/en.js'),
+//         import('intl/locale-data/jsonp/pl.js'),
+//     ]).then(() => runApp());
+// } else {
+//     runApp();
+// }
 
 function runApp() {
-    addLocaleData([...en, ...pl]);
+    addLocaleData([...pl]);
 
-    let locale = (navigator.languages && navigator.languages[0]) || navigator.language || navigator.userLanguage || 'en-US';
+    let locale = 'pl-PL'; //(navigator.languages && navigator.languages[0]) || navigator.language || navigator.userLanguage || 'en-US';
 
     ReactDOM.render(
         <IntlProvider locale={locale} messages={flattenMessages(messages[locale])}>

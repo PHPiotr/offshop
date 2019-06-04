@@ -8,7 +8,7 @@ import withPayuExpress from '../../../../hoc/withPayuExpress';
 
 const styles = theme => ({
     button: {
-        marginTop: theme.spacing.unit * 3,
+        marginTop: theme.spacing(3),
         marginLeft: theme.spacing.unit,
         border: 0,
         height: '50px',
