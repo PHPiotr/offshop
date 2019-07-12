@@ -26,7 +26,7 @@ const styles = theme => ({
     },
     section3: {
         margin: `${theme.spacing(6)}px ${theme.spacing(2)}px ${theme
-            .spacing.unit * 2}px`,
+            .spacing(2)}px`,
     },
 });
 
