@@ -130,7 +130,7 @@ const Product = props => {
                         {props.product.description}
                     </Typography>
                 </CardContent>
-                <CardActions className={props.classes.actions} disableActionSpacing>
+                <CardActions className={props.classes.actions}>
                     <IconButton aria-label="Add to favorites">
                         <FavoriteIcon/>
                     </IconButton>
