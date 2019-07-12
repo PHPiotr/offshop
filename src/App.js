@@ -111,7 +111,7 @@ const styles = theme => ({
     },
     footer: {
         backgroundColor: theme.palette.background.paper,
-        padding: theme.spacing.unit,
+        padding: theme.spacing(1),
         position: 'absolute',
         bottom: 0,
         width: '100%',
