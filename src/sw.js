@@ -1,16 +1,23 @@
-workbox.skipWaiting();
-workbox.clientsClaim();
+workbox.core.skipWaiting();
+workbox.core.clientsClaim();
 
 workbox.routing.registerRoute(
     new RegExp('https:.*min\.(css|js)'),
-    workbox.strategies.staleWhileRevalidate({
-        cacheName: 'cdn-cache'
+    new workbox.strategies.StaleWhileRevalidate({
+        cacheName: 'cdn-cache',
     })
 );
 
 workbox.routing.registerRoute(
-    new RegExp('https://.*:9000/.*'),
-    workbox.strategies.networkFirst()
+    new RegExp('http://offshop-1.s3.eu-central-1.amazonaws.com/.*\.jpg'),
+    new workbox.strategies.StaleWhileRevalidate({
+        cacheName: 'cdn-cache',
+    })
+);
+
+workbox.routing.registerRoute(
+    new RegExp('https://offshop-back-end.serveo.net/(products/delivery-methods).*'),
+    new workbox.strategies.NetworkFirst(),
 );
 
 self.addEventListener('fetch', event => {
