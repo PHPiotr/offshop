@@ -5,7 +5,6 @@ import {Link} from 'react-router-dom';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
-import Typography from '@material-ui/core/Typography';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction/ListItemSecondaryAction';
 import IconButton from '@material-ui/core/IconButton/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -36,7 +35,7 @@ const styles = theme => ({
 const DeliveryMethodsList = props => {
     useEffect(() => {
         props.getAdminDeliveryMethodsIfNeeded();
-    }, []);
+    });
     const [isDialogOpen, setDialogOpen] = useState(false);
     const [deliveryMethodToDelete, setDeliveryMethodToDelete] = useState({});
 

@@ -37,7 +37,7 @@ const styles = theme => ({
         flexGrow: 1,
     },
     chip: {
-        margin: theme.spacing.unit,
+        margin: theme.spacing(1),
     },
 });
 

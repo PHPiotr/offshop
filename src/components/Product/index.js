@@ -1,4 +1,4 @@
-import React, {Fragment, useState, useEffect} from 'react';
+import React, {Fragment, useState} from 'react';
 import PropTypes from 'prop-types';
 import {withStyles} from '@material-ui/core/styles';
 import classnames from 'classnames';
@@ -21,9 +21,9 @@ import {connect} from 'react-redux';
 import {Helmet} from 'react-helmet';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
-import {getProductIfNeeded, resetProductData} from '../actions/product';
-import ProgressIndicator from '../components/ProgressIndicator';
-import {addToCart} from '../actions/cart';
+import {addToCart} from '../../actions/cart';
+import {openDialog} from '../../actions/dialog';
+import ProductAddedToCartDialog from './ProductAddedToCartDialog';
 
 const styles = theme => ({
     card: {
@@ -55,14 +55,10 @@ const styles = theme => ({
     },
 });
 
-const Product = props => {
+const ProductView = props => {
 
     const [expanded, setExpanded] = useState(false);
     const [anchorEl, setAnchorEl] = useState(null);
-    useEffect(() => {
-        props.getProductIfNeeded(props.match.params.slug);
-        return props.resetProductData;
-    }, [props.match.params.slug]);
 
     const handleExpandClick = () => {
         setExpanded(!expanded);
@@ -78,11 +74,8 @@ const Product = props => {
 
     const handleAddToCart = () => {
         props.addToCart(props.product, 1);
+        props.openDialog();
     };
-
-    if (props.isFetching) {
-        return <ProgressIndicator/>;
-    }
 
     return (
         <Fragment>
@@ -95,6 +88,7 @@ const Product = props => {
                     avatar={
                         <Avatar aria-label={props.product.name} className={props.classes.avatar}>
                             <IconButton
+                                role="addToCart"
                                 id={props.product.id}
                                 onClick={handleAddToCart}
                                 className={props.classes.addToCart}
@@ -130,7 +124,7 @@ const Product = props => {
                         {props.product.description}
                     </Typography>
                 </CardContent>
-                <CardActions className={props.classes.actions} disableActionSpacing>
+                <CardActions className={props.classes.actions}>
                     <IconButton aria-label="Add to favorites">
                         <FavoriteIcon/>
                     </IconButton>
@@ -160,19 +154,21 @@ const Product = props => {
                     </Collapse>
                 )}
             </Card>
+            <ProductAddedToCartDialog />
         </Fragment>
     );
 };
 
 const mapStateToProps = state => ({
     product: state.product.data[state.product.id] || {},
-    isFetching: state.product.isFetching,
     productInCart: state.cart.products[state.product.id] || {},
 });
-const mapDispatchToProps = {getProductIfNeeded, resetProductData, addToCart};
+const mapDispatchToProps = {addToCart, openDialog};
 
-Product.propTypes = {
+ProductView.propTypes = {
     classes: PropTypes.object.isRequired,
+    product: PropTypes.object.isRequired,
+    productInCart: PropTypes.object.isRequired,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(Product));
+export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(ProductView));

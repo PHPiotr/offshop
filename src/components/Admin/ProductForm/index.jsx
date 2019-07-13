@@ -1,7 +1,7 @@
 import React, {Fragment, useEffect, useState} from 'react';
 import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
-import {Field, Form, reduxForm, formValueSelector, isValid, reset} from 'redux-form';
+import {Field, Form, reduxForm, formValueSelector, isValid} from 'redux-form';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import withStyles from '@material-ui/core/styles/withStyles';
@@ -24,7 +24,7 @@ const styles = theme => ({
     button: {
         marginTop: theme.spacing(3),
         marginBottom: theme.spacing(3),
-        marginLeft: theme.spacing.unit,
+        marginLeft: theme.spacing(1),
     },
 });
 

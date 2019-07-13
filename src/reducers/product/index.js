@@ -5,7 +5,7 @@ import {
     RESET_PRODUCT_DATA,
 } from '../../actions/product';
 
-const initialState = {
+export const initialState = {
     isFetching: false,
     data: {},
     id: '',
