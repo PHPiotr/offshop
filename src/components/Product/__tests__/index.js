@@ -31,19 +31,7 @@ function renderWithProviders(
 }
 
 it('shows dialog after product is added to cart', () => {
-    const props = {
-        product: {
-            id: 1,
-            name: 'Foo',
-            description: 'Bar',
-            stock: 10,
-        },
-        productInCart: {
-            quantity: 0
-        },
-        getProductIfNeeded: () => null,
-    };
-    const {queryByRole, getByRole} = renderWithProviders(<ProductView {...props} />);
+    const {queryByRole, getByRole} = renderWithProviders(<ProductView />);
     expect(queryByRole('dialog')).toBeNull();
     fireEvent.click(getByRole("addToCart"));
     expect(getByRole('dialog')).toBeInTheDocument();
