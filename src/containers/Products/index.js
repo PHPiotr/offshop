@@ -1,12 +1,10 @@
 import React, {Component, Fragment} from 'react';
 import {connect} from 'react-redux';
 import ProductsView from '../../components/Products';
-import Dialog from '../../components/Dialog';
 import {addToCart} from '../../actions/cart';
 import {openDialog, closeDialog} from '../../actions/dialog';
 import {getProductsIfNeeded} from '../../actions/products';
-import {FormattedMessage} from 'react-intl';
-import Button from '@material-ui/core/Button';
+import ProductAddedToCartDialog from '../../components/Product/ProductAddedToCartDialog';
 
 class Products extends Component {
     componentDidMount() {
@@ -17,21 +15,7 @@ class Products extends Component {
         return (
             <Fragment>
                 <ProductsView {...this.props} />
-                <Dialog
-                    open={this.props.open}
-                    onClose={this.props.continueShopping}
-                    title={<FormattedMessage id="products.product_added_to_cart"/>}
-                    actions={
-                        [
-                            <Button key="1" onClick={this.props.continueShopping} color="primary">
-                                <FormattedMessage id="products.continue_shopping"/>
-                            </Button>,
-                            <Button key="2" onClick={this.props.goToCart} color="primary">
-                                <FormattedMessage id="products.go_to_cart"/>
-                            </Button>,
-                        ]
-                    }
-                />
+                <ProductAddedToCartDialog />
             </Fragment>
         );
     }
