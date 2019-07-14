@@ -17,7 +17,7 @@ export const UPDATE_DELIVERY_METHOD_FAILURE = 'UPDATE_DELIVERY_METHOD_FAILURE';
 export const createDeliveryMethodIfNeeded = (formProps, accessToken) => async dispatch => {
     dispatch({type: CREATE_DELIVERY_METHOD_REQUEST});
     try {
-        const {data} = await createDeliveryMethod(formProps, accessToken);
+        const {data} = await createDeliveryMethod({...formProps, unitPrice: formProps.unitPrice * 1000 / 10}, accessToken);
         const payload = normalize(data, deliveryMethodSchema.deliveryMethod);
         dispatch({type: CREATE_DELIVERY_METHOD_SUCCESS, payload});
         return payload;
@@ -33,7 +33,7 @@ export const updateDeliveryMethodIfNeeded = (formProps, accessToken) => async (d
 
     dispatch({type: UPDATE_DELIVERY_METHOD_REQUEST});
     try {
-        const {data} = await updateDeliveryMethod(id, formProps, accessToken);
+        const {data} = await updateDeliveryMethod(id, {...formProps, unitPrice: formProps.unitPrice * 1000 / 10}, accessToken);
         const payload = normalize(data, deliveryMethodSchema.deliveryMethod);
         dispatch({type: UPDATE_DELIVERY_METHOD_SUCCESS, payload});
         return payload;
