@@ -1,0 +1,15 @@
+language: node_js
+branches:
+  only:
+    - master
+    - development
+node_js:
+  - stable
+after_success: npm run coverage && ./scripts/merge-dev-with-master.sh
+sudo: false
+deploy:
+  provider: heroku
+  app: offshop-front-end
+  on: master
+  api_key:
+    secure: H4Uj+HAP9YiXU/orj3guSvWyMnoG9ZYip+b1As6+v9ZBRC8rwH6WFLXzwQxlZZ+ufAn6Zh2tSPHyCekaca36K8OHcsi+tWNA5jdeoDL/pkbgIqEOnkyT4A7vVXxxfUSRKQZjxeCSV5+8tpFHBl7vS82gFnrczEfLQ35h02ulRpXSY97nzXcTrRs57kf3IraN6Ssqls5c/UHW6NUkMlD8KTwHT6UMsb9BhFZvwXhDNsPqzIz9A8TZkV7DJV+3S/2nj2UCF2nLcZSzRmOiN6bhrmZWlu+g9IIDw2Xnbwt8cjC6Rp5AmhSGu1EBPTYDXFWUOpsklUlXA4CsjqzeuA1hEvr2sQYxt7GVt97PL+JaAg+GaBiGG37gL0RUEdm0mbnV6jHBY9akiTQbiqrZvac/tVVF+HpJEDM9pcnx03jO15WynKuDWczaA0dJlZ03olcxu6wJuZlbo3sFPLs4hBVVCHEaWyLzUQ5B282IpPW0x1FksdPO0DHWBiE/4RsHDYqaD3GKZCMJ03RVxaJl3evAIbwYIzDnEug1TGiaWCOKlS5Fyc5YbD3rQgugta65PiRD0NM+aDHL9OwJVgjqEhs2N6W+nLQVsKZzOvU2BIwAdu7K1jtTQlad8K90Ot4yUdoPNZXunfJTUntLdIYw1kI866UbRQXQHiB0cfUWJ6a5TyE=
