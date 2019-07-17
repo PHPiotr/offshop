@@ -40,7 +40,7 @@ let DeliveryMethodForm = props => {
             {props.isRequestInProgress && <ProgressIndicator/>}
             <SubHeader content={`${props.match.params.id ? 'Edytuj' : 'Dodaj'} opcję dostawy`}/>
             <Form onSubmit={props.handleSubmit}>
-                <Grid container spacing={24}>
+                <Grid container spacing={10}>
                     {inputKeys.reduce((acc, itemId) => {
                         const {label, type, validate, component, inputProps} = inputs[itemId];
                         acc.push(

@@ -9,7 +9,7 @@ const AddressForm = props => {
     const { inputKeys, inputs, setInputValue } = props;
 
     return (
-        <Grid container spacing={24}>
+        <Grid container spacing={10}>
             {inputKeys.map(itemId => {
                 const { required, label, value, type } = inputs[itemId];
 

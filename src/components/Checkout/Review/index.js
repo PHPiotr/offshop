@@ -67,7 +67,7 @@ let Review = props => {
                 <Divider/>
             </List>
 
-            <Grid container spacing={16}>
+            <Grid container spacing={10}>
                 <Grid item xs={12} sm={6}>
                     <Typography variant="h6" gutterBottom className={classes.title}>
                         Dane kupującego
