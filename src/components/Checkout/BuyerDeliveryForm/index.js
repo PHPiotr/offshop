@@ -23,7 +23,7 @@ let BuyerDeliveryForm = props => {
 
     return (
         <Form onSubmit={props.onSubmit}>
-            <Grid container spacing={24}>
+            <Grid container spacing={10}>
                 {props.inputKeys.reduce((acc, itemId) => {
                     const {label, type, validate} = props.inputs[itemId];
                     if (type === 'hidden') {

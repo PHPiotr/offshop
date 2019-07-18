@@ -35,7 +35,7 @@ const styles = theme => ({
 const DeliveryMethodsList = props => {
     useEffect(() => {
         props.getAdminDeliveryMethodsIfNeeded();
-    });
+    }, []);
     const [isDialogOpen, setDialogOpen] = useState(false);
     const [deliveryMethodToDelete, setDeliveryMethodToDelete] = useState({});
 

@@ -18,7 +18,7 @@ const renderTextField = ({input, label, meta, ...custom}) => (
 let LoginForm = props => {
     return (
         <Form onSubmit={props.onSubmit}>
-            <Grid container spacing={24}>
+            <Grid container spacing={10}>
                 <Grid item xs={12}>
                     <Field
                         name="username"

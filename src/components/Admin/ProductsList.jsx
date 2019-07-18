@@ -39,7 +39,7 @@ const styles = theme => ({
 const ProductsList = props => {
     useEffect(() => {
         props.getAdminProductsIfNeeded();
-    });
+    }, []);
     const [isDialogOpen, setDialogOpen] = useState(false);
     const [productToDelete, setProductToDelete] = useState({});
 

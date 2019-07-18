@@ -55,7 +55,7 @@ let ProductForm = props => {
             {props.isRequestInProgress && <ProgressIndicator/>}
             <SubHeader content={`${props.match.params.productId ? 'Edytuj' : 'Dodaj'} produkt`}/>
             <Form onSubmit={props.handleSubmit} encType="multipart/form-data">
-                <Grid container spacing={24}>
+                <Grid container spacing={10}>
                     {inputKeys.reduce((acc, itemId) => {
                         const {label, type, validate, component, inputProps} = inputs[itemId];
 

@@ -6,7 +6,7 @@ import Checkbox from '@material-ui/core/Checkbox';
 
 function PaymentForm() {
     return (
-        <Grid container spacing={24}>
+        <Grid container spacing={10}>
             <Grid item xs={12} md={6}>
                 <TextField
                     required

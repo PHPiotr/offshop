@@ -2,10 +2,10 @@ language: node_js
 branches:
   only:
     - master
-    - development
+    - dev
 node_js:
   - stable
-after_success: npm run coverage && ./scripts/merge-dev-with-master.sh
+after_success: ./scripts/merge_dev_with_master.sh
 sudo: false
 deploy:
   provider: heroku

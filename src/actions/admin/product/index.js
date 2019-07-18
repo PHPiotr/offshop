@@ -22,12 +22,13 @@ export const createProductIfNeeded = (formProps, accessToken) => async dispatch 
     fd.append('description', formProps.description);
     fd.append('longDescription', formProps.longDescription);
     fd.append('name', formProps.name);
-    fd.append('unitPrice', formProps.unitPrice * 100);
+    fd.append('unitPrice', formProps.unitPrice * 1000 / 10);
     fd.append('stock', formProps.stock);
-    fd.append('weight', formProps.weight * 100);
+    fd.append('weight', formProps.weight * 1000 / 10);
     fd.append('active', formProps.active);
 
     try {
+        debugger;
         const {data} = await createProduct(fd, accessToken);
         const payload = normalize(data, productSchema.product);
         dispatch({type: CREATE_PRODUCT_SUCCESS, payload});
@@ -51,9 +52,9 @@ export const updateProductIfNeeded = (formProps, accessToken) => async (dispatch
     fd.append('slug', formProps.slug);
     fd.append('description', formProps.description);
     fd.append('longDescription', formProps.longDescription);
-    fd.append('unitPrice', formProps.unitPrice * 100);
+    fd.append('unitPrice', formProps.unitPrice * 1000 / 10);
     fd.append('stock', formProps.stock);
-    fd.append('weight', formProps.weight * 100);
+    fd.append('weight', formProps.weight * 1000 / 10);
     fd.append('active', formProps.active);
 
     try {
