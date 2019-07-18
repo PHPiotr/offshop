@@ -42,7 +42,8 @@ let Review = props => {
                                     secondary={`${cart.products[id].quantity} szt.`}
                                 />
                                 <Typography variant="body2">
-                                    {`${(unitPrice / 100).toFixed(2)} x ${cart.products[id].quantity} = ${(totalPrice/100).toFixed(2)} ${currency}`}
+                                    {cart.products[id].quantity > 1 && `${(unitPrice / 100).toFixed(2)} zł x ${cart.products[id].quantity} szt. = `}
+                                    {`${(totalPrice/100).toFixed(2)} ${currency}`}
                                 </Typography>
                             </ListItem>
                             <Divider/>
@@ -53,7 +54,7 @@ let Review = props => {
                     <ListItem className={classes.listItem}>
                         <ListItemText primary="Dostawa" secondary={props.deliveryMethod.name}/>
                         <Typography variant="body2">
-                            {`${props.deliveryPrice} zł`}
+                            {cart.weight/100 !== 1 && `${cart.weight/100} kg x ${(cart.deliveryUnitPrice / 100).toFixed(2)} zł = ${props.deliveryPrice} zł`}
                         </Typography>
                     </ListItem>
                     <Divider/>
@@ -67,7 +68,7 @@ let Review = props => {
                 <Divider/>
             </List>
 
-            <Grid container spacing={16}>
+            <Grid container spacing={10}>
                 <Grid item xs={12} sm={6}>
                     <Typography variant="h6" gutterBottom className={classes.title}>
                         Dane kupującego

@@ -49,7 +49,23 @@ const CartSummary = props => {
                             key={id}
                             value={id}
                             control={<Radio color="primary" />}
-                            label={`${name}: ${(unitPrice * (cart.weight / 100) / 100).toFixed(2)} zł`}
+                            label={
+                                <React.Fragment>
+                                    <Typography
+                                        component="span"
+                                        className={classes.inline}
+                                        color="textPrimary"
+                                    >
+                                        {`${name}: ${(unitPrice * (cart.weight / 100) / 100).toFixed(2)} zł`}
+                                        {unitPrice > 0 && ` / ${cart.weight / 100} kg`}
+                                    </Typography>
+                                    {(unitPrice > 0 && (cart.weight / 100) > 1) && (
+                                        <Typography component="span" color="textSecondary">
+                                            {` (${(unitPrice / 100).toFixed(2)} zł / kg)`}
+                                        </Typography>
+                                    )}
+                                </React.Fragment>
+                            }
                             labelPlacement="end"
                             checked={id === props.currentDeliveryMethod.id}
                             onChange={handleSetCurrentDeliveryMethod}

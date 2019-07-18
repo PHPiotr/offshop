@@ -63,16 +63,17 @@ const ProductsInCart = props => {
                             <ListItemText
                                 primary={<Link component={RouterLink} to={`/products/${p.slug}`}>{p.name}</Link>}
                                 secondary={
-                                    <React.Fragment>
+                                    <Fragment>
                                         <Typography
                                             component="span"
                                             className={classes.inline}
                                             color="textPrimary"
                                         >
-                                            {`${(p.unitPrice * productInCart.quantity / 100).toFixed(2)} zł`}
+                                            {`${(p.unitPrice * productInCart.quantity / 100).toFixed(2)} zł / `}
+                                            {`${(p.weight * productInCart.quantity / 100)} kg`}
                                         </Typography>
-                                        {productInCart.quantity > 1 && ` (${(p.unitPrice / 100).toFixed(2)} zł / szt.)`}
-                                    </React.Fragment>
+                                        {productInCart.quantity > 1 && ` (${(p.unitPrice / 100).toFixed(2)} zł / ${p.weight / 100} kg / szt.)`}
+                                    </Fragment>
                                 }
                             />
                             <ListItemSecondaryAction>

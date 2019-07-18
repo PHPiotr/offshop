@@ -37,7 +37,7 @@ class ProductForm extends Component {
 
     render = () => (
         <Form onSubmit={this.props.handleSubmit} encType="multipart/form-data">
-            <Grid container spacing={24}>
+            <Grid container spacing={10}>
                 {this.props.inputKeys.reduce((acc, itemId) => {
                     const {label, type, validate, component, inputProps} = this.props.inputs[itemId];
 

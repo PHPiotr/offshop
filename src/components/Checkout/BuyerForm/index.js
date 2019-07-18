@@ -21,7 +21,7 @@ const validateEmail = value => value && /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}
 let BuyerForm = props => {
     return (
         <Form onSubmit={props.onSubmit}>
-            <Grid container spacing={24}>
+            <Grid container spacing={10}>
                 {props.inputKeys.reduce((acc, itemId) => {
                     const {label, type, validate} = props.inputs[itemId];
                     if (type === 'hidden') {
