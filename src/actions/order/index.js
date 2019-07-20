@@ -60,6 +60,7 @@ export const createOrderIfNeeded = payMethods => {
             }, {});
 
             const buyer =  getFormValues('buyer')(state);
+            buyer.language = process.env.REACT_APP_BUYER_LANGUAGE;
             const delivery = getFormValues('buyerDelivery')(state);
             if (delivery) {
                 buyer.delivery = delivery;
