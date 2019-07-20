@@ -27,6 +27,11 @@ const Nav = props => (
     <List subheader={<ListSubheader>Admin</ListSubheader>}>
         <Divider />
         <ListItem dense button className={props.classes.listItem}>
+            <Link className={props.classes.link} to="/admin/orders/list">
+                <ListItemText primary={`Zamówienia`} />
+            </Link>
+        </ListItem>
+        <ListItem dense button className={props.classes.listItem}>
             <Link className={props.classes.link} to="/admin/products/list">
                 <ListItemText primary={`Produkty`} />
             </Link>
