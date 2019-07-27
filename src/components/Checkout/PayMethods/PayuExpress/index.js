@@ -34,7 +34,7 @@ const mapStateToProps = state => ({
     successCallback: 'test',
     currencyCode: process.env.REACT_APP_CURRENCY_CODE,
     customerEmail: formValueSelector('buyer')(state, 'email'),
-    //customerLanguage: 'pl',
+    customerLanguage: 'pl',
     merchantPosId: process.env.REACT_APP_POS_ID,
     shopName: process.env.REACT_APP_MERCHANT_NAME,
     secondKeyMd5: process.env.REACT_APP_SECOND_KEY,
