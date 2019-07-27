@@ -1,101 +1,69 @@
-import React, {Fragment, useState, useEffect} from 'react';
+import React, {Fragment, useEffect} from 'react';
 import PropTypes from 'prop-types';
-import {withStyles} from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
 import {Link} from 'react-router-dom';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction/ListItemSecondaryAction';
-import IconButton from '@material-ui/core/IconButton/IconButton';
-import DeleteIcon from '@material-ui/icons/Delete';
-import Divider from '@material-ui/core/Divider';
 import {connect} from 'react-redux';
-import Button from '@material-ui/core/Button';
-import Dialog from '../../components/Dialog';
 import ProgressIndicator from '../../components/ProgressIndicator';
 import {getAdminOrdersIfNeeded, deleteOrderIfNeeded} from '../../actions/admin/orders';
 
-const styles = theme => ({
+const useStyles = makeStyles(theme => ({
     root: {
         width: '100%',
-        backgroundColor: theme.palette.background.paper,
-        marginBottom: '1rem',
-        marginTop: '1rem',
     },
-    textField: {
-        marginLeft: 0,
-        marginRight: 0,
-        width: '45px',
-        textAlign: 'center',
-        borderRadius: 0,
-        padding: 0,
+    paper: {
+        marginTop: theme.spacing(3),
+        width: '100%',
+        overflowX: 'auto',
+        marginBottom: theme.spacing(2),
     },
-});
+    table: {
+        minWidth: 650,
+    },
+}));
 
 const OrdersList = props => {
+    const classes = useStyles();
     useEffect(() => {
         props.getAdminOrdersIfNeeded();
     }, []);
-    const [isDialogOpen, setDialogOpen] = useState(false);
-    const [itemToDelete, setItemToDelete] = useState({});
-
-    const toggleDialog = () => setDialogOpen(!isDialogOpen);
-
-    const showDeleteItemPrompt = itemToDelete => () => {
-        setItemToDelete(itemToDelete);
-        toggleDialog();
-    };
-
-    const handleDeleteItem = () => {
-        toggleDialog();
-        props.deleteOrderIfNeeded(itemToDelete.id);
-    };
 
     return (
         <Fragment>
             {props.isFetching && <ProgressIndicator />}
-            <List className={props.classes.root}>
-                {props.data.map((p, i) => (
-                    <Fragment key={p.id}>
-                        <ListItem key={p.id} alignItems="flex-start" button component={Link} to={`/admin/orders/${p.id}`}>
-                            <ListItemText
-                                primary={p.extOrderId}
-                                secondary={p.createdAt}
-                            />
-                            <ListItemSecondaryAction>
-                                <IconButton
-                                    onClick={showDeleteItemPrompt(p)}
-                                    disabled={false}
-                                >
-                                    <DeleteIcon/>
-                                </IconButton>
-                            </ListItemSecondaryAction>
-                        </ListItem>
-                        {i < props.data.length - 1 && <Divider/>}
-                    </Fragment>
-                ))}
-            </List>
-            <Dialog
-                open={isDialogOpen}
-                onClose={toggleDialog}
-                title={`Usunąć ${itemToDelete.name}?`}
-                actions={
-                    [
-                        <Button key="1" onClick={handleDeleteItem} color="primary">
-                            Tak
-                        </Button>,
-                        <Button key="2" onClick={toggleDialog} color="primary">
-                            Nie
-                        </Button>,
-                    ]
-                }
-            />
+            <Table className={classes.table} size="small">
+                <TableHead>
+                    <TableRow>
+                        <TableCell>Opis</TableCell>
+                        <TableCell align="right">Data</TableCell>
+                        <TableCell align="right">Kwota&nbsp;(zł)</TableCell>
+                        <TableCell align="right">Waga&nbsp;(kg)</TableCell>
+                        <TableCell align="right">Status</TableCell>
+                    </TableRow>
+                </TableHead>
+                <TableBody>
+                    {props.data.map(row => (
+                        <TableRow key={row.orderId}>
+                            <TableCell component="th" scope="row">
+                                <Link to={`/admin/orders/${row.extOrderId}`}>{row.description}</Link>
+                            </TableCell>
+                            <TableCell align="right">{new Date(row.orderCreateDate).toLocaleString('pl')}</TableCell>
+                            <TableCell align="right">{row.totalAmount && (row.totalAmount / 100).toFixed(2)}</TableCell>
+                            <TableCell align="right">{row.totalWeight / 100}</TableCell>
+                            <TableCell align="right">{row.status}</TableCell>
+                        </TableRow>
+                    ))}
+                </TableBody>
+            </Table>
         </Fragment>
     );
 };
 
 OrdersList.propTypes = {
-    classes: PropTypes.object.isRequired,
     data: PropTypes.array.isRequired,
 };
 
@@ -109,4 +77,4 @@ const mapDispatchToProps = {
     deleteOrderIfNeeded,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(OrdersList));
+export default connect(mapStateToProps, mapDispatchToProps)(OrdersList);

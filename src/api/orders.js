@@ -16,6 +16,17 @@ export const getAdminOrders = (params = {}, accessToken) => {
     });
 };
 
+export const getOrder = (extOrderId, accessToken) => axios(
+    `${process.env.REACT_APP_API_HOST}/admin/orders/${extOrderId}`,
+    {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${accessToken}`,
+            'Content-Type': 'application/json',
+        },
+    }
+);
+
 export const deleteOrder = (deliveryMethodId, accessToken) => {
     return axios(`${process.env.REACT_APP_API_HOST}/admin/orders/${deliveryMethodId}`, {
         method: 'DELETE',

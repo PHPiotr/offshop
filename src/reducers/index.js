@@ -15,6 +15,7 @@ import adminProduct from './admin/product';
 import adminDeliveryMethods from './admin/deliveryMethods';
 import adminDeliveryMethod from './admin/deliveryMethod';
 import adminOrders from './admin/orders';
+import adminOrder from './admin/order';
 import notification from './notification';
 import dialog from './dialog';
 import form from './form';
@@ -39,4 +40,5 @@ export default combineReducers({
     adminDeliveryMethods,
     adminDeliveryMethod,
     adminOrders,
+    adminOrder,
 });
