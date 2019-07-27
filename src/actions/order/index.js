@@ -1,4 +1,4 @@
-import {authorize, orderCreateRequest, orderRetrieveRequest} from "../../api/payu";
+import {authorize, orderCreateRequest} from "../../api/payu";
 import {getFormValues} from 'redux-form';
 import {showNotification} from '../notification';
 
@@ -9,27 +9,6 @@ export const CREATE_ORDER_REQUEST = 'CREATE_ORDER_REQUEST';
 export const CREATE_ORDER_SUCCESS = 'CREATE_ORDER_SUCCESS';
 export const CREATE_ORDER_FAILURE = 'CREATE_ORDER_FAILURE';
 export const RESET_ORDER_DATA = 'RESET_ORDER_DATA';
-
-export const retrieveOrder = extOrderId => {
-
-    return async dispatch => {
-
-        dispatch({type: RETRIEVE_ORDER_REQUEST});
-
-        try {
-            const {data: {access_token}} = await authorize();
-
-            const {data} = await orderRetrieveRequest({accessToken: access_token, extOrderId});
-            dispatch({type: RETRIEVE_ORDER_SUCCESS, payload: {orderData: data}});
-
-            return Promise.resolve(data);
-
-        } catch (orderError) {
-            dispatch({type: RETRIEVE_ORDER_FAILURE, payload: {orderError}});
-            return Promise.reject(orderError);
-        }
-    };
-};
 
 export const createOrderIfNeeded = payMethods => {
 

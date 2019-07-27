@@ -42,14 +42,3 @@ export const orderCreateRequest = params =>
             'Authorization': `Bearer ${params.accessToken}`,
         },
     });
-
-export const orderRetrieveRequest = params =>
-    axios(`${process.env.REACT_APP_API_HOST}/orders/${params.extOrderId}`, {
-        method: 'GET',
-        mode: 'cors',
-        cache: 'no-cache',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${params.accessToken}`,
-        },
-    });
