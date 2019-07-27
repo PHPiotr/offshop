@@ -1,4 +1,4 @@
-import React, {Component, Fragment} from 'react';
+import React, { Component, Fragment } from 'react';
 import {Route, Switch, Redirect} from 'react-router-dom';
 import {Helmet} from 'react-helmet';
 import Navigation from './containers/Navigation';
@@ -11,16 +11,18 @@ import AdminProductForm from './components/Admin/ProductForm';
 import AdminProducts from './components/Admin/ProductsList';
 import AdminDeliveryMethodForm from './components/Admin/DeliveryMethodForm';
 import AdminDeliveryMethods from './components/Admin/DeliveryMethodsList';
-import {withStyles} from '@material-ui/core/styles';
+import AdminOrders from './components/Admin/OrdersList';
+import AdminOrder from './components/Admin/Order';
+import { withStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import Typography from '@material-ui/core/Typography';
 import classNames from 'classnames';
 import Grid from '@material-ui/core/Grid';
-import {hot} from 'react-hot-loader';
+import { hot } from 'react-hot-loader';
 import Notification from './containers/Notification';
 import Auth from './services/auth';
 import store from './store';
 import {updateAuth} from './actions/auth';
+import Typography from '@material-ui/core/Typography';
 
 const auth = new Auth();
 const {isAuthenticated, renewSession} = auth;
@@ -168,6 +170,10 @@ class App extends Component {
                                     <PrivateRoute path="/admin/products/:productId" exact component={AdminProductForm}/>
                                     <PrivateRoute path="/admin/delivery-methods/list" exact
                                                   component={AdminDeliveryMethods}/>
+                                    <PrivateRoute path="/admin/orders/list" exact
+                                                  component={AdminOrders}/>
+                                    <PrivateRoute path="/admin/orders/:id" exact
+                                                  component={AdminOrder}/>
                                     <PrivateRoute path="/admin/delivery-methods/new" exact
                                                   component={AdminDeliveryMethodForm}/>
                                     <PrivateRoute path="/admin/delivery-methods/:id" exact

@@ -24,7 +24,7 @@ export const orderCreateRequest = params =>
             totalAmount: params.totalAmount,
             totalWithoutDelivery: params.totalWithoutDelivery,
             totalWeight: params.totalWeight,
-            products: params.products,
+            productsById: params.productsById,
             productsIds: params.productsIds,
             description: params.description,
             merchantPosId: process.env.REACT_APP_GOOGLE_PAY_TOKENIZATION_GATEWAY_MERCHANT_ID,

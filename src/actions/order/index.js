@@ -47,7 +47,7 @@ export const createOrderIfNeeded = payMethods => {
             const {data: {access_token}} = await authorize();
             const state = getState();
 
-            const products = state.cart.ids.reduce((acc, id) => {
+            const productsById = state.cart.ids.reduce((acc, id) => {
                 const {name, slug, unitPrice} = state.products.data[id];
                 acc[id] = {
                     id,
@@ -60,6 +60,7 @@ export const createOrderIfNeeded = payMethods => {
             }, {});
 
             const buyer =  getFormValues('buyer')(state);
+            buyer.language = process.env.REACT_APP_BUYER_LANGUAGE;
             const delivery = getFormValues('buyerDelivery')(state);
             if (delivery) {
                 buyer.delivery = delivery;
@@ -73,7 +74,7 @@ export const createOrderIfNeeded = payMethods => {
                 totalWithoutDelivery: state.cart.totalPrice,
                 totalWeight: state.cart.weight,
                 productsIds: state.cart.ids,
-                products,
+                productsById,
                 description: 'OFFSHOP - transakcja',
                 buyer,
                 deliveryMethod: state.deliveryMethods.data[state.deliveryMethods.currentId],
