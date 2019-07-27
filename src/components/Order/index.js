@@ -26,12 +26,12 @@ const Order = ({classes, intl, extOrderId}) => (
         <SubHeader content={intl.formatMessage({id: 'order.thanks'})}/>
         <Paper className={classes.paper}>
             <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
-                <Typography variant="subheading">
+                <Typography variant="subtitle1">
                     <FormattedMessage id="order.number" values={{extOrderId: extOrderId}}/>
                 </Typography>
             </Grid>
             <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
-                <Typography variant="subheading">
+                <Typography variant="subtitle1">
                     <FormattedMessage id="order.info"/>
                 </Typography>
             </Grid>

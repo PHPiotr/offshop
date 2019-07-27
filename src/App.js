@@ -11,6 +11,8 @@ import AdminProductForm from './components/Admin/ProductForm';
 import AdminProducts from './components/Admin/ProductsList';
 import AdminDeliveryMethodForm from './components/Admin/DeliveryMethodForm';
 import AdminDeliveryMethods from './components/Admin/DeliveryMethodsList';
+import AdminOrders from './components/Admin/OrdersList';
+import AdminOrder from './components/Admin/Order';
 import { withStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import classNames from 'classnames';
@@ -168,6 +170,10 @@ class App extends Component {
                                     <PrivateRoute path="/admin/products/:productId" exact component={AdminProductForm}/>
                                     <PrivateRoute path="/admin/delivery-methods/list" exact
                                                   component={AdminDeliveryMethods}/>
+                                    <PrivateRoute path="/admin/orders/list" exact
+                                                  component={AdminOrders}/>
+                                    <PrivateRoute path="/admin/orders/:id" exact
+                                                  component={AdminOrder}/>
                                     <PrivateRoute path="/admin/delivery-methods/new" exact
                                                   component={AdminDeliveryMethodForm}/>
                                     <PrivateRoute path="/admin/delivery-methods/:id" exact
