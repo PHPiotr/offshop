@@ -23,7 +23,7 @@ const adminOrder = (state = initialState, action) => {
             return {
                 ...state,
                 isFetching: false,
-                data: action.payload.entities.order,
+                data: action.payload.entities.orders,
                 id: action.payload.result,
             };
         case RETRIEVE_ADMIN_ORDER_FAILURE:

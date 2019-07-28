@@ -13,7 +13,7 @@ const Order = props => {
 };
 
 const mapStateToProps = state => ({
-
+    data: state.adminOrder.data[state.adminOrder.id],
 });
 const mapDispatchToProps = {
     getAdminOrderIfNeeded,
