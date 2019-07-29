@@ -28,7 +28,6 @@ export const createProductIfNeeded = (formProps, accessToken) => async dispatch 
     fd.append('active', formProps.active);
 
     try {
-        debugger;
         const {data} = await createProduct(fd, accessToken);
         const payload = normalize(data, productSchema.product);
         dispatch({type: CREATE_PRODUCT_SUCCESS, payload});

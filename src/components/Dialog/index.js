@@ -21,7 +21,7 @@ const Dialog = props => (
                 </DialogContentText>
             </DialogContent>
         )}
-        {props.actions && props.actions.length && <DialogActions>{props.actions}</DialogActions>}
+        {props.actions && props.actions.length > 0 && <DialogActions>{props.actions}</DialogActions>}
     </CoreDialog>
 );
 

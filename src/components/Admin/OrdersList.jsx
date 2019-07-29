@@ -9,7 +9,7 @@ import TableRow from '@material-ui/core/TableRow';
 import {Link} from 'react-router-dom';
 import {connect} from 'react-redux';
 import ProgressIndicator from '../../components/ProgressIndicator';
-import {getAdminOrdersIfNeeded, deleteOrderIfNeeded} from '../../actions/admin/orders';
+import {getAdminOrdersIfNeeded} from '../../actions/admin/orders';
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -47,7 +47,7 @@ const OrdersList = props => {
                 </TableHead>
                 <TableBody>
                     {props.data.map(row => (
-                        <TableRow key={row.orderId}>
+                        <TableRow key={row.extOrderId}>
                             <TableCell component="th" scope="row">
                                 <Link to={`/admin/orders/${row.extOrderId}`}>{row.description}</Link>
                             </TableCell>
@@ -74,7 +74,6 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = {
     getAdminOrdersIfNeeded,
-    deleteOrderIfNeeded,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(OrdersList);

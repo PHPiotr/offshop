@@ -2,9 +2,6 @@ import {
     RETRIEVE_ADMIN_ORDERS_REQUEST,
     RETRIEVE_ADMIN_ORDERS_SUCCESS,
     RETRIEVE_ADMIN_ORDERS_FAILURE,
-    DELETE_ORDERS_FAILURE,
-    DELETE_ORDERS_REQUEST,
-    DELETE_ORDERS_SUCCESS,
 } from '../../actions/admin/orders';
 
 const initialState = {
@@ -33,24 +30,6 @@ const adminOrders = (state = initialState, action) => {
                 ...state,
                 error: action.payload.error,
                 isFetching: false,
-            };
-        case DELETE_ORDERS_REQUEST:
-            return {
-                ...state,
-                isDeleting: true,
-                ids: state.ids.filter(id => id !== action.payload.deliveryMethodId),
-            };
-        case DELETE_ORDERS_SUCCESS:
-            return {
-                ...state,
-                isDeleting: false,
-            };
-        case DELETE_ORDERS_FAILURE:
-            return {
-                ...state,
-                isDeleting: false,
-                ids: action.payload.ids,
-                error: action.payload.error,
             };
         default:
             return state;
