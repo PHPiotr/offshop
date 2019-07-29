@@ -1,5 +1,5 @@
 import {normalize} from 'normalizr';
-import {getOrder, cancelOrder} from '../../api/orders';
+import {getOrder, cancelOrder, deleteOrder} from '../../api/orders';
 import * as orderSchema from '../../schemas/ordersSchema';
 
 export const RETRIEVE_ADMIN_ORDER_REQUEST = 'RETRIEVE_ADMIN_ORDER_REQUEST';
@@ -8,6 +8,9 @@ export const RETRIEVE_ADMIN_ORDER_FAILURE = 'RETRIEVE_ADMIN_ORDER_FAILURE';
 export const CANCEL_ORDER_REQUEST = 'CANCEL_ORDER_REQUEST';
 export const CANCEL_ORDER_SUCCESS = 'CANCEL_ORDER_SUCCESS';
 export const CANCEL_ORDER_FAILURE = 'CANCEL_ORDER_FAILURE';
+export const DELETE_ORDER_REQUEST = 'DELETE_ORDER_REQUEST';
+export const DELETE_ORDER_SUCCESS = 'DELETE_ORDER_SUCCESS';
+export const DELETE_ORDER_FAILURE = 'DELETE_ORDER_FAILURE';
 
 export const getOrderIfNeeded = extOrderId => {
     return async (dispatch, getState) => {
@@ -43,6 +46,19 @@ export const cancelOrderIfNeeded = (extOrderId, status) => {
             dispatch({type: CANCEL_ORDER_SUCCESS, payload: {status: data.status}});
         } catch (error) {
             dispatch({type: CANCEL_ORDER_FAILURE, payload: {status, error}});
+        }
+    };
+};
+
+export const deleteOrderIfNeeded = (extOrderId) => {
+    return async (dispatch, getState) => {
+        const {auth: {accessToken}} = getState();
+        try {
+            dispatch({type: DELETE_ORDER_REQUEST, payload: {status: 'LOCAL_DELETED'}});
+            const {data} = await deleteOrder(extOrderId, accessToken);
+            dispatch({type: DELETE_ORDER_SUCCESS, payload: {status: data.status}});
+        } catch (error) {
+            dispatch({type: DELETE_ORDER_FAILURE, payload: {error}});
         }
     };
 };

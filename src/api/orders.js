@@ -29,7 +29,24 @@ export const getOrder = (extOrderId, accessToken) => axios(
 );
 
 export const cancelOrder = async (extOrderId, accessToken) => {
+    try {
+        const {data: {access_token}} = await authorize();
+        return axios(`${process.env.REACT_APP_API_HOST}/admin/orders/${extOrderId}`, {
+            method: 'PUT',
+            headers: {
+                'Authorization': `Bearer ${accessToken}`,
+                'Content-Type': 'application/json',
+            },
+            data: {
+                payuToken: access_token,
+            },
+        });
+    } catch (e) {
+        return Promise.reject(e);
+    };
+};
 
+export const deleteOrder = async (extOrderId, accessToken) => {
     try {
         const {data: {access_token}} = await authorize();
         return axios(`${process.env.REACT_APP_API_HOST}/admin/orders/${extOrderId}`, {
@@ -45,5 +62,4 @@ export const cancelOrder = async (extOrderId, accessToken) => {
     } catch (e) {
         return Promise.reject(e);
     };
-
 };
