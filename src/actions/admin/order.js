@@ -1,5 +1,5 @@
 import {normalize} from 'normalizr';
-import {getOrder, cancelOrder, deleteOrder} from '../../api/orders';
+import {getOrder, cancelOrder, deleteOrder, refundOrder} from '../../api/orders';
 import * as orderSchema from '../../schemas/ordersSchema';
 
 export const RETRIEVE_ADMIN_ORDER_REQUEST = 'RETRIEVE_ADMIN_ORDER_REQUEST';
@@ -8,6 +8,9 @@ export const RETRIEVE_ADMIN_ORDER_FAILURE = 'RETRIEVE_ADMIN_ORDER_FAILURE';
 export const CANCEL_ORDER_REQUEST = 'CANCEL_ORDER_REQUEST';
 export const CANCEL_ORDER_SUCCESS = 'CANCEL_ORDER_SUCCESS';
 export const CANCEL_ORDER_FAILURE = 'CANCEL_ORDER_FAILURE';
+export const REFUND_ORDER_REQUEST = 'REFUND_ORDER_REQUEST';
+export const REFUND_ORDER_SUCCESS = 'REFUND_ORDER_SUCCESS';
+export const REFUND_ORDER_FAILURE = 'REFUND_ORDER_FAILURE';
 export const DELETE_ORDER_REQUEST = 'DELETE_ORDER_REQUEST';
 export const DELETE_ORDER_SUCCESS = 'DELETE_ORDER_SUCCESS';
 export const DELETE_ORDER_FAILURE = 'DELETE_ORDER_FAILURE';
@@ -46,6 +49,19 @@ export const cancelOrderIfNeeded = (extOrderId, status) => {
             dispatch({type: CANCEL_ORDER_SUCCESS, payload: {status: data.status}});
         } catch (error) {
             dispatch({type: CANCEL_ORDER_FAILURE, payload: {status, error}});
+        }
+    };
+};
+
+export const refundOrderIfNeeded = (extOrderId, amount) => {
+    return async (dispatch, getState) => {
+        const {auth: {accessToken}} = getState();
+        try {
+            dispatch({type: REFUND_ORDER_REQUEST, payload: {refund: {amount, status: 'PENDING'}}});
+            const {data: {refund}} = await refundOrder(extOrderId, amount, accessToken);
+            dispatch({type: REFUND_ORDER_SUCCESS, payload: {refund}});
+        } catch (error) {
+            dispatch({type: REFUND_ORDER_FAILURE, payload: {error, refund: undefined}});
         }
     };
 };

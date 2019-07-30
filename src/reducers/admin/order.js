@@ -5,10 +5,14 @@ import {
     CANCEL_ORDER_REQUEST,
     CANCEL_ORDER_SUCCESS,
     CANCEL_ORDER_FAILURE,
+    REFUND_ORDER_REQUEST,
+    REFUND_ORDER_SUCCESS,
+    REFUND_ORDER_FAILURE,
 } from '../../actions/admin/order';
 
 const initialState = {
     isFetching: false,
+    isRefunding: false,
     data: {},
     id: null,
     error: {},
@@ -50,6 +54,25 @@ const adminOrder = (state = initialState, action) => {
                 ...state,
                 error: action.payload.error,
                 isFetching: false,
+            };
+        case REFUND_ORDER_REQUEST:
+            return {
+                ...state,
+                isRefunding: true,
+                data: {...state.data, [state.id]: {...state.data[state.id], refund: action.payload.refund}},
+            };
+        case REFUND_ORDER_SUCCESS:
+            return {
+                ...state,
+                isRefunding: false,
+                data: {...state.data, [state.id]: {...state.data[state.id], refund: action.payload.refund}},
+            };
+        case REFUND_ORDER_FAILURE:
+            return {
+                ...state,
+                isRefunding: false,
+                error: action.payload.error,
+                data: {...state.data, [state.id]: {...state.data[state.id], refund: undefined}},
             };
         default:
             return state;

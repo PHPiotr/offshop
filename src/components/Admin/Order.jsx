@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import {Helmet} from 'react-helmet';
 import {withRouter} from 'react-router-dom';
-import {getOrderIfNeeded, cancelOrderIfNeeded, deleteOrderIfNeeded} from '../../actions/admin/order';
+import {getOrderIfNeeded, cancelOrderIfNeeded, deleteOrderIfNeeded, refundOrderIfNeeded} from '../../actions/admin/order';
 import ProgressIndicator from '../ProgressIndicator';
 import Card from '@material-ui/core/Card';
 import {makeStyles} from '@material-ui/core';
@@ -13,6 +13,7 @@ import CardContent from '@material-ui/core/CardContent';
 import IconButton from '@material-ui/core/IconButton';
 import CancelIcon from '@material-ui/icons/Cancel';
 import DeleteIcon from '@material-ui/icons/Delete';
+import RefundIcon from '@material-ui/icons/MoneyOff';
 import CardActions from '@material-ui/core/CardActions';
 import Tooltip from '@material-ui/core/Tooltip';
 import Button from '@material-ui/core/Button';
@@ -34,12 +35,24 @@ const useStyles = makeStyles(() => ({
 
 const cancelAllowedStatuses = ['NEW', 'PENDING', 'WAITING_FOR_CONFIRMATION', 'REJECTED'];
 const deleteAllowedStatuses = ['LOCAL_NEW_INITIATED', 'LOCAL_NEW_REJECTED', 'LOCAL_NEW_COMPLETED'];
+const refundAllowedStatuses = ['COMPLETED'];
 const canCancelForStatus = status => cancelAllowedStatuses.indexOf(status) > -1;
 const canDeleteForStatus = status => deleteAllowedStatuses.indexOf(status) > -1;
+const canRefund = order => {
+    if (refundAllowedStatuses.indexOf(order.status) === -1) {
+        return false;
+    }
+    if (!order.refund) {
+        return true;
+    }
+    if (order.refund.amount < order.totalAmount) {
+        return true;
+    }
+};
 
 const Order = props => {
     const classes = useStyles();
-    const {order, getOrderIfNeeded, cancelOrderIfNeeded, deleteOrderIfNeeded} = props;
+    const {order, getOrderIfNeeded, cancelOrderIfNeeded, deleteOrderIfNeeded, refundOrderIfNeeded} = props;
     useEffect(() => {
         if (props.match.params.id) {
             getOrderIfNeeded(props.match.params.id);
@@ -47,6 +60,7 @@ const Order = props => {
     }, [props.match.params.id]);
     const [isCancelOrderDialogOpen, setIsCancelOrderDialogOpen] = useState(false);
     const [isDeleteOrderDialogOpen, setIsDeleteOrderDialogOpen] = useState(false);
+    const [isRefundOrderDialogOpen, setIsRefundOrderDialogOpen] = useState(false);
 
     if (!order) {
         return null;
@@ -69,9 +83,24 @@ const Order = props => {
         } catch {}
     };
 
+    const canRefundOrder = canRefund(order);
+    const handleRefundOrderClick = () => {
+        if (canRefundOrder) {
+            setIsRefundOrderDialogOpen(true);
+        }
+    };
+    const hideRefundOrderDialog = () => setIsRefundOrderDialogOpen(false);
+    const handleRefundOrder = async () => {
+        if (canRefundOrder) {
+            setIsRefundOrderDialogOpen(false);
+            refundOrderIfNeeded(order.extOrderId, order.totalAmount);
+        }
+    };
+
     if (props.isFetching) {
         return <ProgressIndicator />;
     }
+
 
     return (
         <Fragment>
@@ -102,6 +131,11 @@ const Order = props => {
                             <DeleteIcon color="error"/>
                         </IconButton>
                     </Tooltip>)}
+                    <Tooltip title={canRefundOrder ? 'Zwróć zamówienie' : 'Nie można wykonać zwrotu zamówienia'}>
+                        <IconButton aria-label={canRefundOrder ? 'Zwróć zamówienie' : 'Nie można wykonać zwrotu zamówienia'} onClick={handleRefundOrderClick}>
+                            <RefundIcon color={canRefundOrder ? 'error' : 'disabled'}/>
+                        </IconButton>
+                    </Tooltip>
                 </CardActions>
             </Card>
             <Dialog
@@ -124,6 +158,16 @@ const Order = props => {
                     <Button key="1" color="primary" onClick={handleDeleteOrder}>Tak</Button>,
                 ]}
             />
+            <Dialog
+                title={`Wykonać zwrot środków na konto kupującego?`}
+                content={order.description}
+                onClose={hideRefundOrderDialog}
+                open={isRefundOrderDialogOpen}
+                actions={[
+                    <Button key="0" color="primary" onClick={hideRefundOrderDialog}>Nie</Button>,
+                    <Button key="1" color="primary" onClick={handleRefundOrder}>Tak</Button>,
+                ]}
+            />
         </Fragment>
     );
 };
@@ -133,13 +177,17 @@ const mapStateToProps = state => ({
     isFetching: state.adminOrder.isFetching,
 });
 const mapDispatchToProps = {
-    getOrderIfNeeded,
     cancelOrderIfNeeded,
     deleteOrderIfNeeded,
+    getOrderIfNeeded,
+    refundOrderIfNeeded,
 };
 
 Order.propTypes = {
+    cancelOrderIfNeeded: PropTypes.func.isRequired,
+    deleteOrderIfNeeded: PropTypes.func.isRequired,
     getOrderIfNeeded: PropTypes.func.isRequired,
+    refundOrderIfNeeded: PropTypes.func.isRequired,
 };
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Order));

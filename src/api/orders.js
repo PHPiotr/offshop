@@ -63,3 +63,27 @@ export const deleteOrder = async (extOrderId, accessToken) => {
         return Promise.reject(e);
     };
 };
+
+export const refundOrder = async (extOrderId, amount, accessToken) => {
+    try {
+        const {data: {access_token}} = await authorize();
+        return await axios(`${process.env.REACT_APP_API_HOST}/admin/orders/${extOrderId}/refunds`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${accessToken}`,
+                'Content-Type': 'application/json',
+            },
+            data: {
+                payuToken: access_token,
+                refund: {
+                    amount,
+                    description: `Zwrot ${extOrderId}`,
+                    bankDescription: `Zwrot ${extOrderId}`,
+                    type: 'REFUND_PAYMENT_STANDARD',
+                }
+            },
+        });
+    } catch (e) {
+        return Promise.reject(e);
+    };
+};

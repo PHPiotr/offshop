@@ -128,8 +128,8 @@ class App extends Component {
                 <Helmet>
                     <title>Offshop</title>
                 </Helmet>
-                <CssBaseline/>
                 <div className={classes.container}>
+                    <CssBaseline/>
                     <header>
                         <Navigation auth={auth}/>
                     </header>
