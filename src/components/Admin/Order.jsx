@@ -48,6 +48,10 @@ const Order = props => {
     const [isCancelOrderDialogOpen, setIsCancelOrderDialogOpen] = useState(false);
     const [isDeleteOrderDialogOpen, setIsDeleteOrderDialogOpen] = useState(false);
 
+    if (!order) {
+        return null;
+    }
+
     const handleCancelOrderClick = () => setIsCancelOrderDialogOpen(true);
     const hideCancelOrderDialog = () => setIsCancelOrderDialogOpen(false);
     const handleCancelOrder = () => {
@@ -65,9 +69,12 @@ const Order = props => {
         } catch {}
     };
 
+    if (props.isFetching) {
+        return <ProgressIndicator />;
+    }
+
     return (
         <Fragment>
-            {props.isFetching && <ProgressIndicator />}
             <Helmet>
                 <title>{order.description}</title>
             </Helmet>
@@ -122,7 +129,7 @@ const Order = props => {
 };
 
 const mapStateToProps = state => ({
-    order: state.adminOrder.data[state.adminOrder.id] || {},
+    order: state.adminOrder.data[state.adminOrder.id],
     isFetching: state.adminOrder.isFetching,
 });
 const mapDispatchToProps = {
