@@ -8,7 +8,6 @@ import Typography from '@material-ui/core/Typography';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import {FormattedMessage} from "react-intl";
 import {connect} from 'react-redux';
 import {setCurrentDeliveryMethod} from '../../../actions/deliveryMethods';
 import {withRouter} from 'react-router-dom';
@@ -41,7 +40,7 @@ const CartSummary = props => {
         <div className={classes.root}>
             <div className={classes.section1}>
                 <Typography gutterBottom variant="h6">
-                    <FormattedMessage id='cart.summary.choose_delivery' />
+                    Wybierz sposób dostawy
                 </Typography>
                 <RadioGroup name="position" value={props.currentDeliveryMethod.id}>
                     {deliveryMethods.map(({ id, name, unitPrice }) => (
@@ -78,7 +77,7 @@ const CartSummary = props => {
                 <Grid container alignItems="center">
                     <Grid item xs>
                         <Typography gutterBottom variant="h6">
-                            <FormattedMessage id='cart.summary.to_pay' />
+                            Do zapłaty
                         </Typography>
                     </Grid>
                     <Grid item align="right">
@@ -96,7 +95,7 @@ const CartSummary = props => {
                     variant="contained"
                     color="primary"
                 >
-                    <FormattedMessage id='cart.summary.order' />
+                    Zamów
                 </Button>
             </div>
         </div>

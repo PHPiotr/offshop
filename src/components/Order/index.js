@@ -4,7 +4,6 @@ import Typography from "@material-ui/core/Typography/index";
 import Paper from '@material-ui/core/Paper/Paper';
 import withStyles from '@material-ui/core/styles/withStyles';
 import SubHeader from "../SubHeader";
-import {injectIntl, FormattedMessage} from 'react-intl';
 import Grid from "@material-ui/core/Grid/index";
 
 const styles = theme => ({
@@ -21,18 +20,18 @@ const styles = theme => ({
     },
 });
 
-const Order = ({classes, intl, extOrderId}) => (
+const Order = ({classes, extOrderId}) => (
     <Fragment>
-        <SubHeader content={intl.formatMessage({id: 'order.thanks'})}/>
+        <SubHeader content="Dziękujemy za udane zakupy!"/>
         <Paper className={classes.paper}>
             <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
                 <Typography variant="subtitle1">
-                    <FormattedMessage id="order.number" values={{extOrderId: extOrderId}}/>
+                    {`Numer Twojego zamówienia:  ${extOrderId}`}
                 </Typography>
             </Grid>
             <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
                 <Typography variant="subtitle1">
-                    <FormattedMessage id="order.info"/>
+                    Wszystkie informacje znajdziesz w wiadomości, którą wysłaliśmy na Twój adres e-mail.
                 </Typography>
             </Grid>
         </Paper>
@@ -43,4 +42,4 @@ Order.propTypes = {
     extOrderId: PropTypes.string.isRequired,
 };
 
-export default injectIntl(withStyles(styles)(Order));
+export default withStyles(styles)(Order);

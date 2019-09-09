@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {injectIntl} from 'react-intl';
 import io from 'socket.io-client';
 import NotificationBar from '../../components/NotificationBar';
 import {syncQuantities, onCreateProduct, onUpdateProduct, onDeleteProduct} from '../../actions/products';
@@ -16,7 +15,7 @@ class Notification extends Component {
             if (that.props.orderData.extOrderId === orderData.extOrderId && ['COMPLETED', 'CANCELED'].indexOf(orderData.status) > -1) {
                 const variant = orderData.status === 'COMPLETED' ? 'success' : 'warning';
                 that.props.handleShowNotification({
-                    message: that.props.intl.formatMessage({id: `order.notification.${orderData.status.toLowerCase()}`}),
+                    message: `order.notification.${orderData.status.toLowerCase()}`,
                     variant,
                 });
             }
@@ -75,4 +74,4 @@ const mapDispatchToProps = (dispatch) => ({
     }
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(injectIntl(Notification));
+export default connect(mapStateToProps, mapDispatchToProps)(Notification);
