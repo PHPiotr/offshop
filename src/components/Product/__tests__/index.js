@@ -2,7 +2,6 @@ import '@testing-library/react/cleanup-after-each';
 import '@testing-library/jest-dom/extend-expect';
 import React from 'react';
 import {createStore, applyMiddleware} from 'redux';
-import {IntlProvider} from 'react-intl';
 import thunk from 'redux-thunk';
 import {Provider} from 'react-redux';
 import {BrowserRouter as Router} from 'react-router-dom';
@@ -20,11 +19,9 @@ function renderWithProviders(
 ) {
     return {
         ...render(
-            <IntlProvider locale="pl-PL" messages={flattenMessages(messages['pl-PL'])}>
-                <Provider store={store}>
-                    <Router>{ui}</Router>
-                </Provider>
-            </IntlProvider>
+            <Provider store={store}>
+                <Router>{ui}</Router>
+            </Provider>
         ),
         store,
     }

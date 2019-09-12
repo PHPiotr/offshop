@@ -1,11 +1,11 @@
 language: node_js
 branches:
   only:
-    - master
-    - dev
+  - master
+  - dev
 node_js:
-  - stable
-after_success: ./scripts/merge_dev_with_master.sh
+- stable
+after_success: "./scripts/merge_dev_with_master.sh"
 sudo: false
 deploy:
   provider: heroku
@@ -13,3 +13,6 @@ deploy:
   on: master
   api_key:
     secure: H4Uj+HAP9YiXU/orj3guSvWyMnoG9ZYip+b1As6+v9ZBRC8rwH6WFLXzwQxlZZ+ufAn6Zh2tSPHyCekaca36K8OHcsi+tWNA5jdeoDL/pkbgIqEOnkyT4A7vVXxxfUSRKQZjxeCSV5+8tpFHBl7vS82gFnrczEfLQ35h02ulRpXSY97nzXcTrRs57kf3IraN6Ssqls5c/UHW6NUkMlD8KTwHT6UMsb9BhFZvwXhDNsPqzIz9A8TZkV7DJV+3S/2nj2UCF2nLcZSzRmOiN6bhrmZWlu+g9IIDw2Xnbwt8cjC6Rp5AmhSGu1EBPTYDXFWUOpsklUlXA4CsjqzeuA1hEvr2sQYxt7GVt97PL+JaAg+GaBiGG37gL0RUEdm0mbnV6jHBY9akiTQbiqrZvac/tVVF+HpJEDM9pcnx03jO15WynKuDWczaA0dJlZ03olcxu6wJuZlbo3sFPLs4hBVVCHEaWyLzUQ5B282IpPW0x1FksdPO0DHWBiE/4RsHDYqaD3GKZCMJ03RVxaJl3evAIbwYIzDnEug1TGiaWCOKlS5Fyc5YbD3rQgugta65PiRD0NM+aDHL9OwJVgjqEhs2N6W+nLQVsKZzOvU2BIwAdu7K1jtTQlad8K90Ot4yUdoPNZXunfJTUntLdIYw1kI866UbRQXQHiB0cfUWJ6a5TyE=
+env:
+  global:
+    secure: ScfQ8cJAy1CwfOlVToSG92By4zSKhh0yeNoJAcjLecHVTTvo7HD7r5fJ5wK0cI4Wl1sWOnJ0RSksWfiEb2+jehEwdUiuxL8rmtiLR1iPy93KkCtgkzPjJlpi1nF/uhppHFvXti2iGThkeuw3x521f/mYaOW0t4wW24ue3T3vkk7OholOCYdelsvaflZuVjac5sj7i4WjDJ9gquR1OxJh8yz9+iONQIIckeIPHi8xVe2dsMuUtWmvIAsKs98PqSi4VrpY6a94DS8r++fRSdNU/PzVvv8UJePuqhXSBHtqU94OkGXN0vnumDc5NSZERBTi/UEL1HF3Yb/OEHhZUDwz7bsHx18J/EliMp2NmX2izZIxwBD72fEtn21mf0jJOmSlqdZG4qpL10oZpMe09kqrd1zysXwsEN5u6MCxEctrj++vp5npzFO/heUB+hP1Lxxwxqb4syoxgVl04Qb1TYDabS6obNp1fHB35xycix6eITomW+ZpG1KsQn8RhIqKFodNXOPDBW0xHr0JKO7vEydUsU/2KdEUKRrTI0we6bxFrjv28FifxqdkJwZobxT9tlj57QQNcsomFUzAKFZrzJuIESM2OfSMeqhiHDcv8OB4nw0yv68m0txW95yF3NHJSg16Am+s/6HK8foLenG0bvTFnT8xljT+H/iKs1N3B/JebYY=

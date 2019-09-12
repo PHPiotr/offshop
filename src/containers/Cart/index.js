@@ -2,7 +2,6 @@ import React, {Component, Fragment} from 'react';
 import {connect} from 'react-redux';
 import CartProducts from '../../components/Cart/Products';
 import CartSummary from '../../components/Cart/Summary';
-import {injectIntl} from 'react-intl';
 import {getDeliveryMethodsIfNeeded} from '../../actions/deliveryMethods';
 
 class Cart extends Component {
@@ -37,4 +36,4 @@ const mapDispatchToProps = dispatch => ({
     }
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(injectIntl(Cart));
+export default connect(mapStateToProps, mapDispatchToProps)(Cart);
