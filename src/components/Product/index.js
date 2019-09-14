@@ -116,7 +116,7 @@ const ProductView = props => {
                 </Menu>
                 <CardMedia
                     className={props.classes.media}
-                    image={`${process.env.REACT_APP_PRODUCT_PATH}/${props.product.id}.card.jpg`}
+                    image={`${process.env.REACT_APP_PRODUCT_PATH}/${props.product.id}.card.jpg?${(new Date()).getTime()}`}
                     title={props.product.name}
                 />
                 <CardContent>

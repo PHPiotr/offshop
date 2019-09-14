@@ -57,7 +57,7 @@ function ProductsGridList(props) {
                     <Grid item key={product.id} xs={12} sm={sm} md={md} lg={lg}>
                         <GridListTile className={classes.gridListTitle}>
                             <img
-                                src={`${process.env.REACT_APP_PRODUCT_PATH}/${product.id}.tile.jpg`}
+                                src={`${process.env.REACT_APP_PRODUCT_PATH}/${product.id}.tile.jpg?${(new Date()).getTime()}`}
                                 alt={product.name}
                                 className={classes.image}
                             />
