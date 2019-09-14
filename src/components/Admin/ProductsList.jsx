@@ -66,12 +66,12 @@ const ProductsList = props => {
                             {!p.active ? (
                                 <Tooltip title="Produkt nieaktywny">
                                     <Badge variant="dot" color="error">
-                                        <Avatar src={`${process.env.REACT_APP_PRODUCT_PATH}/${p.id}.avatar.jpg`}
+                                        <Avatar src={`${process.env.REACT_APP_PRODUCT_PATH}/${p.id}.avatar.jpg?${(new Date()).getTime()}`}
                                                 alt={p.name}/>
                                     </Badge>
                                 </Tooltip>
                             ) : (
-                                <Avatar src={`${process.env.REACT_APP_PRODUCT_PATH}/${p.id}.avatar.jpg`}
+                                <Avatar src={`${process.env.REACT_APP_PRODUCT_PATH}/${p.id}.avatar.jpg?${(new Date()).getTime()}`}
                                         alt={p.name}/>
                             )}
                             </ListItemAvatar>

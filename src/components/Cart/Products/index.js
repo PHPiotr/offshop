@@ -58,7 +58,7 @@ const ProductsInCart = props => {
                     <Fragment key={p.id}>
                         <ListItem key={p.id} alignItems="flex-start">
                             <ListItemAvatar>
-                                <Avatar src={`${process.env.REACT_APP_PRODUCT_PATH}/${p.id}.avatar.jpg`} alt={p.name}/>
+                                <Avatar src={`${process.env.REACT_APP_PRODUCT_PATH}/${p.id}.avatar.jpg?${(new Date()).getTime()}`} alt={p.name}/>
                             </ListItemAvatar>
                             <ListItemText
                                 primary={<Link component={RouterLink} to={`/products/${p.slug}`}>{p.name}</Link>}
