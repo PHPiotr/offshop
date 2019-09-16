@@ -14,6 +14,8 @@ export const UPDATE_DELIVERY_METHOD_REQUEST = 'UPDATE_DELIVERY_METHOD_REQUEST';
 export const UPDATE_DELIVERY_METHOD_SUCCESS = 'UPDATE_DELIVERY_METHOD_SUCCESS';
 export const UPDATE_DELIVERY_METHOD_FAILURE = 'UPDATE_DELIVERY_METHOD_FAILURE';
 
+export const RESET_DELIVERY_METHOD = 'RESET_DELIVERY_METHOD';
+
 export const createDeliveryMethodIfNeeded = (formProps, accessToken) => async dispatch => {
     dispatch({type: CREATE_DELIVERY_METHOD_REQUEST});
     try {
@@ -64,3 +66,5 @@ export const getAdminDeliveryMethodIfNeeded = deliveryMethodId => {
         }
     };
 };
+
+export const resetDeliveryMethod = () => ({type: RESET_DELIVERY_METHOD});
