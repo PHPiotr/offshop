@@ -23,7 +23,7 @@ export const getDeliveryMethodsIfNeeded = params => {
 
         dispatch({type: RETRIEVE_DELIVERY_METHODS_REQUEST});
         try {
-            const {data} = await getDeliveryMethods();
+            const {data} = await getDeliveryMethods(params);
             const payload = normalize(data, deliveryMethodsSchema.deliveryMethodList);
             dispatch({type: RETRIEVE_DELIVERY_METHODS_SUCCESS, payload});
 
