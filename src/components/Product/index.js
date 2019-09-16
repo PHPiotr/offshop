@@ -114,11 +114,11 @@ const ProductView = props => {
                     <MenuItem onClick={handleClose}>{`Waga: ${(props.product.weight / 100).toFixed(2)} kg`}</MenuItem>
                     <MenuItem onClick={handleClose}>{`Dostępnść: ${props.product.stock} szt.`}</MenuItem>
                 </Menu>
-                <CardMedia
+                {props.product.images && <CardMedia
                     className={props.classes.media}
-                    image={`${process.env.REACT_APP_PRODUCT_PATH}/${props.product.id}.card.jpg`}
+                    image={`${process.env.REACT_APP_PRODUCT_PATH}/${props.product.images[0].card}`}
                     title={props.product.name}
-                />
+                />}
                 <CardContent>
                     <Typography component="p">
                         {props.product.description}

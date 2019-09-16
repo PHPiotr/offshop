@@ -42,11 +42,13 @@ const handleOnDrop = ([newImageFile], onChange) => {
 
 let ProductForm = props => {
     const [currentSlug, setCurrentSlug] = useState(null);
+    const [currentImage, setCurrentImage] = useState(null);
     useEffect(() => {
         if (props.match.params.productId) {
             props.getAdminProductIfNeeded(props.match.params.productId)
                 .then(({entities, result}) => {
                     setCurrentSlug(entities.products[result].slug);
+                    setCurrentImage(entities.products[result].images[0].tile);
                 });
         }
     }, [props.match.params.productId]);
@@ -72,10 +74,10 @@ let ProductForm = props => {
                                         component={component}
                                         type={type}
                                         imagefile={
-                                            (!props.imageFile || props.imageFile.length === 0)
+                                            (!props.imageFile || props.imageFile.length === 0) && currentImage
                                                 ? (
                                                     (props.match.params.productId && currentSlug)
-                                                        ? [{name: '', preview: `${process.env.REACT_APP_PRODUCT_PATH}/${props.match.params.productId}.tile.jpg`, size: 0}]
+                                                        ? [{name: '', preview: `${process.env.REACT_APP_PRODUCT_PATH}/${currentImage}`, size: 0}]
                                                         : []
                                                 ) : props.imageFile
                                         }
