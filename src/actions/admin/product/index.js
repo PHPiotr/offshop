@@ -14,6 +14,8 @@ export const UPDATE_PRODUCT_REQUEST = 'UPDATE_PRODUCT_REQUEST';
 export const UPDATE_PRODUCT_SUCCESS = 'UPDATE_PRODUCT_SUCCESS';
 export const UPDATE_PRODUCT_FAILURE = 'UPDATE_PRODUCT_FAILURE';
 
+export const RESET_ADMIN_PRODUCT = 'RESET_ADMIN_PRODUCT';
+
 export const createProductIfNeeded = (formProps, accessToken) => async dispatch => {
     dispatch({type: CREATE_PRODUCT_REQUEST});
     const fd = new FormData();
@@ -88,3 +90,5 @@ export const getAdminProductIfNeeded = productId => {
         }
     };
 };
+
+export const resetAdminProduct = () => ({type: RESET_ADMIN_PRODUCT});

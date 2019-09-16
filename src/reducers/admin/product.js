@@ -1,7 +1,8 @@
 import {
     RETRIEVE_ADMIN_PRODUCT_FAILURE,
     RETRIEVE_ADMIN_PRODUCT_REQUEST,
-    RETRIEVE_ADMIN_PRODUCT_SUCCESS
+    RETRIEVE_ADMIN_PRODUCT_SUCCESS,
+    RESET_ADMIN_PRODUCT
 } from '../../actions/admin/product';
 
 const initialState = {
@@ -26,6 +27,8 @@ const adminProduct = (state = initialState, action) => {
             };
         case RETRIEVE_ADMIN_PRODUCT_FAILURE:
             return {...state, isFetching: false, error: action.payload};
+        case RESET_ADMIN_PRODUCT:
+            return initialState;
         default:
             return state;
     }

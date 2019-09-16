@@ -9,7 +9,7 @@ import {createProductIfNeeded, updateProductIfNeeded} from "../../../actions/adm
 import {showNotification} from "../../../actions/notification";
 import SubHeader from '../../../components/SubHeader';
 import ProgressIndicator from '../../../components/ProgressIndicator';
-import {getAdminProductIfNeeded} from '../../../actions/admin/product';
+import {getAdminProductIfNeeded, resetAdminProduct} from '../../../actions/admin/product';
 import {inputs, inputKeys, initialValues} from './config';
 
 
@@ -50,6 +50,8 @@ let ProductForm = props => {
                     setCurrentSlug(entities.products[result].slug);
                     setCurrentImage(entities.products[result].images[0].tile);
                 });
+        } else {
+            props.handleResetAdminProduct();
         }
     }, [props.match.params.productId]);
 
@@ -170,6 +172,9 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
+    handleResetAdminProduct() {
+        return dispatch(resetAdminProduct());
+    },
     getAdminProductIfNeeded(productId) {
         return dispatch(getAdminProductIfNeeded(productId));
     },
