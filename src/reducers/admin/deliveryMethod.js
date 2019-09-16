@@ -2,6 +2,7 @@ import {
     RETRIEVE_ADMIN_DELIVERY_METHOD_REQUEST,
     RETRIEVE_ADMIN_DELIVERY_METHOD_SUCCESS,
     RETRIEVE_ADMIN_DELIVERY_METHOD_FAILURE,
+    RESET_DELIVERY_METHOD,
 } from '../../actions/admin/deliveryMethod';
 
 const initialState = {
@@ -32,6 +33,8 @@ const adminDeliveryMethods = (state = initialState, action) => {
                 error: action.payload.error,
                 isFetching: false,
             };
+        case RESET_DELIVERY_METHOD:
+            return initialState;
         default:
             return state;
     }

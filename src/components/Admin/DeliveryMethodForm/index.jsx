@@ -9,7 +9,7 @@ import {createDeliveryMethodIfNeeded, updateDeliveryMethodIfNeeded} from "../../
 import {showNotification} from "../../../actions/notification";
 import SubHeader from '../../../components/SubHeader';
 import ProgressIndicator from '../../../components/ProgressIndicator';
-import {getAdminDeliveryMethodIfNeeded} from '../../../actions/admin/deliveryMethod';
+import {getAdminDeliveryMethodIfNeeded, resetDeliveryMethod} from '../../../actions/admin/deliveryMethod';
 import {inputs, inputKeys, initialValues} from './config';
 
 const FORM_NAME = 'deliveryMethod';
@@ -32,6 +32,8 @@ let DeliveryMethodForm = props => {
     useEffect(() => {
         if (props.match.params.id) {
             props.getAdminDeliveryMethodIfNeeded(props.match.params.id);
+        } else {
+            props.handleResetDeliveryMethod();
         }
     }, [props.match.params.id]);
 
@@ -105,6 +107,9 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
+    handleResetDeliveryMethod() {
+        dispatch(resetDeliveryMethod());
+    },
     getAdminDeliveryMethodIfNeeded(deliveryMethodId) {
         return dispatch(getAdminDeliveryMethodIfNeeded(deliveryMethodId));
     },
