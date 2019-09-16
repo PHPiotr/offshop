@@ -33,8 +33,10 @@ const styles = theme => ({
 });
 
 const DeliveryMethodsList = props => {
+    const [sort, setSort] = useState('name');
+    const [order, setOrder] = useState(1);
     useEffect(() => {
-        props.getAdminDeliveryMethodsIfNeeded();
+        props.getAdminDeliveryMethodsIfNeeded({sort, order});
     }, []);
     const [isDialogOpen, setDialogOpen] = useState(false);
     const [deliveryMethodToDelete, setDeliveryMethodToDelete] = useState({});

@@ -6,8 +6,17 @@ import {getDeliveryMethodsIfNeeded} from '../../actions/deliveryMethods';
 
 class Cart extends Component {
 
+    constructor(props) {
+        super(props);
+        this.state = {
+            sort: 'name',
+            order: 1,
+        };
+    }
+
     componentDidMount() {
-        this.props.handleGetDeliveryMethodsIfNeeded();
+        const {sort, order} = this.state;
+        this.props.handleGetDeliveryMethodsIfNeeded({sort, order});
     }
 
     render() {
@@ -31,8 +40,8 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-    handleGetDeliveryMethodsIfNeeded() {
-        dispatch(getDeliveryMethodsIfNeeded());
+    handleGetDeliveryMethodsIfNeeded(params) {
+        dispatch(getDeliveryMethodsIfNeeded(params));
     }
 });
 
