@@ -7,8 +7,15 @@ import {getProductsIfNeeded} from '../../actions/products';
 import ProductAddedToCartDialog from '../../components/Product/ProductAddedToCartDialog';
 
 class Products extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            sort: 'name',
+            order: 1,
+        }
+    }
     componentDidMount() {
-        this.props.handleFetchProducts();
+        this.props.handleFetchProducts({sort: this.state.sort, order: this.state.order});
     }
 
     render() {
@@ -28,8 +35,8 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
-    handleFetchProducts() {
-        dispatch(getProductsIfNeeded());
+    handleFetchProducts(params) {
+        dispatch(getProductsIfNeeded(params));
     },
     addToCart(item, quantity) {
         dispatch(addToCart(item, quantity));

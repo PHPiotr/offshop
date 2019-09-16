@@ -37,8 +37,10 @@ const styles = theme => ({
 });
 
 const ProductsList = props => {
+    const [sort, setSort] = useState('name');
+    const [order, setOrder] = useState(1);
     useEffect(() => {
-        props.getAdminProductsIfNeeded();
+        props.getAdminProductsIfNeeded({sort, order});
     }, []);
     const [isDialogOpen, setDialogOpen] = useState(false);
     const [productToDelete, setProductToDelete] = useState({});

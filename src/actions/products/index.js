@@ -19,7 +19,7 @@ export const getProductsIfNeeded = params => {
 
         dispatch({type: RETRIEVE_PRODUCTS_REQUEST});
         try {
-            const {data} = await getProducts();
+            const {data} = await getProducts(params);
             const payload = normalize(data, productSchema.productList);
             dispatch({type: RETRIEVE_PRODUCTS_SUCCESS, payload});
 
