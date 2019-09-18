@@ -180,13 +180,22 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
     },
     onSubmit: async (formProps, _, {accessToken, reset}) => {
         try {
+            let response;
             if (ownProps.match.params.productId) {
-                await dispatch(updateProductIfNeeded(formProps, accessToken));
+                response = await dispatch(updateProductIfNeeded(formProps, accessToken));
             } else {
-                await dispatch(createProductIfNeeded(formProps, accessToken));
+                response = await dispatch(createProductIfNeeded(formProps, accessToken));
             }
-            ownProps.history.push('/admin/products/list');
-            reset();
+
+            const {status, data} = response;
+
+            if (status === 201) {
+                ownProps.history.push('/admin/products/list');
+                reset();
+            } else {
+                dispatch(showNotification({message: data.message, variant: 'error'}));
+            }
+
         } catch (e) {
             dispatch(showNotification({message: e.message, variant: 'error'}));
         }

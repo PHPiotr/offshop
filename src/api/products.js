@@ -59,6 +59,7 @@ export const createProduct = (data = {}, accessToken) => {
             'Content-Type': 'multipart/form-data',
         },
         data,
+        validateStatus: status => [201, 422].indexOf(status) > -1,
     });
 };
 
@@ -70,6 +71,7 @@ export const updateProduct = (productId, data = {}, accessToken) => {
             'Content-Type': 'multipart/form-data',
         },
         data,
+        validateStatus: status => [200, 422].indexOf(status) > -1,
     });
 };
 
