@@ -30,12 +30,17 @@ export const createProductIfNeeded = (formProps, accessToken) => async dispatch 
     fd.append('active', formProps.active);
 
     try {
-        const {data} = await createProduct(fd, accessToken);
-        const payload = normalize(data, productSchema.product);
-        dispatch({type: CREATE_PRODUCT_SUCCESS, payload});
-        return payload;
+        const response = await createProduct(fd, accessToken);
+        const {status, data} = response;
+        if (status === 201) {
+            const payload = normalize(data, productSchema.product);
+            dispatch({type: CREATE_PRODUCT_SUCCESS, payload});
+        } else {
+            dispatch({type: CREATE_PRODUCT_FAILURE, payload: {error: data}});
+        }
+        return response;
     } catch (error) {
-        dispatch({type: CREATE_PRODUCT_FAILURE});
+        dispatch({type: CREATE_PRODUCT_FAILURE, payload: {error}});
         return error;
     }
 };
@@ -64,7 +69,7 @@ export const updateProductIfNeeded = (formProps, accessToken) => async (dispatch
         dispatch({type: UPDATE_PRODUCT_SUCCESS, payload});
         return payload;
     } catch (error) {
-        dispatch({type: UPDATE_PRODUCT_FAILURE});
+        dispatch({type: UPDATE_PRODUCT_FAILURE, payload: {error}});
         return error;
     }
 };
