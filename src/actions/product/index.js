@@ -18,10 +18,10 @@ export const getProductIfNeeded = slug => async (dispatch, getState) => {
         const {data} = await getProduct(slug);
         const payload = normalize(data, productSchema.product);
         dispatch({type: RETRIEVE_PRODUCT_SUCCESS, payload});
-        return Promise.resolve(payload);
+        return payload;
     } catch (error) {
         dispatch({type: RETRIEVE_PRODUCT_FAILURE, payload: {error}});
-        return Promise.reject(error);
+        return error;
     }
 };
 
