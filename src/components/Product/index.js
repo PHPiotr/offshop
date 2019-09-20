@@ -27,6 +27,7 @@ import ProductAddedToCartDialog from './ProductAddedToCartDialog';
 
 const styles = theme => ({
     card: {
+        minWidth: '100%',
         maxWidth: `800px`,
         margin: '0 auto',
     },
