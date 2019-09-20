@@ -50,7 +50,7 @@ export const inputs = {
     description: {
         type: 'text',
         label: 'Krótki opis produktu',
-        validate: [validateRequired, validateMinLength(100), validateMaxLength(160)],
+        validate: [validateRequired, validateMinLength(15), validateMaxLength(160)],
         component: TextField,
         inputProps: {
             minlength: 100,
@@ -63,7 +63,7 @@ export const inputs = {
     longDescription: {
         type: 'text',
         label: 'Rozszerzony opis produktu',
-        validate: [validateMinLength(250), validateMaxLength(1000)],
+        validate: [validateMinLength(15), validateMaxLength(1000)],
         component: TextField,
         inputProps: {
             minlength: 250,

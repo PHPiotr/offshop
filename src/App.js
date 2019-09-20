@@ -71,7 +71,7 @@ const handleAuthentication = async ({history, location}) => {
                 idToken: auth.getIdToken(),
                 expiresAt: auth.getExpiresAt(),
             }));
-            history.replace('/admin/products/list');
+            history.replace('/admin/orders/list');
         } catch (error) {
             auth.logout();
             store.dispatch(updateAuth({
