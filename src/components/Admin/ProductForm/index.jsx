@@ -189,7 +189,7 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
 
             const {status, data} = response;
 
-            if (status === 201) {
+            if (status === 200 || status === 201) {
                 ownProps.history.push('/admin/products/list');
                 reset();
             } else {
