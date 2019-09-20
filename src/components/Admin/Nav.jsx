@@ -28,7 +28,7 @@ const Nav = props => (
         <Divider />
         <ListItem dense button className={props.classes.listItem}>
             <Link className={props.classes.link} to="/admin/orders/list">
-                <ListItemText primary={`Zamówienia`} />
+                <ListItemText primary={`Transakcje`} />
             </Link>
         </ListItem>
         <ListItem dense button className={props.classes.listItem}>
