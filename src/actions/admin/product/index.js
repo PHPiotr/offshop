@@ -64,10 +64,15 @@ export const updateProductIfNeeded = (formProps, accessToken) => async (dispatch
     fd.append('active', formProps.active);
 
     try {
-        const {data} = await updateProduct(id, fd, accessToken);
-        const payload = normalize(data, productSchema.product);
-        dispatch({type: UPDATE_PRODUCT_SUCCESS, payload});
-        return payload;
+        const response = await updateProduct(id, fd, accessToken);
+        const {status, data} = response;
+        if (status === 200) {
+            const payload = normalize(data, productSchema.product);
+            dispatch({type: UPDATE_PRODUCT_SUCCESS, payload});
+        } else {
+            dispatch({type: UPDATE_PRODUCT_FAILURE, payload: {error: data}});
+        }
+        return response;
     } catch (error) {
         dispatch({type: UPDATE_PRODUCT_FAILURE, payload: {error}});
         return error;
