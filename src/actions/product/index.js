@@ -15,13 +15,14 @@ export const getProductIfNeeded = slug => async (dispatch, getState) => {
 
     dispatch({type: RETRIEVE_PRODUCT_REQUEST});
     try {
-        const {data} = await getProduct(slug);
+        const response = await getProduct(slug);
+        const { data } = response;
         const payload = normalize(data, productSchema.product);
         dispatch({type: RETRIEVE_PRODUCT_SUCCESS, payload});
-        return payload;
+        return response;
     } catch (error) {
         dispatch({type: RETRIEVE_PRODUCT_FAILURE, payload: {error}});
-        return error;
+        return error.response;
     }
 };
 

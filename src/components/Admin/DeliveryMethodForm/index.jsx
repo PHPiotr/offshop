@@ -1,4 +1,4 @@
-import React, {Fragment, useEffect} from 'react';
+import React, {Fragment} from 'react';
 import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
 import {Field, Form, reduxForm, isValid} from 'redux-form';
@@ -8,9 +8,9 @@ import withStyles from '@material-ui/core/styles/withStyles';
 import {createDeliveryMethodIfNeeded, updateDeliveryMethodIfNeeded} from "../../../actions/admin/deliveryMethod";
 import {showNotification} from "../../../actions/notification";
 import SubHeader from '../../../components/SubHeader';
-import ProgressIndicator from '../../../components/ProgressIndicator';
 import {getAdminDeliveryMethodIfNeeded, resetDeliveryMethod} from '../../../actions/admin/deliveryMethod';
 import {inputs, inputKeys, initialValues} from './config';
+import RequestHandler from '../../../containers/RequestHandler';
 
 const FORM_NAME = 'deliveryMethod';
 
@@ -29,51 +29,53 @@ const styles = theme => ({
 });
 
 let DeliveryMethodForm = props => {
-    useEffect(() => {
-        if (props.match.params.id) {
-            props.getAdminDeliveryMethodIfNeeded(props.match.params.id);
-        } else {
-            props.handleResetDeliveryMethod();
-        }
-    }, [props.match.params.id]);
+    let action = null;
+    if (props.match.params.id) {
+        action = () => props.getAdminDeliveryMethodIfNeeded(props.match.params.id);
+    } else {
+        props.handleResetDeliveryMethod();
+    }
 
     return (
-        <Fragment>
-            {props.isRequestInProgress && <ProgressIndicator/>}
-            <SubHeader content={`${props.match.params.id ? 'Edytuj' : 'Dodaj'} opcję dostawy`}/>
-            <Form onSubmit={props.handleSubmit}>
-                <Grid container spacing={10}>
-                    {inputKeys.reduce((acc, itemId) => {
-                        const {label, type, validate, component, inputProps} = inputs[itemId];
-                        acc.push(
-                            <Grid item xs={12} key={itemId}>
-                                <Field
-                                    name={itemId}
-                                    component={component}
-                                    label={label}
-                                    fullWidth
-                                    type={type}
-                                    validate={validate}
-                                    InputProps={inputProps}
-                                />
-                            </Grid>
-                        );
-                        return acc;
-                    }, [])}
-                </Grid>
-                <div className={props.classes.buttons}>
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        className={props.classes.button}
-                        disabled={props.submitting || !props.isValidDeliveryMethod}
-                        type="submit"
-                    >
-                        {`${props.match.params.id ? 'Edytuj' : 'Dodaj'}`}
-                    </Button>
-                </div>
-            </Form>
-        </Fragment>
+        <RequestHandler action={action}>
+            {() => (
+                <Fragment>
+                    <SubHeader content={`${props.match.params.id ? 'Edytuj' : 'Dodaj'} opcję dostawy`}/>
+                    <Form onSubmit={props.handleSubmit}>
+                        <Grid container spacing={10}>
+                            {inputKeys.reduce((acc, itemId) => {
+                                const {label, type, validate, component, inputProps} = inputs[itemId];
+                                acc.push(
+                                    <Grid item xs={12} key={itemId}>
+                                        <Field
+                                            name={itemId}
+                                            component={component}
+                                            label={label}
+                                            fullWidth
+                                            type={type}
+                                            validate={validate}
+                                            InputProps={inputProps}
+                                        />
+                                    </Grid>
+                                );
+                                return acc;
+                            }, [])}
+                        </Grid>
+                        <div className={props.classes.buttons}>
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                className={props.classes.button}
+                                disabled={props.submitting || !props.isValidDeliveryMethod}
+                                type="submit"
+                            >
+                                {`${props.match.params.id ? 'Edytuj' : 'Dodaj'}`}
+                            </Button>
+                        </div>
+                    </Form>
+                </Fragment>
+            )}
+        </RequestHandler>
     );
 };
 

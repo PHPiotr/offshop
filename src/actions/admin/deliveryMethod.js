@@ -54,15 +54,16 @@ export const getAdminDeliveryMethodIfNeeded = deliveryMethodId => {
 
         dispatch({type: RETRIEVE_ADMIN_DELIVERY_METHOD_REQUEST});
         try {
-            const {data} = await getAdminDeliveryMethod(deliveryMethodId, accessToken);
+            const response = await getAdminDeliveryMethod(deliveryMethodId, accessToken);
+            const {data} = response;
             const payload = normalize(data, deliveryMethodSchema.deliveryMethod);
             dispatch({type: RETRIEVE_ADMIN_DELIVERY_METHOD_SUCCESS, payload});
 
-            return payload;
+            return response;
         } catch (error) {
             dispatch({type: RETRIEVE_ADMIN_DELIVERY_METHOD_FAILURE, payload: {error}});
 
-            return error;
+            return error.response;
         }
     };
 };

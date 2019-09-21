@@ -162,6 +162,7 @@ const ProductView = props => {
 
 const mapStateToProps = state => ({
     product: state.product.data[state.product.id] || {},
+    isFetching: state.product.isFetching,
     productInCart: state.cart.products[state.product.id] || {},
 });
 const mapDispatchToProps = {addToCart, openDialog};
@@ -169,6 +170,7 @@ const mapDispatchToProps = {addToCart, openDialog};
 ProductView.propTypes = {
     classes: PropTypes.object.isRequired,
     product: PropTypes.object.isRequired,
+    isFetching: PropTypes.bool.isRequired,
     productInCart: PropTypes.object.isRequired,
 };
 

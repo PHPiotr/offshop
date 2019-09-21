@@ -1,10 +1,14 @@
-import React, {Fragment, useEffect, useState} from 'react';
+import React, {Fragment, useState} from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import {Helmet} from 'react-helmet';
 import {withRouter} from 'react-router-dom';
-import {getOrderIfNeeded, cancelOrderIfNeeded, deleteOrderIfNeeded, refundOrderIfNeeded} from '../../actions/admin/order';
-import ProgressIndicator from '../ProgressIndicator';
+import {
+    getOrderIfNeeded,
+    cancelOrderIfNeeded,
+    deleteOrderIfNeeded,
+    refundOrderIfNeeded
+} from '../../actions/admin/order';
 import Card from '@material-ui/core/Card';
 import {makeStyles} from '@material-ui/core';
 import CardHeader from '@material-ui/core/CardHeader';
@@ -18,6 +22,7 @@ import CardActions from '@material-ui/core/CardActions';
 import Tooltip from '@material-ui/core/Tooltip';
 import Button from '@material-ui/core/Button';
 import Dialog from '../Dialog';
+import RequestHandler from '../../containers/RequestHandler';
 
 const useStyles = makeStyles(() => ({
     card: {
@@ -53,18 +58,11 @@ const canRefund = order => {
 const Order = props => {
     const classes = useStyles();
     const {order, getOrderIfNeeded, cancelOrderIfNeeded, deleteOrderIfNeeded, refundOrderIfNeeded} = props;
-    useEffect(() => {
-        if (props.match.params.id) {
-            getOrderIfNeeded(props.match.params.id);
-        }
-    }, [props.match.params.id]);
+    const action = () => getOrderIfNeeded(props.match.params.id);
+
     const [isCancelOrderDialogOpen, setIsCancelOrderDialogOpen] = useState(false);
     const [isDeleteOrderDialogOpen, setIsDeleteOrderDialogOpen] = useState(false);
     const [isRefundOrderDialogOpen, setIsRefundOrderDialogOpen] = useState(false);
-
-    if (!order) {
-        return null;
-    }
 
     const handleCancelOrderClick = () => setIsCancelOrderDialogOpen(true);
     const hideCancelOrderDialog = () => setIsCancelOrderDialogOpen(false);
@@ -80,7 +78,8 @@ const Order = props => {
         try {
             await deleteOrderIfNeeded(order.extOrderId);
             props.history.replace('/admin/orders/list');
-        } catch {}
+        } catch {
+        }
     };
 
     const canRefundOrder = canRefund(order);
@@ -97,83 +96,85 @@ const Order = props => {
         }
     };
 
-    if (props.isFetching) {
-        return <ProgressIndicator />;
-    }
-
-
     return (
-        <Fragment>
-            <Helmet>
-                <title>{order.description}</title>
-            </Helmet>
-            <Card className={classes.card}>
-                <CardHeader
-                    title={order.description}
-                    subheader={new Date(order.localReceiptDateTime || order.orderCreateDate).toLocaleString('pl')}
-                />
-                <CardContent>
-                    <Typography component="p">
-                        {order.orderId}
-                    </Typography>
-                    <Typography component="p">
-                        {order.status}
-                    </Typography>
-                </CardContent>
-                <CardActions className={classes.actions}>
-                    {canCancelForStatus(order.status) && (<Tooltip title="Anuluj zamówienie">
-                        <IconButton aria-label="Anuluj zamówienie" onClick={handleCancelOrderClick}>
-                            <CancelIcon color="error"/>
-                        </IconButton>
-                    </Tooltip>)}
-                    {canDeleteForStatus(order.status) && (<Tooltip title="Usuń zamówienie">
-                        <IconButton aria-label="Usuń zamówienie" onClick={handleDeleteOrderClick}>
-                            <DeleteIcon color="error"/>
-                        </IconButton>
-                    </Tooltip>)}
-                    <Tooltip title={canRefundOrder ? 'Zwróć zamówienie' : 'Nie można wykonać zwrotu zamówienia'}>
-                        <IconButton aria-label={canRefundOrder ? 'Zwróć zamówienie' : 'Nie można wykonać zwrotu zamówienia'} onClick={handleRefundOrderClick}>
-                            <RefundIcon color={canRefundOrder ? 'error' : 'disabled'}/>
-                        </IconButton>
-                    </Tooltip>
-                </CardActions>
-            </Card>
-            <Dialog
-                title={`Anulować zamówienie?`}
-                content={order.description}
-                onClose={hideCancelOrderDialog}
-                open={isCancelOrderDialogOpen}
-                actions={[
-                    <Button key="0" color="primary" onClick={hideCancelOrderDialog}>Nie</Button>,
-                    <Button key="1" color="primary" onClick={handleCancelOrder}>Tak</Button>,
-                ]}
-            />
-            <Dialog
-                title={`Usunąć zamówienie?`}
-                content={order.description}
-                onClose={hideDeleteOrderDialog}
-                open={isDeleteOrderDialogOpen}
-                actions={[
-                    <Button key="0" color="primary" onClick={hideDeleteOrderDialog}>Nie</Button>,
-                    <Button key="1" color="primary" onClick={handleDeleteOrder}>Tak</Button>,
-                ]}
-            />
-            <Dialog
-                title={`Wykonać zwrot środków na konto kupującego?`}
-                content={order.description}
-                onClose={hideRefundOrderDialog}
-                open={isRefundOrderDialogOpen}
-                actions={[
-                    <Button key="0" color="primary" onClick={hideRefundOrderDialog}>Nie</Button>,
-                    <Button key="1" color="primary" onClick={handleRefundOrder}>Tak</Button>,
-                ]}
-            />
-        </Fragment>
+        <RequestHandler action={action}>
+            {() => (
+                <Fragment>
+                    <Helmet>
+                        <title>{order.description}</title>
+                    </Helmet>
+                    <Card className={classes.card}>
+                        <CardHeader
+                            title={order.description}
+                            subheader={new Date(order.localReceiptDateTime || order.orderCreateDate).toLocaleString('pl')}
+                        />
+                        <CardContent>
+                            <Typography component="p">
+                                {order.orderId}
+                            </Typography>
+                            <Typography component="p">
+                                {order.status}
+                            </Typography>
+                        </CardContent>
+                        <CardActions className={classes.actions}>
+                            {canCancelForStatus(order.status) && (<Tooltip title="Anuluj zamówienie">
+                                <IconButton aria-label="Anuluj zamówienie" onClick={handleCancelOrderClick}>
+                                    <CancelIcon color="error"/>
+                                </IconButton>
+                            </Tooltip>)}
+                            {canDeleteForStatus(order.status) && (<Tooltip title="Usuń zamówienie">
+                                <IconButton aria-label="Usuń zamówienie" onClick={handleDeleteOrderClick}>
+                                    <DeleteIcon color="error"/>
+                                </IconButton>
+                            </Tooltip>)}
+                            <Tooltip
+                                title={canRefundOrder ? 'Zwróć zamówienie' : 'Nie można wykonać zwrotu zamówienia'}>
+                                <IconButton
+                                    aria-label={canRefundOrder ? 'Zwróć zamówienie' : 'Nie można wykonać zwrotu zamówienia'}
+                                    onClick={handleRefundOrderClick}>
+                                    <RefundIcon color={canRefundOrder ? 'error' : 'disabled'}/>
+                                </IconButton>
+                            </Tooltip>
+                        </CardActions>
+                    </Card>
+                    <Dialog
+                        title={`Anulować zamówienie?`}
+                        content={order.description}
+                        onClose={hideCancelOrderDialog}
+                        open={isCancelOrderDialogOpen}
+                        actions={[
+                            <Button key="0" color="primary" onClick={hideCancelOrderDialog}>Nie</Button>,
+                            <Button key="1" color="primary" onClick={handleCancelOrder}>Tak</Button>,
+                        ]}
+                    />
+                    <Dialog
+                        title={`Usunąć zamówienie?`}
+                        content={order.description}
+                        onClose={hideDeleteOrderDialog}
+                        open={isDeleteOrderDialogOpen}
+                        actions={[
+                            <Button key="0" color="primary" onClick={hideDeleteOrderDialog}>Nie</Button>,
+                            <Button key="1" color="primary" onClick={handleDeleteOrder}>Tak</Button>,
+                        ]}
+                    />
+                    <Dialog
+                        title={`Wykonać zwrot środków na konto kupującego?`}
+                        content={order.description}
+                        onClose={hideRefundOrderDialog}
+                        open={isRefundOrderDialogOpen}
+                        actions={[
+                            <Button key="0" color="primary" onClick={hideRefundOrderDialog}>Nie</Button>,
+                            <Button key="1" color="primary" onClick={handleRefundOrder}>Tak</Button>,
+                        ]}
+                    />
+                </Fragment>
+            )}
+        </RequestHandler>
     );
 };
 
 const mapStateToProps = state => ({
-    order: state.adminOrder.data[state.adminOrder.id],
+    order: state.adminOrder.data[state.adminOrder.id] || {},
     isFetching: state.adminOrder.isFetching,
 });
 const mapDispatchToProps = {

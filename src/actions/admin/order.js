@@ -24,15 +24,16 @@ export const getOrderIfNeeded = extOrderId => {
 
         dispatch({type: RETRIEVE_ADMIN_ORDER_REQUEST});
         try {
-            const {data} = await getOrder(extOrderId, accessToken);
+            const response = await getOrder(extOrderId, accessToken);
+            const {data} = response;
             const payload = normalize(data, orderSchema.order);
             dispatch({type: RETRIEVE_ADMIN_ORDER_SUCCESS, payload});
 
-            return payload;
+            return response;
         } catch (error) {
             dispatch({type: RETRIEVE_ADMIN_ORDER_FAILURE, payload: {error}});
 
-            return error;
+            return error.response;
         }
     };
 };

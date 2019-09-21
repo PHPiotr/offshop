@@ -13,6 +13,7 @@ import AdminDeliveryMethodForm from './components/Admin/DeliveryMethodForm';
 import AdminDeliveryMethods from './components/Admin/DeliveryMethodsList';
 import AdminOrders from './components/Admin/OrdersList';
 import AdminOrder from './components/Admin/Order';
+import NotFound from './components/NotFound';
 import { withStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import classNames from 'classnames';
@@ -166,18 +167,19 @@ class App extends Component {
                                         return null;
                                     }}/>
                                     <PrivateRoute path="/admin/products/list" exact component={AdminProducts}/>
-                                    <PrivateRoute path="/admin/products/new" exact component={AdminProductForm}/>
-                                    <PrivateRoute path="/admin/products/:productId" exact component={AdminProductForm}/>
+                                    <PrivateRoute path="/admin/products/new" exact component={AdminProductForm} key="add"/>
+                                    <PrivateRoute path="/admin/products/:productId" exact component={AdminProductForm} key="edit"/>
                                     <PrivateRoute path="/admin/delivery-methods/list" exact
                                                   component={AdminDeliveryMethods}/>
                                     <PrivateRoute path="/admin/orders/list" exact
                                                   component={AdminOrders}/>
                                     <PrivateRoute path="/admin/orders/:id" exact
-                                                  component={AdminOrder}/>
+                                                  component={AdminOrder}  key="edit"/>
                                     <PrivateRoute path="/admin/delivery-methods/new" exact
-                                                  component={AdminDeliveryMethodForm}/>
+                                                  component={AdminDeliveryMethodForm}  key="add"/>
                                     <PrivateRoute path="/admin/delivery-methods/:id" exact
                                                   component={AdminDeliveryMethodForm}/>
+                                    <Route path="/*" component={NotFound} />
                                 </Switch>
                             </Grid>
                         </div>
