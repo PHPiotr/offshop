@@ -65,16 +65,18 @@ const ProductsList = props => {
                     <Fragment key={p.id}>
                         <ListItem key={p.id} alignItems="flex-start" button component={Link} to={`/admin/products/${p.id}`}>
                             <ListItemAvatar>
-                            {!p.active ? (
-                                <Tooltip title="Produkt nieaktywny">
+                            {p.active ? (
+                                <Tooltip title="Produkt aktywny">
                                     <Badge variant="dot" color="error">
                                         <Avatar src={`${process.env.REACT_APP_PRODUCT_PATH}/${p.images[0].avatar}`}
                                                 alt={p.name}/>
                                     </Badge>
                                 </Tooltip>
                             ) : (
-                                <Avatar src={`${process.env.REACT_APP_PRODUCT_PATH}/${p.images[0].avatar}`}
-                                        alt={p.name}/>
+                                <Tooltip title="Produkt nieaktywny">
+                                    <Avatar src={`${process.env.REACT_APP_PRODUCT_PATH}/${p.images[0].avatar}`}
+                                            alt={p.name}/>
+                                </Tooltip>
                             )}
                             </ListItemAvatar>
                             <ListItemText
