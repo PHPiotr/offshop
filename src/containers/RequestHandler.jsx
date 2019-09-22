@@ -22,7 +22,7 @@ const RequestHandler = props => {
     }, []);
 
     const {children} = props;
-    return <ErrorHandler loading={isLoading} response={response}>{children({isLoading, response})}</ErrorHandler>;
+    return <ErrorHandler isLoading={isLoading} response={response}>{children({isLoading, response})}</ErrorHandler>;
 };
 
 export default RequestHandler;
