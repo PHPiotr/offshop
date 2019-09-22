@@ -1,4 +1,4 @@
-import React, {Fragment, useEffect, useState} from 'react';
+import React, {Fragment, useState} from 'react';
 import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
 import {Field, Form, reduxForm, formValueSelector, isValid} from 'redux-form';
@@ -8,9 +8,9 @@ import withStyles from '@material-ui/core/styles/withStyles';
 import {createProductIfNeeded, updateProductIfNeeded} from "../../../actions/admin/product/index";
 import {showNotification} from "../../../actions/notification";
 import SubHeader from '../../../components/SubHeader';
-import ProgressIndicator from '../../../components/ProgressIndicator';
 import {getAdminProductIfNeeded, resetAdminProduct} from '../../../actions/admin/product';
 import {inputs, inputKeys, initialValues} from './config';
+import RequestHandler from '../../../containers/RequestHandler';
 
 
 const FORM_NAME = 'product';
@@ -43,94 +43,103 @@ const handleOnDrop = ([newImageFile], onChange) => {
 let ProductForm = props => {
     const [currentSlug, setCurrentSlug] = useState(null);
     const [currentImage, setCurrentImage] = useState(null);
-    useEffect(() => {
-        if (props.match.params.productId) {
-            props.getAdminProductIfNeeded(props.match.params.productId)
-                .then(({entities, result}) => {
-                    setCurrentSlug(entities.products[result].slug);
-                    setCurrentImage(entities.products[result].images[0].tile);
-                });
-        } else {
-            props.handleResetAdminProduct();
-        }
-    }, [props.match.params.productId]);
+    let action = null;
+    if (props.match.params.productId) {
+        action = () => props.getAdminProductIfNeeded(props.match.params.productId).then((response => {
+            if (response.status === 200) {
+                const {slug, images} = response.data;
+                setCurrentSlug(slug);
+                setCurrentImage(images[0].tile);
+            }
+            return response;
+        }));
+    } else {
+        props.handleResetAdminProduct();
+    }
 
     return (
-        <Fragment>
-            {props.isRequestInProgress && <ProgressIndicator/>}
-            <SubHeader content={`${props.match.params.productId ? 'Edytuj' : 'Dodaj'} produkt`}/>
-            <Form onSubmit={props.handleSubmit} encType="multipart/form-data">
-                <Grid container spacing={10}>
-                    {inputKeys.reduce((acc, itemId) => {
-                        const {label, type, validate, component, inputProps} = inputs[itemId];
+        <RequestHandler action={action}>
+            {() => (
+                <Fragment>
+                    <SubHeader content={`${props.match.params.productId ? 'Edytuj' : 'Dodaj'} produkt`}/>
+                    <Form onSubmit={props.handleSubmit} encType="multipart/form-data">
+                        <Grid container spacing={10}>
+                            {inputKeys.reduce((acc, itemId) => {
+                                const {label, type, validate, component, inputProps} = inputs[itemId];
 
-                        if (type === 'file') {
-                            let validation = validate;
-                            if (props.match.params.productId) {
-                                validation = [];
-                            }
-                            acc.push(
-                                <Grid item xs={12} key={itemId}>
-                                    <Field
-                                        name={itemId}
-                                        component={component}
-                                        type={type}
-                                        imagefile={
-                                            (!props.imageFile || props.imageFile.length === 0) && currentImage
-                                                ? (
-                                                    (props.match.params.productId && currentSlug)
-                                                        ? [{name: '', preview: `${process.env.REACT_APP_PRODUCT_PATH}/${currentImage}`, size: 0}]
-                                                        : []
-                                                ) : props.imageFile
-                                        }
-                                        handleOnDrop={handleOnDrop}
-                                        validate={validation}
-                                    />
-                                </Grid>
-                            );
-                        } else if (type === 'switch') {
-                            acc.push(
-                                <Grid item xs={12} key={itemId}>
-                                    <Field
-                                        name={itemId}
-                                        component={component}
-                                        label={label}
-                                        validate={validate}
-                                        checked={!!props.active}
-                                    />
-                                </Grid>
-                            )
-                        } else {
-                            acc.push(
-                                <Grid item xs={12} key={itemId}>
-                                    <Field
-                                        name={itemId}
-                                        component={component}
-                                        label={label}
-                                        fullWidth
-                                        type={type}
-                                        validate={validate}
-                                        InputProps={inputProps}
-                                    />
-                                </Grid>
-                            );
-                        }
-                        return acc;
-                    }, [])}
-                </Grid>
-                <div className={props.classes.buttons}>
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        className={props.classes.button}
-                        disabled={props.submitting || !props.isValidProduct}
-                        type="submit"
-                    >
-                        {`${props.match.params.productId ? 'Edytuj' : 'Dodaj'} produkt`}
-                    </Button>
-                </div>
-            </Form>
-        </Fragment>
+                                if (type === 'file') {
+                                    let validation = validate;
+                                    if (props.match.params.productId) {
+                                        validation = [];
+                                    }
+                                    acc.push(
+                                        <Grid item xs={12} key={itemId}>
+                                            <Field
+                                                name={itemId}
+                                                component={component}
+                                                type={type}
+                                                imagefile={
+                                                    (!props.imageFile || props.imageFile.length === 0) && currentImage
+                                                        ? (
+                                                            (props.match.params.productId && currentSlug)
+                                                                ? [{
+                                                                    name: '',
+                                                                    preview: `${process.env.REACT_APP_PRODUCT_PATH}/${currentImage}`,
+                                                                    size: 0
+                                                                }]
+                                                                : []
+                                                        ) : props.imageFile
+                                                }
+                                                handleOnDrop={handleOnDrop}
+                                                validate={validation}
+                                            />
+                                        </Grid>
+                                    );
+                                } else if (type === 'switch') {
+                                    acc.push(
+                                        <Grid item xs={12} key={itemId}>
+                                            <Field
+                                                name={itemId}
+                                                component={component}
+                                                label={label}
+                                                validate={validate}
+                                                checked={!!props.active}
+                                            />
+                                        </Grid>
+                                    )
+                                } else {
+                                    acc.push(
+                                        <Grid item xs={12} key={itemId}>
+                                            <Field
+                                                name={itemId}
+                                                component={component}
+                                                label={label}
+                                                fullWidth
+                                                type={type}
+                                                validate={validate}
+                                                InputProps={inputProps}
+                                            />
+                                        </Grid>
+                                    );
+                                }
+                                return acc;
+                            }, [])}
+                        </Grid>
+                        <div className={props.classes.buttons}>
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                className={props.classes.button}
+                                disabled={props.submitting || !props.isValidProduct}
+                                type="submit"
+                            >
+                                {`${props.match.params.productId ? 'Edytuj' : 'Dodaj'} produkt`}
+                            </Button>
+                        </div>
+                    </Form>
+                </Fragment>
+            )}
+        </RequestHandler>
     );
 };
 
@@ -189,7 +198,7 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
 
             const {status, data} = response;
 
-            if (status === 201) {
+            if (status === 200 || status === 201) {
                 ownProps.history.push('/admin/products/list');
                 reset();
             } else {

@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import {withStyles} from '@material-ui/core/styles';
 import pink from '@material-ui/core/colors/pink';
@@ -6,8 +6,8 @@ import {connect} from 'react-redux';
 import {getProductIfNeeded, resetProductData} from '../actions/product';
 import {addToCart} from '../actions/cart';
 import {openDialog} from '../actions/dialog';
-import ProgressIndicator from '../components/ProgressIndicator';
 import ProductView from '../components/Product';
+import RequestHandler from './RequestHandler';
 
 const styles = theme => ({
     card: {
@@ -41,16 +41,13 @@ const styles = theme => ({
 
 const Product = props => {
 
-    useEffect(() => {
-        props.getProductIfNeeded(props.match.params.slug);
-        return props.resetProductData;
-    }, [props.match.params.slug]);
+    const action = () => props.getProductIfNeeded(props.match.params.slug);
 
-    if (props.isFetching) {
-        return <ProgressIndicator/>;
-    }
-
-    return <ProductView />;
+    return (
+        <RequestHandler action={action}>
+            {() => <ProductView />}
+        </RequestHandler>
+    );
 };
 
 const mapStateToProps = state => ({

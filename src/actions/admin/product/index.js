@@ -88,15 +88,16 @@ export const getAdminProductIfNeeded = productId => {
 
         dispatch({type: RETRIEVE_ADMIN_PRODUCT_REQUEST});
         try {
-            const {data} = await getAdminProduct(productId, accessToken);
+            const response = await getAdminProduct(productId, accessToken);
+            const {data} = response;
             const payload = normalize(data, productSchema.product);
             dispatch({type: RETRIEVE_ADMIN_PRODUCT_SUCCESS, payload});
 
-            return payload;
+            return response;
         } catch (error) {
             dispatch({type: RETRIEVE_ADMIN_PRODUCT_FAILURE, payload: {error}});
 
-            return error;
+            return error.response;
         }
     };
 };
