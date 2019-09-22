@@ -2,8 +2,8 @@ import React from 'react';
 import ProgressIndicator from '../components/ProgressIndicator';
 import NotFound from '../components/NotFound';
 
-const ErrorHandler = ({loading, response, children}) => {
-    if (loading) {
+const ErrorHandler = ({isLoading, response, children}) => {
+    if (isLoading) {
         return <ProgressIndicator />;
     }
     if (response.status === 404) {

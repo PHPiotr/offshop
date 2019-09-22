@@ -174,11 +174,11 @@ class App extends Component {
                                     <PrivateRoute path="/admin/orders/list" exact
                                                   component={AdminOrders}/>
                                     <PrivateRoute path="/admin/orders/:id" exact
-                                                  component={AdminOrder}  key="edit"/>
+                                                  component={AdminOrder}/>
                                     <PrivateRoute path="/admin/delivery-methods/new" exact
-                                                  component={AdminDeliveryMethodForm}  key="add"/>
+                                                  component={AdminDeliveryMethodForm} key="add"/>
                                     <PrivateRoute path="/admin/delivery-methods/:id" exact
-                                                  component={AdminDeliveryMethodForm}/>
+                                                  component={AdminDeliveryMethodForm} key="edit"/>
                                     <Route path="/*" component={NotFound} />
                                 </Switch>
                             </Grid>

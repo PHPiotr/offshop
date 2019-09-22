@@ -1,45 +1,28 @@
-import React, {Component} from 'react';
+import React, {Component, useState, useEffect} from 'react';
 import ErrorHandler from './ErrorHandler';
 
-class RequestHandler extends Component {
+const RequestHandler = props => {
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            loading: false,
-            response: {},
-        };
-    }
+    const [isLoading, setIsLoading] = useState(false);
+    const [response, setResponse] = useState({});
 
-    componentDidMount() {
-        const {action} = this.props;
-        if (!action) {
-            return;
+    useEffect(() => {
+        if (props.action) {
+            setIsLoading(true);
+            setResponse({});
+            props.action()
+                .then(response => {
+                    setIsLoading(false);
+                    setResponse(response);
+                }).catch(error => {
+                    setIsLoading(false);
+                    setResponse(error.response);
+                });
         }
-        const that = this;
-        that.setState({
-            loading: true,
-            response: {},
-        });
-        return action()
-            .then(response => {
-                that.setState({
-                    loading: false,
-                    response,
-                });
-            }).catch(error => {
-                that.setState({
-                    loading: false,
-                    response: error.response,
-                });
-            });
-    }
+    }, []);
 
-    render() {
-        const {children} = this.props;
-        return <ErrorHandler {...this.state}>{children(this.state)}</ErrorHandler>;
-    }
-
-}
+    const {children} = props;
+    return <ErrorHandler loading={isLoading} response={response}>{children({isLoading, response})}</ErrorHandler>;
+};
 
 export default RequestHandler;
