@@ -19,14 +19,15 @@ export const getProductsIfNeeded = params => {
 
         dispatch({type: RETRIEVE_PRODUCTS_REQUEST});
         try {
-            const {data} = await getProducts(params);
+            const response = await getProducts(params);
+            const {data} = response;
             const payload = normalize(data, productSchema.productList);
             dispatch({type: RETRIEVE_PRODUCTS_SUCCESS, payload});
 
-            return Promise.resolve(payload);
+            return response;
         } catch (error) {
             dispatch({type: RETRIEVE_PRODUCTS_FAILURE, payload: {error}});
-            return Promise.reject(error);
+            return error.response;
         }
     };
 };

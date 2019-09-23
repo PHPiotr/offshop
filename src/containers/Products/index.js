@@ -1,32 +1,29 @@
-import React, {Component, Fragment} from 'react';
+import React, {Fragment, useState} from 'react';
 import {connect} from 'react-redux';
 import ProductsView from '../../components/Products';
 import {addToCart} from '../../actions/cart';
 import {openDialog, closeDialog} from '../../actions/dialog';
 import {getProductsIfNeeded} from '../../actions/products';
 import ProductAddedToCartDialog from '../../components/Product/ProductAddedToCartDialog';
+import RequestHandler from '../RequestHandler';
 
-class Products extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            sort: 'name',
-            order: 1,
-        }
-    }
-    componentDidMount() {
-        this.props.handleFetchProducts({sort: this.state.sort, order: this.state.order});
-    }
+const Products = props => {
 
-    render() {
-        return (
-            <Fragment>
-                <ProductsView {...this.props} />
-                <ProductAddedToCartDialog />
-            </Fragment>
-        );
-    }
-}
+    const [sort, setSort] = useState('name');
+    const [order, setOrder] = useState(1);
+    const action = () => props.handleFetchProducts({sort, order})
+
+    return (
+        <RequestHandler action={action}>
+            {() => (
+                <Fragment>
+                    <ProductsView {...props} />
+                    <ProductAddedToCartDialog />
+                </Fragment>
+            )}
+        </RequestHandler>
+    );
+};
 
 const mapStateToProps = state => ({
     cart: state.cart,
@@ -36,7 +33,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
     handleFetchProducts(params) {
-        dispatch(getProductsIfNeeded(params));
+        return dispatch(getProductsIfNeeded(params));
     },
     addToCart(item, quantity) {
         dispatch(addToCart(item, quantity));
