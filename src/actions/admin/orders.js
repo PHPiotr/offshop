@@ -5,6 +5,7 @@ import {getAdminOrders} from '../../api/orders';
 export const RETRIEVE_ADMIN_ORDERS_REQUEST = 'RETRIEVE_ADMIN_ORDERS_REQUEST';
 export const RETRIEVE_ADMIN_ORDERS_SUCCESS = 'RETRIEVE_ADMIN_ORDERS_SUCCESS';
 export const RETRIEVE_ADMIN_ORDERS_FAILURE = 'RETRIEVE_ADMIN_ORDERS_FAILURE';
+export const ON_ADMIN_ORDER = 'ON_ADMIN_ORDER';
 
 export const getAdminOrdersIfNeeded = (params = {}) => {
     return async (dispatch, getState) => {
@@ -23,3 +24,5 @@ export const getAdminOrdersIfNeeded = (params = {}) => {
         }
     };
 };
+
+export const onAdminOrder = order => ({type: ON_ADMIN_ORDER, payload: {order}});

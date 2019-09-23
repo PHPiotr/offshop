@@ -2,6 +2,7 @@ import {
     RETRIEVE_ADMIN_ORDERS_REQUEST,
     RETRIEVE_ADMIN_ORDERS_SUCCESS,
     RETRIEVE_ADMIN_ORDERS_FAILURE,
+    ON_ADMIN_ORDER,
 } from '../../actions/admin/orders';
 
 const initialState = {
@@ -30,6 +31,13 @@ const adminOrders = (state = initialState, action) => {
                 ...state,
                 error: action.payload.error,
                 isFetching: false,
+            };
+        case ON_ADMIN_ORDER:
+            return {
+                ...state,
+                data: {...state.data, [action.payload.order.id]: action.payload.order},
+                ids: state.ids.indexOf(action.payload.order.id) === -1
+                    ? [action.payload.order.id, ...state.ids] : state.ids,
             };
         default:
             return state;

@@ -8,8 +8,12 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import {Link} from 'react-router-dom';
 import {connect} from 'react-redux';
+import io from 'socket.io-client';
 import ProgressIndicator from '../../components/ProgressIndicator';
-import {getAdminOrdersIfNeeded} from '../../actions/admin/orders';
+import {getAdminOrdersIfNeeded, onAdminOrder} from '../../actions/admin/orders';
+import {showNotification} from '../../actions/notification';
+
+const socket = io(process.env.REACT_APP_API_HOST);
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -30,6 +34,11 @@ const OrdersList = props => {
     const classes = useStyles();
     useEffect(() => {
         props.getAdminOrdersIfNeeded();
+    }, []);
+    useEffect(() => {
+        socket.on('adminOrder', order => {
+            props.onAdminOrder(order);
+        });
     }, []);
 
     return (
@@ -74,6 +83,8 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = {
     getAdminOrdersIfNeeded,
+    onAdminOrder,
+    showNotification,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(OrdersList);
