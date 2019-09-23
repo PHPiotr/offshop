@@ -3,7 +3,7 @@ import {
     RETRIEVE_ADMIN_PRODUCT_REQUEST,
     RETRIEVE_ADMIN_PRODUCT_SUCCESS,
     RESET_ADMIN_PRODUCT,
-} from '../../actions/admin/product';
+} from '../actions/admin/product';
 
 const initialState = {
     data: {},

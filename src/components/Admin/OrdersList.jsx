@@ -8,12 +8,11 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import {Link} from 'react-router-dom';
 import {connect} from 'react-redux';
-import io from 'socket.io-client';
 import ProgressIndicator from '../../components/ProgressIndicator';
 import {getAdminOrdersIfNeeded, onAdminOrder} from '../../actions/admin/orders';
 import {showNotification} from '../../actions/notification';
-
-const socket = io(process.env.REACT_APP_API_HOST);
+import io from '../../io';
+const socket = io();
 
 const useStyles = makeStyles(theme => ({
     root: {

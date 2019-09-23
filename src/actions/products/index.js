@@ -33,6 +33,6 @@ export const getProductsIfNeeded = params => {
 };
 
 export const syncQuantities = (productsIds, productsById) => ({type: SYNC_QUANTITIES, payload: {productsIds, productsById}});
-export const onCreateProduct = (product) => ({type: ON_CREATE_PRODUCT, payload: {product}});
-export const onUpdateProduct = (product) => ({type: ON_UPDATE_PRODUCT, payload: {product}});
+export const onCreateProduct = (product, sort, order) => ({type: ON_CREATE_PRODUCT, payload: {product, sort, order}});
+export const onUpdateProduct = (product, sort, order) => ({type: ON_UPDATE_PRODUCT, payload: {product, sort, order}});
 export const onDeleteProduct = (product) => ({type: ON_DELETE_PRODUCT, payload: {product}});

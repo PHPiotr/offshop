@@ -3,7 +3,7 @@ import {
     DELETE_PRODUCT_REQUEST,
     DELETE_PRODUCT_SUCCESS, RETRIEVE_ADMIN_PRODUCTS_FAILURE,
     RETRIEVE_ADMIN_PRODUCTS_REQUEST, RETRIEVE_ADMIN_PRODUCTS_SUCCESS
-} from '../../../actions/admin/products';
+} from '../actions/admin/products';
 
 const initialState = {
     isDeleting: false,
