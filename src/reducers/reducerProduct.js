@@ -3,7 +3,11 @@ import {
     RETRIEVE_PRODUCT_FAILURE,
     RETRIEVE_PRODUCT_SUCCESS,
     RESET_PRODUCT_DATA,
-} from '../../actions/product';
+} from '../actions/product';
+import {
+    ON_UPDATE_CURRENT_PRODUCT,
+    ON_DELETE_CURRENT_PRODUCT,
+} from "../actions/product";
 
 export const initialState = {
     isFetching: false,
@@ -19,6 +23,18 @@ const product = (state = {
     error: {},
 }, action) => {
     switch (action.type) {
+        case ON_UPDATE_CURRENT_PRODUCT:
+            return {
+                ...state,
+                data: action.payload.product.active ? {[action.payload.product.id]: action.payload.product} : state.data,
+                id: action.payload.product.active ? action.payload.product.id : state.id,
+            };
+        case ON_DELETE_CURRENT_PRODUCT:
+            return {
+                ...state,
+                data: {},
+                id: '',
+            };
         case RETRIEVE_PRODUCT_REQUEST:
             return {
                 ...state,

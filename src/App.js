@@ -19,11 +19,11 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import classNames from 'classnames';
 import Grid from '@material-ui/core/Grid';
 import { hot } from 'react-hot-loader';
-import Notification from './containers/Notification';
 import Auth from './services/auth';
 import store from './store';
 import {updateAuth} from './actions/auth';
 import Typography from '@material-ui/core/Typography';
+import NotificationBar from './components/NotificationBar';
 
 const auth = new Auth();
 const {isAuthenticated, renewSession} = auth;
@@ -195,7 +195,7 @@ class App extends Component {
                         </Typography>
                     </footer>
                 </div>
-                <Notification/>
+                <NotificationBar/>
             </Fragment>
         );
     }

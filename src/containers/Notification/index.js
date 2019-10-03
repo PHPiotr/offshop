@@ -1,11 +1,10 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import io from 'socket.io-client';
 import NotificationBar from '../../components/NotificationBar';
-import {syncQuantities, onCreateProduct, onUpdateProduct, onDeleteProduct} from '../../actions/products';
+import {syncQuantities} from '../../actions/products';
 import {showNotification} from "../../actions/notification";
-
-const socket = io(process.env.REACT_APP_API_HOST);
+import io from '../../io';
+const socket = io();
 
 class Notification extends Component {
 
@@ -23,27 +22,6 @@ class Notification extends Component {
         socket.on('quantities', function({productsIds, productsById}) {
             that.props.handleSyncQuantities(productsIds, productsById);
         });
-        socket.on('createProduct', function(product) {
-            that.props.handleOnCreateProduct(product);
-            that.props.handleShowNotification({
-                message: 'Dodano nowy produkt',
-                variant: 'success',
-            });
-        });
-        socket.on('updateProduct', function(product) {
-            that.props.handleOnUpdateProduct(product);
-            that.props.handleShowNotification({
-                message: 'Zmodyfikowano produkt',
-                variant: 'success',
-            });
-        });
-        socket.on('deleteProduct', function(product) {
-            that.props.handleOnDeleteProduct(product);
-            that.props.handleShowNotification({
-                message: 'Usunięto produkt',
-                variant: 'warning',
-            });
-        });
     }
 
     render() {
@@ -59,15 +37,6 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
     handleSyncQuantities(productsIds, productsById) {
         dispatch(syncQuantities(productsIds, productsById));
-    },
-    handleOnCreateProduct(product) {
-        dispatch(onCreateProduct(product));
-    },
-    handleOnUpdateProduct(product) {
-        dispatch(onUpdateProduct(product));
-    },
-    handleOnDeleteProduct(product) {
-        dispatch(onDeleteProduct(product));
     },
     handleShowNotification(payload) {
         dispatch(showNotification(payload));

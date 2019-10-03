@@ -1,46 +1,106 @@
-import React, {Component, Fragment} from 'react';
+import React, {Fragment, useEffect} from 'react';
 import PropTypes from 'prop-types';
 import CheckoutView from '../../components/Checkout';
 import {connect} from 'react-redux';
 import ProgressIndicator from '../../components/ProgressIndicator';
-import {setActiveStepId} from '../../actions/checkout';
+import {
+    setActiveStepId,
+    onUpdateProductInCartSummary,
+    onDeleteProductInCartSummary,
+} from '../../actions/checkout';
 import {resetOrderData} from '../../actions/order';
+import io from '../../io';
+import {showNotification} from '../../actions/notification';
+const socket = io();
 
-class Checkout extends Component {
-    componentDidMount() {
-        if (this.props.order.data.extOrderId) {
-            this.props.resetOrderData();
-        }
-        if (!this.props.hasProductsInCart) {
-            this.props.history.replace('/');
-        }
-    }
+const Checkout = props => {
+    const {
+        products,
+        setActiveStepId,
+        resetOrderData,
+        onUpdateProductInCartSummary,
+        onDeleteProductInCartSummary,
+        showNotification,
+        order,
+        hasProductsInCart,
+    } = props;
 
-    componentWillReceiveProps(nextProps,nextContext) {
-        if (nextProps.order.data.extOrderId) {
-            if (nextProps.order.data.redirectUri) {
-                window.location.href = nextProps.order.data.redirectUri;
+    const onUpdateProductListener = ({product}) => {
+        const productInCart = products.find(i => i.id === product.id);
+        if (productInCart) {
+            if (product.active && product.stock) {
+                onUpdateProductInCartSummary(product);
+                showNotification({
+                    message: `Produkt ${product.name} został zmieniony.`,
+                    variant: 'warning',
+                });
             } else {
-                this.props.setActiveStepId(0);
-                this.props.history.replace('/order');
+                onUpdateProductInCartSummary(product);
+                showNotification({
+                    message: `Produkt ${product.name} został usunięty.`,
+                    variant: 'warning',
+                });
             }
         }
+    };
+    const onDeleteProductListener = ({product}) => {
+        const productInCart = products.find(i => i.id === product.id);
+        if (productInCart) {
+            onDeleteProductInCartSummary(product);
+            showNotification({
+                message: `Produkt ${product.name} został usunięty.`,
+                variant: 'warning',
+            });
+        }
+    };
+
+    useEffect(() => {
+        socket.on('updateProduct', onUpdateProductListener);
+        socket.on('deleteProduct', onDeleteProductListener);
+        return () => {
+            socket.off('updateProduct', onUpdateProductListener);
+            socket.off('deleteProduct', onDeleteProductListener);
+        }
+    });
+
+    useEffect(() => {
+        const {isCreating, isDoneCreating, data} = order;
+        if (hasProductsInCart && !isDoneCreating) {
+            resetOrderData();
+            return;
+        }
+        if (data.extOrderId && (isDoneCreating || isCreating)) {
+            if (data.redirectUri) {
+                window.location.href = data.redirectUri;
+            } else {
+                props.history.replace('/order');
+            }
+        }
+        if (!hasProductsInCart && !isDoneCreating) {
+            props.history.replace('/');
+        }
+    }, [order.isDoneCreating]);
+
+    if (order.isCreating || !hasProductsInCart) {
+        return <ProgressIndicator/>;
     }
 
-    render() {
-        return (
-            <Fragment>
-                {this.props.order.isCreating && <ProgressIndicator/>}
-                <CheckoutView />
-            </Fragment>
-        );
-    }
-}
+    return <CheckoutView />;
+};
 
 const mapStateToProps = state => ({
+    products: state.cart.ids.map(i => state.products.data[i]) || [],
     order: state.order,
     hasProductsInCart: state.cart.ids.length > 0,
 });
+
+const mapDispatchToProps = {
+    setActiveStepId,
+    resetOrderData,
+    onUpdateProductInCartSummary,
+    onDeleteProductInCartSummary,
+    showNotification,
+};
 
 Checkout.propTypes = {
     order: PropTypes.shape({
@@ -49,4 +109,4 @@ Checkout.propTypes = {
     }).isRequired,
 };
 
-export default connect(mapStateToProps, {setActiveStepId, resetOrderData})(Checkout);
+export default connect(mapStateToProps, mapDispatchToProps)(Checkout);

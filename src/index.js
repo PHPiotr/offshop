@@ -6,11 +6,14 @@ import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 import store from './store';
+import ErrorBoundary from './containers/ErrorBoundary';
 
 ReactDOM.render(
     <Provider store={store}>
         <Router>
-            <App/>
+            <ErrorBoundary>
+                <App/>
+            </ErrorBoundary>
         </Router>
     </Provider>,
     document.getElementById('root')

@@ -1,5 +1,6 @@
 import * as actions from '../../actions/deliveryMethods';
 import {combineReducers} from 'redux';
+import {CREATE_ORDER_SUCCESS} from '../../actions/order';
 
 const initialIds = [];
 const initialData = {};
@@ -12,6 +13,8 @@ const ids = (state = initialIds, {type, payload}) => {
             return payload.result;
         case actions.ON_CREATE_DELIVERY_METHOD:
             return [payload.deliveryMethod.id, ...state];
+        case CREATE_ORDER_SUCCESS:
+            return [...initialIds];
         default:
             return state;
     }
@@ -31,6 +34,8 @@ const data = (state = initialData, {type, payload}) => {
         case actions.ON_CREATE_DELIVERY_METHOD:
             state[payload.deliveryMethod.id] = payload.deliveryMethod;
             return state;
+        case CREATE_ORDER_SUCCESS:
+            return {...initialData};
         default:
             return state;
     }
@@ -40,6 +45,8 @@ const currentId = (state = initialCurrentId, {type, payload}) => {
     switch (type) {
         case actions.SET_CURRENT_DELIVERY_METHOD:
             return payload.current.id;
+        case CREATE_ORDER_SUCCESS:
+            return initialCurrentId;
         default:
             return state;
     }

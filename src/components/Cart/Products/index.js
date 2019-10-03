@@ -125,7 +125,7 @@ ProductsInCart.propTypes = {
 
 const mapStateToProps = state => ({
     cart: state.cart,
-    products: state.cart.ids.map(i => state.products.data[i]),
+    products: state.cart.ids.map(i => state.products.data[i]) || [],
 });
 
 const mapDispatchToProps = dispatch => ({

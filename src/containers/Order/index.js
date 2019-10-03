@@ -1,27 +1,32 @@
-import React, {Component} from 'react';
+import React, {useEffect} from 'react';
 import PropTypes from 'prop-types';
 import {connect} from "react-redux";
 import ProgressIndicator from '../../components/ProgressIndicator';
 import OrderView from '../../components/Order';
+import {resetIsCreated} from '../../actions/order';
 
-class Order extends Component {
+const Order = props => {
 
-    componentDidMount() {
-        if (!this.props.order.data.extOrderId) {
-            this.props.history.replace('/');
+    const {order, resetIsCreated} = props;
+
+    useEffect(() => {
+        resetIsCreated();
+    }, []);
+
+    useEffect(() => {
+        if (!order.data.extOrderId) {
+            props.history.replace('/');
         }
+    }, [order.isCreating]);
+
+    if (order.isCreating) {
+        return <ProgressIndicator/>;
     }
-
-    render() {
-        if (this.props.order.isCreating) {
-            return <ProgressIndicator/>;
-        }
-        if (!this.props.order.data.extOrderId) {
-            return null;
-        }
-        return <OrderView extOrderId={this.props.order.data.extOrderId}/>;
+    if (!order.data.extOrderId) {
+        return <ProgressIndicator/>;
     }
-}
+    return <OrderView extOrderId={order.data.extOrderId}/>;
+};
 
 const mapStateToProps = state => ({
     order: state.order,
@@ -34,4 +39,4 @@ Order.propTypes = {
     }).isRequired,
 };
 
-export default connect(mapStateToProps)(Order);
+export default connect(mapStateToProps, {resetIsCreated})(Order);

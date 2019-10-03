@@ -28,3 +28,9 @@ export const getProductIfNeeded = slug => async (dispatch, getState) => {
 
 export const RESET_PRODUCT_DATA = 'RESET_PRODUCT_DATA';
 export const resetProductData = () => ({type: RESET_PRODUCT_DATA});
+
+export const ON_UPDATE_CURRENT_PRODUCT = 'ON_UPDATE_CURRENT_PRODUCT';
+export const ON_DELETE_CURRENT_PRODUCT = 'ON_DELETE_CURRENT_PRODUCT';
+
+export const onDeleteCurrentProduct = product => ({type: ON_DELETE_CURRENT_PRODUCT, payload: {product}});
+export const onUpdateCurrentProduct = product => ({type: ON_UPDATE_CURRENT_PRODUCT, payload: {product}});

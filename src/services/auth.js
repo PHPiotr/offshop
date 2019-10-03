@@ -1,4 +1,7 @@
 import Auth0 from 'auth0-js';
+import getSocket from '../io';
+
+const socket = getSocket();
 
 const auth0 = new Auth0.WebAuth({
     domain: process.env.REACT_APP_AUTH0_DOMAIN,
@@ -69,6 +72,7 @@ export default class Auth {
         this.accessToken = authResult.accessToken;
         this.idToken = authResult.idToken;
         this.expiresAt = expiresAt;
+        socket.emit('userLoggedIn');
     }
 
     login() {
@@ -79,6 +83,7 @@ export default class Auth {
         this.accessToken = null;
         this.idToken = null;
         this.expiresAt = 0;
+        socket.emit('userLoggedOut');
     }
 
     isAuthenticated() {

@@ -5,7 +5,6 @@ import { composeWithDevTools } from 'redux-devtools-extension';
 import rootReducer from '../reducers';
 import {loadState, saveState} from "../services/localStorage";
 import throttle from 'lodash.throttle';
-import {initialState as orderInitialState} from '../reducers/order';
 
 const devEnv = process.env.NODE_ENV === 'development';
 
@@ -26,10 +25,10 @@ const configureStore = initialState => {
         const state = store.getState();
         saveState({
             auth: state.auth,
+            products: state.products,
             cart: state.cart,
             checkout: state.checkout,
-            order: {...orderInitialState, data: state.order.data, error: state.order.error},
-            products: {...state.products},
+            order: state.order,
             deliveryMethods: {...state.deliveryMethods},
             form: {...state.form},
         });

@@ -12,7 +12,7 @@ export default (state = initialState, action) => {
             return {...state, ...action.payload, open: true};
 
         case HIDE_NOTIFICATION:
-            return {...state, open: false};
+            return {...state, open: false, message: ''};
 
         default:
             return state;

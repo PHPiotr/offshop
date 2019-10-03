@@ -1,4 +1,4 @@
-import React, {Fragment, useState} from 'react';
+import React, {Fragment, useState, useEffect} from 'react';
 import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
 import {Field, Form, reduxForm, formValueSelector, isValid} from 'redux-form';
@@ -11,7 +11,9 @@ import SubHeader from '../../../components/SubHeader';
 import {getAdminProductIfNeeded, resetAdminProduct} from '../../../actions/admin/product';
 import {inputs, inputKeys, initialValues} from './config';
 import RequestHandler from '../../../containers/RequestHandler';
+import io from '../../../io';
 
+const socket = io();
 
 const FORM_NAME = 'product';
 
@@ -44,6 +46,25 @@ let ProductForm = props => {
     const [currentSlug, setCurrentSlug] = useState(null);
     const [currentImage, setCurrentImage] = useState(null);
     let action = null;
+
+    const onAdminCreateProductListener = ({product}) => props.showNotification({
+        message: `Produkt ${product.name} został dodany.`,
+        variant: 'success',
+    });
+
+    const onAdminUpdateProductListener = ({product}) => props.showNotification({
+        message: `Produkt ${product.name} został zmieniony.`,
+        variant: 'success',
+    });
+
+    useEffect(() => {
+        socket.on('adminCreateProduct', onAdminCreateProductListener);
+        socket.on('adminUpdateProduct', onAdminUpdateProductListener);
+        return () => {
+            socket.off('adminCreateProduct', onAdminCreateProductListener);
+            socket.off('adminUpdateProduct', onAdminUpdateProductListener);
+        }
+    }, []);
     if (props.match.params.productId) {
         action = () => props.getAdminProductIfNeeded(props.match.params.productId).then((response => {
             if (response.status === 200) {
@@ -181,6 +202,9 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
+    showNotification(payload) {
+        dispatch(showNotification(payload));
+    },
     handleResetAdminProduct() {
         return dispatch(resetAdminProduct());
     },

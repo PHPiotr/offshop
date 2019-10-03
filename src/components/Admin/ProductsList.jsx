@@ -18,6 +18,10 @@ import Button from '@material-ui/core/Button';
 import Dialog from '../../components/Dialog';
 import ProgressIndicator from '../../components/ProgressIndicator';
 import {getAdminProductsIfNeeded, deleteProductIfNeeded} from '../../actions/admin/products';
+import {showNotification} from '../../actions/notification';
+import io from '../../io';
+
+const socket = io();
 
 const styles = theme => ({
     root: {
@@ -39,9 +43,22 @@ const styles = theme => ({
 const ProductsList = props => {
     const [sort, setSort] = useState('name');
     const [order, setOrder] = useState(1);
+    const {getAdminProductsIfNeeded} = props;
+
+    const onAdminDeleteProductListener = ({product}) => props.showNotification({
+        message: `Produkt ${product.name} został usunięty.`,
+        variant: 'warning',
+    });
+
     useEffect(() => {
-        props.getAdminProductsIfNeeded({sort, order});
+        socket.on('adminDeleteProduct', onAdminDeleteProductListener);
+        return () => {
+            socket.off('adminDeleteProduct', onAdminDeleteProductListener);
+        }
     }, []);
+    useEffect(() => {
+        getAdminProductsIfNeeded({sort, order});
+    }, [sort, order]);
     const [isDialogOpen, setDialogOpen] = useState(false);
     const [productToDelete, setProductToDelete] = useState({});
 
@@ -127,7 +144,8 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = {
     getAdminProductsIfNeeded,
-    deleteProductIfNeeded
+    deleteProductIfNeeded,
+    showNotification,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(ProductsList));
