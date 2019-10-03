@@ -31,13 +31,35 @@ const useStyles = makeStyles(theme => ({
 
 const OrdersList = props => {
     const classes = useStyles();
+    const {
+        getAdminOrdersIfNeeded,
+        onAdminOrder,
+        showNotification,
+    } = props;
     useEffect(() => {
-        props.getAdminOrdersIfNeeded();
+        getAdminOrdersIfNeeded();
     }, []);
-    useEffect(() => {
-        socket.on('adminOrder', order => {
-            props.onAdminOrder(order);
+    const onAdminCreateOrderListener = order => {
+        onAdminOrder(order);
+        showNotification({
+            message: `Nowa transakcja: ${order.extOrderId} została dodana.`,
+            variant: 'success',
         });
+    };
+    const onAdminUpdateOrderListener = order => {
+        onAdminOrder(order);
+        showNotification({
+            message: `Status transakcji: ${order.extOrderId} został zmieniony.`,
+            variant: 'warning',
+        });
+    };
+    useEffect(() => {
+        socket.on('adminCreateOrder', onAdminCreateOrderListener);
+        socket.on('adminUpdateOrder', onAdminUpdateOrderListener);
+        return () => {
+            socket.off('adminCreateOrder', onAdminCreateOrderListener);
+            socket.off('adminUpdateOrder', onAdminUpdateOrderListener);
+        };
     }, []);
 
     return (

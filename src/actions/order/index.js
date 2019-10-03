@@ -9,6 +9,7 @@ export const CREATE_ORDER_REQUEST = 'CREATE_ORDER_REQUEST';
 export const CREATE_ORDER_SUCCESS = 'CREATE_ORDER_SUCCESS';
 export const CREATE_ORDER_FAILURE = 'CREATE_ORDER_FAILURE';
 export const RESET_ORDER_DATA = 'RESET_ORDER_DATA';
+export const RESET_IS_CREATED = 'RESET_IS_CREATED';
 
 export const createOrderIfNeeded = payMethods => {
 
@@ -75,3 +76,5 @@ export const createOrderIfNeeded = payMethods => {
 export const handleCreateOrderError = e => showNotification({message: (e.response && e.response.data && e.response.data.message) || e.message || 'Something went wrong', variant: 'error'});
 
 export const resetOrderData = () => ({type: RESET_ORDER_DATA});
+
+export const resetIsCreated = () => ({type: RESET_IS_CREATED});

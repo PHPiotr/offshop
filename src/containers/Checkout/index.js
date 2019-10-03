@@ -21,6 +21,8 @@ const Checkout = props => {
         onUpdateProductInCartSummary,
         onDeleteProductInCartSummary,
         showNotification,
+        order,
+        hasProductsInCart,
     } = props;
 
     const onUpdateProductListener = ({product}) => {
@@ -62,26 +64,28 @@ const Checkout = props => {
     });
 
     useEffect(() => {
-        if (props.order.data.extOrderId) {
-            if (props.order.data.redirectUri) {
-                window.location.href = props.order.data.redirectUri;
+        const {isCreating, isDoneCreating, data} = order;
+        if (hasProductsInCart && !isDoneCreating) {
+            resetOrderData();
+            return;
+        }
+        if (data.extOrderId && (isDoneCreating || isCreating)) {
+            if (data.redirectUri) {
+                window.location.href = data.redirectUri;
             } else {
-                resetOrderData();
-                setActiveStepId(0);
                 props.history.replace('/order');
             }
         }
-        if (!props.hasProductsInCart) {
+        if (!hasProductsInCart && !isDoneCreating) {
             props.history.replace('/');
         }
-    }, []);
+    }, [order.isDoneCreating]);
 
-    return (
-        <Fragment>
-            {props.order.isCreating && <ProgressIndicator/>}
-            <CheckoutView />
-        </Fragment>
-    );
+    if (order.isCreating || !hasProductsInCart) {
+        return <ProgressIndicator/>;
+    }
+
+    return <CheckoutView />;
 };
 
 const mapStateToProps = state => ({

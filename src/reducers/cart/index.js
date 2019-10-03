@@ -161,14 +161,7 @@ const cart = (state = initialState, { payload, type }) => {
 
         case CREATE_ORDER_SUCCESS:
             return {
-                ...state,
-                quantity: 0,
-                weight: 0,
-                totalPrice: 0,
-                deliveryTotalPrice: 0,
-                totalPriceWithDelivery: 0,
-                ids: [],
-                products: {},
+                ...initialState
             };
         default:
             return state;

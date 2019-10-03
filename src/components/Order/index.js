@@ -22,16 +22,16 @@ const styles = theme => ({
 
 const Order = ({classes, extOrderId}) => (
     <Fragment>
-        <SubHeader content="Dziękujemy za udane zakupy!"/>
+        <SubHeader content={`Zamówienie`}/>
         <Paper className={classes.paper}>
             <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
                 <Typography variant="subtitle1">
-                    {`Numer Twojego zamówienia:  ${extOrderId}`}
+                    {`Numer zamówienia:  ${extOrderId}`}
                 </Typography>
             </Grid>
             <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
                 <Typography variant="subtitle1">
-                    Wszystkie informacje znajdziesz w wiadomości, którą wysłaliśmy na Twój adres e-mail.
+                    Więcej informacji w Twojej skrzynce e-mail.
                 </Typography>
             </Grid>
         </Paper>
