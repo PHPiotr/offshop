@@ -19,24 +19,29 @@ const styles = theme => ({
     paper: {
         marginTop: 0,
         marginBottom: theme.spacing(3),
-        padding: theme.spacing(2),
         [theme.breakpoints.up(600 + theme.spacing(6))]: {
             marginTop: 0,
             marginBottom: theme.spacing(6),
             padding: theme.spacing(3),
         },
         width: '100%',
+        boxShadow: 'none',
+        background: 'none',
     },
     stepper: {
         padding: `${theme.spacing(3)}px 0 ${theme.spacing(5)}px`,
+        background: 'none',
+    },
+    step: {
+        paddingLeft: '3px',
+        paddingRight: '3px',
     },
     buttons: {
         display: 'flex',
-        justifyContent: 'flex-end',
     },
     button: {
         marginTop: theme.spacing(3),
-        marginLeft: theme.spacing(1),
+        marginLeft: 0,
     },
 });
 
@@ -67,7 +72,7 @@ const Checkout = props => {
         <Paper className={classes.paper}>
             <Stepper activeStep={activeStepId} className={classes.stepper}>
                 {stepsIds.map(id => (
-                    <Step key={id}>
+                    <Step key={id} className={classes.step}>
                         <StepLabel>{steps[id].label}</StepLabel>
                     </Step>
                 ))}
@@ -78,7 +83,13 @@ const Checkout = props => {
                 </Typography>
                 {getStepContent(activeStepId)}
                 <div className={classes.buttons}>
-                    <Button onClick={activeStepId === stepsIds[0] ? props.redirectToCart : props.handleBack} className={classes.button}>Wróć</Button>
+                    <Button
+                        variant="contained"
+                        color="disabled"
+                        onClick={activeStepId === stepsIds[0] ? props.redirectToCart : props.handleBack}
+                        className={classes.button}
+                        style={{marginRight: '1rem'}}
+                    >Wróć</Button>
                     {activeStepId !== stepsIds[stepsIds.length - 1] && (
                         <Button
                             variant="contained"
@@ -86,9 +97,7 @@ const Checkout = props => {
                             onClick={props.handleNext}
                             className={classes.button}
                             disabled={!canProceed}
-                        >
-                            Dalej
-                        </Button>
+                        >Dalej</Button>
                     )}
                 </div>
             </Fragment>

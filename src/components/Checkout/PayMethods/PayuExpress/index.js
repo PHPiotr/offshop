@@ -8,11 +8,12 @@ import withPayuExpress from '../../../../hoc/withPayuExpress';
 
 const styles = theme => ({
     button: {
-        marginTop: theme.spacing(3),
-        marginLeft: theme.spacing(1),
+        marginTop: theme.spacing(1),
+        marginLeft: 0,
         border: 0,
-        height: '50px',
-        width: '291px',
+        height: '42px',
+        width: '240px',
+        backgroundSize: 'contain',
         background: 'url(http://static.payu.com/pl/standard/partners/buttons/payu_account_button_long_03.png) no-repeat',
         cursor: 'pointer',
         margin: 0,
