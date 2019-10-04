@@ -9,6 +9,7 @@ const styles = () => ({
         cursor: 'pointer',
         background: 'none',
         border: 'none',
+        padding: 0,
     },
 });
 

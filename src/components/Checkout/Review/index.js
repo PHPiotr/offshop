@@ -8,17 +8,17 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Divider from '@material-ui/core/Divider';
-import Grid from "@material-ui/core/Grid";
 import PayMethods from '../PayMethods';
 
 const styles = theme => ({
     listItem: {
         padding: `${theme.spacing(1)}px 0`,
     },
-    total: {
+    bold: {
         fontWeight: '700',
     },
     title: {
+        fontWeight: '700',
         marginTop: theme.spacing(2),
     },
     payMethods: {
@@ -42,7 +42,6 @@ let Review = props => {
                                     secondary={`${cart.products[id].quantity} szt.`}
                                 />
                                 <Typography variant="body2">
-                                    {cart.products[id].quantity > 1 && `${(unitPrice / 100).toFixed(2)} zł x ${cart.products[id].quantity} szt. = `}
                                     {`${(totalPrice/100).toFixed(2)} ${currency}`}
                                 </Typography>
                             </ListItem>
@@ -54,58 +53,60 @@ let Review = props => {
                     <ListItem className={classes.listItem}>
                         <ListItemText primary="Dostawa" secondary={props.deliveryMethod.name}/>
                         <Typography variant="body2">
-                            {cart.weight/100 !== 1 && `${cart.weight/100} kg x ${(cart.deliveryUnitPrice / 100).toFixed(2)} zł = ${props.deliveryPrice} zł`}
+                            {`${props.deliveryPrice} zł`}
                         </Typography>
                     </ListItem>
                     <Divider/>
                 </Fragment>
                 <ListItem className={classes.listItem}>
                     <ListItemText primary="Do zapłaty"/>
-                    <Typography variant="subtitle1" className={classes.total}>
+                    <Typography variant="subtitle1" className={classes.bold}>
                         {`${(totalAmount / 100).toFixed(2)} ${currency}`}
                     </Typography>
                 </ListItem>
                 <Divider/>
             </List>
-
-            <Grid container spacing={10}>
-                <Grid item xs={12} sm={6}>
-                    <Typography variant="h6" gutterBottom className={classes.title}>
-                        Dane kupującego
+            {buyerDetails.length > 0 && (
+                <Fragment>
+                    <Typography variant="subtitle1" gutterBottom className={classes.title}>
+                        Dane osoby kupującej
                     </Typography>
-                    <Grid container>
-                        {buyerDetails.map(({label, value}) => (
+                    {buyerDetails.map(({label, value}) => (
+                        <Fragment key={label}>
+                            <ListItem className={classes.listItem}>
+                                <ListItemText
+                                    primary={value}
+                                    secondary={label}
+                                />
+                            </ListItem>
+                            <Divider/>
+                        </Fragment>
+                    ))}
+                </Fragment>
+            )}
+            {(props.deliveryMethod.unitPrice > 0 && buyerDeliveryDetails.length > 0) && (
+                <Fragment>
+                    <Typography variant="subtitle1" gutterBottom className={classes.title}>
+                        Dane do wysyłki
+                    </Typography>
+                    <List disablePadding>
+                        {buyerDeliveryDetails.map(({label, value}) => (
                             <Fragment key={label}>
-                                <Grid item xs={6}>
-                                    <Typography gutterBottom>{label}</Typography>
-                                </Grid>
-                                <Grid item xs={6}>
-                                    <Typography gutterBottom>{value}</Typography>
-                                </Grid>
+                                <ListItem className={classes.listItem}>
+                                    <ListItemText
+                                        primary={value}
+                                        secondary={label}
+                                    />
+                                </ListItem>
+                                <Divider/>
                             </Fragment>
                         ))}
-                    </Grid>
-                </Grid>
-                {props.deliveryMethod.unitPrice > 0 && (
-                    <Grid item container direction="column" xs={12} sm={6}>
-                        <Typography variant="h6" gutterBottom className={classes.title}>
-                            Dane do wysyłki
-                        </Typography>
-                        <Grid container>
-                            {buyerDeliveryDetails.map(({label, value}) => (
-                                <Fragment key={label}>
-                                    <Grid item xs={6}>
-                                        <Typography gutterBottom>{label}</Typography>
-                                    </Grid>
-                                    <Grid item xs={6}>
-                                        <Typography gutterBottom>{value}</Typography>
-                                    </Grid>
-                                </Fragment>
-                            ))}
-                        </Grid>
-                    </Grid>
-                )}
-            </Grid>
+                    </List>
+                </Fragment>
+            )}
+            <Typography variant="subtitle1" gutterBottom className={classes.title}>
+                Wybierz metodę płatności
+            </Typography>
             <PayMethods />
         </Fragment>
     );

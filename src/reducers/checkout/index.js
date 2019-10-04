@@ -14,17 +14,17 @@ const initialState = {
     steps: {
         0: {
             id: 0,
-            label: 'Dane kupującego',
+            label: 'Klient',
             value: 'buyer',
         },
         1: {
             id: 1,
-            label: 'Dane do wysyłki',
+            label: 'Adres',
             value: 'buyerDelivery',
         },
         2: {
             id: 2,
-            label: 'Podsumowanie',
+            label: 'Płatność',
             value: 'review',
         }
     },

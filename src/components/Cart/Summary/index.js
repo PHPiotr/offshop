@@ -56,14 +56,11 @@ const CartSummary = props => {
                                         className={classes.inline}
                                         color="textPrimary"
                                     >
-                                        {`${name}: ${(unitPrice * (cart.weight / 100) / 100).toFixed(2)} zł`}
-                                        {unitPrice > 0 && ` / ${cart.weight / 100} kg`}
+                                        {`${name}: `}
                                     </Typography>
-                                    {(unitPrice > 0 && (cart.weight / 100) > 1) && (
-                                        <Typography component="span" color="textSecondary">
-                                            {` (${(unitPrice / 100).toFixed(2)} zł / kg)`}
-                                        </Typography>
-                                    )}
+                                    <Typography component="span" color="textSecondary">
+                                        {`${(unitPrice * (cart.weight / 100) / 100).toFixed(2)} zł`}
+                                    </Typography>
                                 </React.Fragment>
                             }
                             labelPlacement="end"
@@ -96,7 +93,7 @@ const CartSummary = props => {
                     variant="contained"
                     color="primary"
                 >
-                    Zamów
+                    Dalej
                 </Button>
             </div>
         </div>
