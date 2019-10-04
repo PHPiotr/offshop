@@ -12,20 +12,21 @@ import {connect} from 'react-redux';
 import {setCurrentDeliveryMethod} from '../../../actions/deliveryMethods';
 import {withRouter} from 'react-router-dom';
 
-const styles = theme => ({
+const styles = () => ({
     root: {
         width: '100%',
-        backgroundColor: theme.palette.background.paper,
     },
     section1: {
-        margin: `${theme.spacing(3)}px ${theme.spacing(2)}px`,
+        margin: '2rem 0',
     },
     section2: {
-        margin: theme.spacing(2),
+        margin: '1rem 0',
     },
     section3: {
-        margin: `${theme.spacing(6)}px ${theme.spacing(2)}px ${theme
-            .spacing(2)}px`,
+        margin: '2rem 0 1rem',
+    },
+    divider: {
+        margin: 0,
     },
 });
 
@@ -72,7 +73,7 @@ const CartSummary = props => {
                     ))}
                 </RadioGroup>
             </div>
-            <Divider variant="middle" />
+            <Divider variant="middle" className={classes.divider} />
             <div className={classes.section2}>
                 <Grid container alignItems="center">
                     <Grid item xs>
@@ -87,7 +88,7 @@ const CartSummary = props => {
                     </Grid>
                 </Grid>
             </div>
-            <Divider variant="middle" />
+            <Divider variant="middle" className={classes.divider} />
             <div className={classes.section3}>
                 <Button
                     onClick={props.checkout}
