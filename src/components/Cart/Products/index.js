@@ -13,7 +13,6 @@ import AddShoppingCartIcon from '@material-ui/icons/Add';
 import RemoveShoppingCartIcon from '@material-ui/icons/Remove';
 import DeleteIcon from '@material-ui/icons/RemoveShoppingCart';
 import Divider from '@material-ui/core/Divider';
-import TextField from '@material-ui/core/TextField';
 import {connect} from 'react-redux';
 import { Link as RouterLink } from 'react-router-dom';
 import Link from '@material-ui/core/Link';
@@ -22,18 +21,19 @@ import {addToCart, decrementInCart, deleteFromCart} from "../../../actions/cart"
 const styles = theme => ({
     root: {
         width: '100%',
-        backgroundColor: theme.palette.background.paper,
+    },
+    listItem: {
+        paddingLeft: 0,
+        paddingRight: 0,
+    },
+    secondaryAction: {
+        right: '-1rem',
     },
     inline: {
         display: 'inline',
     },
     textField: {
-        marginLeft: 0,
-        marginRight: 0,
-        width: '45px',
-        textAlign: 'center',
-        borderRadius: 0,
-        padding: 0,
+        lineHeight: '3rem',
     },
 });
 
@@ -56,27 +56,22 @@ const ProductsInCart = props => {
                 const productInCart = cart.products[p.id];
                 return (
                     <Fragment key={p.id}>
-                        <ListItem key={p.id} alignItems="flex-start">
+                        <ListItem key={p.id} alignItems="flex-start" className={classes.listItem}>
                             <ListItemAvatar>
                                 <Avatar src={`${process.env.REACT_APP_PRODUCT_PATH}/${p.images[0].avatar}`} alt={p.name}/>
                             </ListItemAvatar>
                             <ListItemText
                                 primary={<Link component={RouterLink} to={`/products/${p.slug}`}>{p.name}</Link>}
                                 secondary={
-                                    <Fragment>
-                                        <Typography
-                                            component="span"
-                                            className={classes.inline}
-                                            color="textPrimary"
-                                        >
-                                            {`${(p.unitPrice * productInCart.quantity / 100).toFixed(2)} zł / `}
-                                            {`${(p.weight * productInCart.quantity / 100)} kg`}
-                                        </Typography>
-                                        {productInCart.quantity > 1 && ` (${(p.unitPrice / 100).toFixed(2)} zł / ${p.weight / 100} kg / szt.)`}
-                                    </Fragment>
+                                    <Typography
+                                        component="p"
+                                        color="textPrimary"
+                                    >
+                                        {`${(p.unitPrice * productInCart.quantity / 100).toFixed(2)} zł`}
+                                    </Typography>
                                 }
                             />
-                            <ListItemSecondaryAction>
+                            <ListItemSecondaryAction className={classes.secondaryAction}>
                                 <IconButton
                                     id={p.id}
                                     onClick={handleIncrementItemInCart}
@@ -84,14 +79,7 @@ const ProductsInCart = props => {
                                 >
                                     <AddShoppingCartIcon/>
                                 </IconButton>
-                                <TextField
-                                    id={p.id}
-                                    className={classes.textField}
-                                    value={productInCart.quantity}
-                                    helperText={`z ${p.stock} szt.`}
-                                    margin="none"
-                                    type="number"
-                                />
+                                <Typography className={classes.textField} component="span">{productInCart.quantity}</Typography>
                                 <IconButton
                                     id={p.id}
                                     onClick={handleDecrementItemInCart}
