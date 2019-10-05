@@ -14,6 +14,7 @@ import BuyerDeliveryForm from "./BuyerDeliveryForm";
 import {getFormValues, isValid} from 'redux-form';
 import {stepBack, stepNext} from '../../actions/checkout';
 import {withRouter} from 'react-router-dom';
+import steps from '../../config/checkoutSteps';
 
 const styles = theme => ({
     paper: {
@@ -58,7 +59,7 @@ const getStepContent = activeStepId => {
 };
 
 const Checkout = props => {
-    const {classes, activeStepId, stepsIds, steps} = props;
+    const {classes, activeStepId, stepsIds} = props;
 
     const activeStepValue = steps[activeStepId].value;
     let canProceed = false;
@@ -108,7 +109,6 @@ const Checkout = props => {
 Checkout.propTypes = {
     classes: PropTypes.object.isRequired,
     activeStepId: PropTypes.number.isRequired,
-    steps: PropTypes.object.isRequired,
     stepsIds: PropTypes.array.isRequired,
     handleBack: PropTypes.func.isRequired,
     handleNext: PropTypes.func.isRequired,
@@ -120,7 +120,6 @@ Checkout.propTypes = {
 const mapStateToProps = state => ({
     activeStepId: state.checkout.activeStepId || 0,
     stepsIds: state.checkout.stepsIds,
-    steps: state.checkout.steps,
     validBuyerData: isValid('buyer')(state),
     validBuyerDeliveryData: isValid('buyerDelivery')(state),
     buyer: getFormValues('buyer')(state),
