@@ -11,23 +11,6 @@ const stepsIdsWithBuyerDeliverySkipped = [0, 2];
 const initialState = {
     activeStepId: 0,
     stepsIds: [],
-    steps: {
-        0: {
-            id: 0,
-            label: 'Klient',
-            value: 'buyer',
-        },
-        1: {
-            id: 1,
-            label: 'Adres',
-            value: 'buyerDelivery',
-        },
-        2: {
-            id: 2,
-            label: 'Płatność',
-            value: 'review',
-        }
-    },
 };
 
 const checkout = (state = initialState, action) => {
