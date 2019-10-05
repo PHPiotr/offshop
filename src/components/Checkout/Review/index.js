@@ -1,6 +1,5 @@
 import React, {Fragment} from 'react';
 import {connect} from 'react-redux';
-import {getFormValues} from 'redux-form';
 import PropTypes from 'prop-types';
 import {withStyles} from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
@@ -28,7 +27,19 @@ const styles = theme => ({
 });
 
 let Review = props => {
-    const {classes, products, buyerDetails, buyerDeliveryDetails, totalAmount, currency, cart} = props;
+    const {
+        classes,
+        products,
+        buyerIds,
+        buyerFormValues,
+        buyerData,
+        buyerDeliveryIds,
+        buyerDeliveryFormValues,
+        buyerDeliveryData,
+        totalAmount,
+        currency,
+        cart,
+    } = props;
 
     return (
         <Fragment>
@@ -42,7 +53,7 @@ let Review = props => {
                                     secondary={`${cart.products[id].quantity} szt.`}
                                 />
                                 <Typography variant="body2">
-                                    {`${(totalPrice/100).toFixed(2)} ${currency}`}
+                                    {`${(totalPrice / 100).toFixed(2)} ${currency}`}
                                 </Typography>
                             </ListItem>
                             <Divider/>
@@ -66,36 +77,38 @@ let Review = props => {
                 </ListItem>
                 <Divider/>
             </List>
-            {buyerDetails.length > 0 && (
-                <Fragment>
-                    <Typography variant="subtitle1" gutterBottom className={classes.title}>
-                        Dane osoby kupującej
-                    </Typography>
-                    {buyerDetails.map(({label, value}) => (
-                        <Fragment key={label}>
+            <Fragment>
+                <Typography variant="subtitle1" gutterBottom className={classes.title}>
+                    Dane osoby kupującej
+                </Typography>
+                {buyerIds
+                    .filter(id => buyerFormValues[id] !== undefined)
+                    .map(id => (
+                        <Fragment key={id}>
                             <ListItem className={classes.listItem}>
                                 <ListItemText
-                                    primary={value}
-                                    secondary={label}
+                                    primary={buyerFormValues[id]}
+                                    secondary={buyerData[id].label}
                                 />
                             </ListItem>
                             <Divider/>
                         </Fragment>
                     ))}
-                </Fragment>
-            )}
-            {(props.deliveryMethod.unitPrice > 0 && buyerDeliveryDetails.length > 0) && (
+            </Fragment>
+            {props.deliveryMethod.unitPrice > 0 && (
                 <Fragment>
                     <Typography variant="subtitle1" gutterBottom className={classes.title}>
                         Dane do wysyłki
                     </Typography>
                     <List disablePadding>
-                        {buyerDeliveryDetails.map(({label, value}) => (
-                            <Fragment key={label}>
+                        {buyerDeliveryIds
+                            .filter(id => buyerDeliveryFormValues[id] !== undefined)
+                            .map(id => (
+                            <Fragment key={id}>
                                 <ListItem className={classes.listItem}>
                                     <ListItemText
-                                        primary={value}
-                                        secondary={label}
+                                        primary={buyerDeliveryFormValues[id]}
+                                        secondary={buyerDeliveryData[id].label}
                                     />
                                 </ListItem>
                                 <Divider/>
@@ -107,13 +120,10 @@ let Review = props => {
             <Typography variant="subtitle1" gutterBottom className={classes.title}>
                 Wybierz metodę płatności
             </Typography>
-            <PayMethods />
+            <PayMethods/>
         </Fragment>
     );
 };
-
-let buyerValues;
-let buyerDeliveryValues;
 
 const mapStateToProps = state => ({
     products: state.cart.ids.map(i => {
@@ -124,26 +134,12 @@ const mapStateToProps = state => ({
             ...productInCart,
         };
     }),
-    buyerDetails: state.buyer.ids.reduce((acc, i) => {
-        if (!buyerValues) {
-            buyerValues = getFormValues('buyer')(state) || {};
-        }
-        const value = buyerValues[i];
-        if (value) {
-            acc.push({label: state.buyer.data[i].label, value});
-        }
-        return acc;
-    }, []),
-    buyerDeliveryDetails: state.buyerDelivery.ids.reduce((acc, i) => {
-        if (!buyerDeliveryValues) {
-            buyerDeliveryValues = getFormValues('buyerDelivery')(state) || {};
-        }
-        const value = buyerDeliveryValues[i];
-        if (value) {
-            acc.push({label: state.buyerDelivery.data[i].label, value});
-        }
-        return acc;
-    }, []),
+    buyerIds: state.buyer.ids,
+    buyerFormValues: state.form.buyer.values,
+    buyerData: state.buyer.data,
+    buyerDeliveryIds: state.buyerDelivery.ids,
+    buyerDeliveryFormValues: state.form.buyerDelivery.values,
+    buyerDeliveryData: state.buyerDelivery.data,
     cart: state.cart,
     totalAmount: state.cart.totalPriceWithDelivery,
     deliveryMethod: state.deliveryMethods.data[state.deliveryMethods.currentId],
@@ -153,8 +149,6 @@ const mapStateToProps = state => ({
 
 Review.propTypes = {
     products: PropTypes.array.isRequired,
-    buyerDetails: PropTypes.array.isRequired,
-    buyerDeliveryDetails: PropTypes.array.isRequired,
     totalAmount: PropTypes.number.isRequired,
     currency: PropTypes.string,
 };
