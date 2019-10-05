@@ -62,14 +62,16 @@ function ProductsGridList(props) {
                     return (
                         <Grid item key={product.id} xs={12} sm={sm} md={md} lg={lg}>
                             <GridListTile className={classes.gridListTitle}>
-                                <img
-                                    src={`${process.env.REACT_APP_PRODUCT_PATH}/${product.images[0].card}`}
-                                    alt={product.name}
-                                    className={classes.image}
-                                />
+                                <Link title={product.name} color="inherit" component={RouterLink} to={`/products/${product.slug}`}>
+                                    <img
+                                        src={`${process.env.REACT_APP_PRODUCT_PATH}/${product.images[0].card}`}
+                                        alt={product.name}
+                                        className={classes.image}
+                                    />
+                                </Link>
                                 <GridListTileBar
                                     className={classes.gridListTileBar}
-                                    title={<Link color="inherit" component={RouterLink}
+                                    title={<Link color="inherit" component={RouterLink} title={product.name}
                                                  to={`/products/${product.slug}`}>{product.name}</Link>}
                                     subtitle={<span>{(product.unitPrice / 100).toFixed(2)} zł</span>}
                                     actionIcon={
