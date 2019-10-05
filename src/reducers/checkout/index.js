@@ -35,9 +35,11 @@ const checkout = (state = initialState, action) => {
                 activeStepId: action.payload.activeStepId,
             };
         case SET_CURRENT_DELIVERY_METHOD:
+            let withDelivery = action.payload.current.unitPrice > 0;
             return {
                 ...state,
-                stepsIds: action.payload.current.unitPrice > 0 ? stepsIdsWithBuyerDeliveryRequired : stepsIdsWithBuyerDeliverySkipped,
+                stepsIds: withDelivery ? stepsIdsWithBuyerDeliveryRequired : stepsIdsWithBuyerDeliverySkipped,
+                activeStepId: withDelivery ? (state.activeStepId === 2 ? 1 : state.activeStepId) : (state.activeStepId === 1 ? 2 : state.activeStepId),
             };
         default:
             return state;
