@@ -23,7 +23,7 @@ const EmptyCart = props => (
             Pusty koszyk
         </Typography>
         <div>
-            <Tooltip title={`world`}>
+            <Tooltip title={`Pusty koszyk`}>
                 <ShoppingCart color="error" style={{fontSize: 140}}/>
             </Tooltip>
         </div>
