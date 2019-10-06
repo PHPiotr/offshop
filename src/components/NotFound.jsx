@@ -8,42 +8,30 @@ import Typography from '@material-ui/core/Typography';
 
 const styles = theme => ({
     errorWrapper: {
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        width: '100%',
-        height: '100%',
-        backgroundColor: 'rgba(0, 0, 0, 0.1)',
-        zIndex: 1,
         textAlign: 'center',
-    },
-    errorInner: {
-        position: 'absolute',
-        margin: theme.spacing(2),
-        top: '40%',
-        left: '50%',
-        marginLeft: -70,
-        marginTop: -70,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        margin: '0 auto',
+        flexDirection: 'column',
     },
 });
 
 const NotFound = props => (
     <div className={props.classes.errorWrapper}>
-        <div className={props.classes.errorInner}>
-            <Typography variant='p' component='h1'>
-                Błąd 404
-            </Typography>
-            <Typography component='p'>
-                Strona nie istnieje.
-            </Typography>
-            <div>
-                <Tooltip title='Strona nie istnieje'>
-                    <Error color="error" style={{fontSize: 140}}/>
-                </Tooltip>
-            </div>
-            <div>
-                <Link component={RouterLink} to="/">Wróć do strony głównej.</Link>
-            </div>
+        <Typography variant='p' component='h1'>
+            Błąd 404
+        </Typography>
+        <Typography component='p'>
+            Strona nie istnieje.
+        </Typography>
+        <div>
+            <Tooltip title='Strona nie istnieje'>
+                <Error color="error" style={{fontSize: 140}}/>
+            </Tooltip>
+        </div>
+        <div>
+            <Link component={RouterLink} to="/">Wróć do strony głównej.</Link>
         </div>
     </div>
 );
