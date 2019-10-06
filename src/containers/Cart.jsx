@@ -1,4 +1,4 @@
-import React, {Component, Fragment, useEffect, useState} from 'react';
+import React, {Fragment, useEffect, useState} from 'react';
 import {connect} from 'react-redux';
 import CartProducts from '../components/Cart/Products';
 import CartSummary from '../components/Cart/Summary';
@@ -7,6 +7,7 @@ import {onUpdateProductInCart, onDeleteProductInCart} from '../actions/cart';
 import {showNotification} from '../actions/notification';
 
 import io from '../io';
+import EmptyCart from '../components/Cart/Empty';
 const socket = io();
 
 const Cart = props => {
@@ -67,7 +68,7 @@ const Cart = props => {
     }, []);
 
     if (!props.products.length) {
-        return null;
+        return <EmptyCart/>;
     }
 
     return (
