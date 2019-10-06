@@ -4,6 +4,7 @@ import withStyles from '@material-ui/core/styles/withStyles';
 import Typography from '@material-ui/core/Typography/Typography';
 import Stepper from '@material-ui/core/Stepper/Stepper';
 import Step from '@material-ui/core/Step/Step';
+import StepButton from '@material-ui/core/StepButton';
 import StepLabel from '@material-ui/core/StepLabel/StepLabel';
 import Button from '@material-ui/core/Button/Button';
 import Paper from '@material-ui/core/Paper/Paper';
@@ -12,7 +13,7 @@ import PropTypes from 'prop-types';
 import BuyerForm from "./BuyerForm";
 import BuyerDeliveryForm from "./BuyerDeliveryForm";
 import {getFormValues, isValid} from 'redux-form';
-import {stepBack, stepNext} from '../../actions/checkout';
+import {stepBack, stepNext, setActiveStepId} from '../../actions/checkout';
 import {withRouter} from 'react-router-dom';
 import steps from '../../config/checkoutSteps';
 
@@ -59,7 +60,7 @@ const getStepContent = activeStepId => {
 };
 
 const Checkout = props => {
-    const {classes, activeStepId, stepsIds} = props;
+    const {classes, activeStepId, stepsIds, handleSetActiveStepId} = props;
 
     const activeStepValue = steps[activeStepId].value;
     let canProceed = false;
@@ -69,12 +70,20 @@ const Checkout = props => {
         canProceed = props.validBuyerData && props.validBuyerDeliveryData;
     }
 
+    const handleOnStepButtonClick = id => () => handleSetActiveStepId(id);
+
     return (
         <Paper className={classes.paper}>
             <Stepper activeStep={activeStepId} className={classes.stepper}>
                 {stepsIds.map(id => (
                     <Step key={id} className={classes.step}>
-                        <StepLabel>{steps[id].label}</StepLabel>
+                        {(id < activeStepId) ? (
+                            <StepButton onClick={handleOnStepButtonClick(id)}>
+                                <StepLabel>{steps[id].label}</StepLabel>
+                            </StepButton>
+                        ) : (
+                            <StepLabel>{steps[id].label}</StepLabel>
+                        )}
                     </Step>
                 ))}
             </Stepper>
@@ -132,6 +141,9 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
     },
     handleBack() {
         dispatch(stepBack());
+    },
+    handleSetActiveStepId(id) {
+        dispatch(setActiveStepId(id));
     },
     redirectToCart() {
         ownProps.history.replace('/cart');
