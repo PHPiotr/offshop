@@ -16,6 +16,7 @@ import Divider from '@material-ui/core/Divider';
 import {connect} from 'react-redux';
 import Button from '@material-ui/core/Button';
 import Dialog from '../../components/Dialog';
+import FloatingAddButton from '../../components/FloatingAddButton';
 import ProgressIndicator from '../../components/ProgressIndicator';
 import {getAdminProductsIfNeeded, deleteProductIfNeeded} from '../../actions/admin/products';
 import {showNotification} from '../../actions/notification';
@@ -128,6 +129,7 @@ const ProductsList = props => {
                     ]
                 }
             />
+            <FloatingAddButton to="/admin/products/new" />
         </Fragment>
     );
 };

@@ -110,7 +110,7 @@ const styles = theme => ({
     },
     grid: {
         padding: 0,
-        paddingBottom: theme.spacing(8),
+        paddingBottom: theme.spacing(5),
     },
     footer: {
         backgroundColor: theme.palette.background.paper,

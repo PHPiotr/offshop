@@ -20,6 +20,10 @@ const FORM_NAME = 'product';
 window.URL = window.URL || window.webkitURL;
 
 const styles = theme => ({
+    form: {
+        paddingLeft: theme.spacing(1),
+        paddingRight: theme.spacing(1),
+    },
     buttons: {
         display: 'flex',
         justifyContent: 'flex-end',
@@ -83,7 +87,7 @@ let ProductForm = props => {
             {() => (
                 <Fragment>
                     <SubHeader content={`${props.match.params.productId ? 'Edytuj' : 'Dodaj'} produkt`}/>
-                    <Form onSubmit={props.handleSubmit} encType="multipart/form-data">
+                    <Form className={props.classes.form} onSubmit={props.handleSubmit} encType="multipart/form-data">
                         <Grid container spacing={10}>
                             {inputKeys.reduce((acc, itemId) => {
                                 const {label, type, validate, component, inputProps} = inputs[itemId];

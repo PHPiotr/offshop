@@ -11,6 +11,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import Divider from '@material-ui/core/Divider';
 import {connect} from 'react-redux';
 import Button from '@material-ui/core/Button';
+import FloatingAddButton from '../../components/FloatingAddButton';
 import Dialog from '../../components/Dialog';
 import ProgressIndicator from '../../components/ProgressIndicator';
 import {getAdminDeliveryMethodsIfNeeded, deleteDeliveryMethodIfNeeded} from '../../actions/admin/deliveryMethods';
@@ -92,6 +93,7 @@ const DeliveryMethodsList = props => {
                     ]
                 }
             />
+            <FloatingAddButton to="/admin/delivery-methods/new" />
         </Fragment>
     );
 };

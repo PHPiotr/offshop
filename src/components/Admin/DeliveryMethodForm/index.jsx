@@ -17,6 +17,10 @@ const FORM_NAME = 'deliveryMethod';
 window.URL = window.URL || window.webkitURL;
 
 const styles = theme => ({
+    form: {
+        paddingLeft: theme.spacing(1),
+        paddingRight: theme.spacing(1),
+    },
     buttons: {
         display: 'flex',
         justifyContent: 'flex-end',
@@ -41,7 +45,7 @@ let DeliveryMethodForm = props => {
             {() => (
                 <Fragment>
                     <SubHeader content={`${props.match.params.id ? 'Edytuj' : 'Dodaj'} opcję dostawy`}/>
-                    <Form onSubmit={props.handleSubmit}>
+                    <Form className={props.classes.form} onSubmit={props.handleSubmit}>
                         <Grid container spacing={10}>
                             {inputKeys.reduce((acc, itemId) => {
                                 const {label, type, validate, component, inputProps} = inputs[itemId];
