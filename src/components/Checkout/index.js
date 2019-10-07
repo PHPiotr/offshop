@@ -19,6 +19,8 @@ import steps from '../../config/checkoutSteps';
 
 const styles = theme => ({
     paper: {
+        paddingLeft: theme.spacing(1),
+        paddingRight: theme.spacing(1),
         marginTop: 0,
         marginBottom: theme.spacing(3),
         [theme.breakpoints.up(600 + theme.spacing(6))]: {
