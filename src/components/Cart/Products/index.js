@@ -27,7 +27,7 @@ const styles = theme => ({
         paddingRight: 0,
     },
     secondaryAction: {
-        right: '-1rem',
+        right: '-0.5rem',
     },
     inline: {
         display: 'inline',
