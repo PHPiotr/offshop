@@ -18,7 +18,6 @@ import AdminNav from '../Admin/Nav';
 
 const styles = theme => ({
     appBar: {
-        marginBottom: '1em',
         color: '#fff !important',
         backgroundColor: '#3f51b5 !important',
     },
