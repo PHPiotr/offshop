@@ -1,7 +1,9 @@
 import React, {Fragment, useEffect, useState} from 'react';
 import {connect} from 'react-redux';
+import {makeStyles} from '@material-ui/core';
 import CartProducts from '../components/Cart/Products';
 import CartSummary from '../components/Cart/Summary';
+import Box from '@material-ui/core/Box';
 import {getDeliveryMethodsIfNeeded} from '../actions/deliveryMethods';
 import {onUpdateProductInCart, onDeleteProductInCart} from '../actions/cart';
 import {showNotification} from '../actions/notification';
@@ -9,6 +11,14 @@ import {showNotification} from '../actions/notification';
 import io from '../io';
 import EmptyCart from '../components/Cart/Empty';
 const socket = io();
+
+const useStyles = makeStyles(theme => ({
+    box: {
+        width: '100%',
+        paddingLeft: theme.spacing(1),
+        paddingRight: theme.spacing(1),
+    },
+}));
 
 const Cart = props => {
 
@@ -67,15 +77,17 @@ const Cart = props => {
         };
     }, []);
 
+    const classes = useStyles();
+
     if (!props.products.length) {
         return <EmptyCart/>;
     }
 
     return (
-        <Fragment>
+        <Box className={classes.box}>
             <CartProducts/>
             <CartSummary/>
-        </Fragment>
+        </Box>
     );
 };
 
