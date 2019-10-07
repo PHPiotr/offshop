@@ -35,26 +35,11 @@ const Nav = props => (
             <Link className={props.classes.link} to="/admin/products/list">
                 <ListItemText primary={`Produkty`} />
             </Link>
-            <ListItemSecondaryAction  className={props.classes.iconLink}>
-                <IconButton aria-label="Dodaj produkt">
-                    <Link className={props.classes.iconLink} to="/admin/products/new">
-                        <AddIcon />
-                    </Link>
-                </IconButton>
-            </ListItemSecondaryAction>
         </ListItem>
         <ListItem dense button className={props.classes.listItem}>
             <Link className={props.classes.link} to="/admin/delivery-methods/list">
                 <ListItemText primary={`Opcje dostawy`} />
             </Link>
-
-            <ListItemSecondaryAction>
-                <IconButton aria-label="Dodaj metodę dostawy">
-                    <Link className={props.classes.iconLink} to="/admin/delivery-methods/new">
-                        <AddIcon />
-                    </Link>
-                </IconButton>
-            </ListItemSecondaryAction>
         </ListItem>
         <Divider />
         <ListItem dense button className={props.classes.listItem}>
