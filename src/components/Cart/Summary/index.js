@@ -12,17 +12,23 @@ import {connect} from 'react-redux';
 import {setCurrentDeliveryMethod} from '../../../actions/deliveryMethods';
 import {withRouter} from 'react-router-dom';
 
-const styles = () => ({
+const styles = theme => ({
     root: {
         width: '100%',
     },
     section1: {
+        paddingLeft: theme.spacing(1),
+        paddingRight: theme.spacing(1),
         margin: '2rem 0',
     },
     section2: {
+        paddingLeft: theme.spacing(1),
+        paddingRight: theme.spacing(1),
         margin: '1rem 0',
     },
     section3: {
+        paddingLeft: theme.spacing(1),
+        paddingRight: theme.spacing(1),
         margin: '2rem 0 1rem',
     },
     divider: {

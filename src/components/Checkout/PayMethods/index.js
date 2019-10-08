@@ -9,9 +9,10 @@ import GooglePay from './GooglePay';
 import {getPayMethods} from '../../../api/payMethods';
 import {authorize} from '../../../api/payu';
 
-const styles = () => ({
+const styles = theme => ({
     listItem: {
-        paddingLeft: 0,
+        paddingLeft: theme.spacing(1),
+        paddingRight: theme.spacing(1),
     },
 });
 

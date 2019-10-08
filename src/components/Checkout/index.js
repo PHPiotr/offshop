@@ -19,8 +19,6 @@ import steps from '../../config/checkoutSteps';
 
 const styles = theme => ({
     paper: {
-        paddingLeft: theme.spacing(1),
-        paddingRight: theme.spacing(1),
         marginTop: 0,
         marginBottom: theme.spacing(3),
         [theme.breakpoints.up(600 + theme.spacing(6))]: {
@@ -33,15 +31,23 @@ const styles = theme => ({
         background: 'none',
     },
     stepper: {
-        padding: `${theme.spacing(3)}px 0 ${theme.spacing(5)}px`,
+        paddingLeft: theme.spacing(1),
+        paddingRight: theme.spacing(1),
+        paddingTop: theme.spacing(3),
+        paddingBottom: theme.spacing(3),
         background: 'none',
     },
     step: {
         paddingLeft: '3px',
         paddingRight: '3px',
     },
+    heading: {
+        paddingLeft: theme.spacing(1),
+        paddingRight: theme.spacing(1),
+    },
     buttons: {
         display: 'flex',
+        paddingLeft: theme.spacing(1),
     },
     button: {
         marginTop: theme.spacing(3),
@@ -90,7 +96,7 @@ const Checkout = props => {
                 ))}
             </Stepper>
             <Fragment>
-                <Typography variant="h6" gutterBottom>
+                <Typography variant="h6" gutterBottom className={classes.heading}>
                     {steps[activeStepId].label}
                 </Typography>
                 {getStepContent(activeStepId)}

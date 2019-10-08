@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import {Field, Form, reduxForm} from 'redux-form';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
+import {makeStyles} from '@material-ui/core';
 
 const renderTextField = ({input, label, meta, ...custom}) => (
     <TextField
@@ -17,12 +18,21 @@ const renderTextField = ({input, label, meta, ...custom}) => (
 
 const validateRequired = value => typeof value === 'string' && value.trim() ? undefined : 'To pole jest wymagane';
 const validateEmail = value => value && /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(value) ? undefined : 'Niepoprawny email';
-
+s
+const useStyles = makeStyles(theme => ({
+    form: {
+        paddingLeft: theme.spacing(1),
+        paddingRight: theme.spacing(1),
+        paddingTop: theme.spacing(2),
+    },
+}));
 
 let BuyerDeliveryForm = props => {
 
+    const classes = useStyles();
+
     return (
-        <Form onSubmit={props.onSubmit}>
+        <Form onSubmit={props.onSubmit} className={classes.form}>
             <Grid container spacing={10}>
                 {props.inputKeys.reduce((acc, itemId) => {
                     const {label, type, validate} = props.inputs[itemId];
