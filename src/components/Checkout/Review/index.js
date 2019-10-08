@@ -1,7 +1,7 @@
 import React, {Fragment} from 'react';
 import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
-import {withStyles} from '@material-ui/core/styles';
+import {makeStyles} from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -9,9 +9,10 @@ import ListItemText from '@material-ui/core/ListItemText';
 import Divider from '@material-ui/core/Divider';
 import PayMethods from '../PayMethods';
 
-const styles = theme => ({
+const useStyles = makeStyles(theme => ({
     listItem: {
-        padding: `${theme.spacing(1)}px 0`,
+        paddingLeft: theme.spacing(1),
+        paddingRight: theme.spacing(1),
     },
     bold: {
         fontWeight: '700',
@@ -19,16 +20,17 @@ const styles = theme => ({
     title: {
         fontWeight: '700',
         marginTop: theme.spacing(2),
+        paddingLeft: theme.spacing(1),
+        paddingRight: theme.spacing(1),
     },
     payMethods: {
         display: 'block',
         textAlign: 'right',
     },
-});
+}));
 
-let Review = props => {
+const Review = props => {
     const {
-        classes,
         products,
         buyerIds,
         buyerFormValues,
@@ -40,6 +42,8 @@ let Review = props => {
         currency,
         cart,
     } = props;
+
+    const classes = useStyles();
 
     return (
         <Fragment>
@@ -104,16 +108,16 @@ let Review = props => {
                         {buyerDeliveryIds
                             .filter(id => buyerDeliveryFormValues[id] !== undefined)
                             .map(id => (
-                            <Fragment key={id}>
-                                <ListItem className={classes.listItem}>
-                                    <ListItemText
-                                        primary={buyerDeliveryFormValues[id]}
-                                        secondary={buyerDeliveryData[id].label}
-                                    />
-                                </ListItem>
-                                <Divider/>
-                            </Fragment>
-                        ))}
+                                <Fragment key={id}>
+                                    <ListItem className={classes.listItem}>
+                                        <ListItemText
+                                            primary={buyerDeliveryFormValues[id]}
+                                            secondary={buyerDeliveryData[id].label}
+                                        />
+                                    </ListItem>
+                                    <Divider/>
+                                </Fragment>
+                            ))}
                     </List>
                 </Fragment>
             )}
@@ -157,4 +161,4 @@ Review.defaultProps = {
     currency: 'zł',
 };
 
-export default connect(mapStateToProps)(withStyles(styles)(Review));
+export default connect(mapStateToProps)(Review);

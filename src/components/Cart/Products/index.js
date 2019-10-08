@@ -23,11 +23,11 @@ const styles = theme => ({
         width: '100%',
     },
     listItem: {
-        paddingLeft: 0,
-        paddingRight: 0,
+        paddingLeft: theme.spacing(1),
+        paddingRight: theme.spacing(1),
     },
     secondaryAction: {
-        right: '-0.5rem',
+        right: 0,
     },
     inline: {
         display: 'inline',
@@ -50,7 +50,7 @@ const ProductsInCart = props => {
         props.removeItemFromCart(e.currentTarget.id);
 
     return (
-        <List className={classes.root}>
+        <List className={classes.root} disablePadding>
             {products.map(p => {
 
                 const productInCart = cart.products[p.id];
