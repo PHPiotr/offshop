@@ -29,13 +29,13 @@ export const inputs = {
     slug: {
         type: 'text',
         label: 'Slug',
-        validate: [validateRequired],
+        validate: [],
         component: TextField,
         inputProps: {},
     },
     unitPrice: {
         type: 'number',
-        label: 'Cena za Kg',
+        label: 'Cena za kg',
         validate: [validateRequired, validatePrice],
         component: TextField,
         inputProps: {
@@ -43,7 +43,7 @@ export const inputs = {
                 min: 0.00,
                 step: 0.01,
             },
-            endAdornment: <InputAdornment position="start">zł</InputAdornment>
+            endAdornment: <InputAdornment position="start">zł/kg</InputAdornment>
         },
     },
 };

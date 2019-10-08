@@ -20,8 +20,6 @@ const styles = theme => ({
     root: {
         width: '100%',
         backgroundColor: theme.palette.background.paper,
-        marginBottom: '1rem',
-        marginTop: '1rem',
     },
     textField: {
         marginLeft: 0,
