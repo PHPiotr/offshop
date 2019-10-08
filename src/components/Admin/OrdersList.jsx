@@ -138,7 +138,7 @@ const OrdersList = props => {
                                         className={clsx(classes.columnRight, classes.column15, classes.column, className)}
                                     >
                                         <span>{`${row.totalAmount && (row.totalAmount / 100).toFixed(2)}`}</span>
-                                        <spam className={classes.currency}>&nbsp;zł</spam>
+                                        <span className={classes.currency}>&nbsp;zł</span>
                                     </Typography>
                                     <Typography
                                         component="p"
