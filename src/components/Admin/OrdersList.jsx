@@ -1,12 +1,11 @@
 import React, {Fragment, useEffect} from 'react';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
-import clsx from 'clsx';
-import {Box} from '@material-ui/core';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
-import Divider from '@material-ui/core/Divider';
 import ListItemText from '@material-ui/core/ListItemText';
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
+import Divider from '@material-ui/core/Divider';
 import Typography from '@material-ui/core/Typography';
 import {Link} from 'react-router-dom';
 import {connect} from 'react-redux';
@@ -18,54 +17,10 @@ const socket = io();
 
 const useStyles = makeStyles(theme => ({
     list: {
-        paddingLeft: theme.spacing(1),
-        paddingRight: theme.spacing(1),
         width: '100%',
     },
-    listItem: {
-        padding: 0,
-    },
-    listItemHeader: {
-        color: theme.palette.text.secondary,
-        [theme.breakpoints.down(850)]: {
-            display: 'none',
-            visibility: 'hidden',
-        },
-    },
-    box: {
-        display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        [theme.breakpoints.down(850)]: {
-            display: 'block',
-        },
-    },
-    columnRight: {
+    textRight: {
         textAlign: 'right',
-    },
-    column30: {
-        width: '30%',
-    },
-    column15: {
-        width: '15%',
-    },
-    column25: {
-        width: '25%',
-    },
-    column: {
-        [theme.breakpoints.down(850)]: {
-            paddingRight: 0,
-            width: '100%',
-            textAlign: 'left',
-        },
-    },
-    currency: {
-        display: 'none',
-        visibility: 'hidden',
-        [theme.breakpoints.down(850)]: {
-            display: 'inline',
-            visibility: 'inherit',
-        },
     },
 }));
 
@@ -75,7 +30,6 @@ const OrdersList = props => {
         getAdminOrdersIfNeeded,
         onAdminOrder,
         showNotification,
-        className,
     } = props;
     useEffect(() => {
         getAdminOrdersIfNeeded();
@@ -107,47 +61,29 @@ const OrdersList = props => {
         <Fragment>
             {props.isFetching && <ProgressIndicator />}
             <List disablePadding className={classes.list}>
-                <ListItem className={clsx(classes.listItem, classes.listItemHeader, className)}>
-                    <ListItemText
-                        primary={<Box className={classes.box}>
-                            <Box className={clsx(classes.column, classes.column30, className)}>Numer transakcji</Box>
-                            <Box className={clsx(classes.column, classes.column30, className)}>Status</Box>
-                            <Box className={clsx(classes.columnRight, classes.column15, classes.column, className)}>Kwota (zł)</Box>
-                            <Box className={clsx(classes.columnRight, classes.column25, classes.column, className)}>Data</Box>
-                        </Box>}
-                    />
-                </ListItem>
                 {props.data.map(row => (
                     <Fragment>
-                        <ListItem className={classes.listItem} key={row.extOrderId}>
+                        <ListItem button component={Link} to={`/admin/orders/${row.extOrderId}`} className={classes.listItem} key={row.extOrderId}>
                             <ListItemText
-                                primary={<Box className={classes.box}>
-                                    <Box className={clsx(classes.column, classes.column30, className)}>
-                                        <Link to={`/admin/orders/${row.extOrderId}`}>{row.extOrderId}</Link>
-                                    </Box>
-                                    <Typography
-                                        component="p"
-                                        variant="body2"
-                                        color="textPrimary"
-                                        className={clsx(classes.column, classes.column30, className)}
-                                    >{row.status}</Typography>
-                                    <Typography
-                                        component="p"
-                                        variant="body2"
-                                        color="textPrimary"
-                                        className={clsx(classes.columnRight, classes.column15, classes.column, className)}
-                                    >
-                                        <span>{`${row.totalAmount && (row.totalAmount / 100).toFixed(2)}`}</span>
-                                        <span className={classes.currency}>&nbsp;zł</span>
-                                    </Typography>
-                                    <Typography
-                                        component="p"
-                                        variant="body2"
-                                        color="textSecondary"
-                                        className={clsx(classes.columnRight, classes.column25, classes.column, className)}
-                                    >{new Date(row.orderCreateDate).toLocaleString('pl', {dateStyle: 'short', timeStyle: 'short'})}</Typography>
-                                </Box>}
+                                primary={row.extOrderId}
+                                secondary={row.status}
                             />
+                            <ListItemSecondaryAction>
+                                <Typography
+                                    className={classes.textRight}
+                                    component="p"
+                                    variant="body2"
+                                    color="textPrimary"
+                                >
+                                    <span>{`${row.totalAmount && (row.totalAmount / 100).toFixed(2)}`}</span>
+                                    <span className={classes.currency}>&nbsp;zł</span>
+                                </Typography>
+                                <Typography
+                                    component="p"
+                                    variant="body2"
+                                    color="textSecondary"
+                                >{new Date(row.orderCreateDate).toLocaleString('pl', {dateStyle: 'short', timeStyle: 'short'})}</Typography>
+                            </ListItemSecondaryAction>
                         </ListItem>
                         <Divider />
                     </Fragment>

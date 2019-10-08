@@ -55,7 +55,7 @@ const DeliveryMethodsList = props => {
     return (
         <Fragment>
             {props.isFetching && <ProgressIndicator />}
-            <List className={props.classes.root}>
+            <List className={props.classes.root} disablePadding>
                 {props.data.map((p, i) => (
                     <Fragment key={p.id}>
                         <ListItem key={p.id} alignItems="flex-start" button component={Link} to={`/admin/delivery-methods/${p.id}`}>
