@@ -28,8 +28,6 @@ const styles = theme => ({
     root: {
         width: '100%',
         backgroundColor: theme.palette.background.paper,
-        marginBottom: '1rem',
-        marginTop: '1rem',
     },
     textField: {
         marginLeft: 0,
@@ -78,7 +76,7 @@ const ProductsList = props => {
     return (
         <Fragment>
             {props.isFetching && <ProgressIndicator />}
-            <List className={props.classes.root}>
+            <List className={props.classes.root} disablePadding>
                 {props.products.map((p, i) => (
                     <Fragment key={p.id}>
                         <ListItem key={p.id} alignItems="flex-start" button component={Link} to={`/admin/products/${p.id}`}>

@@ -16,7 +16,6 @@
     "bfj": "^7.0.1",
     "chalk": "^2.4.2",
     "classnames": "^2.2.6",
-    "clsx": "latest",
     "crypto-js": "^3.1.9-1",
     "dotenv": "^8.1.0",
     "dotenv-expand": "^5.1.0",
