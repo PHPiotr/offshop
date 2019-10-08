@@ -100,7 +100,7 @@ DeliveryMethodForm.defaultProps = {
 
 const mapStateToProps = state => {
     const initialValues = {...state.adminDeliveryMethod.data[state.adminDeliveryMethod.id]};
-    if (initialValues.unitPrice) {
+    if (initialValues.unitPrice || initialValues.unitPrice === 0) {
         initialValues.unitPrice = (initialValues.unitPrice / 100).toFixed(2);
     }
     return {
