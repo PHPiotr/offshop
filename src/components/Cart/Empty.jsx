@@ -13,6 +13,7 @@ const styles = theme => ({
         alignItems: 'center',
         justifyContent: 'center',
         margin: '0 auto',
+        marginTop: theme.spacing(2),
         flexDirection: 'column',
     },
 });
