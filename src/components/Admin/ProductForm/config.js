@@ -12,7 +12,6 @@ import DropZoneField from '../../../components/FileInput/DropzoneField';
 
 export const inputKeys = [
     'name',
-    'slug',
     'description',
     'longDescription',
     'stock',
@@ -24,7 +23,6 @@ export const inputKeys = [
 
 export const initialValues = {
     name: '',
-    slug: '',
     stock: 1,
     unitPrice: '',
     weight: 1,
@@ -40,20 +38,13 @@ export const inputs = {
         component: TextField,
         inputProps: {},
     },
-    slug: {
-        type: 'text',
-        label: 'Slug produktu',
-        validate: [validateRequired],
-        component: TextField,
-        inputProps: {},
-    },
     description: {
         type: 'text',
         label: 'Krótki opis produktu',
         validate: [validateRequired, validateMinLength(15), validateMaxLength(160)],
         component: TextField,
         inputProps: {
-            minlength: 100,
+            minlength: 15,
             maxlength: 160,
             multiline: true,
             rows: 2,
@@ -66,7 +57,7 @@ export const inputs = {
         validate: [validateMinLength(15), validateMaxLength(1000)],
         component: TextField,
         inputProps: {
-            minlength: 250,
+            minlength: 15,
             maxlength: 1000,
             multiline: true,
             rows: 5,
