@@ -5,7 +5,6 @@ const initialIds = [
     'street',
     'postalCode',
     'city',
-    'countryCode',
     'recipientName',
 ];
 
@@ -26,12 +25,6 @@ const initialData = {
         value: '',
         type: 'text',
         label: 'Miejscowość',
-        validate: ['required'],
-    },
-    countryCode: {
-        value: 'PL',
-        type: 'hidden',
-        label: 'Kraj',
         validate: ['required'],
     },
     recipientName: {

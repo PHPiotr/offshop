@@ -1,7 +1,7 @@
 const steps = {
     0: {
         id: 0,
-            label: 'Klient',
+            label: 'Kupujący',
             value: 'buyer',
     },
     1: {
