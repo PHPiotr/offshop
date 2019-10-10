@@ -1,4 +1,4 @@
-import React, {Fragment} from 'react';
+import React, {Fragment, useEffect} from 'react';
 import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
 import {Field, Form, reduxForm, isValid} from 'redux-form';
@@ -11,6 +11,9 @@ import SubHeader from '../../../components/SubHeader';
 import {getAdminDeliveryMethodIfNeeded, resetDeliveryMethod} from '../../../actions/admin/deliveryMethod';
 import {inputs, inputKeys, initialValues} from './config';
 import RequestHandler from '../../../containers/RequestHandler';
+import io from '../../../io';
+
+const socket = io();
 
 const FORM_NAME = 'deliveryMethod';
 
@@ -37,6 +40,24 @@ const styles = theme => ({
 });
 
 let DeliveryMethodForm = props => {
+    const onAdminCreateDeliveryListener = deliveryMethod => props.showNotification({
+        message: `Opcja dostawy ${deliveryMethod.name} została dodana.`,
+        variant: 'success',
+    });
+
+    const onAdminUpdateDeliveryListener = deliveryMethod => props.showNotification({
+        message: `Opcja dostawy ${deliveryMethod.name} została zmieniona.`,
+        variant: 'success',
+    });
+
+    useEffect(() => {
+        socket.on('adminCreateDelivery', onAdminCreateDeliveryListener);
+        socket.on('adminUpdateDelivery', onAdminUpdateDeliveryListener);
+        return () => {
+            socket.off('adminCreateDelivery', onAdminCreateDeliveryListener);
+            socket.off('adminUpdateDelivery', onAdminUpdateDeliveryListener);
+        }
+    }, []);
     let action = null;
     if (props.match.params.id) {
         action = () => props.getAdminDeliveryMethodIfNeeded(props.match.params.id);
@@ -115,6 +136,9 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
+    showNotification(payload) {
+        dispatch(showNotification(payload));
+    },
     handleResetDeliveryMethod() {
         dispatch(resetDeliveryMethod());
     },
@@ -123,13 +147,21 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
     },
     onSubmit: async (formProps, _, {accessToken, reset}) => {
         try {
+            let response;
             if (ownProps.match.params.id) {
-                await dispatch(updateDeliveryMethodIfNeeded(formProps, accessToken));
+                response = await dispatch(updateDeliveryMethodIfNeeded(formProps, accessToken));
             } else {
-                await dispatch(createDeliveryMethodIfNeeded(formProps, accessToken));
+                response = await dispatch(createDeliveryMethodIfNeeded(formProps, accessToken));
             }
-            ownProps.history.push('/admin/delivery-methods/list');
-            reset();
+
+            const {status, data} = response;
+
+            if (status === 200 || status === 201) {
+                ownProps.history.push('/admin/delivery-methods/list');
+                reset();
+            } else {
+                dispatch(showNotification({message: data.message, variant: 'error'}));
+            }
         } catch (e) {
             dispatch(showNotification({message: e.message, variant: 'error'}));
         }

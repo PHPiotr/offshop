@@ -15,6 +15,10 @@ import FloatingAddButton from '../../components/FloatingAddButton';
 import Dialog from '../../components/Dialog';
 import ProgressIndicator from '../../components/ProgressIndicator';
 import {getAdminDeliveryMethodsIfNeeded, deleteDeliveryMethodIfNeeded} from '../../actions/admin/deliveryMethods';
+import {showNotification} from '../../actions/notification';
+import io from '../../io';
+
+const socket = io();
 
 const styles = theme => ({
     root: {
@@ -34,6 +38,18 @@ const styles = theme => ({
 const DeliveryMethodsList = props => {
     const [sort, setSort] = useState('name');
     const [order, setOrder] = useState(1);
+
+    const onAdminDeleteDeliveryListener = deliveryMethod => props.showNotification({
+        message: `Opcja dostawy ${deliveryMethod.name} została usunięta.`,
+        variant: 'warning',
+    });
+
+    useEffect(() => {
+        socket.on('adminDeleteDelivery', onAdminDeleteDeliveryListener);
+        return () => {
+            socket.off('adminDeleteDelivery', onAdminDeleteDeliveryListener);
+        }
+    }, []);
     useEffect(() => {
         props.getAdminDeliveryMethodsIfNeeded({sort, order});
     }, []);
@@ -108,7 +124,8 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = {
     getAdminDeliveryMethodsIfNeeded,
-    deleteDeliveryMethodIfNeeded
+    deleteDeliveryMethodIfNeeded,
+    showNotification,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(DeliveryMethodsList));
