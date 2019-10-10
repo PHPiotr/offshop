@@ -8,13 +8,11 @@ import {
 
 export const inputKeys = [
     'name',
-    'slug',
     'unitPrice',
 ];
 
 export const initialValues = {
     name: '',
-    slug: '',
     unitPrice: '',
 };
 
@@ -23,13 +21,6 @@ export const inputs = {
         type: 'text',
         label: 'Nazwa',
         validate: [validateRequired],
-        component: TextField,
-        inputProps: {},
-    },
-    slug: {
-        type: 'text',
-        label: 'Slug',
-        validate: [],
         component: TextField,
         inputProps: {},
     },

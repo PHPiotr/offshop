@@ -2,7 +2,7 @@ import React, {Fragment} from 'react';
 import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
 import {Field, Form, reduxForm, isValid} from 'redux-form';
-import Grid from '@material-ui/core/Grid';
+import {Box} from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 import withStyles from '@material-ui/core/styles/withStyles';
 import {createDeliveryMethodIfNeeded, updateDeliveryMethodIfNeeded} from "../../../actions/admin/deliveryMethod";
@@ -20,15 +20,19 @@ const styles = theme => ({
     form: {
         paddingLeft: theme.spacing(1),
         paddingRight: theme.spacing(1),
+        width: '100%',
+    },
+    box: {
+        paddingTop: theme.spacing(3),
+        paddingBottom: theme.spacing(3),
     },
     buttons: {
         display: 'flex',
-        justifyContent: 'flex-end',
+        justifyContent: 'flex-start',
     },
     button: {
         marginTop: theme.spacing(3),
         marginBottom: theme.spacing(3),
-        marginLeft: theme.spacing(1),
     },
 });
 
@@ -46,26 +50,24 @@ let DeliveryMethodForm = props => {
                 <Fragment>
                     <SubHeader content={`${props.match.params.id ? 'Edytuj' : 'Dodaj'} opcję dostawy`}/>
                     <Form className={props.classes.form} onSubmit={props.handleSubmit}>
-                        <Grid container spacing={10}>
-                            {inputKeys.reduce((acc, itemId) => {
-                                const {label, type, validate, component, inputProps} = inputs[itemId];
-                                acc.push(
-                                    <Grid item xs={12} key={itemId}>
-                                        <Field
-                                            name={itemId}
-                                            component={component}
-                                            label={label}
-                                            fullWidth
-                                            type={type}
-                                            validate={validate}
-                                            InputProps={inputProps}
-                                        />
-                                    </Grid>
-                                );
-                                return acc;
-                            }, [])}
-                        </Grid>
-                        <div className={props.classes.buttons}>
+                        {inputKeys.reduce((acc, itemId) => {
+                            const {label, type, validate, component, inputProps} = inputs[itemId];
+                            acc.push(
+                                <Box key={itemId} className={props.classes.box}>
+                                    <Field
+                                        name={itemId}
+                                        component={component}
+                                        label={label}
+                                        fullWidth
+                                        type={type}
+                                        validate={validate}
+                                        InputProps={inputProps}
+                                    />
+                                </Box>
+                            );
+                            return acc;
+                        }, [])}
+                        <Box className={props.classes.buttons}>
                             <Button
                                 variant="contained"
                                 color="primary"
@@ -75,7 +77,7 @@ let DeliveryMethodForm = props => {
                             >
                                 {`${props.match.params.id ? 'Edytuj' : 'Dodaj'}`}
                             </Button>
-                        </div>
+                        </Box>
                     </Form>
                 </Fragment>
             )}

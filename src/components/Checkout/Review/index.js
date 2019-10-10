@@ -142,7 +142,7 @@ const mapStateToProps = state => ({
     buyerFormValues: state.form.buyer.values,
     buyerData: state.buyer.data,
     buyerDeliveryIds: state.buyerDelivery.ids,
-    buyerDeliveryFormValues: state.form.buyerDelivery.values,
+    buyerDeliveryFormValues: state.form && state.form.buyerDelivery && state.form.buyerDelivery.values,
     buyerDeliveryData: state.buyerDelivery.data,
     cart: state.cart,
     totalAmount: state.cart.totalPriceWithDelivery,
