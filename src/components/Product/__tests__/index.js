@@ -8,8 +8,6 @@ import {BrowserRouter as Router} from 'react-router-dom';
 import {render, fireEvent, cleanup} from '@testing-library/react';
 import rootReducer from '../../../reducers';
 import ProductView from '../index';
-import {flattenMessages} from '../../../utils';
-import messages from '../../../messages';
 
 afterEach(cleanup);
 

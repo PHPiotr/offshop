@@ -12,8 +12,6 @@ import Avatar from '@material-ui/core/Avatar';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import pink from '@material-ui/core/colors/pink';
-import FavoriteIcon from '@material-ui/icons/Favorite';
-import ShareIcon from '@material-ui/icons/Share';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
@@ -30,6 +28,7 @@ const styles = theme => ({
         minWidth: '100%',
         maxWidth: `800px`,
         margin: '0 auto',
+        boxShadow: 'none',
     },
     media: {
         height: 0,
@@ -126,12 +125,6 @@ const ProductView = props => {
                     </Typography>
                 </CardContent>
                 <CardActions className={props.classes.actions}>
-                    <IconButton aria-label="Add to favorites">
-                        <FavoriteIcon/>
-                    </IconButton>
-                    <IconButton aria-label="Share">
-                        <ShareIcon/>
-                    </IconButton>
                     {props.product.longDescription && (
                         <IconButton
                             className={classnames(props.classes.expand, {
