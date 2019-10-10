@@ -98,6 +98,11 @@ const Order = props => {
         }
     };
 
+    const [refundOpen, setRefundOpen] = useState(true);
+    const handleRefundClick = () => {
+        setRefundOpen(!refundOpen);
+    };
+
     const [detailsOpen, setDetailsOpen] = useState(true);
     const handleDetailsClick = () => {
         setDetailsOpen(!detailsOpen);
@@ -145,7 +150,7 @@ const Order = props => {
                     >
                         <ListItem className={classes.listItem}>
                             <ListItemText
-                                primary={order.extOrderId}
+                                primary={`Zamówienie ${order.extOrderId}`}
                             />
                             <ListItemSecondaryAction className={classes.secondaryAction}>
                                 {canCancelForStatus(order.status) && (<Tooltip title="Anuluj zamówienie">
@@ -169,6 +174,66 @@ const Order = props => {
                             </ListItemSecondaryAction>
                         </ListItem>
                         <Divider/>
+                        {order.refund.refundId && (
+                            <Fragment>
+                                <ListItem button onClick={handleRefundClick} className={classes.listItem}>
+                                    <ListItemText
+                                        primary="Zwrot"
+                                    />
+                                    {refundOpen ? <ExpandLess/> : <ExpandMore/>}
+                                </ListItem>
+                                <Collapse in={refundOpen} timeout="auto" unmountOnExit>
+                                    <List component="div" disablePadding>
+                                        <ListItem className={classes.nested}>
+                                            <ListItemText
+                                                primary={order.refund.status}
+                                                secondary="Status zwrotu"
+                                            />
+                                        </ListItem>
+                                        <ListItem className={classes.nested}>
+                                            <ListItemText
+                                                primary={`${(order.refund.amount / 100).toFixed(2)} ${order.refund.currencyCode}`}
+                                                secondary="Kwota zwrotu"
+                                            />
+                                        </ListItem>
+                                        <ListItem className={classes.nested}>
+                                            <ListItemText
+                                                primary={(new Date(order.refund.refundDate || order.refund.statusDateTime)).toLocaleString('pl', {
+                                                    dateStyle: 'short',
+                                                    timeStyle: 'short'
+                                                })}
+                                                secondary="Data zwrotu"
+                                            />
+                                        </ListItem>
+                                        <ListItem className={classes.nested}>
+                                            <ListItemText
+                                                primary={order.refund.reason}
+                                                secondary="Powód zwrotu"
+                                            />
+                                        </ListItem>
+                                        <ListItem className={classes.nested}>
+                                            <ListItemText
+                                                primary={order.refund.reasonDescription}
+                                                secondary="Opis zwrotu"
+                                            />
+                                        </ListItem>
+                                        <ListItem className={classes.nested}>
+                                            <ListItemText
+                                                primary={order.refund.refundId}
+                                                secondary="Numer zwrotu (refundId)"
+                                            />
+                                        </ListItem>
+                                        <ListItem className={classes.nested}>
+                                            <ListItemText
+                                                primary={order.refund.extRefundId}
+                                                secondary="Zewnętrzny numer zwrotu (extRefundId)"
+                                            />
+                                        </ListItem>
+                                    </List>
+                                </Collapse>
+                                <Divider/>
+                            </Fragment>
+                        )}
                         <ListItem button onClick={handleDetailsClick} className={classes.listItem}>
                             <ListItemText
                                 primary="Szczegóły"
@@ -376,6 +441,7 @@ const mapStateToProps = state => ({
         },
         deliveryMethod: {},
         properties: [],
+        refund: {},
     },
     isFetching: state.adminOrder.isFetching,
 });
