@@ -19,12 +19,17 @@ export const RESET_DELIVERY_METHOD = 'RESET_DELIVERY_METHOD';
 export const createDeliveryMethodIfNeeded = (formProps, accessToken) => async dispatch => {
     dispatch({type: CREATE_DELIVERY_METHOD_REQUEST});
     try {
-        const {data} = await createDeliveryMethod({...formProps, unitPrice: formProps.unitPrice * 1000 / 10}, accessToken);
-        const payload = normalize(data, deliveryMethodSchema.deliveryMethod);
-        dispatch({type: CREATE_DELIVERY_METHOD_SUCCESS, payload});
-        return payload;
+        const response = await createDeliveryMethod({...formProps, unitPrice: formProps.unitPrice * 1000 / 10}, accessToken);
+        const {status, data} = response;
+        if (status === 201) {
+            const payload = normalize(data, deliveryMethodSchema.deliveryMethod);
+            dispatch({type: CREATE_DELIVERY_METHOD_SUCCESS, payload});
+        } else {
+            dispatch({type: CREATE_DELIVERY_METHOD_FAILURE, payload: {error: data}});
+        }
+        return response;
     } catch (error) {
-        dispatch({type: CREATE_DELIVERY_METHOD_FAILURE});
+        dispatch({type: CREATE_DELIVERY_METHOD_FAILURE, payload: {error}});
         return error;
     }
 };
@@ -35,12 +40,17 @@ export const updateDeliveryMethodIfNeeded = (formProps, accessToken) => async (d
 
     dispatch({type: UPDATE_DELIVERY_METHOD_REQUEST});
     try {
-        const {data} = await updateDeliveryMethod(id, {...formProps, unitPrice: formProps.unitPrice * 1000 / 10}, accessToken);
-        const payload = normalize(data, deliveryMethodSchema.deliveryMethod);
-        dispatch({type: UPDATE_DELIVERY_METHOD_SUCCESS, payload});
-        return payload;
+        const response = await updateDeliveryMethod(id, {...formProps, unitPrice: formProps.unitPrice * 1000 / 10}, accessToken);
+        const {status, data} = response;
+        if (status === 200) {
+            const payload = normalize(data, deliveryMethodSchema.deliveryMethod);
+            dispatch({type: UPDATE_DELIVERY_METHOD_SUCCESS, payload});
+        } else {
+            dispatch({type: UPDATE_DELIVERY_METHOD_FAILURE, payload: {error: data}});
+        }
+        return response;
     } catch (error) {
-        dispatch({type: UPDATE_DELIVERY_METHOD_FAILURE});
+        dispatch({type: UPDATE_DELIVERY_METHOD_FAILURE, payload: {error}});
         return error;
     }
 };
