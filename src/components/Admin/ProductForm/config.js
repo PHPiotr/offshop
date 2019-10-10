@@ -99,7 +99,7 @@ export const inputs = {
                 min: 1.0,
                 step: 0.1,
             },
-            endAdornment: <InputAdornment position="start">Kg</InputAdornment>
+            endAdornment: <InputAdornment position="start">kg</InputAdornment>
         },
     },
     active: {

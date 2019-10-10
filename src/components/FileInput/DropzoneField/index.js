@@ -7,9 +7,6 @@ import ShowError from '../ShowError';
 import withStyles from '@material-ui/core/styles/withStyles';
 
 const styles = () => ({
-    root: {
-        float: 'left',
-    },
     upload: {
         cursor: 'pointer',
         height: '300px',

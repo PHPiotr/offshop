@@ -2,7 +2,7 @@ import React, {Fragment, useState, useEffect} from 'react';
 import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
 import {Field, Form, reduxForm, formValueSelector, isValid} from 'redux-form';
-import Grid from '@material-ui/core/Grid';
+import {Box} from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 import withStyles from '@material-ui/core/styles/withStyles';
 import {createProductIfNeeded, updateProductIfNeeded} from "../../../actions/admin/product/index";
@@ -23,15 +23,19 @@ const styles = theme => ({
     form: {
         paddingLeft: theme.spacing(1),
         paddingRight: theme.spacing(1),
+        width: '100%',
+    },
+    box: {
+        paddingTop: theme.spacing(3),
+        paddingBottom: theme.spacing(3),
     },
     buttons: {
         display: 'flex',
-        justifyContent: 'flex-end',
+        justifyContent: 'flex-start',
     },
     button: {
         marginTop: theme.spacing(3),
         marginBottom: theme.spacing(3),
-        marginLeft: theme.spacing(1),
     },
 });
 
@@ -88,68 +92,66 @@ let ProductForm = props => {
                 <Fragment>
                     <SubHeader content={`${props.match.params.productId ? 'Edytuj' : 'Dodaj'} produkt`}/>
                     <Form className={props.classes.form} onSubmit={props.handleSubmit} encType="multipart/form-data">
-                        <Grid container spacing={10}>
-                            {inputKeys.reduce((acc, itemId) => {
-                                const {label, type, validate, component, inputProps} = inputs[itemId];
+                        {inputKeys.reduce((acc, itemId) => {
+                            const {label, type, validate, component, inputProps} = inputs[itemId];
 
-                                if (type === 'file') {
-                                    let validation = validate;
-                                    if (props.match.params.productId) {
-                                        validation = [];
-                                    }
-                                    acc.push(
-                                        <Grid item xs={12} key={itemId}>
-                                            <Field
-                                                name={itemId}
-                                                component={component}
-                                                type={type}
-                                                imagefile={
-                                                    (!props.imageFile || props.imageFile.length === 0) && currentImage
-                                                        ? (
-                                                            (props.match.params.productId && currentSlug)
-                                                                ? [{
-                                                                    name: '',
-                                                                    preview: `${process.env.REACT_APP_PRODUCT_PATH}/${currentImage}`,
-                                                                    size: 0
-                                                                }]
-                                                                : []
-                                                        ) : props.imageFile
-                                                }
-                                                handleOnDrop={handleOnDrop}
-                                                validate={validation}
-                                            />
-                                        </Grid>
-                                    );
-                                } else if (type === 'switch') {
-                                    acc.push(
-                                        <Grid item xs={12} key={itemId}>
-                                            <Field
-                                                name={itemId}
-                                                component={component}
-                                                label={label}
-                                                validate={validate}
-                                                checked={!!props.active}
-                                            />
-                                        </Grid>
-                                    )
-                                } else {
-                                    acc.push(
-                                        <Grid item xs={12} key={itemId}>
-                                            <Field
-                                                name={itemId}
-                                                component={component}
-                                                label={label}
-                                                fullWidth
-                                                type={type}
-                                                validate={validate}
-                                                InputProps={inputProps}
-                                            />
-                                        </Grid>
-                                    );
+                            if (type === 'file') {
+                                let validation = validate;
+                                if (props.match.params.productId) {
+                                    validation = [];
                                 }
-                                return acc;
-                            }, [])}
-                        </Grid>
+                                acc.push(
+                                    <Box key={itemId} className={props.classes.box}>
+                                        <Field
+                                            name={itemId}
+                                            component={component}
+                                            type={type}
+                                            imagefile={
+                                                (!props.imageFile || props.imageFile.length === 0) && currentImage
+                                                    ? (
+                                                        (props.match.params.productId && currentSlug)
+                                                            ? [{
+                                                                name: '',
+                                                                preview: `${process.env.REACT_APP_PRODUCT_PATH}/${currentImage}`,
+                                                                size: 0
+                                                            }]
+                                                            : []
+                                                    ) : props.imageFile
+                                            }
+                                            handleOnDrop={handleOnDrop}
+                                            validate={validation}
+                                        />
+                                    </Box>
+                                );
+                            } else if (type === 'switch') {
+                                acc.push(
+                                    <Box key={itemId} className={props.classes.box}>
+                                        <Field
+                                            name={itemId}
+                                            component={component}
+                                            label={label}
+                                            validate={validate}
+                                            checked={!!props.active}
+                                        />
+                                    </Box>
+                                )
+                            } else {
+                                acc.push(
+                                    <Box key={itemId} className={props.classes.box}>
+                                        <Field
+                                            name={itemId}
+                                            component={component}
+                                            label={label}
+                                            fullWidth
+                                            type={type}
+                                            validate={validate}
+                                            InputProps={inputProps}
+                                        />
+                                    </Box>
+                                );
+                            }
+                            return acc;
+                        }, [])}
                         <div className={props.classes.buttons}>
                             <Button
                                 variant="contained"

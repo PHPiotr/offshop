@@ -20,7 +20,6 @@ export const createProductIfNeeded = (formProps, accessToken) => async dispatch 
     dispatch({type: CREATE_PRODUCT_REQUEST});
     const fd = new FormData();
     fd.append('img', formProps.img.file);
-    fd.append('slug', formProps.slug);
     fd.append('description', formProps.description);
     fd.append('longDescription', formProps.longDescription);
     fd.append('name', formProps.name);
@@ -55,7 +54,6 @@ export const updateProductIfNeeded = (formProps, accessToken) => async (dispatch
         fd.append('img', formProps.img.file);
     }
     fd.append('name', formProps.name);
-    fd.append('slug', formProps.slug);
     fd.append('description', formProps.description);
     fd.append('longDescription', formProps.longDescription);
     fd.append('unitPrice', formProps.unitPrice * 1000 / 10);
