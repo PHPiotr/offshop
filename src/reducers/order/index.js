@@ -58,6 +58,7 @@ const order = (state = initialState, action) => {
                 ...state,
                 error: action.payload.orderError,
                 isDoneCreating: true,
+                isCreating: false,
             };
         case RESET_ORDER_DATA:
             return {
