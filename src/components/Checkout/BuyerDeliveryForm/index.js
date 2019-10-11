@@ -5,6 +5,7 @@ import {Field, Form, reduxForm} from 'redux-form';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import {makeStyles} from '@material-ui/core';
+import {validateEmail, validateRequired} from '../../../utils/form';
 
 const renderTextField = ({input, label, meta, ...custom}) => (
     <TextField
@@ -15,9 +16,6 @@ const renderTextField = ({input, label, meta, ...custom}) => (
         {...custom}
     />
 );
-
-const validateRequired = value => typeof value === 'string' && value.trim() ? undefined : 'To pole jest wymagane';
-const validateEmail = value => value && /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(value) ? undefined : 'Niepoprawny email';
 
 const useStyles = makeStyles(theme => ({
     form: {
