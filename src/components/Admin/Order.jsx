@@ -174,7 +174,7 @@ const Order = props => {
                             </ListItemSecondaryAction>
                         </ListItem>
                         <Divider/>
-                        {order.refund.refundId && (
+                        {(order.refund && order.refund.refundId) && (
                             <Fragment>
                                 <ListItem button onClick={handleRefundClick} className={classes.listItem}>
                                     <ListItemText
@@ -205,18 +205,24 @@ const Order = props => {
                                                 secondary="Data zwrotu"
                                             />
                                         </ListItem>
-                                        <ListItem className={classes.nested}>
+                                        {order.refund.description && (<ListItem className={classes.nested}>
                                             <ListItemText
-                                                primary={order.refund.reason}
-                                                secondary="Powód zwrotu"
-                                            />
-                                        </ListItem>
-                                        <ListItem className={classes.nested}>
-                                            <ListItemText
-                                                primary={order.refund.reasonDescription}
+                                                primary={order.refund.description}
                                                 secondary="Opis zwrotu"
                                             />
-                                        </ListItem>
+                                        </ListItem>)}
+                                        {order.refund.reason && (<ListItem className={classes.nested}>
+                                            <ListItemText
+                                                primary={order.refund.reason}
+                                                secondary="Przyczyna zwrotu"
+                                            />
+                                        </ListItem>)}
+                                        {order.refund.reasonDescription && (<ListItem className={classes.nested}>
+                                            <ListItemText
+                                                primary={order.refund.reasonDescription}
+                                                secondary="Opis przyczyny zwrotu"
+                                            />
+                                        </ListItem>)}
                                         <ListItem className={classes.nested}>
                                             <ListItemText
                                                 primary={order.refund.refundId}
@@ -259,13 +265,13 @@ const Order = props => {
                                 </ListItem>
                                 <ListItem className={classes.nested}>
                                     <ListItemText
-                                        primary={`${(order.totalAmount / 100).toFixed(2)} zł`}
+                                        primary={`${(order.totalAmount / 100).toFixed(2)} ${order.currencyCode}`}
                                         secondary="Kwota z dostawą"
                                     />
                                 </ListItem>
                                 <ListItem className={classes.nested}>
                                     <ListItemText
-                                        primary={`${(order.totalWithoutDelivery / 100).toFixed(2)} zł`}
+                                        primary={`${(order.totalWithoutDelivery / 100).toFixed(2)} ${order.currencyCode}`}
                                         secondary="Kwota bez dostawy"
                                     />
                                 </ListItem>
@@ -310,7 +316,7 @@ const Order = props => {
                                     <ListItem key={name} className={classes.nested}>
                                         <ListItemText
                                             primary={`${name} (${quantity} szt.)`}
-                                            secondary={`${(unitPrice / 100).toFixed(2)} zł / szt`}
+                                            secondary={`${(unitPrice / 100).toFixed(2)} ${order.currencyCode} / szt`}
                                         />
                                     </ListItem>
                                 ))}
@@ -364,7 +370,7 @@ const Order = props => {
                                     <List component="div" disablePadding>
                                         <ListItem className={classes.nested}>
                                             <ListItemText
-                                                primary={`${order.deliveryMethod.name} (${(order.deliveryMethod.unitPrice / 100).toFixed(2)} zł / kg)`}
+                                                primary={`${order.deliveryMethod.name} (${(order.deliveryMethod.unitPrice / 100).toFixed(2)} ${order.currencyCode} / kg)`}
                                                 secondary="Wybrana opcja"
                                             />
                                         </ListItem>

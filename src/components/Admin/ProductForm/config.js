@@ -71,7 +71,7 @@ export const inputs = {
         component: TextField,
         inputProps: {
             inputProps: {
-                min: 1,
+                min: 0,
             },
             endAdornment: <InputAdornment position="start">szt.</InputAdornment>
         },

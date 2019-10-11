@@ -59,8 +59,8 @@ export const refundOrderIfNeeded = (extOrderId, amount) => {
         const {auth: {accessToken}} = getState();
         try {
             dispatch({type: REFUND_ORDER_REQUEST, payload: {refund: {amount, status: 'PENDING'}}});
-            const {data: {refund}} = await refundOrder(extOrderId, amount, accessToken);
-            dispatch({type: REFUND_ORDER_SUCCESS, payload: {refund}});
+            const {data} = await refundOrder(extOrderId, amount, accessToken);
+            dispatch({type: REFUND_ORDER_SUCCESS, payload: {refund: data}});
         } catch (error) {
             dispatch({type: REFUND_ORDER_FAILURE, payload: {error, refund: undefined}});
         }
