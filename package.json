@@ -9,6 +9,7 @@
   "dependencies": {
     "@material-ui/core": "^4.5.0",
     "@material-ui/icons": "^4.4.3",
+    "@material-ui/styles": "^4.5.0",
     "auth0-js": "^9.11.3",
     "aws-amplify": "^1.1.40",
     "aws-amplify-react": "^2.4.4",
@@ -42,7 +43,8 @@
     "resolve": "^1.12.0",
     "socket.io-client": "^2.3.0",
     "typeface-roboto": "0.0.75",
-    "web-push": "^3.4.0"
+    "web-push": "^3.4.0",
+    "webfontloader": "^1.6.28"
   },
   "scripts": {
     "start": "node scripts/start.js",

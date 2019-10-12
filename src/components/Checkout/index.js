@@ -1,4 +1,4 @@
-import React, {Fragment} from 'react';
+import React from 'react';
 import {connect} from 'react-redux';
 import withStyles from '@material-ui/core/styles/withStyles';
 import Typography from '@material-ui/core/Typography/Typography';
@@ -7,7 +7,6 @@ import Step from '@material-ui/core/Step/Step';
 import StepButton from '@material-ui/core/StepButton';
 import StepLabel from '@material-ui/core/StepLabel/StepLabel';
 import Button from '@material-ui/core/Button/Button';
-import Paper from '@material-ui/core/Paper/Paper';
 import Review from './Review';
 import PropTypes from 'prop-types';
 import BuyerForm from "./BuyerForm";
@@ -16,9 +15,10 @@ import {getFormValues, isValid} from 'redux-form';
 import {stepBack, stepNext, setActiveStepId} from '../../actions/checkout';
 import {withRouter} from 'react-router-dom';
 import steps from '../../config/checkoutSteps';
+import {Box} from '@material-ui/core';
 
 const styles = theme => ({
-    paper: {
+    box: {
         marginTop: 0,
         marginBottom: theme.spacing(3),
         [theme.breakpoints.up(600 + theme.spacing(6))]: {
@@ -27,8 +27,6 @@ const styles = theme => ({
             padding: theme.spacing(3),
         },
         width: '100%',
-        boxShadow: 'none',
-        background: 'none',
     },
     stepper: {
         paddingLeft: theme.spacing(1),
@@ -81,7 +79,7 @@ const Checkout = props => {
     const handleOnStepButtonClick = id => () => handleSetActiveStepId(id);
 
     return (
-        <Paper className={classes.paper}>
+        <Box className={classes.box}>
             <Stepper activeStep={activeStepId} className={classes.stepper}>
                 {stepsIds.map(id => (
                     <Step key={id} className={classes.step}>
@@ -95,12 +93,11 @@ const Checkout = props => {
                     </Step>
                 ))}
             </Stepper>
-            <Fragment>
                 <Typography variant="h6" gutterBottom className={classes.heading}>
                     {steps[activeStepId].label}
                 </Typography>
                 {getStepContent(activeStepId)}
-                <div className={classes.buttons}>
+                <Box className={classes.buttons}>
                     <Button
                         variant="contained"
                         color="disabled"
@@ -117,9 +114,8 @@ const Checkout = props => {
                             disabled={!canProceed}
                         >Dalej</Button>
                     )}
-                </div>
-            </Fragment>
-        </Paper>
+                </Box>
+        </Box>
     );
 };
 

@@ -16,13 +16,15 @@ import MenuIcon from '@material-ui/icons/Menu';
 import Drawer from '@material-ui/core/Drawer';
 import AdminNav from '../Admin/Nav';
 
+const logoFont = process.env.REACT_APP_LOGO_FONT || 'Roboto';
+
 const styles = theme => ({
-    appBar: {
-        color: '#fff !important',
-        backgroundColor: '#3f51b5 !important',
-    },
     root: {
         display: 'flex',
+    },
+    logo: {
+        lineHeight: 1.8,
+        fontFamily: logoFont,
     },
     menuButton: {
         marginRight: 20,
@@ -101,7 +103,7 @@ class PrimaryAppBar extends Component {
                             </IconButton>
                         )}
                         <Typography variant="h5" color="inherit" noWrap>
-                            <Link color="inherit" underline="none" component={RouterLink} to="/">{this.props.appBar.title}</Link>
+                            <Link className={classes.logo} color="inherit" underline="none" component={RouterLink} to="/">{this.props.appBar.title}</Link>
                         </Typography>
                         <div className={classes.grow}/>
                         <div>

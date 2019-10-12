@@ -121,13 +121,15 @@ const styles = theme => ({
     },
 });
 
+const pageTitle = process.env.REACT_APP_PAGE_TITLE || 'Offshop';
+
 class App extends Component {
     render() {
         const { classes } = this.props;
         return (
             <Fragment>
                 <Helmet>
-                    <title>Offshop</title>
+                    <title>{pageTitle}</title>
                 </Helmet>
                 <div className={classes.container}>
                     <CssBaseline/>
