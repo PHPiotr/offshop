@@ -79,3 +79,6 @@ export const deleteOrderIfNeeded = (extOrderId) => {
         }
     };
 };
+
+export const ON_ADMIN_REFUND = 'ON_ADMIN_REFUND';
+export const onAdminRefund = refund => ({type: ON_ADMIN_REFUND, payload: {refund}});

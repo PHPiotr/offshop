@@ -1,4 +1,4 @@
-import React, {Fragment, useEffect} from 'react';
+import React, {Fragment, useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
@@ -10,6 +10,7 @@ import Typography from '@material-ui/core/Typography';
 import {Link} from 'react-router-dom';
 import {connect} from 'react-redux';
 import ProgressIndicator from '../../components/ProgressIndicator';
+import {onAdminRefund} from '../../actions/admin/order';
 import {getAdminOrdersIfNeeded, onAdminOrder} from '../../actions/admin/orders';
 import {showNotification} from '../../actions/notification';
 import io from '../../io';
@@ -22,6 +23,9 @@ const useStyles = makeStyles(theme => ({
     textRight: {
         textAlign: 'right',
     },
+    refund: {
+        textDecoration: 'line-through',
+    },
 }));
 
 const OrdersList = props => {
@@ -29,10 +33,18 @@ const OrdersList = props => {
     const {
         getAdminOrdersIfNeeded,
         onAdminOrder,
+        onAdminRefund,
         showNotification,
     } = props;
+    const [sort, setSort] = useState('updatedAt');
+    const [order, setOrder] = useState(-1);
+    const [limit, setLimit] = useState(20);
+    const [skip, setSkip] = useState(0);
     useEffect(() => {
-        getAdminOrdersIfNeeded();
+        getAdminOrdersIfNeeded({
+            limit: 20,
+            skip: 0,
+        });
     }, []);
     const onAdminCreateOrderListener = order => {
         onAdminOrder(order);
@@ -48,12 +60,21 @@ const OrdersList = props => {
             variant: 'warning',
         });
     };
+    const onAdminRefundListener = ({refund, extOrderId}) => {
+        onAdminRefund(refund);
+        showNotification({
+            message: `Status zwrotu zamówienia ${extOrderId} został zmieniony na ${refund.status}.`,
+            variant: 'warning',
+        });
+    };
     useEffect(() => {
         socket.on('adminCreateOrder', onAdminCreateOrderListener);
         socket.on('adminUpdateOrder', onAdminUpdateOrderListener);
+        socket.on('adminRefund', onAdminRefundListener);
         return () => {
             socket.off('adminCreateOrder', onAdminCreateOrderListener);
             socket.off('adminUpdateOrder', onAdminUpdateOrderListener);
+            socket.off('adminRefund', onAdminRefundListener);
         };
     }, []);
 
@@ -75,7 +96,7 @@ const OrdersList = props => {
                                     variant="body2"
                                     color="textPrimary"
                                 >
-                                    <span>{`${row.totalAmount && (row.totalAmount / 100).toFixed(2)}`}</span>
+                                    <span className={(row.refund && row.refund.status) ? classes.refund : null}>{`${row.totalAmount && (row.totalAmount / 100).toFixed(2)}`}</span>
                                     <span className={classes.currency}>&nbsp;zł</span>
                                 </Typography>
                                 <Typography
@@ -105,6 +126,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = {
     getAdminOrdersIfNeeded,
     onAdminOrder,
+    onAdminRefund,
     showNotification,
 };
 
