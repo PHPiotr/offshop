@@ -8,6 +8,7 @@ import {
     REFUND_ORDER_REQUEST,
     REFUND_ORDER_SUCCESS,
     REFUND_ORDER_FAILURE,
+    ON_ADMIN_REFUND,
 } from '../../actions/admin/order';
 
 const initialState = {
@@ -61,6 +62,7 @@ const adminOrder = (state = initialState, action) => {
                 isRefunding: true,
                 data: {...state.data, [state.id]: {...state.data[state.id], refund: action.payload.refund}},
             };
+        case ON_ADMIN_REFUND:
         case REFUND_ORDER_SUCCESS:
             return {
                 ...state,
