@@ -36,16 +36,31 @@ const OrdersList = props => {
         onAdminRefund,
         showNotification,
     } = props;
-    const [sort, setSort] = useState('updatedAt');
+    const [sort, setSort] = useState('createdAt');
     const [order, setOrder] = useState(-1);
     const [limit, setLimit] = useState(20);
     const [skip, setSkip] = useState(0);
+    const [hasMoreData, setHasMoreData] = useState(true);
     useEffect(() => {
-        getAdminOrdersIfNeeded({
-            limit: 20,
-            skip: 0,
+        if (!hasMoreData) {
+            return;
+        }
+        getAdminOrdersIfNeeded({sort, order, limit, skip}).then(payload => {
+            if (payload && payload.result && payload.result.length < limit) {
+                setHasMoreData(false);
+            }
         });
-    }, []);
+    }, [sort, order, limit, skip]);
+    useEffect(() => {
+        window.onscroll = () => {
+            if ((window.innerHeight + window.pageYOffset) >= document.body.offsetHeight) {
+                setSkip(skip + limit);
+            }
+        };
+        return () => {
+            window.onscroll = null;
+        }
+    });
     const onAdminCreateOrderListener = order => {
         onAdminOrder(order);
         showNotification({

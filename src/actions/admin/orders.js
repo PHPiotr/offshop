@@ -9,18 +9,43 @@ export const ON_ADMIN_ORDER = 'ON_ADMIN_ORDER';
 
 export const getAdminOrdersIfNeeded = (params = {}) => {
     return async (dispatch, getState) => {
-        const {adminOrders: {isFetching}, auth: {accessToken}} = getState();
+        const {adminOrders: {isFetching, data, ids}, auth: {accessToken}} = getState();
         if (isFetching) {
             return Promise.resolve();
         }
 
         dispatch({type: RETRIEVE_ADMIN_ORDERS_REQUEST});
         try {
-            const {data} = await getAdminOrders(params, accessToken);
-            const payload = normalize(data, schema.orderList);
-            dispatch({type: RETRIEVE_ADMIN_ORDERS_SUCCESS, payload});
+            const response = await getAdminOrders(params, accessToken);
+            const payload = normalize(response.data, schema.orderList);
+            if (params.skip > 0) {
+                dispatch({
+                    type: RETRIEVE_ADMIN_ORDERS_SUCCESS,
+                    payload: {
+                        entities: {
+                            orders: {
+                                ...data,
+                                ...payload.entities.orders,
+                            }
+                        },
+                        result: [...ids, ...payload.result],
+                    },
+                });
+            } else {
+                dispatch({
+                    type: RETRIEVE_ADMIN_ORDERS_SUCCESS,
+                    payload: {
+                        entities: payload.entities,
+                        result: payload.result,
+                    },
+                });
+            }
+
+            return payload;
         } catch (error) {
             dispatch({type: RETRIEVE_ADMIN_ORDERS_FAILURE, payload: {error}});
+
+            return error;
         }
     };
 };
