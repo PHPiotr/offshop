@@ -13,6 +13,7 @@ import Link from '@material-ui/core/Link';
 import {addToCart} from '../../actions/cart';
 import {openDialog} from '../../actions/dialog';
 import ProductAddedToCartDialog from '../Product/ProductAddedToCartDialog';
+import ProgressIndicator from '../ProgressIndicator';
 
 const styles = theme => ({
     gridListTitle: {
@@ -52,6 +53,7 @@ function ProductsGridList(props) {
 
     return (
         <Fragment>
+            {props.isFetching && <ProgressIndicator />}
             <GridList cellHeight={`auto`}>
                 {products.map(product => {
 
@@ -105,6 +107,7 @@ ProductsGridList.propTypes = {
 const mapStateToProps = state => ({
     cart: state.cart,
     products: state.products.ids.map(i => state.products.data[i]) || [],
+    isFetching: state.products.isFetching,
     ids: state.products.ids,
     open: state.dialog.open,
 });

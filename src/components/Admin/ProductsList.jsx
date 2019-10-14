@@ -21,6 +21,7 @@ import ProgressIndicator from '../../components/ProgressIndicator';
 import {getAdminProductsIfNeeded, deleteProductIfNeeded} from '../../actions/admin/products';
 import {showNotification} from '../../actions/notification';
 import io from '../../io';
+import useInfiniteScrolling from '../../hooks/useInfiniteScrolling';
 
 const socket = io();
 
@@ -40,9 +41,12 @@ const styles = theme => ({
 });
 
 const ProductsList = props => {
-    const [sort, setSort] = useState('name');
-    const [order, setOrder] = useState(1);
     const {getAdminProductsIfNeeded} = props;
+    useInfiniteScrolling({
+        sort: 'name',
+        order: 1,
+        getItems: getAdminProductsIfNeeded,
+    });
 
     const onAdminDeleteProductListener = ({product}) => props.showNotification({
         message: `Produkt ${product.name} został usunięty.`,
@@ -55,9 +59,7 @@ const ProductsList = props => {
             socket.off('adminDeleteProduct', onAdminDeleteProductListener);
         }
     }, []);
-    useEffect(() => {
-        getAdminProductsIfNeeded({sort, order});
-    }, [sort, order]);
+
     const [isDialogOpen, setDialogOpen] = useState(false);
     const [productToDelete, setProductToDelete] = useState({});
 

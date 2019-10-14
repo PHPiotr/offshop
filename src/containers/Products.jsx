@@ -2,9 +2,9 @@ import React, {useState, useEffect} from 'react';
 import {connect} from 'react-redux';
 import ProductsView from '../components/Products';
 import {getProductsIfNeeded, onCreateProduct, onDeleteProduct, onUpdateProduct} from '../actions/products';
-import RequestHandler from './RequestHandler';
 import {showNotification} from '../actions/notification';
 import io from '../io';
+import useInfiniteScrolling from '../hooks/useInfiniteScrolling';
 const socket = io();
 
 const Products = props => {
@@ -18,7 +18,11 @@ const Products = props => {
     } = props;
     const [sort, setSort] = useState('name');
     const [order, setOrder] = useState(1);
-    const action = () => getProductsIfNeeded({sort, order});
+    useInfiniteScrolling({
+        sort,
+        order,
+        getItems: getProductsIfNeeded,
+    });
 
     const onCreateProductListener = ({product, isActive}) => {
         if (isActive) {
@@ -76,11 +80,7 @@ const Products = props => {
         }
     }, []);
 
-    return (
-        <RequestHandler action={action}>
-            {() => <ProductsView />}
-        </RequestHandler>
-    );
+    return <ProductsView />;
 };
 
 const mapDispatchToProps = {
