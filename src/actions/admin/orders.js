@@ -32,19 +32,11 @@ export const getAdminOrdersIfNeeded = (params = {}) => {
                     },
                 });
             } else {
-                dispatch({
-                    type: RETRIEVE_ADMIN_ORDERS_SUCCESS,
-                    payload: {
-                        entities: payload.entities,
-                        result: payload.result,
-                    },
-                });
+                dispatch({type: RETRIEVE_ADMIN_ORDERS_SUCCESS, payload});
             }
-
             return payload;
         } catch (error) {
             dispatch({type: RETRIEVE_ADMIN_ORDERS_FAILURE, payload: {error}});
-
             return error;
         }
     };

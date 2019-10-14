@@ -1,6 +1,6 @@
 import {normalize} from 'normalizr';
-import * as productSchema from '../../schemas/productsSchema';
-import {getProducts} from "../../api/products";
+import * as productSchema from '../schemas/productsSchema';
+import {getProducts} from "../api/products";
 
 export const RETRIEVE_PRODUCTS_REQUEST = 'RETRIEVE_PRODUCTS_REQUEST';
 export const RETRIEVE_PRODUCTS_SUCCESS = 'RETRIEVE_PRODUCTS_SUCCESS';
@@ -12,7 +12,7 @@ export const ON_DELETE_PRODUCT = 'ON_DELETE_PRODUCT';
 
 export const getProductsIfNeeded = params => {
     return async (dispatch, getState) => {
-        const {products: {isFetching}} = getState();
+        const {products: {isFetching, data, ids}} = getState();
         if (isFetching) {
             return Promise.resolve();
         }
@@ -20,14 +20,25 @@ export const getProductsIfNeeded = params => {
         dispatch({type: RETRIEVE_PRODUCTS_REQUEST});
         try {
             const response = await getProducts(params);
-            const {data} = response;
-            const payload = normalize(data, productSchema.productList);
-            dispatch({type: RETRIEVE_PRODUCTS_SUCCESS, payload});
-
-            return response;
+            const payload = normalize(response.data, productSchema.productList);
+            if (params.skip > 0) {
+                dispatch({type: RETRIEVE_PRODUCTS_SUCCESS, payload: {
+                        entities: {
+                            products: {
+                                ...data,
+                                ...payload.entities.products,
+                            }
+                        },
+                        result: [...ids, ...payload.result],
+                    },
+                });
+            } else {
+                dispatch({type: RETRIEVE_PRODUCTS_SUCCESS, payload});
+            }
+            return payload;
         } catch (error) {
             dispatch({type: RETRIEVE_PRODUCTS_FAILURE, payload: {error}});
-            return error.response;
+            return error;
         }
     };
 };

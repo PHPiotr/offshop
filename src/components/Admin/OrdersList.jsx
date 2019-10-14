@@ -14,6 +14,8 @@ import {onAdminRefund} from '../../actions/admin/order';
 import {getAdminOrdersIfNeeded, onAdminOrder} from '../../actions/admin/orders';
 import {showNotification} from '../../actions/notification';
 import io from '../../io';
+import useInfiniteScrolling from '../../hooks/useInfiniteScrolling';
+
 const socket = io();
 
 const useStyles = makeStyles(theme => ({
@@ -36,31 +38,10 @@ const OrdersList = props => {
         onAdminRefund,
         showNotification,
     } = props;
-    const [sort, setSort] = useState('createdAt');
-    const [order, setOrder] = useState(-1);
-    const [limit, setLimit] = useState(20);
-    const [skip, setSkip] = useState(0);
-    const [hasMoreData, setHasMoreData] = useState(true);
-    useEffect(() => {
-        if (!hasMoreData) {
-            return;
-        }
-        getAdminOrdersIfNeeded({sort, order, limit, skip}).then(payload => {
-            if (payload && payload.result && payload.result.length < limit) {
-                setHasMoreData(false);
-            }
-        });
-    }, [sort, order, limit, skip]);
-    useEffect(() => {
-        window.onscroll = () => {
-            if ((window.innerHeight + window.pageYOffset) >= document.body.offsetHeight) {
-                setSkip(skip + limit);
-            }
-        };
-        return () => {
-            window.onscroll = null;
-        }
+    useInfiniteScrolling({
+        getItems: getAdminOrdersIfNeeded,
     });
+
     const onAdminCreateOrderListener = order => {
         onAdminOrder(order);
         showNotification({
