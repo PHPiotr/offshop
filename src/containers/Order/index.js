@@ -25,7 +25,7 @@ const Order = props => {
     if (!order.data.extOrderId) {
         return <ProgressIndicator/>;
     }
-    return <OrderView extOrderId={order.data.extOrderId}/>;
+    return <OrderView {...order.data}/>;
 };
 
 const mapStateToProps = state => ({
