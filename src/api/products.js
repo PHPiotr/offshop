@@ -1,20 +1,6 @@
 import axios from 'axios';
 import {stringify} from 'query-string';
 
-export const getProducts = (params = {}) => {
-    const queryString = stringify(params);
-    let url = `${process.env.REACT_APP_API_HOST}/products`;
-    if (queryString) {
-        url += `?${queryString}`;
-    }
-    return axios(url, {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-    });
-};
-
 export const getProduct = (slug) => axios(
     `${process.env.REACT_APP_API_HOST}/products/${slug}`,
     {
