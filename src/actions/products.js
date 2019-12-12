@@ -1,6 +1,6 @@
 import {normalize} from 'normalizr';
 import * as productSchema from '../schemas/productsSchema';
-import {getProducts} from "../api/products";
+import {getRequestPublic} from '../api';
 
 export const RETRIEVE_PRODUCTS_REQUEST = 'RETRIEVE_PRODUCTS_REQUEST';
 export const RETRIEVE_PRODUCTS_SUCCESS = 'RETRIEVE_PRODUCTS_SUCCESS';
@@ -19,7 +19,7 @@ export const getProductsIfNeeded = params => {
 
         dispatch({type: RETRIEVE_PRODUCTS_REQUEST});
         try {
-            const response = await getProducts(params);
+            const response = await getRequestPublic('/products', params);
             const payload = normalize(response.data, productSchema.productList);
             if (params.skip > 0) {
                 dispatch({type: RETRIEVE_PRODUCTS_SUCCESS, payload: {
