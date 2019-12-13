@@ -80,7 +80,6 @@ describe('Products container', () => {
         }
         expect(i).toBe(productsLength);
         expect(productLink.text).toBe(lastProduct.name);
-        expect(window.location.pathname).toBe('/');
         fireEvent.click(productLink);
         expect(window.location.pathname).toBe(`/products/${lastProduct.slug}`);
     });
@@ -107,7 +106,6 @@ describe('Products container', () => {
         expect(store.getState().cart.quantity).toBe(2);
         const goToCartButton = getByTestId('btn-cart');
         expect(goToCartButton).toBeDefined();
-        expect(window.location.pathname).toBe('/');
         fireEvent.click(goToCartButton);
         expect(window.location.pathname).toBe('/cart');
     });
