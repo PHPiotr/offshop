@@ -7,24 +7,23 @@ import Dialog from '../../components/Dialog';
 import {addToCart} from '../../actions/cart';
 import {openDialog, closeDialog} from '../../actions/dialog';
 
-const ProductAddedToCartDialog = props => (
+const ProductAddedToCartDialog = props => props.open ? (
     <Dialog
-        role="ProductAddedToCartDialog"
         open={props.open}
         onClose={props.continueShopping}
         title="Produkt został dodany do koszyka."
         actions={
             [
-                <Button key="1" onClick={props.continueShopping} color="primary">
+                <Button data-testid="btn-continue" key="1" onClick={props.continueShopping} color="primary">
                     Kontynuuj zakupy
                 </Button>,
-                <Button key="2" onClick={props.goToCart} color="primary">
+                <Button data-testid="btn-cart" key="2" onClick={props.goToCart} color="primary">
                     Przejdź do koszyka
                 </Button>,
             ]
         }
     />
-);
+) : null;
 
 ProductAddedToCartDialog.propTypes = {
     open: PropTypes.bool.isRequired,

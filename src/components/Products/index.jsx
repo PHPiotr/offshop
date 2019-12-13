@@ -78,6 +78,7 @@ function ProductsGridList(props) {
                                     subtitle={<span>{(product.unitPrice / 100).toFixed(2)} zł</span>}
                                     actionIcon={
                                         <IconButton
+                                            data-testid={`add-to-cart-button-${product.id}`}
                                             id={product.id}
                                             className={classes.iconButton}
                                             onClick={handleAddToCart}

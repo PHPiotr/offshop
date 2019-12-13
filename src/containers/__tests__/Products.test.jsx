@@ -80,9 +80,34 @@ describe('Products container', () => {
         }
         expect(i).toBe(productsLength);
         expect(productLink.text).toBe(lastProduct.name);
-        expect(window.location.pathname).toBe('/');
         fireEvent.click(productLink);
         expect(window.location.pathname).toBe(`/products/${lastProduct.slug}`);
+    });
+
+    it("should add item to cart", async () => {
+        const {getByTestId, queryByTestId, queryByRole, getByRole} = await renderWithStore(<Products/>, store);
+        const addToCartButton = await waitForElement(() => getByTestId(`add-to-cart-button-${productsPayload[0].id}`));
+        expect(queryByRole('dialog')).toBeNull();
+        expect(queryByTestId('btn-continue')).toBeNull();
+        expect(queryByTestId('btn-cart')).toBeNull();
+        expect(addToCartButton).toBeDefined();
+        expect(store.getState().cart.quantity).toBe(0);
+        fireEvent.click(addToCartButton);
+        const addedToCartDialog = await waitForElement(() => getByRole('dialog'));
+        expect(addedToCartDialog).toBeDefined();
+        expect(store.getState().cart.quantity).toBe(1);
+        const continueShoppingButton = await waitForElement(() => getByTestId('btn-continue'));
+        expect(continueShoppingButton).toBeDefined();
+        fireEvent.click(continueShoppingButton);
+        expect(queryByTestId('btn-continue')).toBeNull();
+        expect(queryByRole('dialog')).toBeNull();
+        fireEvent.click(addToCartButton);
+        expect(getByRole('dialog')).toBeDefined();
+        expect(store.getState().cart.quantity).toBe(2);
+        const goToCartButton = getByTestId('btn-cart');
+        expect(goToCartButton).toBeDefined();
+        fireEvent.click(goToCartButton);
+        expect(window.location.pathname).toBe('/cart');
     });
 
 });
