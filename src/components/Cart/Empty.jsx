@@ -19,8 +19,8 @@ const styles = theme => ({
 });
 
 const EmptyCart = props => (
-    <div className={props.classes.wrapper}>
-        <Typography variant='p' component='h1'>
+    <div className={props.classes.wrapper} data-testid="empty-cart">
+        <Typography variant='h5' component='h1'>
             Pusty koszyk
         </Typography>
         <div>
