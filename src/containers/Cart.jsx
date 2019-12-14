@@ -54,7 +54,9 @@ const Cart = props => {
     };
 
     useEffect(() => {
-        getDeliveryMethodsIfNeeded({sort, order});
+        if (props.products.length > 0) {
+            getDeliveryMethodsIfNeeded({sort, order});
+        }
     }, []);
 
     useEffect(() => {

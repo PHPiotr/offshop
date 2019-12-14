@@ -61,7 +61,7 @@ const ProductsInCart = props => {
                                 <Avatar src={`${process.env.REACT_APP_PRODUCT_PATH}/${p.images[0].avatar}`} alt={p.name}/>
                             </ListItemAvatar>
                             <ListItemText
-                                primary={<Link component={RouterLink} to={`/products/${p.slug}`}>{p.name}</Link>}
+                                primary={<Link data-testid={`link-${p.id}`} component={RouterLink} to={`/products/${p.slug}`}>{p.name}</Link>}
                                 secondary={
                                     <Typography
                                         component="p"
@@ -73,6 +73,7 @@ const ProductsInCart = props => {
                             />
                             <ListItemSecondaryAction className={classes.secondaryAction}>
                                 <IconButton
+                                    data-testid={`increment-${p.id}`}
                                     id={p.id}
                                     onClick={handleIncrementItemInCart}
                                     disabled={p.stock - productInCart.quantity <= 0}
@@ -81,6 +82,7 @@ const ProductsInCart = props => {
                                 </IconButton>
                                 <Typography className={classes.textField} component="span">{productInCart.quantity}</Typography>
                                 <IconButton
+                                    data-testid={`decrement-${p.id}`}
                                     id={p.id}
                                     onClick={handleDecrementItemInCart}
                                     disabled={productInCart.quantity < 2}
@@ -88,6 +90,7 @@ const ProductsInCart = props => {
                                     <RemoveShoppingCartIcon/>
                                 </IconButton>
                                 <IconButton
+                                    data-testid={`remove-${p.id}`}s
                                     id={p.id}
                                     onClick={handleRemoveItemFromCart}
                                 >
