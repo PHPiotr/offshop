@@ -1,10 +1,13 @@
-import React from 'react';
+import React, {Fragment} from 'react';
 import thunk from 'redux-thunk';
 import {createStore, applyMiddleware, combineReducers} from 'redux';
 import {cleanup, waitForElement, fireEvent} from '@testing-library/react';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
+import Navigation from '../Navigation';
 import Products from '../Products';
+import appBar from '../../reducers/appBar';
+import auth from '../../reducers/auth';
 import cart from '../../reducers/cart';
 import dialog from '../../reducers/dialog';
 import products from '../../reducers/reducerProducts';
@@ -55,11 +58,11 @@ const lastProduct = productsPayload[productsLength - 1];
 
 const mock = new MockAdapter(axios);
 const store = createStore(
-    combineReducers({cart, dialog, products}),
+    combineReducers({appBar, auth, cart, dialog, products}),
     applyMiddleware(thunk),
 );
 
-describe('Products container', () => {
+describe('Products', () => {
 
     beforeEach(() => {
         mock.reset();
@@ -70,13 +73,17 @@ describe('Products container', () => {
     afterEach(cleanup);
 
     it('should render products list page and be able to enter product view page', async () => {
-        const node = await renderWithStore(<Products/>, store);
-        const {getByText} = node;
+        const {getByText, getByTestId} = await renderWithStore(<Products/>, store);
         let i;
         let productLink;
         for (i = 0; i < productsLength; i++) {
-            productLink = await waitForElement(() => getByText(productsPayload[i].name));
+            const currentProduct = productsPayload[i];
+            productLink = await waitForElement(() => getByText(currentProduct.name));
+            const productPrice = await waitForElement(() => getByText((currentProduct.unitPrice/100).toFixed(2)));
+            const addToCartButton = await waitForElement(() => getByTestId(`add-to-cart-button-${currentProduct.id}`));
             expect(productLink).toBeDefined();
+            expect(productPrice).toBeDefined();
+            expect(addToCartButton).toBeDefined();
         }
         expect(i).toBe(productsLength);
         expect(productLink.text).toBe(lastProduct.name);
@@ -85,17 +92,19 @@ describe('Products container', () => {
     });
 
     it("should add item to cart", async () => {
-        const {getByTestId, queryByTestId, queryByRole, getByRole} = await renderWithStore(<Products/>, store);
+        const {getByTestId, queryByTestId, queryByRole, getByRole} = await renderWithStore(<Fragment><Navigation/><Products/></Fragment>, store);
+        const cartButton = getByTestId('cart-button');
+        expect(cartButton).toBeDefined();
         const addToCartButton = await waitForElement(() => getByTestId(`add-to-cart-button-${productsPayload[0].id}`));
         expect(queryByRole('dialog')).toBeNull();
         expect(queryByTestId('btn-continue')).toBeNull();
         expect(queryByTestId('btn-cart')).toBeNull();
         expect(addToCartButton).toBeDefined();
-        expect(store.getState().cart.quantity).toBe(0);
+        expect(getByTestId('cart-badge').textContent).toBe('0');
         fireEvent.click(addToCartButton);
         const addedToCartDialog = await waitForElement(() => getByRole('dialog'));
         expect(addedToCartDialog).toBeDefined();
-        expect(store.getState().cart.quantity).toBe(1);
+        expect(getByTestId('cart-badge').textContent).toBe('1');
         const continueShoppingButton = await waitForElement(() => getByTestId('btn-continue'));
         expect(continueShoppingButton).toBeDefined();
         fireEvent.click(continueShoppingButton);
@@ -103,7 +112,7 @@ describe('Products container', () => {
         expect(queryByRole('dialog')).toBeNull();
         fireEvent.click(addToCartButton);
         expect(getByRole('dialog')).toBeDefined();
-        expect(store.getState().cart.quantity).toBe(2);
+        expect(getByTestId('cart-badge').textContent).toBe('2');
         const goToCartButton = getByTestId('btn-cart');
         expect(goToCartButton).toBeDefined();
         fireEvent.click(goToCartButton);

@@ -108,11 +108,13 @@ class PrimaryAppBar extends Component {
                         <div className={classes.grow}/>
                         <div>
                             <IconButton
+                                data-testid="cart-button"
                                 component={RouterLink}
                                 to="/cart"
                                 color="inherit"
                             >
                                 <Badge
+                                    data-testid="cart-badge"
                                     badgeContent={cart.quantity}
                                     invisible={cart.quantity < 1}
                                     color="secondary"
