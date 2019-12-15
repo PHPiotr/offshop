@@ -35,8 +35,22 @@ const withPayuExpress = (WrappedComponent) => {
             window.addEventListener('message', this.onSuccess);
         }
 
-        componentWillReceiveProps(nextProps, nextContext) {
-            this.setState({sig: generateSig(nextProps)});
+        componentDidUpdate(prevProps, prevState, snapshot) {
+            if (
+                prevProps.currencyCode !== this.props.currencyCode ||
+                prevProps.customerEmail !== this.props.customerEmail ||
+                prevProps.customerLanguage !== this.props.customerLanguage ||
+                prevProps.merchantPosId !== this.props.merchantPosId ||
+                prevProps.payuBrand !== this.props.payuBrand ||
+                prevProps.recurringPayment !== this.props.recurringPayment ||
+                prevProps.shopName !== this.props.shopName ||
+                prevProps.storeCard !== this.props.storeCard ||
+                prevProps.totalAmount !== this.props.totalAmount ||
+                prevProps.widgetMode !== this.props.widgetMode ||
+                prevProps.secondKeyMd5 !== this.props.secondKeyMd5
+            ) {
+                this.setState({sig: generateSig(this.props)});
+            }
         }
 
         async onSuccess(e) {

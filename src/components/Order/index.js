@@ -24,11 +24,13 @@ const Order = props => (
     <Fragment>
         <SubHeader content={`Dziękujemy za zamówienie`}/>
         <Box className={props.classes.root}>
-            <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
-                <Typography variant="subtitle1">
-                    {`Numer zamówienia:  ${props.extOrderId}`}
-                </Typography>
-            </Grid>
+            {props.extOrderId && (
+                <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
+                    <Typography variant="subtitle1">
+                        {`Numer zamówienia:  ${props.extOrderId}`}
+                    </Typography>
+                </Grid>
+            )}
             <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
                 <Typography variant="subtitle1">
                     Więcej informacji w Twojej skrzynce e-mail.
@@ -39,7 +41,11 @@ const Order = props => (
 );
 
 Order.propTypes = {
-    extOrderId: PropTypes.string.isRequired,
+    extOrderId: PropTypes.string,
+};
+
+Order.defaultProps = {
+    extOrderId: '',
 };
 
 export default withStyles(styles)(Order);

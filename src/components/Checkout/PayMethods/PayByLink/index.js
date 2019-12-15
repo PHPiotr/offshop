@@ -24,7 +24,7 @@ const PayByLink = props => {
         }
     };
     return (
-        <button id="pay-button" className={props.classes.button} onClick={handleOnClick(payMethods)}>
+        <button data-testid={`pay-button-${props.value}`} className={props.classes.button} onClick={handleOnClick(payMethods)}>
             <img height="50" src={props.brandImageUrl} title={props.name} alt={props.name} />
         </button>
     );

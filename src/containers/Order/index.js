@@ -7,22 +7,13 @@ import {resetIsCreated} from '../../actions/order';
 
 const Order = props => {
 
-    const {order, resetIsCreated} = props;
+    const {order, resetIsCreated, isCreating} = props;
 
     useEffect(() => {
         resetIsCreated();
     }, []);
 
-    useEffect(() => {
-        if (!order.data.extOrderId) {
-            props.history.replace('/');
-        }
-    }, [order.isCreating]);
-
-    if (order.isCreating) {
-        return <ProgressIndicator/>;
-    }
-    if (!order.data.extOrderId) {
+    if (isCreating) {
         return <ProgressIndicator/>;
     }
     return <OrderView {...order.data}/>;
@@ -30,6 +21,7 @@ const Order = props => {
 
 const mapStateToProps = state => ({
     order: state.order,
+    isCreating: state.order.isCreating,
 });
 
 Order.propTypes = {
@@ -37,6 +29,7 @@ Order.propTypes = {
         data: PropTypes.object,
         isCreating: PropTypes.bool,
     }).isRequired,
+    isCreating: PropTypes.bool,
 };
 
 export default connect(mapStateToProps, {resetIsCreated})(Order);

@@ -1,7 +1,7 @@
 import React, {Fragment} from 'react';
 import thunk from 'redux-thunk';
 import {createStore, applyMiddleware, combineReducers} from 'redux';
-import {cleanup, waitForElement, fireEvent} from '@testing-library/react';
+import {waitForElement, fireEvent} from '@testing-library/react';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import Navigation from '../Navigation';
@@ -11,7 +11,7 @@ import auth from '../../reducers/auth';
 import cart from '../../reducers/cart';
 import dialog from '../../reducers/dialog';
 import products from '../../reducers/reducerProducts';
-import {renderWithStore} from '../../helpers/testHelpers';
+import {fakeLocalStorage, renderWithStore} from '../../helpers/testHelpers';
 
 const productsPayload = [
     {
@@ -57,20 +57,20 @@ const productsLength = productsPayload.length;
 const lastProduct = productsPayload[productsLength - 1];
 
 const mock = new MockAdapter(axios);
-const store = createStore(
-    combineReducers({appBar, auth, cart, dialog, products}),
-    applyMiddleware(thunk),
-);
+let store;
 
 describe('Products', () => {
 
     beforeEach(() => {
+        fakeLocalStorage();
         mock.reset();
+        store = createStore(
+            combineReducers({appBar, auth, cart, dialog, products}),
+            applyMiddleware(thunk),
+        );
         mock.onGet(/products/).replyOnce(200, productsPayload);
         mock.onGet(`/products/${lastProduct.slug}`).replyOnce(200, lastProduct);
     });
-
-    afterEach(cleanup);
 
     it('should render products list page and be able to enter product view page', async () => {
         const {getByText, getByTestId} = await renderWithStore(<Products/>, store);
@@ -117,6 +117,19 @@ describe('Products', () => {
         expect(goToCartButton).toBeDefined();
         fireEvent.click(goToCartButton);
         expect(window.location.pathname).toBe('/cart');
+    });
+
+    it('should prevent from adding item to cart if the whole item stock already added', async () => {
+        const {getByTestId, queryByTestId} = await renderWithStore(<Fragment><Navigation/><Products/></Fragment>, store);
+        const addToCartButton = await waitForElement(() => getByTestId(`add-to-cart-button-${lastProduct.id}`));
+        let i = lastProduct.stock;
+        while (i--) {
+            expect(getByTestId(`add-to-cart-button-${lastProduct.id}`)).toBeDefined();
+            fireEvent.click(addToCartButton);
+            const continueShoppingButton = await waitForElement(() => getByTestId('btn-continue'));
+            fireEvent.click(continueShoppingButton);
+        }
+        expect(queryByTestId(`add-to-cart-button-${lastProduct.id}`)).toBeNull();
     });
 
 });

@@ -90,7 +90,7 @@ const ProductsInCart = props => {
                                     <RemoveShoppingCartIcon/>
                                 </IconButton>
                                 <IconButton
-                                    data-testid={`remove-${p.id}`}s
+                                    data-testid={`remove-${p.id}`}
                                     id={p.id}
                                     onClick={handleRemoveItemFromCart}
                                 >
