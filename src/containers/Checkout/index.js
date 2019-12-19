@@ -1,7 +1,8 @@
-import React, {Fragment, useEffect} from 'react';
+import React, {useEffect} from 'react';
 import PropTypes from 'prop-types';
 import CheckoutView from '../../components/Checkout';
 import {connect} from 'react-redux';
+import {withRouter} from 'react-router-dom';
 import ProgressIndicator from '../../components/ProgressIndicator';
 import {
     setActiveStepId,
@@ -16,7 +17,6 @@ const socket = io();
 const Checkout = props => {
     const {
         products,
-        setActiveStepId,
         resetOrderData,
         onUpdateProductInCartSummary,
         onDeleteProductInCartSummary,
@@ -71,7 +71,7 @@ const Checkout = props => {
         }
         if (data.extOrderId && (isDoneCreating || isCreating)) {
             if (data.redirectUri) {
-                window.location.href = data.redirectUri;
+                setTimeout(() => window.location.href = data.redirectUri, 600);
             } else {
                 props.history.replace('/order');
             }
@@ -109,4 +109,4 @@ Checkout.propTypes = {
     }).isRequired,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Checkout);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Checkout));

@@ -5,11 +5,9 @@ import {createStore, applyMiddleware} from 'redux';
 import thunk from 'redux-thunk';
 import {Provider} from 'react-redux';
 import {BrowserRouter as Router} from 'react-router-dom';
-import {render, fireEvent, cleanup} from '@testing-library/react';
+import {render, fireEvent} from '@testing-library/react';
 import rootReducer from '../../../reducers';
 import ProductView from '../index';
-
-afterEach(cleanup);
 
 function renderWithProviders(
     ui,

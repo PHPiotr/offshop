@@ -49,9 +49,10 @@ const CartSummary = props => {
                 <Typography gutterBottom variant="h6">
                     Wybierz sposób dostawy
                 </Typography>
-                <RadioGroup name="position" value={props.currentDeliveryMethod.id}>
+                <RadioGroup name="position" defaultValue={props.currentDeliveryMethod.id}>
                     {deliveryMethods.map(({ id, name, unitPrice }) => (
                         <FormControlLabel
+                            data-testid={`radio-btn-${id}`}
                             key={id}
                             value={id}
                             control={<Radio color="primary" />}
@@ -62,10 +63,10 @@ const CartSummary = props => {
                                         className={classes.inline}
                                         color="textPrimary"
                                     >
-                                        {`${name}: `}
+                                        <span>{name}</span>
                                     </Typography>
                                     <Typography component="span" color="textSecondary">
-                                        {`${(unitPrice * (cart.weight / 100) / 100).toFixed(2)} zł`}
+                                        &nbsp;<span>{`${(unitPrice * (cart.weight / 100) / 100).toFixed(2)}`}</span> zł
                                     </Typography>
                                 </React.Fragment>
                             }
@@ -86,7 +87,7 @@ const CartSummary = props => {
                     </Grid>
                     <Grid item align="right">
                         <Typography gutterBottom variant="h6">
-                            {`${(cart.totalPriceWithDelivery / 100).toFixed(2)} zł`}
+                            <span data-testid="total-price-with-delivery">{`${(cart.totalPriceWithDelivery / 100).toFixed(2)}`}</span>&nbsp;zł
                         </Typography>
                     </Grid>
                 </Grid>
@@ -94,6 +95,7 @@ const CartSummary = props => {
             <Divider variant="middle" className={classes.divider} />
             <div className={classes.section3}>
                 <Button
+                    data-testid="checkout-btn"
                     onClick={props.checkout}
                     disabled={!props.currentDeliveryMethod.id}
                     variant="contained"

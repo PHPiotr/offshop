@@ -12,7 +12,7 @@ import PropTypes from 'prop-types';
 import BuyerForm from "./BuyerForm";
 import BuyerDeliveryForm from "./BuyerDeliveryForm";
 import {getFormValues, isValid} from 'redux-form';
-import {stepBack, stepNext, setActiveStepId} from '../../actions/checkout';
+import {stepBack, stepNext} from '../../actions/checkout';
 import {withRouter} from 'react-router-dom';
 import steps from '../../config/checkoutSteps';
 import {Box} from '@material-ui/core';
@@ -71,9 +71,9 @@ const Checkout = props => {
     const activeStepValue = steps[activeStepId].value;
     let canProceed = false;
     if (activeStepValue === 'buyer') {
-        canProceed = props.validBuyerData;
+        canProceed = props.validBuyerData && props.buyer !== undefined;
     } else if (activeStepValue === 'buyerDelivery') {
-        canProceed = props.validBuyerData && props.validBuyerDeliveryData;
+        canProceed = props.validBuyerData && props.buyer !== undefined && props.validBuyerDeliveryData && props.buyerDelivery !== undefined;
     }
 
     const handleOnStepButtonClick = id => () => handleSetActiveStepId(id);
@@ -100,18 +100,18 @@ const Checkout = props => {
                 <Box className={classes.buttons}>
                     <Button
                         variant="contained"
-                        color="disabled"
+                        color="default"
                         onClick={activeStepId === stepsIds[0] ? props.redirectToCart : props.handleBack}
                         className={classes.button}
                         style={{marginRight: '1rem'}}
                     >Wróć</Button>
-                    {activeStepId !== stepsIds[stepsIds.length - 1] && (
+                    {activeStepId !== stepsIds[stepsIds.length - 1] && canProceed && (
                         <Button
+                            data-testid="next-step-btn"
                             variant="contained"
                             color="primary"
                             onClick={props.handleNext}
                             className={classes.button}
-                            disabled={!canProceed}
                         >Dalej</Button>
                     )}
                 </Box>
@@ -145,9 +145,6 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
     },
     handleBack() {
         dispatch(stepBack());
-    },
-    handleSetActiveStepId(id) {
-        dispatch(setActiveStepId(id));
     },
     redirectToCart() {
         ownProps.history.replace('/cart');

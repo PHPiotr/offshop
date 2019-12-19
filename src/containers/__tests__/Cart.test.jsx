@@ -1,7 +1,7 @@
 import React, {Fragment} from 'react';
 import thunk from 'redux-thunk';
 import {createStore, applyMiddleware, combineReducers} from 'redux';
-import {cleanup, waitForElement, fireEvent} from '@testing-library/react';
+import {waitForElement, fireEvent} from '@testing-library/react';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import Navigation from '../Navigation';
@@ -13,7 +13,7 @@ import cart from '../../reducers/cart';
 import deliveryMethods from '../../reducers/deliveryMethods';
 import dialog from '../../reducers/dialog';
 import products from '../../reducers/reducerProducts';
-import {renderWithStore} from '../../helpers/testHelpers';
+import {fakeLocalStorage, renderWithStore} from '../../helpers/testHelpers';
 
 const deliveryMethodsPayload = [
     {
@@ -29,7 +29,7 @@ const deliveryMethodsPayload = [
         id: "5cd6be587732b1ba409678b2",
         name: "Bar",
         slug: "bar",
-        unitPrice: "0",
+        unitPrice: "2999",
         createdAt: "2019-05-11T12:21:44.173Z",
         updatedAt: "2019-10-10T21:28:58.547Z",
         active: true,
@@ -77,21 +77,25 @@ const productsPayload = [
     }
 ];
 
+const firstProduct = productsPayload[0];
+const firstProductId = firstProduct.id;
+const deliveryMethodsPayloadLength = deliveryMethodsPayload.length;;
+
 const mock = new MockAdapter(axios);
-const store = createStore(
-    combineReducers({appBar, auth, cart, deliveryMethods, dialog, products}),
-    applyMiddleware(thunk),
-);
+let store;
 
 describe('Cart', () => {
 
     beforeEach(() => {
+        fakeLocalStorage();
         mock.reset();
+        store = createStore(
+            combineReducers({appBar, auth, cart, deliveryMethods, dialog, products}),
+            applyMiddleware(thunk),
+        );
         mock.onGet(/delivery-methods/).replyOnce(200, deliveryMethodsPayload);
         mock.onGet(/products/).reply(200, productsPayload);
     });
-
-    afterEach(cleanup);
 
     it('should render empty cart page', async () => {
         const {getByTestId} = await renderWithStore(<Cart/>, store);
@@ -100,8 +104,6 @@ describe('Cart', () => {
     });
 
     it('should increment/decrement/remove items in cart', async () => {
-        const firstProduct = productsPayload[0];
-        const firstProductId = firstProduct.id;
         const {getByTestId} = await renderWithStore(<Products/>, store);
         const addToCartButton = await waitForElement(() => getByTestId(`add-to-cart-button-${firstProductId}`));
         expect(addToCartButton).toBeDefined();
@@ -130,6 +132,58 @@ describe('Cart', () => {
         const productRemoveBtn = getByTestId(`remove-${firstProductId}`);
         fireEvent.click(productRemoveBtn);
         expect(getByTestId('cart-badge').textContent).toBe('0');
+    });
+
+    it('should render delivery methods and require to choose one before checkout', async () => {
+        const {getByTestId, getByText} = await renderWithStore(<Products/>, store);
+        const addToCartButton = await waitForElement(() => getByTestId(`add-to-cart-button-${firstProductId}`));
+        expect(addToCartButton).toBeDefined();
+        fireEvent.click(addToCartButton);
+        await renderWithStore(<Cart/>, store);
+        let i = deliveryMethodsPayloadLength;
+        let deliveryMethodRadio;
+        const checkoutButton = await waitForElement(() => getByTestId('checkout-btn'));
+        expect(checkoutButton.disabled).toBe(true);
+        while(i--) {
+            const currentDeliveryMethod = deliveryMethodsPayload[i];
+            expect(await waitForElement(() => getByText(currentDeliveryMethod.name))).toBeDefined();
+            expect(await waitForElement(() => getByText((currentDeliveryMethod.unitPrice * (store.getState().cart.weight / 100) / 100).toFixed(2)))).toBeDefined();
+            deliveryMethodRadio = await waitForElement(() => getByTestId(`radio-btn-${currentDeliveryMethod.id}`));
+            expect(deliveryMethodRadio).toBeDefined();
+            expect(checkoutButton.disabled).toBe(true);
+        }
+        fireEvent.click(deliveryMethodRadio);
+        expect(checkoutButton.disabled).toBe(false);
+    });
+
+    it('should adjust total price on delivery method change and on item amount increment/decrement', async () => {
+        const {getByTestId} = await renderWithStore(<Products/>, store);
+        const addToCartButton = await waitForElement(() => getByTestId(`add-to-cart-button-${firstProductId}`));
+        expect(addToCartButton).toBeDefined();
+        fireEvent.click(addToCartButton);
+        await renderWithStore(<Cart/>, store);
+        const totalPriceWithDelivery = await waitForElement(() => getByTestId('total-price-with-delivery'));
+        expect(totalPriceWithDelivery.innerHTML).toBe((firstProduct.unitPrice / 100).toFixed(2));
+        const productIncrementBtn = getByTestId(`increment-${firstProductId}`);
+        const productDecrementBtn = getByTestId(`decrement-${firstProductId}`);
+        let i = deliveryMethodsPayloadLength;
+        while(i--) {
+            const currentDeliveryMethod = deliveryMethodsPayload[i];
+            const deliveryMethodRadio = await waitForElement(() => getByTestId(`radio-btn-${currentDeliveryMethod.id}`));
+            fireEvent.click(deliveryMethodRadio);
+            const totalForOneItem = (currentDeliveryMethod.unitPrice * (firstProduct.weight / 100) / 100 + firstProduct.unitPrice / 100).toFixed(2);
+            const totalForTwoItems = (currentDeliveryMethod.unitPrice * (firstProduct.weight * 2 / 100) / 100 + firstProduct.unitPrice * 2 / 100).toFixed(2);
+            const totalForThreeItems = (currentDeliveryMethod.unitPrice * (firstProduct.weight * 3 / 100) / 100 + firstProduct.unitPrice * 3 / 100).toFixed(2);
+            expect(totalPriceWithDelivery.innerHTML).toBe(totalForOneItem);
+            fireEvent.click(productIncrementBtn);
+            expect(totalPriceWithDelivery.innerHTML).toBe(totalForTwoItems);
+            fireEvent.click(productIncrementBtn);
+            expect(totalPriceWithDelivery.innerHTML).toBe(totalForThreeItems);
+            fireEvent.click(productDecrementBtn);
+            expect(totalPriceWithDelivery.innerHTML).toBe(totalForTwoItems);
+            fireEvent.click(productDecrementBtn);
+            expect(totalPriceWithDelivery.innerHTML).toBe(totalForOneItem);
+        }
     });
 
 });

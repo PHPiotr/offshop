@@ -8,3 +8,13 @@ export const renderWithStore = (node, store) => render(
         <BrowserRouter>{node}</BrowserRouter>
     </Provider>
 );
+
+export const fakeLocalStorage = () => {
+    Object.defineProperty(window, "localStorage", {
+        value: {
+            getItem: jest.fn(() => null),
+            setItem: jest.fn(() => null),
+        },
+        writable: true,
+    });
+};

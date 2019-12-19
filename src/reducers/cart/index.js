@@ -8,7 +8,7 @@ import {
     ON_UPDATE_PRODUCT_IN_CART_SUMMARY,
     ON_DELETE_PRODUCT_IN_CART_SUMMARY,
 } from '../../actions/checkout';
-import {CREATE_ORDER_SUCCESS} from "../../actions/order";
+import {CREATE_ORDER_SUCCESS, RESET_IS_CREATED} from "../../actions/order";
 import {SYNC_QUANTITIES} from '../../actions/products';
 import {SET_CURRENT_DELIVERY_METHOD} from '../../actions/deliveryMethods';
 
@@ -159,10 +159,9 @@ const cart = (state = initialState, { payload, type }) => {
 
             return newState;
 
+        case RESET_IS_CREATED:
         case CREATE_ORDER_SUCCESS:
-            return {
-                ...initialState
-            };
+            return {...initialState};
         default:
             return state;
     }

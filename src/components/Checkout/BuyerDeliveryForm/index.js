@@ -55,6 +55,7 @@ let BuyerDeliveryForm = props => {
                     acc.push(
                         <Grid item xs={12} key={itemId}>
                             <Field
+                                data-testid={itemId}
                                 name={itemId}
                                 component={renderTextField}
                                 label={label}

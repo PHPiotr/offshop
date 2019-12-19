@@ -82,15 +82,16 @@ function ProductsGridList(props) {
                                         </Fragment>
                                     }
                                     actionIcon={
-                                        <IconButton
-                                            data-testid={`add-to-cart-button-${product.id}`}
-                                            id={product.id}
-                                            className={classes.iconButton}
-                                            onClick={handleAddToCart}
-                                            style={{display: canAddToCart ? 'block' : 'none'}}
-                                        >
-                                            <AddShoppingCartIcon/>
-                                        </IconButton>
+                                        canAddToCart && (
+                                            <IconButton
+                                                data-testid={`add-to-cart-button-${product.id}`}
+                                                id={product.id}
+                                                className={classes.iconButton}
+                                                onClick={handleAddToCart}
+                                            >
+                                                <AddShoppingCartIcon/>
+                                            </IconButton>
+                                        )
                                     }
                                 />
                             </GridListTile>
