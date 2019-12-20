@@ -52,7 +52,6 @@
     "build": "node scripts/build.js",
     "test": "node scripts/test.js",
     "test:coverage": "node scripts/test.js --coverage",
-    "coverage": "npm run test:coverage --coverageReporters=text-lcov | coveralls",
     "format": "pretty-quick",
     "heroku-prebuild": "npm install --production=false"
   },
