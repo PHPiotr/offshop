@@ -15,6 +15,7 @@
 /build
 
 # misc
+.nyc_output/
 public/images/
 .idea
 .DS_Store
