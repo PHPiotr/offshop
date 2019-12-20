@@ -52,6 +52,7 @@
     "build": "node scripts/build.js",
     "test": "node scripts/test.js",
     "test:coverage": "node scripts/test.js --coverage",
+    "coverage": "nyc report --reporter=text-lcov | coveralls",
     "format": "pretty-quick",
     "heroku-prebuild": "npm install --production=false"
   },
@@ -84,6 +85,7 @@
     "babel-plugin-named-asset-import": "^0.3.5",
     "babel-preset-react-app": "^9.1.0",
     "case-sensitive-paths-webpack-plugin": "^2.2.0",
+    "coveralls": "^3.0.9",
     "css-loader": "^3.4.0",
     "eslint": "^6.7.2",
     "eslint-config-react-app": "^5.1.0",
@@ -100,6 +102,7 @@
     "jest-pnp-resolver": "^1.2.1",
     "jest-resolve": "^24.9.0",
     "mini-css-extract-plugin": "^0.8.2",
+    "nyc": "^14.1.1",
     "optimize-css-assets-webpack-plugin": "^5.0.3",
     "pnp-webpack-plugin": "^1.4.3",
     "postcss-loader": "^3.0.0",
