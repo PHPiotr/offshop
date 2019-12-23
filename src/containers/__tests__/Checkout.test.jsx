@@ -1,4 +1,4 @@
-import React, {Fragment} from 'react';
+import React from 'react';
 import thunk from 'redux-thunk';
 import {createStore, applyMiddleware, combineReducers} from 'redux';
 import {waitForElement, fireEvent} from '@testing-library/react';
@@ -6,6 +6,7 @@ import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import Cart from '../Cart';
 import Checkout from '../Checkout';
+import Order from '../Order';
 import Products from '../Products';
 import appBar from '../../reducers/appBar';
 import auth from '../../reducers/auth';
@@ -120,7 +121,7 @@ const ordersPayload = {
 const mock = new MockAdapter(axios);
 let store;
 
-describe('Cart', () => {
+describe('Checkout', () => {
 
     beforeEach(() => {
         fakeLocalStorage();
@@ -202,7 +203,11 @@ describe('Cart', () => {
         fireEvent.click(nextStepButton);
         const googlePayBtn = await waitForElement(() => getByTestId(`pay-button-${payMethodsPayload.payByLinks[0].value}`));
         const cardPayBtn = await waitForElement(() => getByTestId(`pay-button-${payMethodsPayload.payByLinks[1].value}`));
-        fireEvent.click(googlePayBtn);
+        const buttons = [cardPayBtn, googlePayBtn];
+        for (let i = 0; i < 2; i++) {
+            fireEvent.click(buttons[i]);
+            await renderWithStore(<Order/>, store);
+        }
     });
 
 });

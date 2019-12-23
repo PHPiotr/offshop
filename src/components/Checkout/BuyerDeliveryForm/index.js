@@ -34,22 +34,14 @@ let BuyerDeliveryForm = props => {
             <Grid container spacing={10}>
                 {props.inputKeys.reduce((acc, itemId) => {
                     const {label, type, validate} = props.inputs[itemId];
-                    if (type === 'hidden') {
-                        return acc;
-                    }
                     const validateFunctions = [];
                     let required = false;
                     validate.forEach(rule => {
-                        switch (rule) {
-                            case 'required':
-                                validateFunctions.push(validateRequired);
-                                required = true;
-                                break;
-                            case 'email':
-                                validateFunctions.push(validateEmail);
-                                break;
-                            default:
-                                throw Error('Unknown validation rule');
+                        if (rule === 'required') {
+                            validateFunctions.push(validateRequired);
+                            required = true;
+                        } else if (rule === 'email') {
+                            validateFunctions.push(validateEmail);
                         }
                     });
                     acc.push(
@@ -82,13 +74,12 @@ const mapStateToProps = state => ({
 BuyerDeliveryForm.propTypes = {
     inputKeys: PropTypes.array,
     inputs: PropTypes.object,
-    onSubmit: PropTypes.func,
+    onSubmit: PropTypes.func.isRequired,
 };
 
 BuyerDeliveryForm.defaultProps = {
     inputKeys: [],
     inputs: {},
-    onSubmit: () => null,
 };
 
 BuyerDeliveryForm = connect(mapStateToProps)(BuyerDeliveryForm);
