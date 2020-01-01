@@ -87,15 +87,17 @@ const ProductView = props => {
                 <CardHeader
                     avatar={
                         <Avatar aria-label={props.product.name} className={props.classes.avatar}>
-                            <IconButton
-                                role="addToCart"
-                                id={props.product.id}
-                                onClick={handleAddToCart}
-                                className={props.classes.addToCart}
-                                disabled={props.productInCart.quantity >= props.product.stock}
-                            >
-                                <AddShoppingCartIcon/>
-                            </IconButton>
+                            {(props.productInCart.quantity || 0) < (props.product.stock || 0) && (
+                                <IconButton
+                                    data-testid={`add-to-cart-button-${props.product.id}`}
+                                    id={props.product.id}
+                                    onClick={handleAddToCart}
+                                    className={props.classes.addToCart}
+                                    disabled={props.productInCart.quantity >= props.product.stock}
+                                >
+                                    <AddShoppingCartIcon/>
+                                </IconButton>
+                            )}
                         </Avatar>
                     }
                     action={

@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import {withStyles} from '@material-ui/core/styles';
 import pink from '@material-ui/core/colors/pink';
 import {connect} from 'react-redux';
+import {withRouter} from 'react-router-dom';
 
 // actions
 import {addToCart} from '../actions/cart';
@@ -175,4 +176,4 @@ Product.propTypes = {
     classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(Product));
+export default withRouter(withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(Product)));
