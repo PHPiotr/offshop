@@ -51,7 +51,6 @@
     "dev:serve": "node scripts/serve.js",
     "build": "node scripts/build.js",
     "test": "node scripts/test.js --coverage",
-    "test:coverage": "node scripts/test.js --coverage",
     "coverage": "cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage",
     "format": "pretty-quick",
     "heroku-prebuild": "npm install --production=false"
