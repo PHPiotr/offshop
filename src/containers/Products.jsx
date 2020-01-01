@@ -3,9 +3,7 @@ import {connect} from 'react-redux';
 import ProductsView from '../components/Products';
 import {getProductsIfNeeded, onCreateProduct, onDeleteProduct, onUpdateProduct} from '../actions/products';
 import {showNotification} from '../actions/notification';
-import io from '../io';
 import useInfiniteScrolling from '../hooks/useInfiniteScrolling';
-const socket = io();
 
 const Products = props => {
 
@@ -15,6 +13,7 @@ const Products = props => {
         onUpdateProduct,
         onDeleteProduct,
         showNotification,
+        socket,
     } = props;
     const [sort, setSort] = useState('name');
     const [order, setOrder] = useState(1);
@@ -70,6 +69,9 @@ const Products = props => {
     };
 
     useEffect(() => {
+        if (!socket) {
+            return;
+        }
         socket.on('createProduct', onCreateProductListener);
         socket.on('updateProduct', onUpdateProductListener);
         socket.on('deleteProduct', onDeleteProductListener);

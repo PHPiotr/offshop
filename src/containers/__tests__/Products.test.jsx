@@ -6,12 +6,40 @@ import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import Navigation from '../Navigation';
 import Products from '../Products';
+import NotificationBar from '../../components/NotificationBar';
 import appBar from '../../reducers/appBar';
 import auth from '../../reducers/auth';
 import cart from '../../reducers/cart';
 import dialog from '../../reducers/dialog';
+import notification from '../../reducers/notification';
 import products from '../../reducers/reducerProducts';
 import {fakeLocalStorage, renderWithStore} from '../../helpers/testHelpers';
+import io from '../../io';
+import MockedSocket from 'socket.io-mock';
+let socket = new MockedSocket();
+jest.mock('../../io');
+io.mockResolvedValue(socket);
+
+const product = {
+    active: true,
+    stock: "5",
+    images: [
+        {
+            avatar: "5da476864f651730df445456.avatar.jpg?abb63a0b73a1cc303570caed5ab39036",
+            card: "5da476864f651730df445456.card.jpg?fc373385a066033dc2de08d152ffabd0",
+            tile: "5da476864f651730df445456.tile.jpg?297aca95d06c26c3cf47fe98ce37c3c0",
+        }
+    ],
+    description: "Lorem ipsum",
+    longDescription: "Lorem ipsum",
+    name: "Hello world",
+    unitPrice: "35200",
+    weight: "1200",
+    slug: "hello-world",
+    createdAt: "2020-01-01T13:22:14.129Z",
+    updatedAt: "2020-01-01T13:22:14.636Z",
+    id: "5da476864f651730df445457"
+};
 
 const productsPayload = [
     {
@@ -65,7 +93,7 @@ describe('Products', () => {
         fakeLocalStorage();
         mock.reset();
         store = createStore(
-            combineReducers({appBar, auth, cart, dialog, products}),
+            combineReducers({appBar, auth, cart, dialog, notification, products}),
             applyMiddleware(thunk),
         );
         mock.onGet(/products/).replyOnce(200, productsPayload);
@@ -130,6 +158,90 @@ describe('Products', () => {
             fireEvent.click(continueShoppingButton);
         }
         expect(queryByTestId(`add-to-cart-button-${lastProduct.id}`)).toBeNull();
+    });
+
+    describe('event listeners', () => {
+
+        describe('createProduct', () => {
+
+            const message = `Produkt ${product.name} został dodany.`;
+
+            it('should show notification message when created product IS active', async () => {
+                const {getByText, queryByText} = await renderWithStore(<Fragment><Products socket={socket}/><NotificationBar /></Fragment>, store);
+                expect(queryByText(message)).toBeNull();
+                socket.socketClient.emit('createProduct', {product, isActive: product.active});
+                expect(getByText(message)).toBeDefined();
+            });
+
+            it('should not show notification message when created product IS NOT active', async () => {
+                const {queryByText} = await renderWithStore(<Fragment><Products socket={socket}/><NotificationBar /></Fragment>, store);
+                expect(queryByText(message)).toBeNull();
+                socket.socketClient.emit('createProduct', {product, isActive: false});
+                expect(queryByText(message)).toBeNull();
+            });
+
+        });
+
+        describe('updateProduct', () => {
+
+            const updatedProductMessage = `Produkt ${product.name} został zmieniony.`;
+            const deletedProductMessage = `Produkt ${product.name} został usunięty.`;
+            const createdProductMessage = `Produkt ${product.name} został dodany.`;
+
+            it('should show updated product notification message when updated product WAS active and IS active', async () => {
+                const {getByText, queryByText} = await renderWithStore(<Fragment><Products socket={socket}/><NotificationBar /></Fragment>, store);
+                expect(queryByText(updatedProductMessage)).toBeNull();
+                socket.socketClient.emit('updateProduct', {product, wasActive: true, isActive: true});
+                expect(getByText(updatedProductMessage)).toBeDefined();
+            });
+
+            it('should show deleted product notification message when updated product WAS active and IS NOT active', async () => {
+                const {getByText, queryByText} = await renderWithStore(<Fragment><Products socket={socket}/><NotificationBar /></Fragment>, store);
+                expect(queryByText(deletedProductMessage)).toBeNull();
+                socket.socketClient.emit('updateProduct', {product, wasActive: true, isActive: false});
+                expect(getByText(deletedProductMessage)).toBeDefined();
+            });
+
+            it('should show created product notification message when updated product WAS NOT active and IS active', async () => {
+                const {getByText, queryByText} = await renderWithStore(<Fragment><Products socket={socket}/><NotificationBar /></Fragment>, store);
+                expect(queryByText(createdProductMessage)).toBeNull();
+                socket.socketClient.emit('updateProduct', {product, wasActive: false, isActive: true});
+                expect(getByText(createdProductMessage)).toBeDefined();
+            });
+
+            it('should not show any notification message when updated product WAS NOT active and IS NOT active', async () => {
+                const {queryByText} = await renderWithStore(<Fragment><Products socket={socket}/><NotificationBar /></Fragment>, store);
+                expect(queryByText(updatedProductMessage)).toBeNull();
+                expect(queryByText(deletedProductMessage)).toBeNull();
+                expect(queryByText(createdProductMessage)).toBeNull();
+                socket.socketClient.emit('updateProduct', {product, wasActive: false, isActive: false});
+                expect(queryByText(updatedProductMessage)).toBeNull();
+                expect(queryByText(deletedProductMessage)).toBeNull();
+                expect(queryByText(createdProductMessage)).toBeNull();
+            });
+
+        });
+
+        describe('deleteProduct', () => {
+
+            const message = `Produkt ${product.name} został usunięty.`;
+
+            it('should show notification message when deleted product WAS active', async () => {
+                const {getByText, queryByText} = await renderWithStore(<Fragment><Products socket={socket}/><NotificationBar /></Fragment>, store);
+                expect(queryByText(message)).toBeNull();
+                socket.socketClient.emit('deleteProduct', {product, wasActive: true});
+                expect(getByText(message)).toBeDefined();
+            });
+
+            it('should not show notification message when deleted product WAS NOT active', async () => {
+                const {getByText, queryByText} = await renderWithStore(<Fragment><Products socket={socket}/><NotificationBar /></Fragment>, store);
+                expect(queryByText(message)).toBeNull();
+                socket.socketClient.emit('deleteProduct', {product, wasActive: false});
+                expect(queryByText(message)).toBeNull();
+            });
+
+        });
+
     });
 
 });
