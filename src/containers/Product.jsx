@@ -18,9 +18,6 @@ import NotFound from '../components/NotFound';
 import ProductView from '../components/Product';
 import ProgressIndicator from '../components/ProgressIndicator';
 
-import io from '../io';
-const socket = io();
-
 const styles = theme => ({
     card: {
         maxWidth: `800px`,
@@ -53,7 +50,7 @@ const styles = theme => ({
 
 const Product = props => {
 
-    const {getProductIfNeeded, product} = props;
+    const {getProductIfNeeded, product, socket} = props;
 
     const [isLoading, setLoading] = useState(false);
     const [response, setResponse] = useState({});
@@ -106,19 +103,20 @@ const Product = props => {
     const onDeleteProductListener = payload => {
         const {wasActive} = payload;
         const productFromPayload = payload.product;
-        if (wasActive) {
-            if (productFromPayload.id === product.id) {
-                props.showNotification({
-                    message: `Produkt ${productFromPayload.name} został usunięty.`,
-                    variant: 'warning',
-                });
-                props.onDeleteCurrentProduct(productFromPayload);
-                set404(true);
-            }
+        if (wasActive && productFromPayload.id === product.id) {
+            props.showNotification({
+                message: `Produkt ${productFromPayload.name} został usunięty.`,
+                variant: 'warning',
+            });
+            props.onDeleteCurrentProduct(productFromPayload);
+            set404(true);
         }
     };
 
     useEffect(() => {
+        if (!socket) {
+            return;
+        }
         socket.on('updateProduct', onUpdateProductListener);
         socket.on('deleteProduct', onDeleteProductListener);
         return () => {
@@ -158,7 +156,7 @@ const Product = props => {
 };
 
 const mapStateToProps = state => ({
-    product: state.product.data[state.product.id] || {},
+    //product: state.product.data[state.product.id] || {},
     isFetching: state.product.isFetching,
     productInCart: state.cart.products[state.product.id] || {},
 });
