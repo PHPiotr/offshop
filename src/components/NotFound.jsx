@@ -27,9 +27,7 @@ const NotFound = props => (
             Strona nie istnieje.
         </Typography>
         <div>
-            <Tooltip title='Strona nie istnieje'>
-                <Error color="error" style={{fontSize: 140}}/>
-            </Tooltip>
+            <Error color="error" style={{fontSize: 140}}/>
         </div>
         <div>
             <Link component={RouterLink} to="/">Wróć do strony głównej.</Link>
