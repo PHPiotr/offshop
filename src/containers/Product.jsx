@@ -55,6 +55,7 @@ const Product = props => {
     const [isLoading, setLoading] = useState(false);
     const [response, setResponse] = useState({});
     const [is404, set404] = useState(false);
+    const [isError, setIsError] = useState(false);
     const [slug, setSlug] = useState(props.match.params.slug);
 
     const onUpdateProductListener = payload => {
@@ -129,19 +130,17 @@ const Product = props => {
         if (is404) {
             return;
         }
+        setIsError(false);
         setLoading(true);
         setResponse({});
         getProductIfNeeded(slug)
             .then(response => {
                 setLoading(false);
                 setResponse(response);
-                set404(response && response.status === 404);
-            }).catch(error => {
-            setLoading(false);
-            setResponse(error.response);
-        });
-    }, [slug]);
-
+                set404(!!(response && response.status === 404));
+                setIsError(!response || response.status !== 200);
+            });
+    }, [slug, is404]);
     if (isLoading) {
         return <ProgressIndicator />;
     }
@@ -150,6 +149,9 @@ const Product = props => {
     }
     if (!response) {
         return <ErrorPage status="Błąd sieci" message="Brak odpowiedzi"/>
+    }
+    if (isError) {
+        return <ErrorPage status={`Błąd ${response.status}`} message={response.statusText}/>
     }
 
     return <ProductView />;
