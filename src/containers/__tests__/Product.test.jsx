@@ -6,12 +6,19 @@ import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import Navigation from '../Navigation';
 import Product from '../Product';
+import NotificationBar from '../../components/NotificationBar';
 import appBar from '../../reducers/appBar';
 import auth from '../../reducers/auth';
 import cart from '../../reducers/cart';
 import dialog from '../../reducers/dialog';
+import notification from '../../reducers/notification';
 import product from '../../reducers/reducerProduct';
 import {fakeLocalStorage, renderWithStore} from '../../helpers/testHelpers';
+import io from '../../io';
+import MockedSocket from 'socket.io-mock';
+let socket = new MockedSocket();
+jest.mock('../../io');
+io.mockResolvedValue(socket);
 
 const productPayload = {
     active: true,
@@ -43,7 +50,7 @@ describe('Product', () => {
         fakeLocalStorage();
         mock.reset();
         store = createStore(
-            combineReducers({appBar, auth, cart, dialog, product}),
+            combineReducers({appBar, auth, cart, dialog, notification, product}),
             applyMiddleware(thunk),
         );
         mock.onGet(/products/).replyOnce(200, productPayload);
@@ -88,6 +95,51 @@ describe('Product', () => {
             fireEvent.click(continueShoppingButton);
         }
         expect(queryByTestId(`add-to-cart-button-${productPayload.id}`)).toBeNull();
+    });
+
+    describe('event listeners', () => {
+
+        describe('updateProduct', () => {
+
+            const updatedProductMessage = `Produkt ${productPayload.name} został zmieniony.`;
+            const deletedProductMessage = `Produkt ${productPayload.name} został usunięty.`;
+            const createdProductMessage = `Produkt ${productPayload.name} został dodany.`;
+
+            test.each([
+                [true, true, true, true, productPayload, updatedProductMessage],
+                [true, true, true, true, {...productPayload, slug: 'foo'}, updatedProductMessage],
+                [true, true, false, true, productPayload, deletedProductMessage],
+                [true, false, true, true, productPayload, createdProductMessage],
+                [true, false, true, true, {...productPayload, slug: 'foo'}, createdProductMessage],
+                [false, false, false, true, productPayload, updatedProductMessage],
+                [false, false, false, true, productPayload, deletedProductMessage],
+                [false, false, false, true, productPayload, createdProductMessage],
+                [false, true, true, false, {...productPayload, id: 'foo'}, updatedProductMessage],
+                [false, true, true, false, {...productPayload, id: 'foo'}, deletedProductMessage],
+                [false, true, true, false, {...productPayload, id: 'foo'}, createdProductMessage],
+                [false, true, false, false, {...productPayload, id: 'foo'}, updatedProductMessage],
+                [false, true, false, false, {...productPayload, id: 'foo'}, deletedProductMessage],
+                [false, true, false, false, {...productPayload, id: 'foo'}, createdProductMessage],
+                [false, false, true, false, {...productPayload, id: 'foo'}, updatedProductMessage],
+                [false, false, true, false, {...productPayload, id: 'foo'}, deletedProductMessage],
+                [false, false, true, false, {...productPayload, id: 'foo'}, createdProductMessage],
+            ])('should notify: %s if wasActive: %s, isActive: %s, item being viewed: %s', async (shouldShow, wasActive, isActive, isViewed, product, message) => {
+                const {getByText, queryByText} = await renderWithStore(<Fragment><Product socket={socket} product={productPayload}/><NotificationBar /></Fragment>, store);
+                expect(queryByText(message)).toBeNull();
+                socket.socketClient.emit('updateProduct', {product, wasActive, isActive});
+                if (shouldShow) {
+                    expect(getByText(message)).toBeDefined();
+                } else {
+                    expect(queryByText(message)).toBeNull();
+                }
+            });
+
+        });
+
+        describe('deleteProduct', () => {
+
+        });
+
     });
 
 });
