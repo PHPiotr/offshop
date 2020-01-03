@@ -99,10 +99,11 @@ describe('Product', () => {
 
     describe('event listeners', () => {
 
+        const deletedProductMessage = `Produkt ${productPayload.name} został usunięty.`;
+
         describe('updateProduct', () => {
 
             const updatedProductMessage = `Produkt ${productPayload.name} został zmieniony.`;
-            const deletedProductMessage = `Produkt ${productPayload.name} został usunięty.`;
             const createdProductMessage = `Produkt ${productPayload.name} został dodany.`;
 
             test.each([
@@ -123,7 +124,7 @@ describe('Product', () => {
                 [false, false, true, false, {...productPayload, id: 'foo'}, updatedProductMessage],
                 [false, false, true, false, {...productPayload, id: 'foo'}, deletedProductMessage],
                 [false, false, true, false, {...productPayload, id: 'foo'}, createdProductMessage],
-            ])('should notify: %s if wasActive: %s, isActive: %s, item being viewed: %s', async (shouldShow, wasActive, isActive, isViewed, product, message) => {
+            ])('should notify of product updated: %s if wasActive: %s, isActive: %s, item being viewed: %s', async (shouldShow, wasActive, isActive, isViewed, product, message) => {
                 const {getByText, queryByText} = await renderWithStore(<Fragment><Product socket={socket} product={productPayload}/><NotificationBar /></Fragment>, store);
                 expect(queryByText(message)).toBeNull();
                 socket.socketClient.emit('updateProduct', {product, wasActive, isActive});
@@ -137,6 +138,22 @@ describe('Product', () => {
         });
 
         describe('deleteProduct', () => {
+
+            test.each([
+                [true, true, true, productPayload],
+                [false, false, true, productPayload],
+                [false, true, false, {...productPayload, id: 'foo'}],
+                [false, false, false, {...productPayload, id: 'foo'}],
+            ])('should notify of product deleted: %s if wasActive: %s, item being viewed: %s', async (shouldShow, wasActive, isViewed, product) => {
+                const {getByText, queryByText} = await renderWithStore(<Fragment><Product socket={socket} product={productPayload}/><NotificationBar /></Fragment>, store);
+                expect(queryByText(deletedProductMessage)).toBeNull();
+                socket.socketClient.emit('deleteProduct', {product, wasActive});
+                if (shouldShow) {
+                    expect(getByText(deletedProductMessage)).toBeDefined();
+                } else {
+                    expect(queryByText(deletedProductMessage)).toBeNull();
+                }
+            });
 
         });
 
