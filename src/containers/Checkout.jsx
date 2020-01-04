@@ -1,18 +1,16 @@
 import React, {useEffect} from 'react';
 import PropTypes from 'prop-types';
-import CheckoutView from '../../components/Checkout';
+import CheckoutView from '../components/Checkout';
 import {connect} from 'react-redux';
 import {withRouter} from 'react-router-dom';
-import ProgressIndicator from '../../components/ProgressIndicator';
+import ProgressIndicator from '../components/ProgressIndicator';
 import {
     setActiveStepId,
     onUpdateProductInCartSummary,
     onDeleteProductInCartSummary,
-} from '../../actions/checkout';
-import {resetOrderData} from '../../actions/order';
-import io from '../../io';
-import {showNotification} from '../../actions/notification';
-const socket = io();
+} from '../actions/checkout';
+import {resetOrderData} from '../actions/order';
+import {showNotification} from '../actions/notification';
 
 const Checkout = props => {
     const {
@@ -23,6 +21,7 @@ const Checkout = props => {
         showNotification,
         order,
         hasProductsInCart,
+        socket,
     } = props;
 
     const onUpdateProductListener = ({product}) => {
@@ -55,6 +54,9 @@ const Checkout = props => {
     };
 
     useEffect(() => {
+        if (!socket) {
+            return;
+        }
         socket.on('updateProduct', onUpdateProductListener);
         socket.on('deleteProduct', onDeleteProductListener);
         return () => {
