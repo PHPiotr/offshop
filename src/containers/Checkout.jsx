@@ -66,22 +66,22 @@ const Checkout = props => {
     });
 
     useEffect(() => {
-        const {isCreating, isDoneCreating, data} = order;
-        if (hasProductsInCart && !isDoneCreating) {
-            resetOrderData();
-            return;
-        }
-        if (data.extOrderId && (isDoneCreating || isCreating)) {
-            if (data.redirectUri) {
-                setTimeout(() => window.location.href = data.redirectUri, 600);
+        if (order.data.extOrderId && !hasProductsInCart) {
+            if (order.data.redirectUri) {
+                setTimeout(() => window.location.href = order.data.redirectUri, 600);
             } else {
                 props.history.replace('/order');
             }
         }
-        if (!hasProductsInCart && !isDoneCreating) {
+    }, [order.data.extOrderId]);
+
+    useEffect(() => {
+        if (hasProductsInCart) {
+            resetOrderData();
+        } else {
             props.history.replace('/');
         }
-    }, [order.isDoneCreating]);
+    }, []);
 
     if (order.isCreating || !hasProductsInCart) {
         return <ProgressIndicator/>;
