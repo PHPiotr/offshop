@@ -149,9 +149,9 @@ class App extends Component {
                                 <Switch>
                                     <Route path="/" exact render={props => <Products {...props} socket={socket} />}/>
                                     <Route path="/products/:slug" exact render={props => <Product {...props} socket={socket} product={store.getState().product.data[store.getState().product.id] || {}} />}/>
-                                    <Route path="/cart" exact component={Cart}/>
+                                    <Route path="/cart" exact render={props => <Cart {...props} socket={socket} />}/>
                                     <Route path="/order" exact component={Order}/>
-                                    <Route path="/checkout" exact component={Checkout}/>
+                                    <Route path="/checkout" exact render={props => <Checkout {...props} socket={socket} />}/>
                                     <Route path="/callback" render={props => {
                                         handleAuthentication(props);
                                         return null;

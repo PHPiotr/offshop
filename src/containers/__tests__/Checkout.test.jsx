@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Fragment} from 'react';
 import thunk from 'redux-thunk';
 import {createStore, applyMiddleware, combineReducers} from 'redux';
 import {waitForElement, fireEvent} from '@testing-library/react';
@@ -8,6 +8,7 @@ import Cart from '../Cart';
 import Checkout from '../Checkout';
 import Order from '../Order';
 import Products from '../Products';
+import NotificationBar from '../../components/NotificationBar';
 import appBar from '../../reducers/appBar';
 import auth from '../../reducers/auth';
 import buyer from '../../reducers/buyer';
@@ -18,8 +19,14 @@ import deliveryMethods from '../../reducers/deliveryMethods';
 import dialog from '../../reducers/dialog';
 import form from '../../reducers/form';
 import order from '../../reducers/order';
+import notification from '../../reducers/notification';
 import products from '../../reducers/reducerProducts';
 import {fakeLocalStorage, renderWithStore} from '../../helpers/testHelpers';
+import io from '../../io';
+import MockedSocket from 'socket.io-mock';
+let socket = new MockedSocket();
+jest.mock('../../io');
+io.mockResolvedValue(socket);
 
 const deliveryMethodsPayload = [
     {
@@ -137,6 +144,7 @@ describe('Checkout', () => {
                 deliveryMethods,
                 dialog,
                 form,
+                notification,
                 order,
                 products,
             }),
@@ -208,6 +216,66 @@ describe('Checkout', () => {
             fireEvent.click(buttons[i]);
             await renderWithStore(<Order/>, store);
         }
+    });
+
+    describe('event listeners', () => {
+
+        const productPayload = productsPayload[0];
+
+        const deletedProductMessage = `Produkt ${productPayload.name} został usunięty.`;
+        const updatedProductMessage = `Produkt ${productPayload.name} został zmieniony.`;
+
+        describe('updateProduct', () => {
+
+            test.each([
+                [true, true, true, true, productPayload, updatedProductMessage],
+                [false, true, true, false, {...productPayload, id: 'foo'}, updatedProductMessage],
+                [false, true, true, false, {...productPayload, id: 'foo'}, deletedProductMessage],
+                [true, true, true, true, {...productPayload, active: false}, deletedProductMessage],
+                [true, true, true, true, {...productPayload, stock: 0}, deletedProductMessage],
+            ])('should notify of product updated: %s if wasActive: %s, isActive: %s, item being viewed: %s', async (shouldShow, wasActive, isActive, isViewed, product, message) => {
+                const {getByTestId, getByText, queryByText} = await renderWithStore(<Products/>, store);
+                const addToCartButton = await waitForElement(() => getByTestId(`add-to-cart-button-${productsPayload[0].id}`));
+                fireEvent.click(addToCartButton);
+                await renderWithStore(<Cart/>, store);
+                const deliveryMethodRadio = await waitForElement(() => getByTestId(`radio-btn-${deliveryMethodsPayload[0].id}`));
+                fireEvent.click(deliveryMethodRadio);
+                await renderWithStore(<Fragment><Checkout socket={socket}/><NotificationBar /></Fragment>, store);
+                expect(queryByText(message)).toBeNull();
+                socket.socketClient.emit('updateProduct', {product, wasActive, isActive});
+                if (shouldShow) {
+                    expect(getByText(message)).toBeDefined();
+                } else {
+                    expect(queryByText(message)).toBeNull();
+                }
+            });
+
+        });
+
+        describe('deleteProduct', () => {
+
+            test.each([
+                [true, true, true, productPayload],
+                [false, true, false, {...productPayload, id: 'foo'}],
+            ])('should notify of product deleted: %s if wasActive: %s, item being viewed: %s', async (shouldShow, wasActive, isViewed, product) => {
+                const {getByTestId, getByText, queryByText} = await renderWithStore(<Products/>, store);
+                const addToCartButton = await waitForElement(() => getByTestId(`add-to-cart-button-${productsPayload[0].id}`));
+                fireEvent.click(addToCartButton);
+                await renderWithStore(<Cart/>, store);
+                const deliveryMethodRadio = await waitForElement(() => getByTestId(`radio-btn-${deliveryMethodsPayload[0].id}`));
+                fireEvent.click(deliveryMethodRadio);
+                await renderWithStore(<Fragment><Checkout socket={socket}/><NotificationBar /></Fragment>, store);
+                expect(queryByText(deletedProductMessage)).toBeNull();
+                socket.socketClient.emit('deleteProduct', {product, wasActive});
+                if (shouldShow) {
+                    expect(getByText(deletedProductMessage)).toBeDefined();
+                } else {
+                    expect(queryByText(deletedProductMessage)).toBeNull();
+                }
+            });
+
+        });
+
     });
 
 });

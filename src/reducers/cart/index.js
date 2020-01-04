@@ -110,7 +110,7 @@ const cart = (state = initialState, { payload, type }) => {
         case DELETE_FROM_CART:
 
             const {itemId} = payload;
-            const {quantity, weight, totalPrice} = state.products[itemId];
+            const {quantity, weight, totalPrice} = state.products[itemId] || {};
 
             return {
                 ...state,

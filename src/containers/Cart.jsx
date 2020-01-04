@@ -5,10 +5,7 @@ import CartSummary from '../components/Cart/Summary';
 import {getDeliveryMethodsIfNeeded} from '../actions/deliveryMethods';
 import {onUpdateProductInCart, onDeleteProductInCart} from '../actions/cart';
 import {showNotification} from '../actions/notification';
-
-import io from '../io';
 import EmptyCart from '../components/Cart/Empty';
-const socket = io();
 
 const Cart = props => {
 
@@ -18,6 +15,7 @@ const Cart = props => {
         onUpdateProductInCart,
         onDeleteProductInCart,
         showNotification,
+        socket,
     } = props;
     const [sort, setSort] = useState('name');
     const [order, setOrder] = useState(1);
@@ -60,6 +58,9 @@ const Cart = props => {
     }, []);
 
     useEffect(() => {
+        if (!socket) {
+            return;
+        }
         socket.on('updateProduct', onUpdateProductListener);
         socket.on('deleteProduct', onDeleteProductListener);
 
