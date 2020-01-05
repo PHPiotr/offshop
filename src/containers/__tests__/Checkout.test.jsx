@@ -21,7 +21,6 @@ import form from '../../reducers/form';
 import order from '../../reducers/order';
 import notification from '../../reducers/notification';
 import products from '../../reducers/reducerProducts';
-import {fakeLocalStorage, renderWithStore} from '../../helpers/testHelpers';
 import io from '../../io';
 import MockedSocket from 'socket.io-mock';
 let socket = new MockedSocket();

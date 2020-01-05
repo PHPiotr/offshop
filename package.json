@@ -57,6 +57,10 @@
   },
   "eslintConfig": {
     "extends": "react-app",
+    "globals": {
+      "fakeLocalStorage": "readonly",
+      "renderWithStore": "readonly"
+    },
     "plugins": [
       "react-hooks"
     ],
@@ -132,6 +136,9 @@
     "setupFiles": [
       "react-app-polyfill/jsdom",
       "dotenv/config"
+    ],
+    "setupFilesAfterEnv": [
+      "./testUtils.js"
     ],
     "testMatch": [
       "<rootDir>/src/**/__tests__/**/*.{js,jsx,ts,tsx}",

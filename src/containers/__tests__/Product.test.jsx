@@ -13,7 +13,6 @@ import cart from '../../reducers/cart';
 import dialog from '../../reducers/dialog';
 import notification from '../../reducers/notification';
 import product from '../../reducers/reducerProduct';
-import {fakeLocalStorage, renderWithStore} from '../../helpers/testHelpers';
 import io from '../../io';
 import MockedSocket from 'socket.io-mock';
 let socket = new MockedSocket();
