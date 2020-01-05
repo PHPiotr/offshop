@@ -2,7 +2,6 @@ import React from 'react';
 import {createStore, combineReducers} from 'redux';
 import Order from '../Order';
 import order from '../../reducers/order';
-import {renderWithStore} from '../../helpers/testHelpers';
 
 let store;
 

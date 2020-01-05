@@ -15,7 +15,6 @@ import deliveryMethods from '../../reducers/deliveryMethods';
 import dialog from '../../reducers/dialog';
 import notification from '../../reducers/notification';
 import products from '../../reducers/reducerProducts';
-import {fakeLocalStorage, renderWithStore} from '../../helpers/testHelpers';
 import io from '../../io';
 import MockedSocket from 'socket.io-mock';
 let socket = new MockedSocket();
@@ -102,6 +101,10 @@ describe('Cart', () => {
         );
         mock.onGet(/delivery-methods/).replyOnce(200, deliveryMethodsPayload);
         mock.onGet(/products/).reply(200, productsPayload);
+    });
+
+    afterEach(async () => {
+        await renderWithStore(null, store);
     });
 
     it('should render empty cart page', async () => {
