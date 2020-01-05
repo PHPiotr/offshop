@@ -8,7 +8,6 @@ import WebFont from 'webfontloader';
 import './index.css';
 import App from './App';
 import store from './store';
-import ErrorBoundary from './containers/ErrorBoundary';
 
 WebFont.load({
     google: {
@@ -28,9 +27,7 @@ ReactDOM.render(
     <Provider store={store}>
         <ThemeProvider theme={theme}>
             <Router>
-                <ErrorBoundary>
-                    <App/>
-                </ErrorBoundary>
+                <App/>
             </Router>
         </ThemeProvider>
     </Provider>,
