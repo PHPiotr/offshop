@@ -481,9 +481,9 @@ module.exports = {
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
     // Generate a service worker script that will precache, and keep up to date,
     // the HTML & assets that are part of the Webpack build.
-    new WorkboxWebpackPlugin.InjectManifest({
-      swSrc: './src/sw.js',
-      swDest: 'service-worker.js',
+    // new WorkboxWebpackPlugin.InjectManifest({
+      // swSrc: './src/sw.js',
+      // swDest: 'service-worker.js',
       // clientsClaim: true,
       // exclude: [/\.map$/, /asset-manifest\.json$/],
       // importWorkboxFrom: 'cdn',
@@ -495,7 +495,7 @@ module.exports = {
       //   // public/ and not a SPA route
       //   new RegExp('/[^/]+\\.[^/]+$'),
       // ],
-    }),
+    //}),
     // TypeScript type checking
     fs.existsSync(paths.appTsConfig) &&
       new ForkTsCheckerWebpackPlugin({
