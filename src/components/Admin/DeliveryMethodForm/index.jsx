@@ -10,7 +10,7 @@ import {showNotification} from "../../../actions/notification";
 import SubHeader from '../../../components/SubHeader';
 import {getAdminDeliveryMethodIfNeeded, resetDeliveryMethod} from '../../../actions/admin/deliveryMethod';
 import {inputs, inputKeys, initialValues} from './config';
-import RequestHandler from '../../../containers/RequestHandler';
+import RequestHandler from '../../../components/RequestHandler';
 import io from '../../../io';
 
 const socket = io();
