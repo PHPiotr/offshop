@@ -21,7 +21,7 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import {addToCart} from '../../actions/cart';
 import {openDialog} from '../../actions/dialog';
-import ProductAddedToCartDialog from './ProductAddedToCartDialog';
+import ProductAddedToCartDialog from '../ProductAddedToCartDialog';
 
 const styles = theme => ({
     card: {

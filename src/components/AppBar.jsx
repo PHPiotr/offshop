@@ -14,7 +14,7 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import Divider from "@material-ui/core/Divider";
 import MenuIcon from '@material-ui/icons/Menu';
 import Drawer from '@material-ui/core/Drawer';
-import AdminNav from '../Admin/Nav';
+import AdminNav from './Admin/Nav';
 
 const logoFont = process.env.REACT_APP_LOGO_FONT || 'Roboto';
 
@@ -94,10 +94,10 @@ class PrimaryAppBar extends Component {
                     <Toolbar>
                         {isAuthenticated && (
                             <IconButton
-                            color="inherit"
-                            aria-label="Open drawer"
-                            onClick={this.handleDrawerOpen}
-                            className={classes.menuButton}
+                                color="inherit"
+                                aria-label="Open drawer"
+                                onClick={this.handleDrawerOpen}
+                                className={classes.menuButton}
                             >
                                 <MenuIcon/>
                             </IconButton>
@@ -129,19 +129,19 @@ class PrimaryAppBar extends Component {
                     </Toolbar>
                 </AppBar>
                 <nav className={classes.drawer}>
-                        <Drawer
-                            container={this.props.container}
-                            variant="temporary"
-                            anchor="left"
-                            open={this.state.mobileOpen}
-                            onClose={this.handleDrawerClose}
-                            onClick={this.handleDrawerClose}
-                            classes={{
-                                paper: classes.drawerPaper,
-                            }}
-                        >
-                            {drawer}
-                        </Drawer>
+                    <Drawer
+                        container={this.props.container}
+                        variant="temporary"
+                        anchor="left"
+                        open={this.state.mobileOpen}
+                        onClose={this.handleDrawerClose}
+                        onClick={this.handleDrawerClose}
+                        classes={{
+                            paper: classes.drawerPaper,
+                        }}
+                    >
+                        {drawer}
+                    </Drawer>
                 </nav>
             </div>
         );

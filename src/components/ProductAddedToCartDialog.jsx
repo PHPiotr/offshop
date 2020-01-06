@@ -3,9 +3,9 @@ import {withRouter} from 'react-router-dom';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import Button from '@material-ui/core/Button';
-import Dialog from '../../components/Dialog';
-import {addToCart} from '../../actions/cart';
-import {openDialog, closeDialog} from '../../actions/dialog';
+import Dialog from './Dialog';
+import {addToCart} from '../actions/cart';
+import {openDialog, closeDialog} from '../actions/dialog';
 
 const ProductAddedToCartDialog = props => props.open ? (
     <Dialog

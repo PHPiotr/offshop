@@ -158,7 +158,6 @@ const Product = props => {
 };
 
 const mapStateToProps = state => ({
-    //product: state.product.data[state.product.id] || {},
     isFetching: state.product.isFetching,
     productInCart: state.cart.products[state.product.id] || {},
 });

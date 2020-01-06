@@ -12,7 +12,7 @@ import {Link as RouterLink} from 'react-router-dom';
 import Link from '@material-ui/core/Link';
 import {addToCart} from '../../actions/cart';
 import {openDialog} from '../../actions/dialog';
-import ProductAddedToCartDialog from '../Product/ProductAddedToCartDialog';
+import ProductAddedToCartDialog from '../ProductAddedToCartDialog';
 import ProgressIndicator from '../ProgressIndicator';
 
 const styles = theme => ({
