@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
-import ProgressIndicator from '../components/ProgressIndicator';
-import NotFound from '../components/NotFound';
-import ErrorPage from '../components/ErrorPage';
+import ProgressIndicator from './ProgressIndicator';
+import NotFound from './NotFound';
+import ErrorPage from './ErrorPage';
 
 const RequestHandler = props => {
 
@@ -17,9 +17,9 @@ const RequestHandler = props => {
                     setIsLoading(false);
                     setResponse(response);
                 }).catch(error => {
-                    setIsLoading(false);
-                    setResponse(error.response);
-                });
+                setIsLoading(false);
+                setResponse(error.response);
+            });
         }
     }, []);
 
