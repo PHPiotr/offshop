@@ -3,7 +3,6 @@ import {Link as RouterLink} from 'react-router-dom';
 import {Error} from '@material-ui/icons';
 import Link from '@material-ui/core/Link';
 import {withStyles} from '@material-ui/core/styles';
-import {Tooltip} from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
 
 const styles = theme => ({

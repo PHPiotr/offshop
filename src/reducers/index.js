@@ -1,21 +1,11 @@
 import {combineReducers} from 'redux';
 import appBar from './appBar';
 import auth from './auth';
-import buyer from './buyer';
-import buyerDelivery from './buyerDelivery';
-import deliveryMethods from './deliveryMethods';
-import cart from './cart';
-import checkout from './checkout';
-import order from './order';
-import categories from './categories';
-import product from './reducerProduct';
-import products from './reducerProducts';
-import adminProducts from './reducerProductsAdmin';
-import adminProduct from './reducerProductAdmin';
-import adminDeliveryMethods from './admin/deliveryMethods';
-import adminDeliveryMethod from './admin/deliveryMethod';
-import adminOrders from './admin/orders';
-import adminOrder from './admin/order';
+import {cart} from '../modules/ShoppingCart/reducer';
+import {checkout, buyer, buyerDelivery} from '../modules/Checkout/reducer';
+import {product, products, adminProduct, adminProducts} from '../modules/Products/reducer';
+import {deliveryMethods, adminDeliveryMethod, adminDeliveryMethods} from '../modules/Delivery/reducer';
+import {order, adminOrder, adminOrders} from '../modules/Orders/reducer';
 import notification from './notification';
 import dialog from './dialog';
 import form from './form';
@@ -26,7 +16,6 @@ export default combineReducers({
     buyer,
     buyerDelivery,
     cart,
-    categories,
     checkout,
     deliveryMethods,
     dialog,
