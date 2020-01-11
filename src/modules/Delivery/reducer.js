@@ -1,5 +1,5 @@
 import * as actions from './actionTypes';
-import {CREATE_ORDER_SUCCESS} from '../Checkout/actionTypes';
+import {CREATE_ORDER_SUCCESS} from '../Orders/actionTypes';
 import {combineReducers} from 'redux';
 
 const deliveryMethodInitialState = {
