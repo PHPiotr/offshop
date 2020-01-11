@@ -2,10 +2,10 @@ import * as actions from './actionTypes';
 import {
     ON_UPDATE_PRODUCT_IN_CART_SUMMARY,
     ON_DELETE_PRODUCT_IN_CART_SUMMARY,
-    CREATE_ORDER_SUCCESS,
 } from '../../modules/Checkout/actionTypes';
 import {SYNC_QUANTITIES} from '../../modules/Products/actionTypes';
 import {SET_CURRENT_DELIVERY_METHOD} from '../Delivery/actionTypes';
+import {CREATE_ORDER_SUCCESS} from '../Orders/actionTypes';
 
 const initialCartState = {
     quantity: 0,
