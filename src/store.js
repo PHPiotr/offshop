@@ -2,9 +2,9 @@ import { createStore, applyMiddleware } from 'redux';
 import logger from 'redux-logger';
 import thunk from 'redux-thunk';
 import { composeWithDevTools } from 'redux-devtools-extension';
-import rootReducer from '../reducers';
-import {loadState, saveState} from "../services/localStorage";
 import throttle from 'lodash.throttle';
+import rootReducer from './reducers';
+import {loadState, saveState} from "./services/localStorage";
 
 const devEnv = process.env.NODE_ENV === 'development';
 
@@ -36,8 +36,8 @@ const configureStore = initialState => {
 
     if (devEnv) {
         if (module.hot) {
-            module.hot.accept('../reducers', () =>
-                createdStore.replaceReducer(require('../reducers').default)
+            module.hot.accept('./reducers', () =>
+                createdStore.replaceReducer(require('./reducers').default)
             );
         }
     }
