@@ -5,7 +5,6 @@ import { composeWithDevTools } from 'redux-devtools-extension';
 import rootReducer from '../reducers';
 import {loadState, saveState} from "../services/localStorage";
 import throttle from 'lodash.throttle';
-import {initialState as orderInitialState} from '../reducers/order';
 
 const devEnv = process.env.NODE_ENV === 'development';
 
