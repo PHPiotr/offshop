@@ -44,11 +44,10 @@ export const inputs = {
         validate: [validateRequired, validateMinLength(15), validateMaxLength(160)],
         component: TextField,
         inputProps: {
-            minlength: 15,
-            maxlength: 160,
+            minLength: 15,
+            maxLength: 160,
             multiline: true,
             rows: 2,
-            maxRows: 4,
         },
     },
     longDescription: {
@@ -57,11 +56,10 @@ export const inputs = {
         validate: [validateMinLength(15), validateMaxLength(1000)],
         component: TextField,
         inputProps: {
-            minlength: 15,
-            maxlength: 1000,
+            minLength: 15,
+            maxLength: 1000,
             multiline: true,
             rows: 5,
-            maxRows: 10,
         },
     },
     stock: {

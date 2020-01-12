@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import {Field, Form, reduxForm, formValueSelector, isValid} from 'redux-form';
 import {Box} from '@material-ui/core';
 import Button from '@material-ui/core/Button';
-import withStyles from '@material-ui/core/styles/withStyles';
+import {makeStyles} from '@material-ui/core';
 import {createProductIfNeeded, updateProductIfNeeded} from "../../../../modules/Products/actions";
 import {showNotification} from "../../../../actions/notification";
 import SubHeader from '../../../../components/SubHeader';
@@ -19,7 +19,7 @@ const FORM_NAME = 'product';
 
 window.URL = window.URL || window.webkitURL;
 
-const styles = theme => ({
+const useStyles = makeStyles(theme => ({
     form: {
         paddingLeft: theme.spacing(1),
         paddingRight: theme.spacing(1),
@@ -37,7 +37,7 @@ const styles = theme => ({
         marginTop: theme.spacing(3),
         marginBottom: theme.spacing(3),
     },
-});
+}));
 
 const handleOnDrop = ([newImageFile], onChange) => {
     const imageFile = {
@@ -50,7 +50,7 @@ const handleOnDrop = ([newImageFile], onChange) => {
     window.URL.revokeObjectURL(newImageFile);
 };
 
-const getImageFile = (currentImage, currentSlug, imageFile, productId) => {
+const getImageFile = (currentImage, currentSlug, imageFile) => {
     if (!currentImage) {
         return [];
     }
@@ -67,6 +67,7 @@ const getImageFile = (currentImage, currentSlug, imageFile, productId) => {
 let ProductForm = props => {
     const [currentSlug, setCurrentSlug] = useState(null);
     const [currentImage, setCurrentImage] = useState(null);
+    const classes = useStyles();
 
     const onAdminCreateProductListener = ({product}) => props.showNotification({
         message: `Produkt ${product.name} został dodany.`,
@@ -102,7 +103,7 @@ let ProductForm = props => {
             action={() => props.match.params.productId ? props.getAdminProductIfNeeded(props.match.params.productId) : Promise.resolve({})}
         >
             <SubHeader content={`${props.match.params.productId ? 'Edytuj' : 'Dodaj'} produkt`}/>
-            <Form className={props.classes.form} onSubmit={props.handleSubmit} encType="multipart/form-data">
+            <Form className={classes.form} onSubmit={props.handleSubmit} encType="multipart/form-data">
                 {inputKeys.reduce((acc, itemId) => {
                     const {label, type, validate, component, inputProps} = inputs[itemId];
 
@@ -112,12 +113,12 @@ let ProductForm = props => {
                             validation = [];
                         }
                         acc.push(
-                            <Box key={itemId} className={props.classes.box}>
+                            <Box key={itemId} className={classes.box}>
                                 <Field
                                     name={itemId}
                                     component={component}
                                     type={type}
-                                    imagefile={getImageFile(currentImage, currentSlug, props.imageFile, props.match.params.productId)}
+                                    imagefile={getImageFile(currentImage, currentSlug, props.imageFile)}
                                     handleOnDrop={handleOnDrop}
                                     validate={validation}
                                 />
@@ -125,7 +126,7 @@ let ProductForm = props => {
                         );
                     } else if (type === 'switch') {
                         acc.push(
-                            <Box key={itemId} className={props.classes.box}>
+                            <Box key={itemId} className={classes.box}>
                                 <Field
                                     name={itemId}
                                     component={component}
@@ -137,7 +138,7 @@ let ProductForm = props => {
                         )
                     } else {
                         acc.push(
-                            <Box key={itemId} className={props.classes.box}>
+                            <Box key={itemId} className={classes.box}>
                                 <Field
                                     name={itemId}
                                     component={component}
@@ -152,11 +153,11 @@ let ProductForm = props => {
                     }
                     return acc;
                 }, [])}
-                <div className={props.classes.buttons}>
+                <div className={classes.buttons}>
                     <Button
                         variant="contained"
                         color="primary"
-                        className={props.classes.button}
+                        className={classes.button}
                         disabled={props.submitting || !props.isValidProduct}
                         type="submit"
                     >
@@ -239,6 +240,4 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
     },
 });
 
-ProductForm = connect(mapStateToProps, mapDispatchToProps)(ProductForm);
-
-export default withStyles(styles)(ProductForm);
+export default connect(mapStateToProps, mapDispatchToProps)(ProductForm);

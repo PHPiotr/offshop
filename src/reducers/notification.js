@@ -1,4 +1,4 @@
-import {HIDE_NOTIFICATION, SHOW_NOTIFICATION} from '../../actions/notification/types';
+import {HIDE_NOTIFICATION, SHOW_NOTIFICATION} from '../actions/notification';
 
 const initialState = {
     message: '',

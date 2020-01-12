@@ -11,6 +11,12 @@ import dialog from './dialog';
 import form from './form';
 
 export default combineReducers({
+    adminProduct,
+    adminProducts,
+    adminDeliveryMethod,
+    adminDeliveryMethods,
+    adminOrder,
+    adminOrders,
     appBar,
     auth,
     buyer,
@@ -24,10 +30,4 @@ export default combineReducers({
     order,
     product,
     products,
-    adminProduct,
-    adminProducts,
-    adminDeliveryMethods,
-    adminDeliveryMethod,
-    adminOrders,
-    adminOrder,
 });
