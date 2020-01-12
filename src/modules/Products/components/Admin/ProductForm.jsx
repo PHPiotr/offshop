@@ -51,14 +51,10 @@ const handleOnDrop = ([newImageFile], onChange) => {
 };
 
 const getImageFile = (currentImage, currentSlug, imageFile) => {
-    if (!currentImage) {
-        return [];
-    }
-    if (!imageFile || imageFile.length === 0) {
+    if (!imageFile || imageFile.length === 0 && currentImage) {
         return [{
-            name: '',
+            name: currentImage,
             preview: `${process.env.REACT_APP_PRODUCT_PATH}/${currentImage}`,
-            size: 0
         }];
     }
     return imageFile;
@@ -89,14 +85,14 @@ let ProductForm = props => {
     }, []);
 
     useEffect(() => {
-        if (props.match.params.productId && props.values) {
-            const {slug, images} = props.values;
+        if (props.adminProduct && props.adminProduct.id) {
+            const {slug, images} = props.adminProduct;
             setCurrentSlug(slug);
             setCurrentImage(images[0].tile);
         } else {
             props.handleResetAdminProduct();
         }
-    }, [props.match.params.productId, props.values]);
+    }, [props.adminProduct]);
 
     return (
         <RequestHandler
@@ -202,6 +198,7 @@ const mapStateToProps = state => {
         accessToken: state.auth.accessToken,
         isValidProduct: isValid(FORM_NAME)(state),
         initialValues,
+        adminProduct: state.adminProduct.data[state.adminProduct.id],
         values: state.adminProduct.data[state.adminProduct.id],
     };
 };
