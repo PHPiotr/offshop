@@ -19,7 +19,7 @@ const styles = theme => ({
 
 const NotFound = props => (
     <div className={props.classes.errorWrapper}>
-        <Typography variant='p' component='h1'>
+        <Typography variant='subtitle1' component='h1'>
             Błąd 404
         </Typography>
         <Typography component='p'>

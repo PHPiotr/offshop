@@ -1,6 +1,6 @@
 import {useEffect, useState} from 'react';
 
-const useRequestHandler = (action) => {
+const useRequestHandler = (action, deps = []) => {
 
     const [isLoading, setIsLoading] = useState(false);
     const [response, setResponse] = useState({});
@@ -16,7 +16,7 @@ const useRequestHandler = (action) => {
                 setIsLoading(false);
                 setResponse(error.response);
             });
-    }, []);
+    }, deps);
 
     return {isLoading, response};
 };

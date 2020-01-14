@@ -1,8 +1,6 @@
 import * as actions from './actionTypes';
-import {CREATE_ORDER_SUCCESS} from '../Orders/actionTypes';
-import {combineReducers} from 'redux';
 
-const deliveryMethodInitialState = {
+const adminDeliveryMethodInitialState = {
     isDeleting: false,
     isFetching: false,
     data: {},
@@ -10,7 +8,7 @@ const deliveryMethodInitialState = {
     error: {},
 };
 
-const deliveryMethodsInitialState = {
+const adminDeliveryMethodsInitialState = {
     isDeleting: false,
     isFetching: false,
     data: {},
@@ -18,7 +16,7 @@ const deliveryMethodsInitialState = {
     error: {},
 };
 
-export const adminDeliveryMethod = (state = deliveryMethodInitialState, action) => {
+export const adminDeliveryMethod = (state = adminDeliveryMethodInitialState, action) => {
     switch (action.type) {
         case actions.RETRIEVE_ADMIN_DELIVERY_METHOD_REQUEST:
             return {
@@ -39,13 +37,13 @@ export const adminDeliveryMethod = (state = deliveryMethodInitialState, action) 
                 isFetching: false,
             };
         case actions.RESET_DELIVERY_METHOD:
-            return deliveryMethodInitialState;
+            return adminDeliveryMethodsInitialState;
         default:
             return state;
     }
 };
 
-export const adminDeliveryMethods = (state = deliveryMethodsInitialState, action) => {
+export const adminDeliveryMethods = (state = adminDeliveryMethodsInitialState, action) => {
     switch (action.type) {
         case actions.RETRIEVE_ADMIN_DELIVERY_METHODS_REQUEST:
             return {
@@ -89,72 +87,73 @@ export const adminDeliveryMethods = (state = deliveryMethodsInitialState, action
     }
 };
 
-
-const initialIds = [];
-const initialData = {};
-const initialCurrentId = null;
-const initialIsFetching = false;
-
-const ids = (state = initialIds, {type, payload}) => {
-    switch(type) {
-        case actions.RETRIEVE_DELIVERY_METHODS_SUCCESS:
-            return payload.result;
-        case actions.ON_CREATE_DELIVERY_METHOD:
-            return [payload.deliveryMethod.id, ...state];
-        case CREATE_ORDER_SUCCESS:
-            return [...initialIds];
-        default:
-            return state;
-    }
+const initialDeliveryMethodsState = {
+    ids: [],
+    data: {},
+    currentId: null,
+    isFetching: false,
 };
 
-const data = (state = initialData, {type, payload}) => {
-    switch(type) {
-        case actions.RETRIEVE_DELIVERY_METHODS_SUCCESS:
+export const deliveryMethods = (state = initialDeliveryMethodsState, {type, payload}) => {
+    switch (type) {
+
+        case actions.SET_CURRENT_DELIVERY_METHOD:
             return {
                 ...state,
-                ...payload.entities.deliveryMethods,
+                currentId: payload.current.id,
             };
         case actions.SYNC_DELIVERY_METHODS:
             const newState = {...state};
             payload.deliveryMethodsIds.forEach(id => newState[id].quantity = payload.productsById[id].quantity);
-            return newState;
-        case actions.ON_CREATE_DELIVERY_METHOD:
-            state[payload.deliveryMethod.id] = payload.deliveryMethod;
-            return state;
-        case CREATE_ORDER_SUCCESS:
-            return {...initialData};
-        default:
-            return state;
-    }
-};
-
-const currentId = (state = initialCurrentId, {type, payload}) => {
-    switch (type) {
-        case actions.SET_CURRENT_DELIVERY_METHOD:
-            return payload.current.id;
-        case CREATE_ORDER_SUCCESS:
-            return initialCurrentId;
-        default:
-            return state;
-    }
-};
-
-const isFetching = (state = initialIsFetching, {type, payload}) => {
-    switch (type) {
+            return {
+                ...state,
+                data: newState,
+            };
         case actions.RETRIEVE_DELIVERY_METHODS_REQUEST:
-            return true;
-        case actions.RETRIEVE_DELIVERY_METHODS_SUCCESS:
+            return {
+                ...state,
+                isFetching: true,
+            };
         case actions.RETRIEVE_DELIVERY_METHODS_FAILURE:
-            return false;
+            return {
+                ...state,
+                isFetching: false,
+            };
+        case actions.RETRIEVE_DELIVERY_METHODS_SUCCESS:
+            return {
+                ...state,
+                ids: payload.result,
+                data: {...state.data, ...payload.entities.deliveryMethods},
+                isFetching: false,
+            };
+        case actions.ON_UPDATE_DELIVERY_METHOD:
+            return {
+                ...state,
+                data: {
+                    ...state.data,
+                    [payload.deliveryMethod.id]: payload.deliveryMethod,
+                },
+            };
+        case actions.ON_CREATE_DELIVERY_METHOD:
+            return {
+                ...state,
+                ids: [payload.deliveryMethod.id, ...state.ids],
+                data: {
+                    ...state.data,
+                    [payload.deliveryMethod.id]: payload.deliveryMethod,
+                },
+            };
+        case actions.ON_DELETE_DELIVERY_METHOD:
+            return {
+                ...state,
+                ids: state.ids.filter(id => id !== payload.deliveryMethod.id),
+                data: {
+                    ...state.data,
+                    [payload.deliveryMethod.id]: undefined,
+                },
+                currentId: payload.deliveryMethod.id === state.currentId ? null : state.currentId,
+            };
         default:
             return state;
     }
 };
-
-export const deliveryMethods = combineReducers({
-    ids,
-    data,
-    currentId,
-    isFetching,
-});

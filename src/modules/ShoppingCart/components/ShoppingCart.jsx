@@ -77,7 +77,7 @@ const ShoppingCart = props => {
     return (
         <Fragment>
             <ProductsInCart/>
-            <CartSummary/>
+            <CartSummary socket={socket}/>
         </Fragment>
     );
 };

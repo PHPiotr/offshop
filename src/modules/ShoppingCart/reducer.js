@@ -4,7 +4,12 @@ import {
     ON_DELETE_PRODUCT_IN_CART_SUMMARY,
 } from '../../modules/Checkout/actionTypes';
 import {SYNC_QUANTITIES} from '../../modules/Products/actionTypes';
-import {SET_CURRENT_DELIVERY_METHOD} from '../Delivery/actionTypes';
+import {
+    ON_CREATE_DELIVERY_METHOD,
+    ON_DELETE_DELIVERY_METHOD,
+    ON_UPDATE_DELIVERY_METHOD,
+    SET_CURRENT_DELIVERY_METHOD
+} from '../Delivery/actionTypes';
 import {CREATE_ORDER_SUCCESS} from '../Orders/actionTypes';
 
 const initialCartState = {
@@ -13,6 +18,7 @@ const initialCartState = {
     totalPrice: 0,
     ids: [],
     products: {},
+    deliveryId: null,
     deliveryUnitPrice: 0,
     deliveryTotalPrice: 0,
     totalPriceWithDelivery: 0,
@@ -26,9 +32,9 @@ export const cart = (state = initialCartState, { payload, type }) => {
 
             item = state.products[payload.product.id];
 
-            let itemQuantity = item.quantity;
-            if (payload.product.stock < item.quantity) {
-                itemQuantity = payload.product.stock;
+            let itemQuantity = Number(item.quantity);
+            if (Number(payload.product.stock) < Number(item.quantity)) {
+                itemQuantity = Number(payload.product.stock);
             }
             let totalWeight = state.weight;
             if (item.weight !== payload.product.weight * itemQuantity) {
@@ -38,20 +44,43 @@ export const cart = (state = initialCartState, { payload, type }) => {
 
             return {
                 ...state,
-                quantity: state.quantity - item.quantity + itemQuantity,
+                quantity: Number(state.quantity) - Number(item.quantity) + itemQuantity,
                 weight: totalWeight,
                 totalPrice: priceTotal,
-                products: {...state.products, [payload.product.id]: {
+                products: {...state.products, [payload.product.id]: Number(payload.product.stock) > 0 ? {
                         quantity: itemQuantity,
                         weight: payload.product.weight * itemQuantity,
                         totalPrice: payload.product.unitPrice * itemQuantity,
-                    }},
+                    } : undefined},
+                ids: Number(payload.product.stock) > 0 ? state.ids : state.ids.filter(id => id !== payload.product.id),
                 deliveryTotalPrice: Math.round(state.deliveryUnitPrice * (totalWeight + payload.product.weight * itemQuantity) / 100),
                 totalPriceWithDelivery: Math.round(priceTotal + (state.deliveryUnitPrice * totalWeight) / 100),
+            };
+        case ON_DELETE_DELIVERY_METHOD:
+            if (payload.deliveryMethod.id !== state.deliveryId) {
+                return state;
+            }
+            return {
+                ...state,
+                deliveryId: null,
+                deliveryUnitPrice: 0,
+                deliveryTotalPrice: 0,
+                totalPriceWithDelivery: state.totalPrice,
+            };
+        case ON_UPDATE_DELIVERY_METHOD:
+            if (payload.deliveryMethod.id !== state.deliveryId) {
+                return state;
+            }
+            return {
+                ...state,
+                deliveryUnitPrice: payload.deliveryMethod.unitPrice,
+                deliveryTotalPrice: Math.round(payload.deliveryMethod.unitPrice * state.weight / 100),
+                totalPriceWithDelivery: Math.round(state.totalPrice + payload.deliveryMethod.unitPrice * state.weight / 100),
             };
         case SET_CURRENT_DELIVERY_METHOD:
             return {
                 ...state,
+                deliveryId: payload.current.id,
                 deliveryUnitPrice: payload.current.unitPrice,
                 deliveryTotalPrice: Math.round(payload.current.unitPrice * state.weight / 100),
                 totalPriceWithDelivery: Math.round(state.totalPrice + payload.current.unitPrice * state.weight / 100),

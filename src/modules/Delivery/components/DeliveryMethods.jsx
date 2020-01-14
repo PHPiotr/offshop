@@ -1,14 +1,66 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {connect} from 'react-redux';
 import {FormControlLabel, Radio, Typography, RadioGroup} from '@material-ui/core';
-import {setCurrentDeliveryMethod} from '../actions';
+import {
+    onCreateDeliveryMethod,
+    onDeleteDeliveryMethod,
+    onUpdateDeliveryMethod,
+    setCurrentDeliveryMethod,
+} from '../actions';
 import PropTypes from 'prop-types';
+import {showNotification} from '../../../actions/notification';
 
 const DeliveryMethods = props => {
+
+    const {
+        onCreateDeliveryMethod,
+        onDeleteDeliveryMethod,
+        onUpdateDeliveryMethod,
+        showNotification,
+        socket,
+    } = props;
 
     const handleSetCurrentDeliveryMethod = e => {
         props.setCurrentDeliveryMethod(props.deliveryMethods.find(s => s.id === e.target.value));
     };
+
+    const onCreateDelivery = payload => {
+        onCreateDeliveryMethod(payload);
+        showNotification({
+            message: `Opcja dostawy ${payload.name} została dodana.`,
+            variant: 'warning',
+        });
+    };
+
+    const onDeleteDelivery = payload => {
+        onDeleteDeliveryMethod(payload);
+        showNotification({
+            message: `Opcja dostawy ${payload.name} została usunięta.`,
+            variant: 'warning',
+        });
+    };
+
+    const onUpdateDelivery = payload => {
+        onUpdateDeliveryMethod(payload);
+        showNotification({
+            message: `Opcja dostawy ${payload.name} została zmieniona.`,
+            variant: 'warning',
+        });
+    };
+
+    useEffect(() => {
+        if (!socket) {
+            return;
+        }
+        socket.on('createDelivery', onCreateDelivery);
+        socket.on('updateDelivery', onUpdateDelivery);
+        socket.on('deleteDelivery', onDeleteDelivery);
+        return () => {
+            socket.off('createDelivery', onCreateDelivery);
+            socket.off('updateDelivery', onUpdateDelivery);
+            socket.off('deleteDelivery', onDeleteDelivery);
+        }
+    }, []);
 
     return (
         <RadioGroup name="position" defaultValue={props.currentDeliveryMethod.id}>
@@ -48,6 +100,12 @@ const mapStateToProps = state => ({
     deliveryMethods: state.deliveryMethods.ids.map(i => state.deliveryMethods.data[i]),
     currentDeliveryMethod: state.deliveryMethods.data[state.deliveryMethods.currentId] || {},
 });
-const mapDispatchToProps = {setCurrentDeliveryMethod};
+const mapDispatchToProps = {
+    setCurrentDeliveryMethod,
+    onCreateDeliveryMethod,
+    onUpdateDeliveryMethod,
+    onDeleteDeliveryMethod,
+    showNotification,
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(DeliveryMethods);

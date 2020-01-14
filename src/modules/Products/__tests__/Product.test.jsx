@@ -83,7 +83,7 @@ describe('Product', () => {
     describe('response ok', () => {
 
         beforeEach(() => {
-            mock.onGet(/products/).replyOnce(200, productPayload);
+            mock.onGet(/products.*/).reply(200, productPayload);
         });
 
         it("should add item to cart", async () => {

@@ -6,7 +6,7 @@ import useRequestHandler from '../hooks/useRequestHandler';
 
 const RequestHandler = props => {
 
-    const {isLoading, response} = useRequestHandler(() => props.action(), []);
+    const {isLoading, response} = useRequestHandler(() => props.action(), props.deps);
 
     const {children} = props;
 
@@ -14,10 +14,13 @@ const RequestHandler = props => {
         return <ProgressIndicator />;
     }
     if (response && response.status === 404) {
-        return <NotFound/>
+        return <NotFound/>;
+    }
+    if (response && !response.data) {
+        return <ErrorPage status={`Błąd ${response.status}`} message={`Błąd ${response.statusText}`}/>;
     }
     if (!response) {
-        return <ErrorPage status="Błąd sieci" message="Brak odpowiedzi"/>
+        return <ErrorPage status="Błąd sieci" message="Brak odpowiedzi"/>;
     }
     return children;
 };
