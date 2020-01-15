@@ -20,7 +20,7 @@ const styles = theme => ({
 
 const ErrorPage = props => (
     <div className={props.classes.errorWrapper}>
-        <Typography variant='p' component='h1'>
+        <Typography variant='subtitle1' component='h1'>
             {props.status}
         </Typography>
         <Typography component='p'>

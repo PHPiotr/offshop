@@ -4,18 +4,12 @@ import {withStyles} from '@material-ui/core/styles';
 import pink from '@material-ui/core/colors/pink';
 import {connect} from 'react-redux';
 import {withRouter} from 'react-router-dom';
-
-// actions
 import {addToCart} from '../../../modules/ShoppingCart/actions';
 import {openDialog} from '../../../actions/dialog';
 import {showNotification} from '../../../actions/notification';
 import {getProductIfNeeded, resetProductData, onDeleteCurrentProduct, onUpdateCurrentProduct} from '../actions';
-
-// components
-import ErrorPage from '../../../components/ErrorPage';
-import NotFound from '../../../components/NotFound';
 import ProductView from './ProductView';
-import ProgressIndicator from '../../../components/ProgressIndicator';
+import RequestHandler from '../../../components/RequestHandler';
 
 const styles = theme => ({
     card: {
@@ -50,11 +44,6 @@ const styles = theme => ({
 const Product = props => {
 
     const {getProductIfNeeded, product, socket} = props;
-
-    const [isLoading, setLoading] = useState(false);
-    const [response, setResponse] = useState({});
-    const [is404, set404] = useState(false);
-    const [isError, setIsError] = useState(false);
     const [slug, setSlug] = useState(props.match.params.slug);
 
     const onUpdateProductListener = payload => {
@@ -79,7 +68,6 @@ const Product = props => {
                         variant: 'warning',
                     });
                     props.onUpdateCurrentProduct(productFromPayload);
-                    set404(true);
                 }
             }
         } else {
@@ -94,7 +82,6 @@ const Product = props => {
                         props.history.replace(`/products/${productFromPayload.slug}`);
                         setSlug(productFromPayload.slug);
                     }
-                    set404(false);
                 }
             }
         }
@@ -109,7 +96,6 @@ const Product = props => {
                 variant: 'warning',
             });
             props.onDeleteCurrentProduct(productFromPayload);
-            set404(true);
         }
     };
 
@@ -125,40 +111,15 @@ const Product = props => {
         }
     });
 
-    useEffect(() => {
-        if (is404) {
-            return;
-        }
-        setIsError(false);
-        setLoading(true);
-        setResponse({});
-        getProductIfNeeded(slug)
-            .then(response => {
-                setLoading(false);
-                setResponse(response);
-                set404(!!(response && response.status === 404));
-                setIsError(!response || response.status !== 200);
-            });
-    }, [slug, is404]);
-    if (isLoading) {
-        return <ProgressIndicator />;
-    }
-    if (is404) {
-        return <NotFound/>
-    }
-    if (!response) {
-        return <ErrorPage status="Błąd sieci" message="Brak odpowiedzi"/>
-    }
-    if (isError) {
-        return <ErrorPage status={`Błąd ${response.status}`} message={response.statusText}/>
-    }
-
-    return <ProductView />;
+    return (
+        <RequestHandler action={() => getProductIfNeeded(slug)} deps={[props.productId]}>
+            <ProductView />
+        </RequestHandler>
+    );
 };
 
 const mapStateToProps = state => ({
-    isFetching: state.product.isFetching,
-    productInCart: state.cart.products[state.product.id] || {},
+    productId: state.product.id,
 });
 const mapDispatchToProps = {
     getProductIfNeeded,

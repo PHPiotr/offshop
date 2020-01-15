@@ -40,8 +40,16 @@ export const sync = (deliveryMethodsIds, deliveryMethodsById) => ({
     payload: {deliveryMethodsIds, deliveryMethodsById},
 });
 
-export const onCreateDeliveryMethod = (deliveryMethod) => ({
+export const onCreateDeliveryMethod = deliveryMethod => ({
     type: actions.ON_CREATE_DELIVERY_METHOD,
+    payload: {deliveryMethod},
+});
+export const onUpdateDeliveryMethod = deliveryMethod => ({
+    type: actions.ON_UPDATE_DELIVERY_METHOD,
+    payload: {deliveryMethod},
+});
+export const onDeleteDeliveryMethod = deliveryMethod => ({
+    type: actions.ON_DELETE_DELIVERY_METHOD,
     payload: {deliveryMethod},
 });
 

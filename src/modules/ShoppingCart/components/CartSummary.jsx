@@ -34,7 +34,7 @@ const styles = theme => ({
 });
 
 const CartSummary = props => {
-    const { classes, cart } = props;
+    const { classes, cart, socket } = props;
 
     const handleGoToCheckoutPage = () => props.history.push('/checkout');
 
@@ -44,7 +44,7 @@ const CartSummary = props => {
                 <Typography gutterBottom variant="h6">
                     Wybierz sposób dostawy
                 </Typography>
-                <DeliveryMethods/>
+                <DeliveryMethods socket={socket}/>
             </div>
             <Divider variant="middle" className={classes.divider} />
             <div className={classes.section2}>

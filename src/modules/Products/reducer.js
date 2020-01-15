@@ -1,4 +1,5 @@
 import * as actions from "./actionTypes";
+import {ON_UPDATE_PRODUCT_IN_CART} from '../ShoppingCart/actionTypes';
 
 const initialProductState = {
     isFetching: false,
@@ -53,8 +54,8 @@ export const product = (state = initialProductState, action) => {
         case actions.ON_UPDATE_CURRENT_PRODUCT:
             return {
                 ...state,
-                data: action.payload.product.active ? {[action.payload.product.id]: action.payload.product} : state.data,
-                id: action.payload.product.active ? action.payload.product.id : state.id,
+                data: action.payload.product.active ? {[action.payload.product.id]: action.payload.product} : {},
+                id: action.payload.product.active ? action.payload.product.id : '',
             };
         case actions.ON_DELETE_CURRENT_PRODUCT:
             return {
@@ -116,6 +117,7 @@ export const products = (state = initialProductsState, {type, payload}) => {
                 data: {...state.data, [payload.product.id]: payload.product},
                 ids: mergeIds(state, payload),
             };
+        case ON_UPDATE_PRODUCT_IN_CART:
         case actions.ON_UPDATE_PRODUCT:
             return {
                 ...state,
