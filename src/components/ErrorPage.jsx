@@ -23,13 +23,13 @@ const ErrorPage = props => (
         <Typography variant='subtitle1' component='h1'>
             {props.status}
         </Typography>
-        <Typography component='p'>
-            {props.message}
-        </Typography>
+        {props.message && (
+            <Typography component='p'>
+                {props.message}
+            </Typography>
+        )}
         <div>
-            <Tooltip title={props.message}>
-                <Error color="error" style={{fontSize: 140}}/>
-            </Tooltip>
+            <Error color="error" style={{fontSize: 140}}/>
         </div>
         <div>
             <Link component={RouterLink} to="/">Wróć do strony głównej.</Link>

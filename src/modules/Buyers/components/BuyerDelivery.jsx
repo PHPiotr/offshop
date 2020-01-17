@@ -5,7 +5,7 @@ import {Field, Form, reduxForm} from 'redux-form';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import {makeStyles} from '@material-ui/core';
-import {validateEmail, validateRequired} from '../../../utils/form';
+import {validateRequired} from '../../../utils/form';
 
 const renderTextField = ({input, label, meta, ...custom}) => (
     <TextField
@@ -40,8 +40,6 @@ let BuyerDeliveryForm = props => {
                         if (rule === 'required') {
                             validateFunctions.push(validateRequired);
                             required = true;
-                        } else if (rule === 'email') {
-                            validateFunctions.push(validateEmail);
                         }
                     });
                     acc.push(

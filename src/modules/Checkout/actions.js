@@ -4,6 +4,7 @@ import {orderCreateRequest} from "../../modules/Checkout/api";
 import {showNotification} from '../../actions/notification';
 import * as actions from './actionTypes';
 import {CREATE_ORDER_REQUEST, CREATE_ORDER_SUCCESS, CREATE_ORDER_FAILURE} from '../Orders/actionTypes';
+import {ON_DELETE_PRODUCT, ON_UPDATE_PRODUCT} from '../Products/actionTypes';
 
 export const stepNext = () => ({type: actions.STEP_NEXT});
 
@@ -15,12 +16,12 @@ export const setActiveStepId = activeStepId => ({
 });
 
 export const onUpdateProductInCartSummary = product => ({
-    type: actions.ON_UPDATE_PRODUCT_IN_CART_SUMMARY,
+    type: ON_UPDATE_PRODUCT,
     payload: {product},
 });
 
 export const onDeleteProductInCartSummary = product => ({
-    type: actions.ON_DELETE_PRODUCT_IN_CART_SUMMARY,
+    type: ON_DELETE_PRODUCT,
     payload: {product},
 });
 

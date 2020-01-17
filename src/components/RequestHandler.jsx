@@ -16,8 +16,8 @@ const RequestHandler = props => {
     if (response && response.status === 404) {
         return <NotFound/>;
     }
-    if (response && !response.data) {
-        return <ErrorPage status={`Błąd ${response.status}`} message={`Błąd ${response.statusText}`}/>;
+    if (response && !response.data && response.status) {
+        return <ErrorPage status={`Błąd ${response.status}`} message={response.statusText ? `Błąd ${response.statusText}` : ''}/>;
     }
     if (!response) {
         return <ErrorPage status="Błąd sieci" message="Brak odpowiedzi"/>;

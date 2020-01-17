@@ -2,12 +2,10 @@ import {useEffect, useState} from 'react';
 
 const useRequestHandler = (action, deps = []) => {
 
-    const [isLoading, setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
     const [response, setResponse] = useState({});
 
     useEffect(() => {
-        setIsLoading(true);
-        setResponse({});
         action()
             .then(response => {
                 setIsLoading(false);

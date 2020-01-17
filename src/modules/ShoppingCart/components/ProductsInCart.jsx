@@ -47,7 +47,7 @@ const ProductsInCart = props => {
     const handleDecrementItemInCart = e =>
         props.decrementItemInCart(getItemById(products, e.currentTarget.id));
     const handleRemoveItemFromCart = e =>
-        props.removeItemFromCart(e.currentTarget.id);
+        props.removeItemFromCart(getItemById(products, e.currentTarget.id));
 
     return (
         <List className={classes.root} disablePadding>
@@ -126,8 +126,8 @@ const mapDispatchToProps = dispatch => ({
     decrementItemInCart(item) {
         dispatch(decrementInCart(item));
     },
-    removeItemFromCart(itemId) {
-        dispatch(deleteFromCart(itemId));
+    removeItemFromCart(item) {
+        dispatch(deleteFromCart(item));
     },
 });
 

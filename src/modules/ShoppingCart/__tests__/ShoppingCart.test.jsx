@@ -164,6 +164,7 @@ describe('ShoppingCart', () => {
         }
         fireEvent.click(deliveryMethodRadio);
         expect(checkoutButton.disabled).toBe(false);
+        fireEvent.click(checkoutButton);
     });
 
     it('should adjust total price on delivery method change and on item amount increment/decrement', async () => {
