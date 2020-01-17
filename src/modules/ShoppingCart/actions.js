@@ -1,4 +1,5 @@
 import * as actions from './actionTypes';
+import {ON_DELETE_PRODUCT, ON_UPDATE_PRODUCT} from '../Products/actionTypes';
 
 export const addToCart = (item, quantity = 1) => ({
     type: actions.ADD_TO_CART,
@@ -10,17 +11,17 @@ export const decrementInCart = (item, quantity = 1) => ({
     payload: {item, quantity},
 });
 
-export const deleteFromCart = itemId => ({
+export const deleteFromCart = product => ({
     type: actions.DELETE_FROM_CART,
-    payload: {itemId},
+    payload: {product},
 });
 
 export const onUpdateProductInCart = product => ({
-    type: actions.ON_UPDATE_PRODUCT_IN_CART,
+    type: ON_UPDATE_PRODUCT,
     payload: {product},
 });
 
 export const onDeleteProductInCart = product => ({
-    type: actions.ON_DELETE_PRODUCT_IN_CART,
-    payload: {itemId: product.id},
+    type: ON_DELETE_PRODUCT,
+    payload: {product},
 });

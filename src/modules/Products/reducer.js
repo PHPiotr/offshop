@@ -1,5 +1,4 @@
 import * as actions from "./actionTypes";
-import {ON_UPDATE_PRODUCT_IN_CART} from '../ShoppingCart/actionTypes';
 
 const initialProductState = {
     isFetching: false,
@@ -117,7 +116,6 @@ export const products = (state = initialProductsState, {type, payload}) => {
                 data: {...state.data, [payload.product.id]: payload.product},
                 ids: mergeIds(state, payload),
             };
-        case ON_UPDATE_PRODUCT_IN_CART:
         case actions.ON_UPDATE_PRODUCT:
             return {
                 ...state,
