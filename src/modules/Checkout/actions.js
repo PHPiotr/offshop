@@ -94,9 +94,3 @@ export const handleCreateOrderError = e => showNotification({
     message: (e.response && e.response.data && e.response.data.message) || e.message || 'Something went wrong',
     variant: 'error',
 });
-
-export const setBuyerInputValue = (name, value) => ({
-    type: actions.SET_BUYER_INPUT_VALUE,
-    payload: {name, value},
-});
-

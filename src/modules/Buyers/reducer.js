@@ -1,4 +1,3 @@
-import * as actions from '../Checkout/actionTypes';
 import {combineReducers} from 'redux';
 
 const initialBuyerDeliveryIds = [
@@ -35,22 +34,8 @@ const initialBuyerDeliveryData = {
     },
 };
 
-const buyerDeliveryIds = (state = initialBuyerDeliveryIds, {type}) => {
-    return state;
-};
-
-const buyerDeliveryData = (state = initialBuyerDeliveryData, {type, payload}) => {
-    if (type === actions.SET_BUYER_DELIVERY_INPUT_VALUE) {
-        return {
-            ...state,
-            [payload.name]: {
-                ...state[payload.name],
-                value: payload.value,
-            },
-        };
-    }
-    return state;
-};
+const buyerDeliveryIds = (state = initialBuyerDeliveryIds) => state;
+const buyerDeliveryData = (state = initialBuyerDeliveryData) => state;
 
 export const buyerDelivery = combineReducers({
     ids: buyerDeliveryIds,
@@ -91,22 +76,8 @@ const buyerInitialData = {
     },
 };
 
-const buyerIds = (state = buyerInitialIds, {type}) => {
-    return state;
-};
-
-const buyerData = (state = buyerInitialData, {type, payload}) => {
-    if (type === actions.SET_BUYER_INPUT_VALUE) {
-        return {
-            ...state,
-            [payload.name]: {
-                ...state[payload.name],
-                value: payload.value,
-            },
-        };
-    }
-    return state;
-};
+const buyerIds = (state = buyerInitialIds) => state;
+const buyerData = (state = buyerInitialData) => state;
 
 export const buyer = combineReducers({
     ids: buyerIds,
