@@ -2,10 +2,20 @@ import React from 'react';
 import {Provider} from 'react-redux';
 import {BrowserRouter} from 'react-router-dom';
 import {render} from '@testing-library/react';
+import io from './src/io';
+import MockedSocket from 'socket.io-mock';
+import SocketContext from './src/SocketContext';
+let socket = new MockedSocket();
+jest.mock('./src/io');
+io.mockResolvedValue(socket);
+
+global.socket = socket;
 
 global.renderWithStore = (node, store) => render(
     <Provider store={store}>
-        <BrowserRouter>{node}</BrowserRouter>
+        <SocketContext.Provider value={socket}>
+            <BrowserRouter>{node}</BrowserRouter>
+        </SocketContext.Provider>
     </Provider>
 );
 

@@ -1,4 +1,4 @@
-import React, {Fragment, useState, useEffect} from 'react';
+import React, {Fragment, useState, useEffect, useContext} from 'react';
 import PropTypes from 'prop-types';
 import {withStyles} from '@material-ui/core/styles';
 import {Link} from 'react-router-dom';
@@ -16,9 +16,7 @@ import Dialog from '../../../../components/Dialog';
 import ProgressIndicator from '../../../../components/ProgressIndicator';
 import {getAdminDeliveryMethodsIfNeeded, deleteDeliveryMethodIfNeeded} from '../../actions';
 import {showNotification} from '../../../../actions/notification';
-import io from '../../../../io';
-
-const socket = io();
+import SocketContext from '../../../../SocketContext';
 
 const styles = theme => ({
     root: {
@@ -36,6 +34,7 @@ const styles = theme => ({
 });
 
 const DeliveryMethodsList = props => {
+    const socket = useContext(SocketContext);
     const [sort] = useState('name');
     const [order] = useState(1);
 

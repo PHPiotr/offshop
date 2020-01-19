@@ -1,4 +1,4 @@
-import React, {Fragment, useState, useEffect} from 'react';
+import React, {Fragment, useState, useEffect, useContext} from 'react';
 import PropTypes from 'prop-types';
 import {withStyles} from '@material-ui/core/styles';
 import {Link} from 'react-router-dom';
@@ -20,10 +20,8 @@ import FloatingAddButton from '../../../../components/FloatingAddButton';
 import ProgressIndicator from '../../../../components/ProgressIndicator';
 import {getAdminProductsIfNeeded, deleteProductIfNeeded} from '../../../../modules/Products/actions';
 import {showNotification} from '../../../../actions/notification';
-import io from '../../../../io';
 import useInfiniteScrolling from '../../../../hooks/useInfiniteScrolling';
-
-const socket = io();
+import SocketContext from '../../../../SocketContext';
 
 const styles = theme => ({
     root: {
@@ -41,6 +39,7 @@ const styles = theme => ({
 });
 
 const ProductsList = props => {
+    const socket = useContext(SocketContext);
     const {getAdminProductsIfNeeded} = props;
     useInfiniteScrolling({
         sort: 'name',

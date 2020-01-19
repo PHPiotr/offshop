@@ -15,11 +15,6 @@ import dialog from '../../../reducers/dialog';
 import notification from '../../../reducers/notification';
 import {products} from '../../../modules/Products/reducer';
 import {deliveryMethods} from '../../../modules/Delivery/reducer';
-import io from '../../../io';
-import MockedSocket from 'socket.io-mock';
-let socket = new MockedSocket();
-jest.mock('../../../io');
-io.mockResolvedValue(socket);
 
 const deliveryMethodsPayload = [
     {
@@ -215,7 +210,8 @@ describe('ShoppingCart', () => {
                 const {getByTestId, getByText, queryByText} = await renderWithStore(<Products/>, store);
                 const addToCartButton = await waitForElement(() => getByTestId(`add-to-cart-button-${firstProductId}`));
                 fireEvent.click(addToCartButton);
-                await renderWithStore(<Fragment><Cart socket={socket}/><NotificationBar/></Fragment>, store);
+                socket.removeAllListeners('updateProduct');
+                await renderWithStore(<Fragment><Cart/><NotificationBar/></Fragment>, store);
                 expect(queryByText(message)).toBeNull();
                 socket.socketClient.emit('updateProduct', {product, wasActive, isActive});
                 if (shouldShow) {
@@ -236,7 +232,8 @@ describe('ShoppingCart', () => {
                 const {getByTestId, getByText, queryByText} = await renderWithStore(<Products/>, store);
                 const addToCartButton = await waitForElement(() => getByTestId(`add-to-cart-button-${firstProductId}`));
                 fireEvent.click(addToCartButton);
-                await renderWithStore(<Fragment><Cart socket={socket}/><NotificationBar/></Fragment>, store);
+                socket.removeAllListeners('deleteProduct');
+                await renderWithStore(<Fragment><Cart/><NotificationBar/></Fragment>, store);
                 expect(queryByText(deletedProductMessage)).toBeNull();
                 socket.socketClient.emit('deleteProduct', {product, wasActive});
                 if (shouldShow) {

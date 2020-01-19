@@ -8,6 +8,10 @@ import WebFont from 'webfontloader';
 import './index.css';
 import App from './App';
 import store from './store';
+import SocketContext from './SocketContext';
+import io from './io';
+
+const socket = io();
 
 WebFont.load({
     google: {
@@ -26,9 +30,11 @@ const theme = createMuiTheme({
 ReactDOM.render(
     <Provider store={store}>
         <ThemeProvider theme={theme}>
-            <Router>
-                <App/>
-            </Router>
+            <SocketContext.Provider value={socket}>
+                <Router>
+                    <App/>
+                </Router>
+            </SocketContext.Provider>
         </ThemeProvider>
     </Provider>,
     document.getElementById('root')

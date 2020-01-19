@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import {withStyles} from '@material-ui/core/styles';
 import pink from '@material-ui/core/colors/pink';
@@ -10,6 +10,7 @@ import {showNotification} from '../../../actions/notification';
 import {getProductIfNeeded, resetProductData, onDeleteCurrentProduct, onUpdateCurrentProduct} from '../actions';
 import ProductView from './ProductView';
 import RequestHandler from '../../../components/RequestHandler';
+import SocketContext from '../../../SocketContext';
 
 const styles = theme => ({
     card: {
@@ -43,7 +44,8 @@ const styles = theme => ({
 
 const Product = props => {
 
-    const {getProductIfNeeded, product, socket} = props;
+    const socket = useContext(SocketContext);
+    const {getProductIfNeeded, product} = props;
     const [slug, setSlug] = useState(props.match.params.slug);
 
     const onUpdateProductListener = payload => {
@@ -100,9 +102,6 @@ const Product = props => {
     };
 
     useEffect(() => {
-        if (!socket) {
-            return;
-        }
         socket.on('updateProduct', onUpdateProductListener);
         socket.on('deleteProduct', onDeleteProductListener);
         return () => {
