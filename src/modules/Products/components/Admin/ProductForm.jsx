@@ -11,7 +11,7 @@ import SubHeader from '../../../../components/SubHeader';
 import {getAdminProductIfNeeded, resetAdminProduct} from '../../../../modules/Products/actions';
 import {inputs, inputKeys, initialValues} from '../../config';
 import RequestHandler from '../../../../components/RequestHandler';
-import SocketContext from '../../../../SocketContext';
+import SocketContext from '../../../../contexts/SocketContext';
 
 const FORM_NAME = 'product';
 

@@ -9,7 +9,7 @@ import {
 } from '../actions';
 import PropTypes from 'prop-types';
 import {showNotification} from '../../../actions/notification';
-import SocketContext from '../../../SocketContext';
+import SocketContext from '../../../contexts/SocketContext';
 
 const DeliveryMethods = props => {
 

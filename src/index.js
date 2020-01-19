@@ -8,7 +8,7 @@ import WebFont from 'webfontloader';
 import './index.css';
 import App from './App';
 import store from './store';
-import SocketContext from './SocketContext';
+import SocketContext from './contexts/SocketContext';
 import io from './io';
 
 const socket = io();

@@ -10,7 +10,7 @@ import {showNotification} from '../../../actions/notification';
 import {getProductIfNeeded, resetProductData, onDeleteCurrentProduct, onUpdateCurrentProduct} from '../actions';
 import ProductView from './ProductView';
 import RequestHandler from '../../../components/RequestHandler';
-import SocketContext from '../../../SocketContext';
+import SocketContext from '../../../contexts/SocketContext';
 
 const styles = theme => ({
     card: {

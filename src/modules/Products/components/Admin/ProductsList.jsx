@@ -21,7 +21,7 @@ import ProgressIndicator from '../../../../components/ProgressIndicator';
 import {getAdminProductsIfNeeded, deleteProductIfNeeded} from '../../../../modules/Products/actions';
 import {showNotification} from '../../../../actions/notification';
 import useInfiniteScrolling from '../../../../hooks/useInfiniteScrolling';
-import SocketContext from '../../../../SocketContext';
+import SocketContext from '../../../../contexts/SocketContext';
 
 const styles = theme => ({
     root: {

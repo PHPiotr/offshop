@@ -4,7 +4,7 @@ import {BrowserRouter} from 'react-router-dom';
 import {render} from '@testing-library/react';
 import io from './src/io';
 import MockedSocket from 'socket.io-mock';
-import SocketContext from './src/SocketContext';
+import SocketContext from './src/contexts/SocketContext';
 let socket = new MockedSocket();
 jest.mock('./src/io');
 io.mockResolvedValue(socket);

@@ -13,7 +13,7 @@ import ProgressIndicator from '../../../../components/ProgressIndicator';
 import {onAdminRefund, getAdminOrdersIfNeeded, onAdminOrder} from '../../actions';
 import {showNotification} from '../../../../actions/notification';
 import useInfiniteScrolling from '../../../../hooks/useInfiniteScrolling';
-import SocketContext from '../../../../SocketContext';
+import SocketContext from '../../../../contexts/SocketContext';
 
 const useStyles = makeStyles(theme => ({
     list: {

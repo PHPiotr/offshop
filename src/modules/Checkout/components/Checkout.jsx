@@ -11,7 +11,7 @@ import {
 } from '../actions';
 import {resetOrderData} from '../../Orders/actions';
 import {showNotification} from '../../../actions/notification';
-import SocketContext from '../../../SocketContext';
+import SocketContext from '../../../contexts/SocketContext';
 
 const Checkout = props => {
     const {
