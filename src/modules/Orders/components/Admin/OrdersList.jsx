@@ -1,4 +1,4 @@
-import React, {Fragment, useEffect} from 'react';
+import React, {Fragment, useContext, useEffect} from 'react';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
@@ -13,9 +13,7 @@ import ProgressIndicator from '../../../../components/ProgressIndicator';
 import {onAdminRefund, getAdminOrdersIfNeeded, onAdminOrder} from '../../actions';
 import {showNotification} from '../../../../actions/notification';
 import useInfiniteScrolling from '../../../../hooks/useInfiniteScrolling';
-import io from '../../../../io';
-
-const socket = io();
+import SocketContext from '../../../../SocketContext';
 
 const useStyles = makeStyles(theme => ({
     list: {
@@ -62,6 +60,7 @@ const OrdersList = props => {
             variant: 'warning',
         });
     };
+    const socket = useContext(SocketContext);
     useEffect(() => {
         socket.on('adminCreateOrder', onAdminCreateOrderListener);
         socket.on('adminUpdateOrder', onAdminUpdateOrderListener);
@@ -71,7 +70,7 @@ const OrdersList = props => {
             socket.off('adminUpdateOrder', onAdminUpdateOrderListener);
             socket.off('adminRefund', onAdminRefundListener);
         };
-    }, []);
+    }, [socket]);
 
     return (
         <Fragment>

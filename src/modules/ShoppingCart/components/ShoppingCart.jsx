@@ -1,4 +1,4 @@
-import React, {Fragment, useEffect, useState} from 'react';
+import React, {Fragment, useContext, useEffect, useState} from 'react';
 import {connect} from 'react-redux';
 import ProductsInCart from './ProductsInCart';
 import CartSummary from './CartSummary';
@@ -6,6 +6,7 @@ import EmptyCart from './EmptyCart';
 import {onUpdateProductInCart, onDeleteProductInCart} from '../actions';
 import {showNotification} from '../../../actions/notification';
 import {getDeliveryMethodsIfNeeded} from '../../Delivery/actions';
+import SocketContext from '../../../SocketContext';
 
 const ShoppingCart = props => {
 
@@ -15,10 +16,10 @@ const ShoppingCart = props => {
         onUpdateProductInCart,
         onDeleteProductInCart,
         showNotification,
-        socket,
     } = props;
     const [sort] = useState('name');
     const [order] = useState(1);
+    const socket = useContext(SocketContext);
 
     const onUpdateProductListener = payload => {
         const {product} = payload;
@@ -58,9 +59,6 @@ const ShoppingCart = props => {
     }, []);
 
     useEffect(() => {
-        if (!socket) {
-            return;
-        }
         socket.on('updateProduct', onUpdateProductListener);
         socket.on('deleteProduct', onDeleteProductListener);
 
@@ -77,7 +75,7 @@ const ShoppingCart = props => {
     return (
         <Fragment>
             <ProductsInCart/>
-            <CartSummary socket={socket}/>
+            <CartSummary/>
         </Fragment>
     );
 };

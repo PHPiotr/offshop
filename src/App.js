@@ -24,9 +24,6 @@ import store from './store';
 import {updateAuth} from './actions/auth';
 import Typography from '@material-ui/core/Typography';
 import NotificationBar from './components/NotificationBar';
-import io from './io';
-
-const socket = io();
 
 const auth = new Auth();
 const {isAuthenticated, renewSession} = auth;
@@ -147,11 +144,11 @@ class App extends Component {
                                 alignItems="center"
                             >
                                 <Switch>
-                                    <Route path="/" exact render={props => <Products {...props} socket={socket} />}/>
-                                    <Route path="/products/:slug" exact render={props => <Product {...props} socket={socket} product={store.getState().product.data[store.getState().product.id] || {}} />}/>
-                                    <Route path="/cart" exact render={props => <Cart {...props} socket={socket} />}/>
+                                    <Route path="/" exact render={props => <Products {...props} />}/>
+                                    <Route path="/products/:slug" exact render={props => <Product {...props} product={store.getState().product.data[store.getState().product.id] || {}} />}/>
+                                    <Route path="/cart" exact render={props => <Cart {...props} />}/>
                                     <Route path="/order" exact component={Order}/>
-                                    <Route path="/checkout" exact render={props => <Checkout {...props} socket={socket} />}/>
+                                    <Route path="/checkout" exact render={props => <Checkout {...props} />}/>
                                     <Route path="/callback" render={props => {
                                         handleAuthentication(props);
                                         return null;

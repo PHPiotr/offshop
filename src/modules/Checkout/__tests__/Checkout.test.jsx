@@ -20,11 +20,6 @@ import form from '../../../reducers/form';
 import notification from '../../../reducers/notification';
 import {products} from '../../../modules/Products/reducer';
 import {deliveryMethods} from '../../../modules/Delivery/reducer';
-import io from '../../../io';
-import MockedSocket from 'socket.io-mock';
-let socket = new MockedSocket();
-jest.mock('../../../io');
-io.mockResolvedValue(socket);
 
 const deliveryMethodsPayload = [
     {
@@ -238,7 +233,8 @@ describe('Checkout', () => {
                 await renderWithStore(<Cart/>, store);
                 const deliveryMethodRadio = await waitForElement(() => getByTestId(`radio-btn-${deliveryMethodsPayload[0].id}`));
                 fireEvent.click(deliveryMethodRadio);
-                await renderWithStore(<Fragment><Checkout socket={socket}/><NotificationBar /></Fragment>, store);
+                socket.removeAllListeners('updateProduct');
+                await renderWithStore(<Fragment><Checkout/><NotificationBar /></Fragment>, store);
                 expect(queryByText(message)).toBeNull();
                 socket.socketClient.emit('updateProduct', {product, wasActive, isActive});
                 if (shouldShow) {
@@ -262,7 +258,8 @@ describe('Checkout', () => {
                 await renderWithStore(<Cart/>, store);
                 const deliveryMethodRadio = await waitForElement(() => getByTestId(`radio-btn-${deliveryMethodsPayload[0].id}`));
                 fireEvent.click(deliveryMethodRadio);
-                await renderWithStore(<Fragment><Checkout socket={socket}/><NotificationBar /></Fragment>, store);
+                socket.removeAllListeners('deleteProduct');
+                await renderWithStore(<Fragment><Checkout/><NotificationBar /></Fragment>, store);
                 expect(queryByText(deletedProductMessage)).toBeNull();
                 socket.socketClient.emit('deleteProduct', {product, wasActive});
                 if (shouldShow) {

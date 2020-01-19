@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useContext, useEffect} from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import {withRouter} from 'react-router-dom';
@@ -11,6 +11,7 @@ import {
 } from '../actions';
 import {resetOrderData} from '../../Orders/actions';
 import {showNotification} from '../../../actions/notification';
+import SocketContext from '../../../SocketContext';
 
 const Checkout = props => {
     const {
@@ -21,8 +22,8 @@ const Checkout = props => {
         showNotification,
         order,
         hasProductsInCart,
-        socket,
     } = props;
+    const socket = useContext(SocketContext);
 
     const onUpdateProductListener = ({product}) => {
         const productInCart = products.find(i => i.id === product.id);
@@ -54,9 +55,6 @@ const Checkout = props => {
     };
 
     useEffect(() => {
-        if (!socket) {
-            return;
-        }
         socket.on('updateProduct', onUpdateProductListener);
         socket.on('deleteProduct', onDeleteProductListener);
         return () => {

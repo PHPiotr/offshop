@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useContext, useEffect} from 'react';
 import {connect} from 'react-redux';
 import {FormControlLabel, Radio, Typography, RadioGroup} from '@material-ui/core';
 import {
@@ -9,6 +9,7 @@ import {
 } from '../actions';
 import PropTypes from 'prop-types';
 import {showNotification} from '../../../actions/notification';
+import SocketContext from '../../../SocketContext';
 
 const DeliveryMethods = props => {
 
@@ -17,8 +18,8 @@ const DeliveryMethods = props => {
         onDeleteDeliveryMethod,
         onUpdateDeliveryMethod,
         showNotification,
-        socket,
     } = props;
+    const socket = useContext(SocketContext);
 
     const handleSetCurrentDeliveryMethod = e => {
         props.setCurrentDeliveryMethod(props.deliveryMethods.find(s => s.id === e.target.value));
@@ -49,9 +50,6 @@ const DeliveryMethods = props => {
     };
 
     useEffect(() => {
-        if (!socket) {
-            return;
-        }
         socket.on('createDelivery', onCreateDelivery);
         socket.on('updateDelivery', onUpdateDelivery);
         socket.on('deleteDelivery', onDeleteDelivery);

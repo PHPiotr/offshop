@@ -13,11 +13,6 @@ import {cart} from '../../../modules/ShoppingCart/reducer';
 import dialog from '../../../reducers/dialog';
 import notification from '../../../reducers/notification';
 import {product} from '../../../modules/Products/reducer';
-import io from '../../../io';
-import MockedSocket from 'socket.io-mock';
-let socket = new MockedSocket();
-jest.mock('../../../io');
-io.mockResolvedValue(socket);
 
 const productPayload = {
     active: true,
@@ -155,7 +150,7 @@ describe('Product', () => {
                     [false, false, true, false, {...productPayload, id: 'foo'}, deletedProductMessage],
                     [false, false, true, false, {...productPayload, id: 'foo'}, createdProductMessage],
                 ])('should notify of product updated: %s if wasActive: %s, isActive: %s, item being viewed: %s', async (shouldShow, wasActive, isActive, isViewed, product, message) => {
-                    const {getByText, queryByText} = await renderWithStore(<Fragment><Product socket={socket} product={productPayload}/><NotificationBar /></Fragment>, store);
+                    const {getByText, queryByText} = await renderWithStore(<Fragment><Product product={productPayload}/><NotificationBar /></Fragment>, store);
                     expect(queryByText(message)).toBeNull();
                     socket.socketClient.emit('updateProduct', {product, wasActive, isActive});
                     if (shouldShow) {
@@ -175,7 +170,7 @@ describe('Product', () => {
                     [false, true, false, {...productPayload, id: 'foo'}],
                     [false, false, false, {...productPayload, id: 'foo'}],
                 ])('should notify of product deleted: %s if wasActive: %s, item being viewed: %s', async (shouldShow, wasActive, isViewed, product) => {
-                    const {getByText, queryByText} = await renderWithStore(<Fragment><Product socket={socket} product={productPayload}/><NotificationBar /></Fragment>, store);
+                    const {getByText, queryByText} = await renderWithStore(<Fragment><Product product={productPayload}/><NotificationBar /></Fragment>, store);
                     expect(queryByText(deletedProductMessage)).toBeNull();
                     socket.socketClient.emit('deleteProduct', {product, wasActive});
                     if (shouldShow) {

@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
 import {Field, Form, reduxForm, formValueSelector, isValid} from 'redux-form';
@@ -10,10 +10,8 @@ import {showNotification} from "../../../../actions/notification";
 import SubHeader from '../../../../components/SubHeader';
 import {getAdminProductIfNeeded, resetAdminProduct} from '../../../../modules/Products/actions';
 import {inputs, inputKeys, initialValues} from '../../config';
-import io from '../../../../io';
 import RequestHandler from '../../../../components/RequestHandler';
-
-const socket = io();
+import SocketContext from '../../../../SocketContext';
 
 const FORM_NAME = 'product';
 
@@ -64,6 +62,7 @@ let ProductForm = props => {
     const [currentSlug, setCurrentSlug] = useState(null);
     const [currentImage, setCurrentImage] = useState(null);
     const classes = useStyles();
+    const socket = useContext(SocketContext);
 
     const onAdminCreateProductListener = ({product}) => props.showNotification({
         message: `Produkt ${product.name} został dodany.`,

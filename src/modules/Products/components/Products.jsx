@@ -1,9 +1,10 @@
-import React, {useState, useEffect} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {connect} from 'react-redux';
 import ProductsList from './ProductsList';
 import {getProductsIfNeeded, onCreateProduct, onDeleteProduct, onUpdateProduct} from '../actions';
 import {showNotification} from '../../../actions/notification';
 import useInfiniteScrolling from '../../../hooks/useInfiniteScrolling';
+import SocketContext from '../../../SocketContext';
 
 const Products = props => {
 
@@ -13,10 +14,10 @@ const Products = props => {
         onUpdateProduct,
         onDeleteProduct,
         showNotification,
-        socket,
     } = props;
     const [sort] = useState('name');
     const [order] = useState(1);
+    const socket = useContext(SocketContext);
     useInfiniteScrolling({
         sort,
         order,
@@ -69,9 +70,6 @@ const Products = props => {
     };
 
     useEffect(() => {
-        if (!socket) {
-            return;
-        }
         socket.on('createProduct', onCreateProductListener);
         socket.on('updateProduct', onUpdateProductListener);
         socket.on('deleteProduct', onDeleteProductListener);

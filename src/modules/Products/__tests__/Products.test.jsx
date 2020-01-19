@@ -3,7 +3,6 @@ import thunk from 'redux-thunk';
 import {createStore, applyMiddleware, combineReducers} from 'redux';
 import {waitForElement, fireEvent} from '@testing-library/react';
 import axios from 'axios';
-import MockedSocket from 'socket.io-mock';
 import MockAdapter from 'axios-mock-adapter';
 import Navigation from '../../../components/Navigation';
 import Products from '../components/Products';
@@ -11,13 +10,9 @@ import NotificationBar from '../../../components/NotificationBar';
 import appBar from '../../../reducers/appBar';
 import auth from '../../../reducers/auth';
 import {cart} from '../../../modules/ShoppingCart/reducer';
-import io from '../../../io';
 import dialog from '../../../reducers/dialog';
 import notification from '../../../reducers/notification';
 import {product, products} from '../reducer';
-let socket = new MockedSocket();
-jest.mock('../../../io');
-io.mockResolvedValue(socket);
 
 const productPayload = {
     active: true,
@@ -166,14 +161,14 @@ describe('Products', () => {
             const message = `Produkt ${productPayload.name} został dodany.`;
 
             it('should show notification message when created product IS active', async () => {
-                const {getByText, queryByText} = await renderWithStore(<Fragment><Products socket={socket}/><NotificationBar /></Fragment>, store);
+                const {getByText, queryByText} = await renderWithStore(<Fragment><Products/><NotificationBar /></Fragment>, store);
                 expect(queryByText(message)).toBeNull();
                 socket.socketClient.emit('createProduct', {product: productPayload, isActive: productPayload.active});
                 expect(getByText(message)).toBeDefined();
             });
 
             it('should not show notification message when created product IS NOT active', async () => {
-                const {queryByText} = await renderWithStore(<Fragment><Products socket={socket}/><NotificationBar /></Fragment>, store);
+                const {queryByText} = await renderWithStore(<Fragment><Products/><NotificationBar /></Fragment>, store);
                 expect(queryByText(message)).toBeNull();
                 socket.socketClient.emit('createProduct', {product: productPayload, isActive: false});
                 expect(queryByText(message)).toBeNull();
@@ -188,28 +183,28 @@ describe('Products', () => {
             const createdProductMessage = `Produkt ${productPayload.name} został dodany.`;
 
             it('should show updated product notification message when updated product WAS active and IS active', async () => {
-                const {getByText, queryByText} = await renderWithStore(<Fragment><Products socket={socket}/><NotificationBar /></Fragment>, store);
+                const {getByText, queryByText} = await renderWithStore(<Fragment><Products/><NotificationBar /></Fragment>, store);
                 expect(queryByText(updatedProductMessage)).toBeNull();
                 socket.socketClient.emit('updateProduct', {product: productPayload, wasActive: true, isActive: true});
                 expect(getByText(updatedProductMessage)).toBeDefined();
             });
 
             it('should show deleted product notification message when updated product WAS active and IS NOT active', async () => {
-                const {getByText, queryByText} = await renderWithStore(<Fragment><Products socket={socket}/><NotificationBar /></Fragment>, store);
+                const {getByText, queryByText} = await renderWithStore(<Fragment><Products/><NotificationBar /></Fragment>, store);
                 expect(queryByText(deletedProductMessage)).toBeNull();
                 socket.socketClient.emit('updateProduct', {product: productPayload, wasActive: true, isActive: false});
                 expect(getByText(deletedProductMessage)).toBeDefined();
             });
 
             it('should show created product notification message when updated product WAS NOT active and IS active', async () => {
-                const {getByText, queryByText} = await renderWithStore(<Fragment><Products socket={socket}/><NotificationBar /></Fragment>, store);
+                const {getByText, queryByText} = await renderWithStore(<Fragment><Products/><NotificationBar /></Fragment>, store);
                 expect(queryByText(createdProductMessage)).toBeNull();
                 socket.socketClient.emit('updateProduct', {product: productPayload, wasActive: false, isActive: true});
                 expect(getByText(createdProductMessage)).toBeDefined();
             });
 
             it('should not show any notification message when updated product WAS NOT active and IS NOT active', async () => {
-                const {queryByText} = await renderWithStore(<Fragment><Products socket={socket}/><NotificationBar /></Fragment>, store);
+                const {queryByText} = await renderWithStore(<Fragment><Products/><NotificationBar /></Fragment>, store);
                 expect(queryByText(updatedProductMessage)).toBeNull();
                 expect(queryByText(deletedProductMessage)).toBeNull();
                 expect(queryByText(createdProductMessage)).toBeNull();
@@ -226,14 +221,14 @@ describe('Products', () => {
             const message = `Produkt ${productPayload.name} został usunięty.`;
 
             it('should show notification message when deleted product WAS active', async () => {
-                const {getByText, queryByText} = await renderWithStore(<Fragment><Products socket={socket}/><NotificationBar /></Fragment>, store);
+                const {getByText, queryByText} = await renderWithStore(<Fragment><Products/><NotificationBar /></Fragment>, store);
                 expect(queryByText(message)).toBeNull();
                 socket.socketClient.emit('deleteProduct', {product: productPayload, wasActive: true});
                 expect(getByText(message)).toBeDefined();
             });
 
             it('should not show notification message when deleted product WAS NOT active', async () => {
-                const {getByText, queryByText} = await renderWithStore(<Fragment><Products socket={socket}/><NotificationBar /></Fragment>, store);
+                const {getByText, queryByText} = await renderWithStore(<Fragment><Products/><NotificationBar /></Fragment>, store);
                 expect(queryByText(message)).toBeNull();
                 socket.socketClient.emit('deleteProduct', {product: productPayload, wasActive: false});
                 expect(queryByText(message)).toBeNull();

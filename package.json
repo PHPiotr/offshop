@@ -61,7 +61,8 @@
       "describe": "readonly",
       "beforeEach": "readonly",
       "fakeLocalStorage": "readonly",
-      "renderWithStore": "readonly"
+      "renderWithStore": "readonly",
+      "socket": "readonly"
     },
     "plugins": [
       "react-hooks"

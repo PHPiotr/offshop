@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useContext, useEffect} from 'react';
 import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
 import {Field, Form, reduxForm, isValid} from 'redux-form';
@@ -14,10 +14,8 @@ import {
 import {showNotification} from "../../../../actions/notification";
 import SubHeader from '../../../../components/SubHeader';
 import {inputs, inputKeys, initialValues} from '../../config';
-import io from '../../../../io';
 import RequestHandler from '../../../../components/RequestHandler';
-
-const socket = io();
+import SocketContext from '../../../../SocketContext';
 
 const FORM_NAME = 'deliveryMethod';
 
@@ -44,6 +42,7 @@ const styles = theme => ({
 });
 
 let DeliveryMethodForm = props => {
+    const socket = useContext(SocketContext);
     const onAdminCreateDeliveryListener = deliveryMethod => props.showNotification({
         message: `Opcja dostawy ${deliveryMethod.name} została dodana.`,
         variant: 'success',
