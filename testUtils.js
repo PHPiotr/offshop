@@ -2,11 +2,11 @@ import React from 'react';
 import {Provider} from 'react-redux';
 import {BrowserRouter} from 'react-router-dom';
 import {render} from '@testing-library/react';
-import io from './src/io';
+import io from './src/services/socket';
 import MockedSocket from 'socket.io-mock';
 import SocketContext from './src/contexts/SocketContext';
 let socket = new MockedSocket();
-jest.mock('./src/io');
+jest.mock('./src/services/socket');
 io.mockResolvedValue(socket);
 
 global.socket = socket;

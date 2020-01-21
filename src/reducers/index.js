@@ -1,6 +1,6 @@
 import {combineReducers} from 'redux';
 import appBar from './appBar';
-import auth from './auth';
+import auth from '../modules/Auth/reducer';
 import {cart} from '../modules/ShoppingCart/reducer';
 import {buyer, buyerDelivery} from '../modules/Buyers/reducer';
 import {checkout} from '../modules/Checkout/reducer';

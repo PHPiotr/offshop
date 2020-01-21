@@ -8,7 +8,7 @@ import Navigation from '../../../components/Navigation';
 import Product from '../../../modules/Products/components/Product';
 import NotificationBar from '../../../components/NotificationBar';
 import appBar from '../../../reducers/appBar';
-import auth from '../../../reducers/auth';
+import auth from '../../../modules/Auth/reducer';
 import {cart} from '../../../modules/ShoppingCart/reducer';
 import dialog from '../../../reducers/dialog';
 import notification from '../../../reducers/notification';

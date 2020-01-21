@@ -8,10 +8,10 @@ import WebFont from 'webfontloader';
 import './index.css';
 import App from './App';
 import store from './store';
+import AuthContext from './contexts/AuthContext';
 import SocketContext from './contexts/SocketContext';
-import io from './io';
-
-const socket = io();
+import getSocket from './services/socket';
+import Auth from './services/auth';
 
 WebFont.load({
     google: {
@@ -26,14 +26,18 @@ const theme = createMuiTheme({
         },
     },
 });
+const socket = getSocket();
+const auth = new Auth(socket);
 
 ReactDOM.render(
     <Provider store={store}>
         <ThemeProvider theme={theme}>
             <SocketContext.Provider value={socket}>
-                <Router>
-                    <App/>
-                </Router>
+                <AuthContext.Provider value={auth}>
+                    <Router>
+                        <App/>
+                    </Router>
+                </AuthContext.Provider>
             </SocketContext.Provider>
         </ThemeProvider>
     </Provider>,

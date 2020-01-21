@@ -1,12 +1,8 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import AppBar from './AppBar';
 
-class Navigation extends Component {
-    render() {
-        return <AppBar {...this.props} />;
-    }
-}
+const Navigation = props => <AppBar {...props} />;
 
 const mapStateToProps = state => ({
     appBar: state.appBar,
@@ -14,9 +10,4 @@ const mapStateToProps = state => ({
     isAuthenticated: new Date().getTime() < state.auth.expiresAt,
 });
 
-const mapDispatchToProps = () => ({});
-
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(Navigation);
+export default connect(mapStateToProps)(Navigation);

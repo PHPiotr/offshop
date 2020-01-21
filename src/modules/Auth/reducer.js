@@ -1,4 +1,4 @@
-import {UPDATE_AUTH} from '../actions/auth';
+import {UPDATE_AUTH} from './actionTypes';
 
 const initialState = {
     accessToken: null,

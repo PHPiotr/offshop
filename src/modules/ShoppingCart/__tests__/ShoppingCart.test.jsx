@@ -9,7 +9,7 @@ import Cart from '../components/ShoppingCart';
 import Products from '../../../modules/Products/components/Products';
 import NotificationBar from '../../../components/NotificationBar';
 import appBar from '../../../reducers/appBar';
-import auth from '../../../reducers/auth';
+import auth from '../../../modules/Auth/reducer';
 import {cart} from '../reducer';
 import dialog from '../../../reducers/dialog';
 import notification from '../../../reducers/notification';
