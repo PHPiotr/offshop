@@ -21,6 +21,7 @@ import List from "@material-ui/core/List";
 import ListSubheader from '@material-ui/core/ListSubheader';
 
 const logoFont = process.env.REACT_APP_LOGO_FONT || 'Roboto';
+const pageTitle = process.env.REACT_APP_PAGE_TITLE || 'Offshop';
 
 const styles = theme => ({
     root: {
@@ -132,7 +133,7 @@ const NavigationBar = props => {
                     )}
                     <Typography variant="h5" color="inherit" noWrap>
                         <Link className={classes.logo} color="inherit" underline="none" component={RouterLink}
-                              to="/">{props.appBar.title}</Link>
+                              to="/">{pageTitle}</Link>
                     </Typography>
                     <div className={classes.grow}/>
                     <div>
@@ -184,7 +185,6 @@ NavigationBar.propTypes = {
 };
 
 const mapStateToProps = state => ({
-    appBar: state.appBar,
     cart: state.cart,
     isAuthenticated: new Date().getTime() < state.auth.expiresAt,
 });

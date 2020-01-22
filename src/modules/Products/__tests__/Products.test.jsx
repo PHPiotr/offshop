@@ -7,7 +7,6 @@ import MockAdapter from 'axios-mock-adapter';
 import Navigation from '../../../components/NavigationBar';
 import Products from '../components/Products';
 import NotificationBar from '../../../components/NotificationBar';
-import appBar from '../../../reducers/appBar';
 import auth from '../../../modules/Auth/reducer';
 import {cart} from '../../../modules/ShoppingCart/reducer';
 import dialog from '../../../reducers/dialog';
@@ -87,7 +86,7 @@ describe('Products', () => {
         fakeLocalStorage();
         mock.reset();
         store = createStore(
-            combineReducers({appBar, auth, cart, dialog, notification, product, products}),
+            combineReducers({auth, cart, dialog, notification, product, products}),
             applyMiddleware(thunk),
         );
         mock.onGet(/products/).replyOnce(200, productsPayload);

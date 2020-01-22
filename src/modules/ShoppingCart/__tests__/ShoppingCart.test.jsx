@@ -8,7 +8,6 @@ import Navigation from '../../../components/NavigationBar';
 import Cart from '../components/ShoppingCart';
 import Products from '../../../modules/Products/components/Products';
 import NotificationBar from '../../../components/NotificationBar';
-import appBar from '../../../reducers/appBar';
 import auth from '../../../modules/Auth/reducer';
 import {cart} from '../reducer';
 import dialog from '../../../reducers/dialog';
@@ -91,7 +90,7 @@ describe('ShoppingCart', () => {
         fakeLocalStorage();
         mock.reset();
         store = createStore(
-            combineReducers({appBar, auth, cart, deliveryMethods, dialog, notification, products}),
+            combineReducers({auth, cart, deliveryMethods, dialog, notification, products}),
             applyMiddleware(thunk),
         );
         mock.onGet(/delivery-methods/).replyOnce(200, deliveryMethodsPayload);
