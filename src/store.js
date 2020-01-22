@@ -4,7 +4,7 @@ import thunk from 'redux-thunk';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import throttle from 'lodash.throttle';
 import rootReducer from './reducers';
-import {loadState, saveState} from "./services/localStorage";
+import {loadState, saveState} from "./utils/localStorage";
 
 const devEnv = process.env.NODE_ENV === 'development';
 

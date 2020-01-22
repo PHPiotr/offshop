@@ -4,7 +4,7 @@ import ProductsList from './ProductsList';
 import {getProductsIfNeeded, onCreateProduct, onDeleteProduct, onUpdateProduct} from '../actions';
 import {showNotification} from '../../../actions/notification';
 import useInfiniteScrolling from '../../../hooks/useInfiniteScrolling';
-import SocketContext from '../../../SocketContext';
+import SocketContext from '../../../contexts/SocketContext';
 
 const Products = props => {
 

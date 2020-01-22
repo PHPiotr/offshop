@@ -10,7 +10,7 @@ import Order from '../../../modules/Orders/components/Order';
 import Products from '../../../modules/Products/components/Products';
 import NotificationBar from '../../../components/NotificationBar';
 import appBar from '../../../reducers/appBar';
-import auth from '../../../reducers/auth';
+import auth from '../../../modules/Auth/reducer';
 import {buyer, buyerDelivery} from '../../../modules/Buyers/reducer';
 import {cart} from '../../../modules/ShoppingCart/reducer';
 import {checkout} from '../../../modules/Checkout/reducer';

@@ -6,7 +6,7 @@ import EmptyCart from './EmptyCart';
 import {onUpdateProductInCart, onDeleteProductInCart} from '../actions';
 import {showNotification} from '../../../actions/notification';
 import {getDeliveryMethodsIfNeeded} from '../../Delivery/actions';
-import SocketContext from '../../../SocketContext';
+import SocketContext from '../../../contexts/SocketContext';
 
 const ShoppingCart = props => {
 

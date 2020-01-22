@@ -16,7 +16,7 @@ import Dialog from '../../../../components/Dialog';
 import ProgressIndicator from '../../../../components/ProgressIndicator';
 import {getAdminDeliveryMethodsIfNeeded, deleteDeliveryMethodIfNeeded} from '../../actions';
 import {showNotification} from '../../../../actions/notification';
-import SocketContext from '../../../../SocketContext';
+import SocketContext from '../../../../contexts/SocketContext';
 
 const styles = theme => ({
     root: {
