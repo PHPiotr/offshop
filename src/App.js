@@ -1,7 +1,7 @@
 import React from 'react';
 import {Route, Switch} from 'react-router-dom';
 import {Helmet} from 'react-helmet';
-import Navigation from './components/Navigation';
+import Navigation from './components/NavigationBar';
 import Products from './modules/Products/components/Products';
 import Product from './modules/Products/components/Product';
 import Cart from './modules/ShoppingCart/components/ShoppingCart';

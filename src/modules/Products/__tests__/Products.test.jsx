@@ -4,7 +4,7 @@ import {createStore, applyMiddleware, combineReducers} from 'redux';
 import {waitForElement, fireEvent} from '@testing-library/react';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
-import Navigation from '../../../components/Navigation';
+import Navigation from '../../../components/NavigationBar';
 import Products from '../components/Products';
 import NotificationBar from '../../../components/NotificationBar';
 import appBar from '../../../reducers/appBar';
