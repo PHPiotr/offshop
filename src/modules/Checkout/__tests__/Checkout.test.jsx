@@ -9,7 +9,6 @@ import Checkout from '../components/Checkout';
 import Order from '../../../modules/Orders/components/Order';
 import Products from '../../../modules/Products/components/Products';
 import NotificationBar from '../../../components/NotificationBar';
-import appBar from '../../../reducers/appBar';
 import auth from '../../../modules/Auth/reducer';
 import {buyer, buyerDelivery} from '../../../modules/Buyers/reducer';
 import {cart} from '../../../modules/ShoppingCart/reducer';
@@ -128,7 +127,6 @@ describe('Checkout', () => {
         mock.reset();
         store = createStore(
             combineReducers({
-                appBar,
                 auth,
                 buyer,
                 buyerDelivery,
