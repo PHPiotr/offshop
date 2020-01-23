@@ -25,26 +25,26 @@ const DeliveryMethods = props => {
         props.setCurrentDeliveryMethod(props.deliveryMethods.find(s => s.id === e.target.value));
     };
 
-    const onCreateDelivery = payload => {
-        onCreateDeliveryMethod(payload);
+    const onCreateDelivery = ({deliveryMethod}) => {
+        onCreateDeliveryMethod(deliveryMethod);
         showNotification({
-            message: `Opcja dostawy ${payload.name} została dodana.`,
+            message: `Opcja dostawy ${deliveryMethod.name} została dodana.`,
             variant: 'warning',
         });
     };
 
-    const onDeleteDelivery = payload => {
-        onDeleteDeliveryMethod(payload);
+    const onDeleteDelivery = ({deliveryMethod}) => {
+        onDeleteDeliveryMethod(deliveryMethod);
         showNotification({
-            message: `Opcja dostawy ${payload.name} została usunięta.`,
+            message: `Opcja dostawy ${deliveryMethod.name} została usunięta.`,
             variant: 'warning',
         });
     };
 
-    const onUpdateDelivery = payload => {
-        onUpdateDeliveryMethod(payload);
+    const onUpdateDelivery = ({deliveryMethod}) => {
+        onUpdateDeliveryMethod(deliveryMethod);
         showNotification({
-            message: `Opcja dostawy ${payload.name} została zmieniona.`,
+            message: `Opcja dostawy ${deliveryMethod.name} została zmieniona.`,
             variant: 'warning',
         });
     };
