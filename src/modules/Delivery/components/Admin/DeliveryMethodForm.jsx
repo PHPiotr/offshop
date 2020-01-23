@@ -43,12 +43,12 @@ const styles = theme => ({
 
 let DeliveryMethodForm = props => {
     const socket = useContext(SocketContext);
-    const onAdminCreateDeliveryListener = deliveryMethod => props.showNotification({
+    const onAdminCreateDeliveryListener = ({deliveryMethod}) => props.showNotification({
         message: `Opcja dostawy ${deliveryMethod.name} została dodana.`,
         variant: 'success',
     });
 
-    const onAdminUpdateDeliveryListener = deliveryMethod => props.showNotification({
+    const onAdminUpdateDeliveryListener = ({deliveryMethod}) => props.showNotification({
         message: `Opcja dostawy ${deliveryMethod.name} została zmieniona.`,
         variant: 'success',
     });
