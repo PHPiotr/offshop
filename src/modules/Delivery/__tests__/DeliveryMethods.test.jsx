@@ -3,7 +3,7 @@ import thunk from 'redux-thunk';
 import {createStore, applyMiddleware, combineReducers} from 'redux';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
-import DeliveryMethods from '../../../modules/Delivery/components/DeliveryMethods';
+import DeliveryMethods from '../components/DeliveryMethods';
 import NotificationBar from '../../../components/NotificationBar';
 import {cart} from '../../../modules/ShoppingCart/reducer';
 import notification from '../../../reducers/notification';

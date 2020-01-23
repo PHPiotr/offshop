@@ -16,7 +16,6 @@ import Dialog from '../../../../components/Dialog';
 import ProgressIndicator from '../../../../components/ProgressIndicator';
 import {getAdminDeliveryMethodsIfNeeded, deleteDeliveryMethodIfNeeded} from '../../actions';
 import {showNotification} from '../../../../actions/notification';
-import SocketContext from '../../../../contexts/SocketContext';
 
 const styles = theme => ({
     root: {
@@ -34,21 +33,9 @@ const styles = theme => ({
 });
 
 const DeliveryMethodsList = props => {
-    const socket = useContext(SocketContext);
     const [sort] = useState('name');
     const [order] = useState(1);
 
-    const onAdminDeleteDeliveryListener = deliveryMethod => props.showNotification({
-        message: `Opcja dostawy ${deliveryMethod.name} została usunięta.`,
-        variant: 'warning',
-    });
-
-    useEffect(() => {
-        socket.on('adminDeleteDelivery', onAdminDeleteDeliveryListener);
-        return () => {
-            socket.off('adminDeleteDelivery', onAdminDeleteDeliveryListener);
-        }
-    }, []);
     useEffect(() => {
         props.getAdminDeliveryMethodsIfNeeded({sort, order});
     }, []);
@@ -80,6 +67,7 @@ const DeliveryMethodsList = props => {
                             />
                             <ListItemSecondaryAction>
                                 <IconButton
+                                    data-testid={`delete-btn-${p.id}`}
                                     onClick={showDeleteDeliveryMethodPrompt(p)}
                                     disabled={false}
                                 >

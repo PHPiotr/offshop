@@ -227,7 +227,7 @@ describe('Products', () => {
             });
 
             it('should not show notification message when deleted product WAS NOT active', async () => {
-                const {getByText, queryByText} = await renderWithStore(<Fragment><Products/><NotificationBar /></Fragment>, store);
+                const {queryByText} = await renderWithStore(<Fragment><Products/><NotificationBar /></Fragment>, store);
                 expect(queryByText(message)).toBeNull();
                 socket.socketClient.emit('deleteProduct', {product: productPayload, wasActive: false});
                 expect(queryByText(message)).toBeNull();
