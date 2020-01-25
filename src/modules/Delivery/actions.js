@@ -56,45 +56,31 @@ export const onDeleteDeliveryMethod = deliveryMethod => ({
 export const createDeliveryMethodIfNeeded = (formProps, accessToken) => async dispatch => {
     dispatch({type: actions.CREATE_DELIVERY_METHOD_REQUEST});
     try {
-        const response = await createDeliveryMethod({...formProps, unitPrice: formProps.unitPrice * 1000 / 10}, accessToken);
-        const {status, data} = response;
-        if (status === 201) {
-            const payload = normalize(data, deliveryMethodSchema.deliveryMethod);
-            dispatch({type: actions.CREATE_DELIVERY_METHOD_SUCCESS, payload});
-        } else {
-            dispatch({type: actions.CREATE_DELIVERY_METHOD_FAILURE, payload: {error: data}});
-        }
-        return response;
+        const {data} = await createDeliveryMethod({...formProps, unitPrice: formProps.unitPrice * 1000 / 10}, accessToken);
+        const payload = normalize(data, deliveryMethodSchema.deliveryMethod);
+        dispatch({type: actions.CREATE_DELIVERY_METHOD_SUCCESS, payload});
     } catch (error) {
         dispatch({type: actions.CREATE_DELIVERY_METHOD_FAILURE, payload: {error}});
-        return error;
+        throw error;
     }
 };
 
 export const updateDeliveryMethodIfNeeded = (formProps, accessToken) => async (dispatch, getState) => {
-
     const {adminDeliveryMethod: {id}} = getState();
-
     dispatch({type: actions.UPDATE_DELIVERY_METHOD_REQUEST});
     try {
-        const response = await updateDeliveryMethod(id, {...formProps, unitPrice: formProps.unitPrice * 1000 / 10}, accessToken);
-        const {status, data} = response;
-        if (status === 200) {
-            const payload = normalize(data, deliveryMethodSchema.deliveryMethod);
-            dispatch({type: actions.UPDATE_DELIVERY_METHOD_SUCCESS, payload});
-        } else {
-            dispatch({type: actions.UPDATE_DELIVERY_METHOD_FAILURE, payload: {error: data}});
-        }
-        return response;
+        const {data} = await updateDeliveryMethod(id, {...formProps, unitPrice: formProps.unitPrice * 1000 / 10}, accessToken);
+        const payload = normalize(data, deliveryMethodSchema.deliveryMethod);
+        dispatch({type: actions.UPDATE_DELIVERY_METHOD_SUCCESS, payload});
     } catch (error) {
         dispatch({type: actions.UPDATE_DELIVERY_METHOD_FAILURE, payload: {error}});
-        return error;
+        throw error;
     }
 };
 
 export const getAdminDeliveryMethodIfNeeded = deliveryMethodId => {
     return async (dispatch, getState) => {
-        const {adminDeliveryMethods: {isFetching}, auth: {accessToken}} = getState();
+        const {adminDeliveryMethod: {isFetching}, auth: {accessToken}} = getState();
         if (isFetching) {
             return;
         }

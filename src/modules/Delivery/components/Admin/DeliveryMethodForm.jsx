@@ -1,27 +1,14 @@
-import React, {useContext, useEffect} from 'react';
+import React, {useEffect} from 'react';
 import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
-import {Field, Form, reduxForm, isValid} from 'redux-form';
-import {Box} from '@material-ui/core';
-import Button from '@material-ui/core/Button';
-import withStyles from '@material-ui/core/styles/withStyles';
-import {
-    createDeliveryMethodIfNeeded,
-    updateDeliveryMethodIfNeeded,
-    getAdminDeliveryMethodIfNeeded,
-    resetDeliveryMethod
-} from "../../actions";
-import {showNotification} from "../../../../actions/notification";
-import SubHeader from '../../../../components/SubHeader';
-import {inputs, inputKeys, initialValues} from '../../config';
-import RequestHandler from '../../../../components/RequestHandler';
-import SocketContext from '../../../../contexts/SocketContext';
+import {Field, Form, isValid, reduxForm} from 'redux-form';
+import {Box, Button, makeStyles} from '@material-ui/core';
+import {inputs, inputKeys, initialValues, formName} from '../../config';
+import {resetDeliveryMethod} from '../../actions';
+import {showNotification} from '../../../../actions/notification';
+import {useSocket} from '../../../../contexts/SocketContext';
 
-const FORM_NAME = 'deliveryMethod';
-
-window.URL = window.URL || window.webkitURL;
-
-const styles = theme => ({
+const useStyles = makeStyles(theme => ({
     form: {
         paddingLeft: theme.spacing(1),
         paddingRight: theme.spacing(1),
@@ -39,10 +26,19 @@ const styles = theme => ({
         marginTop: theme.spacing(3),
         marginBottom: theme.spacing(3),
     },
-});
+}));
 
 let DeliveryMethodForm = props => {
-    const socket = useContext(SocketContext);
+
+    const classes = useStyles();
+    const socket = useSocket();
+
+    useEffect(() => {
+        return () => {
+            props.handleResetDeliveryMethod();
+        }
+    }, []);
+
     const onAdminCreateDeliveryListener = ({deliveryMethod}) => props.showNotification({
         message: `Opcja dostawy ${deliveryMethod.name} została dodana.`,
         variant: 'success',
@@ -62,54 +58,43 @@ let DeliveryMethodForm = props => {
         }
     }, []);
 
-    useEffect(() => {
-        props.handleResetDeliveryMethod();
-        return () => {
-            props.handleResetDeliveryMethod();
-        }
-    }, [props.match.params.id]);
-
     return (
-        <RequestHandler
-            action={() => props.match.params.id ? props.getAdminDeliveryMethodIfNeeded(props.match.params.id) : Promise.resolve({})}
-        >
-            <SubHeader content={`${props.match.params.id ? 'Edytuj' : 'Dodaj'} opcję dostawy`}/>
-            <Form className={props.classes.form} onSubmit={props.handleSubmit}>
-                {inputKeys.reduce((acc, itemId) => {
-                    const {label, type, validate, component, inputProps} = inputs[itemId];
-                    acc.push(
-                        <Box key={itemId} className={props.classes.box}>
-                            <Field
-                                name={itemId}
-                                component={component}
-                                label={label}
-                                fullWidth
-                                type={type}
-                                validate={validate}
-                                InputProps={inputProps}
-                            />
-                        </Box>
-                    );
-                    return acc;
-                }, [])}
-                <Box className={props.classes.buttons}>
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        className={props.classes.button}
-                        disabled={props.submitting || !props.isValidDeliveryMethod}
-                        type="submit"
-                    >
-                        {`${props.match.params.id ? 'Edytuj' : 'Dodaj'}`}
-                    </Button>
-                </Box>
-            </Form>
-        </RequestHandler>
+        <Form className={classes.form} onSubmit={props.handleSubmit}>
+            {inputKeys.reduce((acc, itemId) => {
+                const {label, type, validate, component, inputProps} = inputs[itemId];
+                acc.push(
+                    <Box key={itemId} className={classes.box}>
+                        <Field
+                            data-testid={itemId}
+                            name={itemId}
+                            component={component}
+                            label={label}
+                            fullWidth
+                            type={type}
+                            validate={validate}
+                            InputProps={inputProps}
+                        />
+                    </Box>
+                );
+                return acc;
+            }, [])}
+            <Box className={classes.buttons}>
+                <Button
+                    variant="contained"
+                    color="primary"
+                    className={classes.button}
+                    disabled={props.submitting || !props.isValidDeliveryMethod}
+                    type="submit"
+                >
+                    Zapisz
+                </Button>
+            </Box>
+        </Form>
     );
 };
 
 DeliveryMethodForm = reduxForm({
-    form: FORM_NAME,
+    form: formName,
     initialValues,
     enableReinitialize: true,
     keepDirtyOnReinitialize: true,
@@ -131,7 +116,7 @@ const mapStateToProps = state => {
     return {
         isRequestInProgress: state.adminDeliveryMethod.isCreating || state.adminDeliveryMethod.isFetching || state.adminDeliveryMethod.isDeleting,
         accessToken: state.auth.accessToken,
-        isValidDeliveryMethod: isValid(FORM_NAME)(state),
+        isValidDeliveryMethod: isValid(formName)(state),
         initialValues: initialValues,
         values: state.adminDeliveryMethod.data[state.adminDeliveryMethod.id],
     };
@@ -144,32 +129,6 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
     handleResetDeliveryMethod() {
         dispatch(resetDeliveryMethod());
     },
-    getAdminDeliveryMethodIfNeeded(deliveryMethodId) {
-        return dispatch(getAdminDeliveryMethodIfNeeded(deliveryMethodId));
-    },
-    onSubmit: async (formProps, _, {accessToken, reset}) => {
-        try {
-            let response;
-            if (ownProps.match.params.id) {
-                response = await dispatch(updateDeliveryMethodIfNeeded(formProps, accessToken));
-            } else {
-                response = await dispatch(createDeliveryMethodIfNeeded(formProps, accessToken));
-            }
-
-            const {status, data} = response;
-
-            if (status === 200 || status === 201) {
-                ownProps.history.push('/admin/delivery-methods/list');
-                reset();
-            } else {
-                dispatch(showNotification({message: data.message, variant: 'error'}));
-            }
-        } catch (e) {
-            dispatch(showNotification({message: e.message, variant: 'error'}));
-        }
-    },
 });
 
-DeliveryMethodForm = connect(mapStateToProps, mapDispatchToProps)(DeliveryMethodForm);
-
-export default withStyles(styles)(DeliveryMethodForm);
+export default connect(mapStateToProps, mapDispatchToProps)(DeliveryMethodForm);

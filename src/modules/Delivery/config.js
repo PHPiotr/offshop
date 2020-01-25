@@ -6,6 +6,8 @@ import {
     validateRequired,
 } from '../../utils/form';
 
+export const formName = 'deliveryMethod';
+
 export const inputKeys = [
     'name',
     'unitPrice',
