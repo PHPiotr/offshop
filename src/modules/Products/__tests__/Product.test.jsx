@@ -115,7 +115,7 @@ describe('Product', () => {
             while (i--) {
                 expect(getByTestId(`add-to-cart-button-${productPayload.id}`)).toBeDefined();
                 fireEvent.click(addToCartButton);
-                const continueShoppingButton = await waitForElement(() => getByTestId('btn-continue'));
+                const continueShoppingButton = getByTestId('btn-continue');
                 fireEvent.click(continueShoppingButton);
             }
             expect(queryByTestId(`add-to-cart-button-${productPayload.id}`)).toBeNull();

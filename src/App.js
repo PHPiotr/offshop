@@ -9,7 +9,8 @@ import Checkout from './modules/Checkout/components/Checkout';
 import Order from './modules/Orders/components/Order';
 import AdminProductForm from './modules/Products/components/Admin/ProductForm';
 import AdminProducts from './modules/Products/components/Admin/ProductsList';
-import AdminDeliveryMethodForm from './modules/Delivery/components/Admin/DeliveryMethodForm';
+import AddDeliveryMethod from './modules/Delivery/components/Admin/AddDeliveryMethod';
+import EditDeliveryMethod from './modules/Delivery/components/Admin/EditDeliveryMethod';
 import AdminDeliveryMethods from './modules/Delivery/components/Admin/DeliveryMethodsList';
 import AdminOrders from './modules/Orders/components/Admin/OrdersList';
 import AdminOrder from './modules/Orders/components/Admin/Order';
@@ -102,10 +103,8 @@ const App = props => {
                                               component={AdminOrders}/>
                                 <PrivateRoute path="/admin/orders/:id" exact
                                               component={AdminOrder}/>
-                                <PrivateRoute path="/admin/delivery-methods/new" exact
-                                              component={AdminDeliveryMethodForm} key="add"/>
-                                <PrivateRoute path="/admin/delivery-methods/:id" exact
-                                              component={AdminDeliveryMethodForm} key="edit"/>
+                                <PrivateRoute path="/admin/delivery-methods/new" exact component={AddDeliveryMethod}/>
+                                <PrivateRoute path="/admin/delivery-methods/:id" exact component={EditDeliveryMethod}/>
                                 <Route path="/*" component={NotFound}/>
                             </Switch>
                         </Grid>
