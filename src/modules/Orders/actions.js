@@ -105,6 +105,6 @@ export const deleteOrderIfNeeded = (extOrderId) => {
     };
 };
 
-export const onAdminRefund = refund => ({type: actions.ON_ADMIN_REFUND, payload: {refund}});
+export const onAdminRefund = order => ({type: actions.ON_ADMIN_REFUND, payload: {order}});
 
 export const resetOrderData = () => ({type: actions.RESET_ORDER_DATA});
