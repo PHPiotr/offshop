@@ -39,24 +39,24 @@ const OrdersList = props => {
         getItems: getAdminOrdersIfNeeded,
     });
 
-    const onAdminCreateOrderListener = order => {
+    const onAdminCreateOrderListener = ({order}) => {
         onAdminOrder(order);
         showNotification({
             message: `Nowa transakcja: ${order.extOrderId} została dodana.`,
             variant: 'success',
         });
     };
-    const onAdminUpdateOrderListener = order => {
+    const onAdminUpdateOrderListener = ({order})  => {
         onAdminOrder(order);
         showNotification({
             message: `Status transakcji: ${order.extOrderId} został zmieniony.`,
             variant: 'warning',
         });
     };
-    const onAdminRefundListener = ({refund, extOrderId}) => {
-        onAdminRefund(refund);
+    const onAdminRefundListener = ({order}) => {
+        onAdminRefund(order);
         showNotification({
-            message: `Status zwrotu zamówienia ${extOrderId} został zmieniony na ${refund.status}.`,
+            message: `Status zwrotu zamówienia ${order.extOrderId} został zmieniony na ${order.refund.status}.`,
             variant: 'warning',
         });
     };

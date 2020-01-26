@@ -42,6 +42,11 @@ export const adminOrders = (state = ordersInitialState, action) => {
                 ids: state.ids.indexOf(action.payload.order.id) === -1
                     ? [action.payload.order.id, ...state.ids] : state.ids,
             };
+        case actions.ON_ADMIN_REFUND:
+            return {
+                ...state,
+                data: {...state.data, [action.payload.order.id]: action.payload.order},
+            };
         default:
             return state;
     }
@@ -91,6 +96,10 @@ export const adminOrder = (state = orderInitialState, action) => {
                 data: {...state.data, [state.id]: {...state.data[state.id], refund: action.payload.refund}},
             };
         case actions.ON_ADMIN_REFUND:
+            return {
+                ...state,
+                data: {...state.data, [state.id]: action.payload.order},
+            };
         case actions.REFUND_ORDER_SUCCESS:
             return {
                 ...state,
