@@ -5,15 +5,10 @@ import {Field, Form, reduxForm, formValueSelector, isValid} from 'redux-form';
 import {Box} from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 import {makeStyles} from '@material-ui/core';
-import {createProductIfNeeded, updateProductIfNeeded} from "../../../../modules/Products/actions";
 import {showNotification} from "../../../../actions/notification";
-import SubHeader from '../../../../components/SubHeader';
-import {getAdminProductIfNeeded, resetAdminProduct} from '../../../../modules/Products/actions';
-import {inputs, inputKeys, initialValues} from '../../config';
-import RequestHandler from '../../../../components/RequestHandler';
-import SocketContext from '../../../../contexts/SocketContext';
-
-const FORM_NAME = 'product';
+import {resetAdminProduct} from '../../../../modules/Products/actions';
+import {inputs, inputKeys, initialValues, formName} from '../../config';
+import {useSocket} from '../../../../contexts/SocketContext';
 
 window.URL = window.URL || window.webkitURL;
 
@@ -62,7 +57,7 @@ let ProductForm = props => {
     const [currentSlug, setCurrentSlug] = useState(null);
     const [currentImage, setCurrentImage] = useState(null);
     const classes = useStyles();
-    const socket = useContext(SocketContext);
+    const socket = useSocket();
 
     const onAdminCreateProductListener = ({product}) => props.showNotification({
         message: `Produkt ${product.name} został dodany.`,
@@ -91,81 +86,83 @@ let ProductForm = props => {
         } else {
             props.handleResetAdminProduct();
         }
-    }, [props.adminProduct]);
+        return () => {
+            props.handleResetAdminProduct();
+        };
+    }, []);
 
     return (
-        <RequestHandler
-            action={() => props.match.params.productId ? props.getAdminProductIfNeeded(props.match.params.productId) : Promise.resolve({})}
-        >
-            <SubHeader content={`${props.match.params.productId ? 'Edytuj' : 'Dodaj'} produkt`}/>
-            <Form className={classes.form} onSubmit={props.handleSubmit} encType="multipart/form-data">
-                {inputKeys.reduce((acc, itemId) => {
-                    const {label, type, validate, component, inputProps} = inputs[itemId];
+        <Form className={classes.form} onSubmit={props.handleSubmit} encType="multipart/form-data">
+            {inputKeys.reduce((acc, itemId) => {
+                const {label, type, validate, component, inputProps} = inputs[itemId];
 
-                    if (type === 'file') {
-                        let validation = validate;
-                        if (props.match.params.productId) {
-                            validation = [];
-                        }
-                        acc.push(
-                            <Box key={itemId} className={classes.box}>
-                                <Field
-                                    name={itemId}
-                                    component={component}
-                                    type={type}
-                                    imagefile={getImageFile(currentImage, currentSlug, props.imageFile)}
-                                    handleOnDrop={handleOnDrop}
-                                    validate={validation}
-                                />
-                            </Box>
-                        );
-                    } else if (type === 'switch') {
-                        acc.push(
-                            <Box key={itemId} className={classes.box}>
-                                <Field
-                                    name={itemId}
-                                    component={component}
-                                    label={label}
-                                    validate={validate}
-                                    checked={!!props.active}
-                                />
-                            </Box>
-                        )
-                    } else {
-                        acc.push(
-                            <Box key={itemId} className={classes.box}>
-                                <Field
-                                    name={itemId}
-                                    component={component}
-                                    label={label}
-                                    fullWidth
-                                    type={type}
-                                    validate={validate}
-                                    InputProps={inputProps}
-                                />
-                            </Box>
-                        );
+                if (type === 'file') {
+                    let validation = validate;
+                    if (props.match.params.id) {
+                        validation = [];
                     }
-                    return acc;
-                }, [])}
-                <div className={classes.buttons}>
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        className={classes.button}
-                        disabled={props.submitting || !props.isValidProduct}
-                        type="submit"
-                    >
-                        {`${props.match.params.productId ? 'Edytuj' : 'Dodaj'} produkt`}
-                    </Button>
-                </div>
-            </Form>
-        </RequestHandler>
+                    acc.push(
+                        <Box key={itemId} className={classes.box}>
+                            <Field
+                                data-testid={itemId}
+                                name={itemId}
+                                component={component}
+                                type={type}
+                                imagefile={getImageFile(currentImage, currentSlug, props.imageFile)}
+                                handleOnDrop={handleOnDrop}
+                                validate={validation}
+                                InputProps={inputProps}
+                            />
+                        </Box>
+                    );
+                } else if (type === 'switch') {
+                    acc.push(
+                        <Box key={itemId} className={classes.box}>
+                            <Field
+                                data-testid={itemId}
+                                name={itemId}
+                                component={component}
+                                label={label}
+                                validate={validate}
+                                checked={!!props.active}
+                            />
+                        </Box>
+                    )
+                } else {
+                    acc.push(
+                        <Box key={itemId} className={classes.box}>
+                            <Field
+                                data-testid={itemId}
+                                name={itemId}
+                                component={component}
+                                label={label}
+                                fullWidth
+                                type={type}
+                                validate={validate}
+                                InputProps={inputProps}
+                            />
+                        </Box>
+                    );
+                }
+                return acc;
+            }, [])}
+            <div className={classes.buttons}>
+                <Button
+                    variant="contained"
+                    color="primary"
+                    className={classes.button}
+                    disabled={props.submitting || !props.isValidProduct}
+                    type="submit"
+                >
+                    Zapisz
+                </Button>
+            </div>
+        </Form>
     );
 };
 
 ProductForm = reduxForm({
-    form: FORM_NAME,
+    form: formName,
     initialValues,
     enableReinitialize: true,
     keepDirtyOnReinitialize: true,
@@ -179,7 +176,7 @@ ProductForm.defaultProps = {
     isValidProduct: false,
 };
 
-const selector = formValueSelector(FORM_NAME);
+const selector = formValueSelector(formName);
 
 const mapStateToProps = state => {
     const imageFile = selector(state, 'img');
@@ -195,7 +192,7 @@ const mapStateToProps = state => {
         imageFile: imageFile ? [imageFile] : [],
         active: selector(state, 'active'),
         accessToken: state.auth.accessToken,
-        isValidProduct: isValid(FORM_NAME)(state),
+        isValidProduct: isValid(formName)(state),
         initialValues,
         adminProduct: state.adminProduct.data[state.adminProduct.id],
         values: state.adminProduct.data[state.adminProduct.id],
@@ -208,31 +205,6 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
     },
     handleResetAdminProduct() {
         return dispatch(resetAdminProduct());
-    },
-    getAdminProductIfNeeded(productId) {
-        return dispatch(getAdminProductIfNeeded(productId));
-    },
-    onSubmit: async (formProps, _, {accessToken, reset}) => {
-        try {
-            let response;
-            if (ownProps.match.params.productId) {
-                response = await dispatch(updateProductIfNeeded(formProps, accessToken));
-            } else {
-                response = await dispatch(createProductIfNeeded(formProps, accessToken));
-            }
-
-            const {status, data} = response;
-
-            if (status === 200 || status === 201) {
-                ownProps.history.push('/admin/products/list');
-                reset();
-            } else {
-                dispatch(showNotification({message: data.message, variant: 'error'}));
-            }
-
-        } catch (e) {
-            dispatch(showNotification({message: e.message, variant: 'error'}));
-        }
     },
 });
 

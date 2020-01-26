@@ -10,6 +10,8 @@ import {
 } from '../../utils/form';
 import DropZoneField from '../../components/FileInput/DropzoneField';
 
+export const formName = 'product';
+
 export const inputKeys = [
     'name',
     'description',
@@ -111,6 +113,8 @@ export const inputs = {
         label: 'Zdjęcie produktu',
         validate: [validateRequired],
         component: DropZoneField,
-        inputProps: {},
+        inputProps: {
+            'data-testid': 'img',
+        },
     },
 };

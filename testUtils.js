@@ -28,3 +28,6 @@ global.fakeLocalStorage = () => {
         writable: true,
     });
 };
+
+global.URL.createObjectURL = jest.fn(() => 'blob:http://localhost:3000/foo');
+global.URL.revokeObjectURL = jest.fn();
