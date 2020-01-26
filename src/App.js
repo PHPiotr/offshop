@@ -7,7 +7,8 @@ import Product from './modules/Products/components/Product';
 import Cart from './modules/ShoppingCart/components/ShoppingCart';
 import Checkout from './modules/Checkout/components/Checkout';
 import Order from './modules/Orders/components/Order';
-import AdminProductForm from './modules/Products/components/Admin/ProductForm';
+import AddProduct from './modules/Products/components/Admin/AddProduct';
+import EditProduct from './modules/Products/components/Admin/EditProduct';
 import AdminProducts from './modules/Products/components/Admin/ProductsList';
 import AddDeliveryMethod from './modules/Delivery/components/Admin/AddDeliveryMethod';
 import EditDeliveryMethod from './modules/Delivery/components/Admin/EditDeliveryMethod';
@@ -85,26 +86,21 @@ const App = props => {
                         >
                             <Switch>
                                 <Route path="/" exact render={props => <Products {...props} />}/>
-                                <Route path="/products/:slug" exact render={props => <Product {...props}
-                                                                                              product={store.getState().product.data[store.getState().product.id] || {}}/>}/>
-                                <Route path="/cart" exact render={props => <Cart {...props} />}/>
-                                <Route path="/order" exact component={Order}/>
-                                <Route path="/checkout" exact render={props => <Checkout {...props} />}/>
+                                <Route path="/products/:slug" render={props => <Product {...props} product={store.getState().product.data[store.getState().product.id] || {}}/>}/>
+                                <Route path="/cart" render={props => <Cart {...props} />}/>
+                                <Route path="/order" component={Order}/>
+                                <Route path="/checkout" render={props => <Checkout {...props} />}/>
                                 <Route path="/callback" component={LoginCallbackHandler}/>
                                 <Route path="/login" component={Login}/>;
                                 <PrivateRoute path="/logout" component={Logout}/>
-                                <PrivateRoute path="/admin/products/list" exact component={AdminProducts}/>
-                                <PrivateRoute path="/admin/products/new" exact component={AdminProductForm} key="add"/>
-                                <PrivateRoute path="/admin/products/:productId" exact component={AdminProductForm}
-                                              key="edit"/>
-                                <PrivateRoute path="/admin/delivery-methods/list" exact
-                                              component={AdminDeliveryMethods}/>
-                                <PrivateRoute path="/admin/orders/list" exact
-                                              component={AdminOrders}/>
-                                <PrivateRoute path="/admin/orders/:id" exact
-                                              component={AdminOrder}/>
-                                <PrivateRoute path="/admin/delivery-methods/new" exact component={AddDeliveryMethod}/>
-                                <PrivateRoute path="/admin/delivery-methods/:id" exact component={EditDeliveryMethod}/>
+                                <PrivateRoute path="/admin/products/list" component={AdminProducts}/>
+                                <PrivateRoute path="/admin/products/new" component={AddProduct}/>
+                                <PrivateRoute path="/admin/products/:id" component={EditProduct}/>
+                                <PrivateRoute path="/admin/delivery-methods/list" component={AdminDeliveryMethods}/>
+                                <PrivateRoute path="/admin/orders/list" component={AdminOrders}/>
+                                <PrivateRoute path="/admin/orders/:id" component={AdminOrder}/>
+                                <PrivateRoute path="/admin/delivery-methods/new" component={AddDeliveryMethod}/>
+                                <PrivateRoute path="/admin/delivery-methods/:id" component={EditDeliveryMethod}/>
                                 <Route path="/*" component={NotFound}/>
                             </Switch>
                         </Grid>

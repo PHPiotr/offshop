@@ -58,11 +58,6 @@ export const getProductsIfNeeded = params => {
     };
 };
 
-export const syncQuantities = (productsIds, productsById) => ({
-    type: actions.SYNC_QUANTITIES,
-    payload: {productsIds, productsById}
-});
-
 export const onCreateProduct = (product, sort, order) => ({
     type: actions.ON_CREATE_PRODUCT,
     payload: {product, sort, order}
@@ -160,18 +155,12 @@ export const createProductIfNeeded = (formProps, accessToken) => async dispatch 
     fd.append('active', formProps.active);
 
     try {
-        const response = await createProduct(fd, accessToken);
-        const {status, data} = response;
-        if (status === 201) {
-            const payload = normalize(data, productSchema.product);
-            dispatch({type: actions.CREATE_PRODUCT_SUCCESS, payload});
-        } else {
-            dispatch({type: actions.CREATE_PRODUCT_FAILURE, payload: {error: data}});
-        }
-        return response;
+        const {data} = await createProduct(fd, accessToken);
+        const payload = normalize(data, productSchema.product);
+        dispatch({type: actions.CREATE_PRODUCT_SUCCESS, payload});
     } catch (error) {
         dispatch({type: actions.CREATE_PRODUCT_FAILURE, payload: {error}});
-        return error;
+        throw error;
     }
 };
 
@@ -193,24 +182,18 @@ export const updateProductIfNeeded = (formProps, accessToken) => async (dispatch
     fd.append('active', formProps.active);
 
     try {
-        const response = await updateProduct(id, fd, accessToken);
-        const {status, data} = response;
-        if (status === 200) {
-            const payload = normalize(data, productSchema.product);
-            dispatch({type: actions.UPDATE_PRODUCT_SUCCESS, payload});
-        } else {
-            dispatch({type: actions.UPDATE_PRODUCT_FAILURE, payload: {error: data}});
-        }
-        return response;
+        const {data} = await updateProduct(id, fd, accessToken);
+        const payload = normalize(data, productSchema.product);
+        dispatch({type: actions.UPDATE_PRODUCT_SUCCESS, payload});
     } catch (error) {
         dispatch({type: actions.UPDATE_PRODUCT_FAILURE, payload: {error}});
-        return error;
+        throw error;
     }
 };
 
 export const getAdminProductIfNeeded = productId => {
     return async (dispatch, getState) => {
-        const {adminProducts: {isFetching}, auth: {accessToken}} = getState();
+        const {adminProduct: {isFetching}, auth: {accessToken}} = getState();
         if (isFetching) {
             return;
         }
