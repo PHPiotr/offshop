@@ -16,10 +16,20 @@ let store;
 
 const orderPayload = {
     extOrderId: '5e149a3e8f62305337b7c8a2',
+    localReceiptDateTime: '2020-01-07T14:48:30.113Z',
     orderCreateDate: '2020-01-07T14:48:30.113Z',
     status: 'PENDING',
     totalAmount: '90200',
+    totalWithoutDelivery: '87312',
     id: '5e149a3e8f62305337b7c8a3',
+    currencyCode: 'PLN',
+    totalWeight: '200',
+    properties: [
+        {
+            name: 'foo',
+            value: 'bar',
+        }
+    ],
     refund: {
         refundId: 'refundId',
         extRefundId: 'extRefundId',
@@ -81,6 +91,9 @@ describe('Admin/Order', () => {
     it('should render admin order page', async () => {
         const {getByText} = await renderWithStore(<Order match={{params: {id: orderPayload.extOrderId}}}/>, store);
         expect(await waitForElement(() => getByText(`Zamówienie ${orderPayload.extOrderId}`))).toBeDefined();
+        const detailsLabel = await waitForElement(() => getByText('Szczegóły'));
+        fireEvent.click(detailsLabel);
+        expect(getByText(`${(orderPayload.totalWeight / 100).toFixed(2)} kg`)).toBeDefined();
     });
 
     describe('event listeners', () => {
