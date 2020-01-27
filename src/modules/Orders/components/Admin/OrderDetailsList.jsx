@@ -13,7 +13,7 @@ const OrderDetailsList = ({order}) => (
         </NestedListItem>
         <NestedListItem>
             <ListItemText
-                primary={(new Date(order.localReceiptDateTime || order.orderCreateDate)).toLocaleString('pl', {
+                primary={(new Date(order.orderCreateDate)).toLocaleString('pl', {
                     dateStyle: 'short',
                     timeStyle: 'short'
                 })}
