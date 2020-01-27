@@ -19,10 +19,10 @@ const OrderRefundListItem = props => {
     } = props;
     const [refundOpen, setRefundOpen] = useState(false);
 
-    const onAdminRefundListener = ({refund}) => {
-        onAdminRefund(refund);
+    const onAdminRefundListener = ({order}) => {
+        onAdminRefund(order);
         showNotification({
-            message: `Status zwrotu został zmieniony na ${refund.status}.`,
+            message: `Status zwrotu został zmieniony na ${order.refund.status}.`,
             variant: 'warning',
         });
     };
