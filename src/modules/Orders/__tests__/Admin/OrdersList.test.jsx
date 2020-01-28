@@ -70,6 +70,12 @@ describe('Admin/OrdersList', () => {
         }
     });
 
+    it('should render error page on retrieve orders failure', async () => {
+        mock.onGet(/admin\/orders/).networkError();
+        const {getByText} = await renderWithStore(<OrdersList/>, store);
+        expect(await waitForElement(() => getByText('Network Error'))).toBeDefined();
+    });
+
     describe('event listeners', () => {
 
         describe('adminCreateOrder', () => {

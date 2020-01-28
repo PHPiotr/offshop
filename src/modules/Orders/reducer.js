@@ -13,7 +13,7 @@ const ordersInitialState = {
     isFetching: false,
     data: {},
     ids: [],
-    error: {},
+    error: null,
 };
 
 export const adminOrders = (state = ordersInitialState, action) => {
@@ -22,6 +22,7 @@ export const adminOrders = (state = ordersInitialState, action) => {
             return {
                 ...state,
                 isFetching: true,
+                error: null,
             };
         case actions.RETRIEVE_ADMIN_ORDERS_SUCCESS:
             return {
