@@ -5,11 +5,7 @@ import * as actions from './actionTypes';
 
 export const getAdminOrdersIfNeeded = (params = {}) => {
     return async (dispatch, getState) => {
-        const {adminOrders: {isFetching, data, ids}, auth: {accessToken}} = getState();
-        if (isFetching) {
-            return Promise.resolve();
-        }
-
+        const {adminOrders: {data, ids}, auth: {accessToken}} = getState();
         dispatch({type: actions.RETRIEVE_ADMIN_ORDERS_REQUEST});
         try {
             const response = await getAdminOrders(params, accessToken);
@@ -33,7 +29,6 @@ export const getAdminOrdersIfNeeded = (params = {}) => {
             return payload;
         } catch (error) {
             dispatch({type: actions.RETRIEVE_ADMIN_ORDERS_FAILURE, payload: {error}});
-            return error;
         }
     };
 };
@@ -42,11 +37,7 @@ export const onAdminOrder = order => ({type: actions.ON_ADMIN_ORDER, payload: {o
 
 export const getOrderIfNeeded = extOrderId => {
     return async (dispatch, getState) => {
-        const {adminOrder: {isFetching}, auth: {accessToken}} = getState();
-        if (isFetching) {
-            return;
-        }
-
+        const {auth: {accessToken}} = getState();
         dispatch({type: actions.RETRIEVE_ADMIN_ORDER_REQUEST});
         try {
             const response = await getOrder(extOrderId, accessToken);

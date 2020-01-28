@@ -14,6 +14,7 @@ import {onAdminRefund, getAdminOrdersIfNeeded, onAdminOrder} from '../../actions
 import {showNotification} from '../../../../actions/notification';
 import useInfiniteScrolling from '../../../../hooks/useInfiniteScrolling';
 import SocketContext from '../../../../contexts/SocketContext';
+import ErrorPage from '../../../../components/ErrorPage';
 
 const useStyles = makeStyles(theme => ({
     list: {
@@ -72,6 +73,10 @@ const OrdersList = props => {
         };
     }, [socket]);
 
+    if (props.error) {
+        return <ErrorPage message={props.error.message} />
+    }
+
     return (
         <Fragment>
             {props.isFetching && <ProgressIndicator />}
@@ -115,6 +120,7 @@ OrdersList.propTypes = {
 const mapStateToProps = state => ({
     data: state.adminOrders.ids.map(i => state.adminOrders.data[i]),
     isFetching: state.adminOrders.isFetching,
+    error: state.adminOrders.error,
 });
 
 const mapDispatchToProps = {
