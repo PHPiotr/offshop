@@ -16,7 +16,6 @@ export const getProductIfNeeded = slug => async (dispatch) => {
         const { data } = response;
         const payload = normalize(data, productSchema.product);
         dispatch({type: actions.RETRIEVE_PRODUCT_SUCCESS, payload});
-        return response;
     } catch (error) {
         dispatch({type: actions.RETRIEVE_PRODUCT_FAILURE, payload: {error}});
         throw error;
@@ -25,11 +24,7 @@ export const getProductIfNeeded = slug => async (dispatch) => {
 
 export const getProductsIfNeeded = params => {
     return async (dispatch, getState) => {
-        const {products: {isFetching, data, ids}} = getState();
-        if (isFetching) {
-            return Promise.resolve();
-        }
-
+        const {products: {data, ids}} = getState();
         dispatch({type: actions.RETRIEVE_PRODUCTS_REQUEST});
         try {
             const response = await getRequestPublic('/products', params);
@@ -52,7 +47,6 @@ export const getProductsIfNeeded = params => {
             return payload;
         } catch (error) {
             dispatch({type: actions.RETRIEVE_PRODUCTS_FAILURE, payload: {error}});
-            return error;
         }
     };
 };
@@ -89,11 +83,7 @@ export const onUpdateCurrentProduct = product => ({
 
 export const getAdminProductsIfNeeded = (params = {}) => {
     return async (dispatch, getState) => {
-        const {adminProducts: {isFetching, data, ids}, auth: {accessToken}} = getState();
-        if (isFetching) {
-            return Promise.resolve();
-        }
-
+        const {adminProducts: {data, ids}, auth: {accessToken}} = getState();
         dispatch({type: actions.RETRIEVE_ADMIN_PRODUCTS_REQUEST});
         try {
             const response = await getRequestPrivate(accessToken)('/admin/products', params);
@@ -117,7 +107,6 @@ export const getAdminProductsIfNeeded = (params = {}) => {
             return payload;
         } catch (error) {
             dispatch({type: actions.RETRIEVE_ADMIN_PRODUCTS_FAILURE, payload: {error}});
-            return error;
         }
     };
 };
@@ -127,16 +116,11 @@ export const deleteProductIfNeeded = productId => {
         const {auth: {accessToken}, adminProducts: {ids}} = getState();
         try {
             dispatch({type: actions.DELETE_PRODUCT_REQUEST, payload: {productId}});
-
             await deleteRequestPrivate(accessToken)(`/admin/products/${productId}`);
-
             dispatch({type: actions.DELETE_PRODUCT_SUCCESS});
-
-            return Promise.resolve(productId);
         } catch (error) {
             dispatch({type: actions.DELETE_PRODUCT_FAILURE, payload: {error, ids}});
-
-            return Promise.reject(error);
+            throw error;
         }
     };
 };
@@ -203,12 +187,9 @@ export const getAdminProductIfNeeded = productId => {
             const {data} = response;
             const payload = normalize(data, productSchema.product);
             dispatch({type: actions.RETRIEVE_ADMIN_PRODUCT_SUCCESS, payload});
-
-            return response;
         } catch (error) {
             dispatch({type: actions.RETRIEVE_ADMIN_PRODUCT_FAILURE, payload: {error}});
-
-            return error.response;
+            throw error;
         }
     };
 };

@@ -28,15 +28,7 @@ export const onDeleteProductInCartSummary = product => ({
 export const createOrderIfNeeded = payMethods => {
 
     return async (dispatch, getState) => {
-
-        const {order: {isCreating}} = getState();
-
-        if (isCreating) {
-            return Promise.resolve();
-        }
-
         dispatch({type: CREATE_ORDER_REQUEST});
-
         try {
             const {data: {access_token: accessToken}} = await authorize();
             const state = getState();
@@ -77,19 +69,14 @@ export const createOrderIfNeeded = payMethods => {
                 totalWeight: state.cart.weight,
                 totalWithoutDelivery: state.cart.totalPrice,
             });
-
             dispatch({type: CREATE_ORDER_SUCCESS, payload: {orderData: data}});
-
-            return Promise.resolve(data);
-
         } catch (e) {
             dispatch({
                 type: CREATE_ORDER_FAILURE, payload: {
                     orderError: (e.response && e.response.data && e.response.data.message) || e.message || 'Something went wrong'
                 }
             });
-
-            return Promise.reject(e);
+            throw e;
         }
     }
 };

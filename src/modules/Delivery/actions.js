@@ -16,21 +16,15 @@ export const setCurrentDeliveryMethod = current => ({
 });
 
 export const getDeliveryMethodsIfNeeded = params => {
-    return async (dispatch, getState) => {
-        const {deliveryMethods: {isFetching}} = getState();
-        if (isFetching) {
-            return Promise.resolve();
-        }
+    return async dispatch => {
         dispatch({type: actions.RETRIEVE_DELIVERY_METHODS_REQUEST});
         try {
             const {data} = await getRequestPublic('delivery-methods', params);
             const payload = normalize(data, deliveryMethodsSchema.deliveryMethodList);
             dispatch({type: actions.RETRIEVE_DELIVERY_METHODS_SUCCESS, payload});
-
-            return Promise.resolve(payload);
+            return payload;
         } catch (error) {
             dispatch({type: actions.RETRIEVE_DELIVERY_METHODS_FAILURE, payload: {error}});
-            return Promise.reject(error);
         }
     };
 };
@@ -80,23 +74,16 @@ export const updateDeliveryMethodIfNeeded = (formProps, accessToken) => async (d
 
 export const getAdminDeliveryMethodIfNeeded = deliveryMethodId => {
     return async (dispatch, getState) => {
-        const {adminDeliveryMethod: {isFetching}, auth: {accessToken}} = getState();
-        if (isFetching) {
-            return;
-        }
-
+        const {auth: {accessToken}} = getState();
         dispatch({type: actions.RETRIEVE_ADMIN_DELIVERY_METHOD_REQUEST});
         try {
             const response = await getRequestPrivate(accessToken)(`/admin/delivery-methods/${deliveryMethodId}`);
             const {data} = response;
             const payload = normalize(data, deliveryMethodSchema.deliveryMethod);
             dispatch({type: actions.RETRIEVE_ADMIN_DELIVERY_METHOD_SUCCESS, payload});
-
-            return response;
         } catch (error) {
             dispatch({type: actions.RETRIEVE_ADMIN_DELIVERY_METHOD_FAILURE, payload: {error}});
-
-            return error.response;
+            throw error;
         }
     };
 };
@@ -105,11 +92,7 @@ export const resetDeliveryMethod = () => ({type: actions.RESET_DELIVERY_METHOD})
 
 export const getAdminDeliveryMethodsIfNeeded = (params = {}) => {
     return async (dispatch, getState) => {
-        const {adminDeliveryMethods: {isFetching}, auth: {accessToken}} = getState();
-        if (isFetching) {
-            return Promise.resolve();
-        }
-
+        const {auth: {accessToken}} = getState();
         dispatch({type: actions.RETRIEVE_ADMIN_DELIVERY_METHODS_REQUEST});
         try {
             const {data} = await getRequestPrivate(accessToken)('/admin/delivery-methods', params);
@@ -117,6 +100,7 @@ export const getAdminDeliveryMethodsIfNeeded = (params = {}) => {
             dispatch({type: actions.RETRIEVE_ADMIN_DELIVERY_METHODS_SUCCESS, payload});
         } catch (error) {
             dispatch({type: actions.RETRIEVE_ADMIN_DELIVERY_METHODS_FAILURE, payload: {error}});
+            throw error;
         }
     };
 };
@@ -126,16 +110,11 @@ export const deleteDeliveryMethodIfNeeded = deliveryMethodId => {
         const {auth: {accessToken}, adminDeliveryMethods: {ids}} = getState();
         try {
             dispatch({type: actions.DELETE_DELIVERY_METHOD_REQUEST, payload: {deliveryMethodId}});
-
             await deleteRequestPrivate(accessToken)(`/admin/delivery-methods/${deliveryMethodId}`);
-
             dispatch({type: actions.DELETE_DELIVERY_METHOD_SUCCESS});
-
-            return Promise.resolve(deliveryMethodId);
         } catch (error) {
             dispatch({type: actions.DELETE_DELIVERY_METHOD_FAILURE, payload: {error, ids}});
-
-            return Promise.reject(error);
+            throw error;
         }
     };
 };
