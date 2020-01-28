@@ -87,7 +87,7 @@ const ProductView = props => {
                 <CardHeader
                     avatar={
                         <Avatar aria-label={props.product.name} className={props.classes.avatar}>
-                            {(props.productInCart.quantity || 0) < (props.product.stock || 0) && (
+                            {(props.productInCart.quantity || 0) < Number(props.product.stock) && (
                                 <IconButton
                                     data-testid={`add-to-cart-button-${props.product.id}`}
                                     id={props.product.id}
@@ -105,6 +105,7 @@ const ProductView = props => {
                             onClick={handleClick}
                             aria-owns={anchorEl ? 'more-menu' : undefined}
                             aria-haspopup="true"
+                            aria-label="Pokaż menu"
                         >
                             <MoreVertIcon />
                         </IconButton>
@@ -134,7 +135,7 @@ const ProductView = props => {
                             })}
                             onClick={handleExpandClick}
                             aria-expanded={expanded}
-                            aria-label="Show more"
+                            aria-label="Pokaż więcej"
                         >
                             <ExpandMoreIcon/>
                         </IconButton>
@@ -156,7 +157,7 @@ const ProductView = props => {
 };
 
 const mapStateToProps = state => ({
-    product: state.product.data[state.product.id] || {},
+    product: state.product.data[state.product.id],
     isFetching: state.product.isFetching,
     productInCart: state.cart.products[state.product.id] || {},
 });
