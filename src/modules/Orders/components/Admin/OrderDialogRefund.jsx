@@ -13,26 +13,19 @@ const canRefund = order => {
     if (!order.refund) {
         return true;
     }
-    if (order.refund.amount < order.totalAmount) {
-        return true;
-    }
 };
 
 const OrderDialogRefund = props => {
     const {order, refundOrderIfNeeded} = props;
     const [isRefundOrderDialogOpen, setIsRefundOrderDialogOpen] = useState(false);
     const canRefundOrder = canRefund(order);
-    const handleRefundOrderClick = () => {
-        if (canRefundOrder) {
-            setIsRefundOrderDialogOpen(true);
-        }
-    };
+    const handleRefundOrderClick = () => setIsRefundOrderDialogOpen(true);
     const hideRefundOrderDialog = () => setIsRefundOrderDialogOpen(false);
     const handleRefundOrder = async () => {
-        if (canRefundOrder) {
-            setIsRefundOrderDialogOpen(false);
-            refundOrderIfNeeded(order.extOrderId, order.totalAmount);
-        }
+        setIsRefundOrderDialogOpen(false);
+        try {
+            await refundOrderIfNeeded(order.extOrderId, order.totalAmount);
+        } catch {}
     };
     if (!canRefundOrder) {
         return null;

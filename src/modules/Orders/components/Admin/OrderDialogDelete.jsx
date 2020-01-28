@@ -19,8 +19,7 @@ const OrderDialogDelete = props => {
         try {
             await deleteOrderIfNeeded(order.extOrderId);
             props.history.replace('/admin/orders/list');
-        } catch {
-        }
+        } catch {}
     };
     if (!canDeleteForStatus(order.status)) {
         return null;

@@ -66,9 +66,6 @@ export const getOrderIfNeeded = extOrderId => {
 export const cancelOrderIfNeeded = (extOrderId, status) => {
     return async (dispatch, getState) => {
         const {auth: {accessToken}} = getState();
-        if (status === 'CANCELED' || status === 'COMPLETED') {
-            return;
-        }
         try {
             dispatch({type: actions.CANCEL_ORDER_REQUEST, payload: {status: 'CANCELED'}});
             const {data} = await cancelOrder(extOrderId, accessToken);
@@ -96,7 +93,7 @@ export const deleteOrderIfNeeded = (extOrderId) => {
     return async (dispatch, getState) => {
         const {auth: {accessToken}} = getState();
         try {
-            dispatch({type: actions.DELETE_ORDER_REQUEST, payload: {status: 'LOCAL_DELETED'}});
+            dispatch({type: actions.DELETE_ORDER_REQUEST});
             const {data} = await deleteOrder(extOrderId, accessToken);
             dispatch({type: actions.DELETE_ORDER_SUCCESS, payload: {status: data.status}});
         } catch (error) {
