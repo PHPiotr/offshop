@@ -1,13 +1,13 @@
 import {normalize} from 'normalizr';
 import * as deliveryMethodSchema from '../../modules/ShoppingCart/schema';
-import {
-    createDeliveryMethod,
-    deleteDeliveryMethod, getAdminDeliveryMethod,
-    getAdminDeliveryMethods,
-    updateDeliveryMethod
-} from './api';
 import * as actions from './actionTypes';
-import {getRequestPublic} from '../../api';
+import {
+    deleteRequestPrivate,
+    getRequestPrivate,
+    getRequestPublic,
+    postRequestPrivate,
+    putRequestPrivate
+} from '../../api';
 import * as deliveryMethodsSchema from '../ShoppingCart/schema';
 
 export const setCurrentDeliveryMethod = current => ({
@@ -56,7 +56,7 @@ export const onDeleteDeliveryMethod = deliveryMethod => ({
 export const createDeliveryMethodIfNeeded = (formProps, accessToken) => async dispatch => {
     dispatch({type: actions.CREATE_DELIVERY_METHOD_REQUEST});
     try {
-        const {data} = await createDeliveryMethod({...formProps, unitPrice: formProps.unitPrice * 1000 / 10}, accessToken);
+        const {data} = await postRequestPrivate(accessToken)('/admin/delivery-methods', {}, {...formProps, unitPrice: formProps.unitPrice * 1000 / 10});
         const payload = normalize(data, deliveryMethodSchema.deliveryMethod);
         dispatch({type: actions.CREATE_DELIVERY_METHOD_SUCCESS, payload});
     } catch (error) {
@@ -69,7 +69,7 @@ export const updateDeliveryMethodIfNeeded = (formProps, accessToken) => async (d
     const {adminDeliveryMethod: {id}} = getState();
     dispatch({type: actions.UPDATE_DELIVERY_METHOD_REQUEST});
     try {
-        const {data} = await updateDeliveryMethod(id, {...formProps, unitPrice: formProps.unitPrice * 1000 / 10}, accessToken);
+        const {data} = await putRequestPrivate(accessToken)(`/admin/delivery-methods/${id}`, {}, {...formProps, unitPrice: formProps.unitPrice * 1000 / 10});
         const payload = normalize(data, deliveryMethodSchema.deliveryMethod);
         dispatch({type: actions.UPDATE_DELIVERY_METHOD_SUCCESS, payload});
     } catch (error) {
@@ -87,7 +87,7 @@ export const getAdminDeliveryMethodIfNeeded = deliveryMethodId => {
 
         dispatch({type: actions.RETRIEVE_ADMIN_DELIVERY_METHOD_REQUEST});
         try {
-            const response = await getAdminDeliveryMethod(deliveryMethodId, accessToken);
+            const response = await getRequestPrivate(accessToken)(`/admin/delivery-methods/${deliveryMethodId}`);
             const {data} = response;
             const payload = normalize(data, deliveryMethodSchema.deliveryMethod);
             dispatch({type: actions.RETRIEVE_ADMIN_DELIVERY_METHOD_SUCCESS, payload});
@@ -112,7 +112,7 @@ export const getAdminDeliveryMethodsIfNeeded = (params = {}) => {
 
         dispatch({type: actions.RETRIEVE_ADMIN_DELIVERY_METHODS_REQUEST});
         try {
-            const {data} = await getAdminDeliveryMethods(params, accessToken);
+            const {data} = await getRequestPrivate(accessToken)('/admin/delivery-methods', params);
             const payload = normalize(data, deliveryMethodSchema.deliveryMethodList);
             dispatch({type: actions.RETRIEVE_ADMIN_DELIVERY_METHODS_SUCCESS, payload});
         } catch (error) {
@@ -127,7 +127,7 @@ export const deleteDeliveryMethodIfNeeded = deliveryMethodId => {
         try {
             dispatch({type: actions.DELETE_DELIVERY_METHOD_REQUEST, payload: {deliveryMethodId}});
 
-            await deleteDeliveryMethod(deliveryMethodId, accessToken);
+            await deleteRequestPrivate(accessToken)(`/admin/delivery-methods/${deliveryMethodId}`);
 
             dispatch({type: actions.DELETE_DELIVERY_METHOD_SUCCESS});
 

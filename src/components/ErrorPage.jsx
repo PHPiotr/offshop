@@ -3,7 +3,6 @@ import {Link as RouterLink} from 'react-router-dom';
 import {Error} from '@material-ui/icons';
 import Link from '@material-ui/core/Link';
 import {withStyles} from '@material-ui/core/styles';
-import {Tooltip} from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
 
 const styles = theme => ({
@@ -20,9 +19,11 @@ const styles = theme => ({
 
 const ErrorPage = props => (
     <div className={props.classes.errorWrapper}>
-        <Typography variant='subtitle1' component='h1'>
-            {props.status}
-        </Typography>
+        {props.status && (
+            <Typography variant='subtitle1' component='h1'>
+                {props.status}
+            </Typography>
+        )}
         {props.message && (
             <Typography component='p'>
                 {props.message}

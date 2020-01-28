@@ -96,6 +96,12 @@ describe('Admin/Order', () => {
         expect(getByText(`${(orderPayload.totalWeight / 100).toFixed(2)} kg`)).toBeDefined();
     });
 
+    it('should render error page on retrieve order failure', async () => {
+        mock.onGet(/admin\/orders/).networkError();
+        const {getByText} = await renderWithStore(<Order match={{params: {id: orderPayload.extOrderId}}}/>, store);
+        expect(await waitForElement(() => getByText('Network Error'))).toBeDefined();
+    });
+
     it('should cancel order', async () => {
         mock.onGet(/admin\/orders/).reply(200, {...orderPayload, status: 'WAITING_FOR_CONFIRMATION'});
         mock.onPut(/admin\/orders/).reply(200, {...orderPayload, status: 'CANCELED'});

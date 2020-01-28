@@ -51,9 +51,9 @@ describe('Product', () => {
     describe('response not found', () => {
 
         it('should display page not found', async () => {
-            mock.onGet(/products/).replyOnce(404, ['Not found']);
+            mock.onGet(/products/).replyOnce(404);
             const {getByText} = await renderWithStore(<Product/>, store);
-            expect(await waitForElement(() => getByText('Strona nie istnieje.'))).toBeDefined();
+            expect(await waitForElement(() => getByText('Request failed with status code 404'))).toBeDefined();
         });
 
     });
@@ -63,13 +63,13 @@ describe('Product', () => {
         it('should display error page', async () => {
             mock.onGet(/products/).replyOnce(500);
             const {getByText} = await renderWithStore(<Product/>, store);
-            expect(await waitForElement(() => getByText('Błąd 500'))).toBeDefined();
+            expect(await waitForElement(() => getByText('Request failed with status code 500'))).toBeDefined();
         });
 
         it('should display error page', async () => {
             mock.onGet(/products/).networkErrorOnce();
             const {getByText} = await renderWithStore(<Product/>, store);
-            expect(await waitForElement(() => getByText('Błąd sieci'))).toBeDefined();
+            expect(await waitForElement(() => getByText('Network Error'))).toBeDefined();
         });
 
     });
