@@ -15,7 +15,6 @@ import EditDeliveryMethod from './modules/Delivery/components/Admin/EditDelivery
 import AdminDeliveryMethods from './modules/Delivery/components/Admin/DeliveryMethodsList';
 import AdminOrders from './modules/Orders/components/Admin/OrdersList';
 import AdminOrder from './modules/Orders/components/Admin/Order';
-import NotFound from './components/NotFound';
 import {withStyles} from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import classNames from 'classnames';
@@ -28,6 +27,7 @@ import PrivateRoute from './components/PrivateRoute';
 import LoginCallbackHandler from './modules/Auth/components/LoginCallbackHandler';
 import Logout from './modules/Auth/components/Logout';
 import Login from './modules/Auth/components/Login';
+import ErrorPage from './components/ErrorPage';
 
 const styles = theme => ({
     root: {
@@ -101,7 +101,7 @@ const App = props => {
                                 <PrivateRoute path="/admin/orders/:id" component={AdminOrder}/>
                                 <PrivateRoute path="/admin/delivery-methods/new" component={AddDeliveryMethod}/>
                                 <PrivateRoute path="/admin/delivery-methods/:id" component={EditDeliveryMethod}/>
-                                <Route path="/*" component={NotFound}/>
+                                <Route path="/*" render={() => <ErrorPage message="Request failed with status code 404"/>}/>
                             </Switch>
                         </Grid>
                     </div>
