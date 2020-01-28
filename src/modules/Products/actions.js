@@ -1,16 +1,15 @@
 import {normalize} from 'normalizr';
 import * as actions from './actionTypes';
 import * as productSchema from './schema';
-import {getRequestPublic} from '../../api';
-import {createProduct, deleteProduct, getAdminProduct, getAdminProducts, updateProduct} from '../../modules/Products/api';
+import {
+    deleteRequestPrivate,
+    getRequestPrivate,
+    getRequestPublic,
+    postRequestPrivate,
+    putRequestPrivate,
+} from '../../api';
 
-export const getProductIfNeeded = slug => async (dispatch, getState) => {
-    const {product: {isFetching}} = getState();
-
-    if (isFetching) {
-        return Promise.resolve();
-    }
-
+export const getProductIfNeeded = slug => async (dispatch) => {
     dispatch({type: actions.RETRIEVE_PRODUCT_REQUEST});
     try {
         const response = await getRequestPublic(`/products/${slug}`);
@@ -20,7 +19,7 @@ export const getProductIfNeeded = slug => async (dispatch, getState) => {
         return response;
     } catch (error) {
         dispatch({type: actions.RETRIEVE_PRODUCT_FAILURE, payload: {error}});
-        return error.response;
+        throw error;
     }
 };
 
@@ -97,7 +96,7 @@ export const getAdminProductsIfNeeded = (params = {}) => {
 
         dispatch({type: actions.RETRIEVE_ADMIN_PRODUCTS_REQUEST});
         try {
-            const response = await getAdminProducts(params, accessToken);
+            const response = await getRequestPrivate(accessToken)('/admin/products', params);
             const payload = normalize(response.data, productSchema.productList);
             if (params.skip > 0) {
                 dispatch({
@@ -129,7 +128,7 @@ export const deleteProductIfNeeded = productId => {
         try {
             dispatch({type: actions.DELETE_PRODUCT_REQUEST, payload: {productId}});
 
-            await deleteProduct(productId, accessToken);
+            await deleteRequestPrivate(accessToken)(`/admin/products/${productId}`);
 
             dispatch({type: actions.DELETE_PRODUCT_SUCCESS});
 
@@ -155,7 +154,7 @@ export const createProductIfNeeded = (formProps, accessToken) => async dispatch 
     fd.append('active', formProps.active);
 
     try {
-        const {data} = await createProduct(fd, accessToken);
+        const {data} = await postRequestPrivate(accessToken)('/admin/products', {}, fd, {'Content-Type': 'multipart/form-data'});
         const payload = normalize(data, productSchema.product);
         dispatch({type: actions.CREATE_PRODUCT_SUCCESS, payload});
     } catch (error) {
@@ -182,7 +181,7 @@ export const updateProductIfNeeded = (formProps, accessToken) => async (dispatch
     fd.append('active', formProps.active);
 
     try {
-        const {data} = await updateProduct(id, fd, accessToken);
+        const {data} = await putRequestPrivate(accessToken)(`/admin/products/${id}`, {}, fd, {'Content-Type': 'multipart/form-data'});
         const payload = normalize(data, productSchema.product);
         dispatch({type: actions.UPDATE_PRODUCT_SUCCESS, payload});
     } catch (error) {
@@ -200,7 +199,7 @@ export const getAdminProductIfNeeded = productId => {
 
         dispatch({type: actions.RETRIEVE_ADMIN_PRODUCT_REQUEST});
         try {
-            const response = await getAdminProduct(productId, accessToken);
+            const response = await getRequestPrivate(accessToken)(`/admin/products/${productId}`);
             const {data} = response;
             const payload = normalize(data, productSchema.product);
             dispatch({type: actions.RETRIEVE_ADMIN_PRODUCT_SUCCESS, payload});

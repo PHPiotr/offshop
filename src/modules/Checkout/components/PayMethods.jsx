@@ -6,8 +6,8 @@ import Divider from '@material-ui/core/Divider';
 import PayByLink from './PayByLink';
 import PayuExpress from './PayuExpress';
 import GooglePay from './GooglePay';
-import {getPayMethods} from '../api';
 import {authorize} from '../../../api/payu';
+import {getRequestPrivate} from '../../../api';
 
 const styles = theme => ({
     listItem: {
@@ -22,8 +22,8 @@ const PayMethods = props => {
     const [payByLinksMethods, setPayByLinksMethods] = useState([]);
 
     useEffect(() => {
-        authorize().then(({data: {access_token}}) => {
-            getPayMethods(access_token)
+        authorize().then(({data: {access_token: accessToken}}) => {
+            getRequestPrivate(accessToken)('/pay-methods')
                 .then(({data: {payByLinks}}) => setPayByLinksMethods(payByLinks))
                 .catch(e => console.error(e));
         }).catch(e => console.error(e));

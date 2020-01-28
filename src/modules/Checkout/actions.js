@@ -1,10 +1,10 @@
 import {getFormValues} from 'redux-form';
 import {authorize} from "../../api/payu";
-import {orderCreateRequest} from "../../modules/Checkout/api";
 import {showNotification} from '../../actions/notification';
 import * as actions from './actionTypes';
 import {CREATE_ORDER_REQUEST, CREATE_ORDER_SUCCESS, CREATE_ORDER_FAILURE} from '../Orders/actionTypes';
 import {ON_DELETE_PRODUCT, ON_UPDATE_PRODUCT} from '../Products/actionTypes';
+import {postRequestPrivate} from '../../api';
 
 export const stepNext = () => ({type: actions.STEP_NEXT});
 
@@ -38,7 +38,7 @@ export const createOrderIfNeeded = payMethods => {
         dispatch({type: CREATE_ORDER_REQUEST});
 
         try {
-            const {data: {access_token}} = await authorize();
+            const {data: {access_token: accessToken}} = await authorize();
             const state = getState();
 
             const productsById = state.cart.ids.reduce((acc, id) => {
@@ -61,17 +61,21 @@ export const createOrderIfNeeded = payMethods => {
                 buyer.delivery.countryCode = 'PL';
             }
 
-            const {data} = await orderCreateRequest({
-                payMethods,
-                accessToken: access_token,
-                totalAmount: state.cart.totalPriceWithDelivery,
-                totalWithoutDelivery: state.cart.totalPrice,
-                totalWeight: state.cart.weight,
-                productsIds: state.cart.ids,
-                productsById,
-                description: 'OFFSHOP - transakcja',
+            const {data} = await postRequestPrivate(accessToken)('/orders', {}, {
                 buyer,
+                continueUrl: process.env.REACT_APP_PAYU_CONTINUE_URL,
+                currencyCode: process.env.REACT_APP_CURRENCY_CODE,
                 deliveryMethod: state.deliveryMethods.data[state.deliveryMethods.currentId],
+                description: 'OFFSHOP - transakcja',
+                merchantPosId: process.env.REACT_APP_GOOGLE_PAY_TOKENIZATION_GATEWAY_MERCHANT_ID,
+                notifyUrl: `${process.env.REACT_APP_API_HOST}${process.env.REACT_APP_PAYU_NOTIFY_PATH}`,
+                payMethods,
+                productsById,
+                productsIds: state.cart.ids,
+                settings: {invoiceDisabled: true},
+                totalAmount: state.cart.totalPriceWithDelivery,
+                totalWeight: state.cart.weight,
+                totalWithoutDelivery: state.cart.totalPrice,
             });
 
             dispatch({type: CREATE_ORDER_SUCCESS, payload: {orderData: data}});
