@@ -20,7 +20,6 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import classNames from 'classnames';
 import Grid from '@material-ui/core/Grid';
 import {hot} from 'react-hot-loader';
-import store from './store';
 import Typography from '@material-ui/core/Typography';
 import NotificationBar from './components/NotificationBar';
 import PrivateRoute from './components/PrivateRoute';
@@ -85,11 +84,11 @@ const App = props => {
                             alignItems="center"
                         >
                             <Switch>
-                                <Route path="/" exact render={props => <Products {...props} />}/>
-                                <Route path="/products/:slug" render={props => <Product {...props} product={store.getState().product.data[store.getState().product.id] || {}}/>}/>
+                                <Route path="/" exact render={props => <Products {...props}/>}/>
+                                <Route path="/products/:slug" component={Product}/>
                                 <Route path="/cart" render={props => <Cart {...props} />}/>
                                 <Route path="/order" component={Order}/>
-                                <Route path="/checkout" render={props => <Checkout {...props} />}/>
+                                <Route path="/checkout" render={props => <Checkout {...props}/>}/>
                                 <Route path="/callback" component={LoginCallbackHandler}/>
                                 <Route path="/login" component={Login}/>;
                                 <PrivateRoute path="/logout" component={Logout}/>

@@ -80,11 +80,19 @@ describe('Product', () => {
             mock.onGet(/products.*/).reply(200, productPayload);
         });
 
-        it("should add item to cart", async () => {
-            const {getByTestId, queryByTestId, queryByRole, getByRole} = await renderWithStore(<Fragment><Navigation/><Product/></Fragment>, store);
+        it("should render prodduct page and be able to add item to cart", async () => {
+            const {getByTestId, queryByTestId, queryByRole, queryByText, getByRole, getByText, getByLabelText} = await renderWithStore(<Fragment><Navigation/><Product/></Fragment>, store);
             const cartButton = getByTestId('cart-button');
             expect(cartButton).toBeDefined();
             const addToCartButton = await waitForElement(() => getByTestId(`add-to-cart-button-${productPayload.id}`));
+            const showMore = await waitForElement(() => getByLabelText('Pokaż więcej'));
+            const showMenu = await waitForElement(() => getByLabelText('Pokaż menu'));
+            fireEvent.click(showMore);
+            expect(getByText(productPayload.longDescription)).toBeDefined();
+            fireEvent.click(showMenu);
+            const menuItem = getByText(`Waga: ${(productPayload.weight / 100).toFixed(2)} kg`);
+            expect(menuItem).toBeDefined();
+            fireEvent.click(menuItem);
             expect(queryByRole('dialog')).toBeNull();
             expect(queryByTestId('btn-continue')).toBeNull();
             expect(queryByTestId('btn-cart')).toBeNull();
