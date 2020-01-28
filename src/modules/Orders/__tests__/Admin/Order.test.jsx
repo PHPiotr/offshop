@@ -96,6 +96,55 @@ describe('Admin/Order', () => {
         expect(getByText(`${(orderPayload.totalWeight / 100).toFixed(2)} kg`)).toBeDefined();
     });
 
+    it('should cancel order', async () => {
+        mock.onGet(/admin\/orders/).reply(200, {...orderPayload, status: 'WAITING_FOR_CONFIRMATION'});
+        mock.onPut(/admin\/orders/).reply(200, {...orderPayload, status: 'CANCELED'});
+        const {getByText, getByLabelText} = await renderWithStore(<Order match={{params: {id: orderPayload.extOrderId}}}/>, store);
+        const detailsLabel = await waitForElement(() => getByText('Szczegóły'));
+        fireEvent.click(detailsLabel);
+        expect(getByText('WAITING_FOR_CONFIRMATION')).toBeDefined();
+        const cancel = await waitForElement(() => getByLabelText('Anuluj zamówienie'));
+        fireEvent.click(cancel);
+        const no = getByText('Nie');
+        fireEvent.click(no);
+        fireEvent.click(cancel);
+        const yes = getByText('Tak');
+        fireEvent.click(yes);
+        expect(await waitForElement(() => getByText('CANCELED'))).toBeDefined();
+    });
+
+    it('should delete order', async () => {
+        mock.onGet(/admin\/orders/).reply(200, {...orderPayload, status: 'LOCAL_NEW_REJECTED'});
+        mock.onDelete(/admin\/orders/).reply(204);
+        const {getByText, getByLabelText} = await renderWithStore(<Order match={{params: {id: orderPayload.extOrderId}}}/>, store);
+        const detailsLabel = await waitForElement(() => getByText('Szczegóły'));
+        fireEvent.click(detailsLabel);
+        expect(getByText('LOCAL_NEW_REJECTED')).toBeDefined();
+        const deleteOrder = await waitForElement(() => getByLabelText('Usuń zamówienie'));
+        fireEvent.click(deleteOrder);
+        const no = getByText('Nie');
+        fireEvent.click(no);
+        fireEvent.click(deleteOrder);
+        const yes = getByText('Tak');
+        fireEvent.click(yes);
+    });
+
+    it('should refund order', async () => {
+        mock.onGet(/admin\/orders/).reply(200, {...orderPayload, status: 'COMPLETED', refund: undefined});
+        mock.onPost(/refunds/).reply(200, {...orderPayload.refund, status: 'hello world'});
+        const {getByText, getByLabelText} = await renderWithStore(<Order match={{params: {id: orderPayload.extOrderId}}}/>, store);
+        const detailsLabel = await waitForElement(() => getByText('Szczegóły'));
+        fireEvent.click(detailsLabel);
+        expect(getByText('COMPLETED')).toBeDefined();
+        const refundOrder = await waitForElement(() => getByLabelText('Zwróć środki na konto kupującego'));
+        fireEvent.click(refundOrder);
+        const no = getByText('Nie');
+        fireEvent.click(no);
+        fireEvent.click(refundOrder);
+        const yes = getByText('Tak');
+        fireEvent.click(yes);
+    });
+
     describe('event listeners', () => {
 
         describe('adminRefund', () => {

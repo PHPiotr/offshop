@@ -1,6 +1,7 @@
 import * as actions from './actionTypes';
 
 const orderInitialState = {
+    isDeleting: false,
     isFetching: false,
     isRefunding: false,
     data: {},
@@ -54,6 +55,23 @@ export const adminOrders = (state = ordersInitialState, action) => {
 
 export const adminOrder = (state = orderInitialState, action) => {
     switch (action.type) {
+        case actions.DELETE_ORDER_REQUEST:
+            return {
+                ...state,
+                isDeleting: true,
+            };
+        case actions.DELETE_ORDER_FAILURE:
+            return {
+                ...state,
+                isDeleting: false,
+            };
+        case actions.DELETE_ORDER_SUCCESS:
+            return {
+                ...state,
+                isDeleting: false,
+                data: {},
+                id: null,
+            };
         case actions.CANCEL_ORDER_REQUEST:
             return {
                 ...state,
