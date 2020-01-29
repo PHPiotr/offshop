@@ -62,6 +62,7 @@
       "describe": "readonly",
       "beforeEach": "readonly",
       "fakeLocalStorage": "readonly",
+      "renderWithAuth": "readonly",
       "renderWithStore": "readonly",
       "renderWithRouter": "readonly",
       "socket": "readonly"

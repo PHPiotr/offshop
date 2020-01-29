@@ -11,6 +11,29 @@ import {UPDATE_AUTH} from '../modules/Auth/actionTypes';
 const mock = new MockAdapter(axios);
 let store;
 
+const productsPayload = [
+    {
+        active: true,
+        stock: '24',
+        images: [
+            {
+                avatar: '5da5c9624f651730df445459.avatar.jpg?42639d03824bb02c32939f7ce9a7c2e3',
+                card: '5da5c9624f651730df445459.card.jpg?7e42d30ed0a97b7aefb8a96294aed314',
+                tile: '5da5c9624f651730df445459.tile.jpg?96010ab5e06f34fb358ad3e154fee610',
+            }
+        ],
+        description: 'Et dolore amet pers',
+        longDescription: 'Molestias accusamus',
+        name: 'Abdul Br',
+        unitPrice: '43200',
+        weight: '5300',
+        slug: 'abdul-br',
+        createdAt: '2019-10-15T13:28:02.928Z',
+        updatedAt: '2020-01-24T13:41:53.218Z',
+        id: '5da5c9624f651730df445459',
+    }
+];
+
 describe('App', () => {
 
     beforeEach(() => {
@@ -23,29 +46,6 @@ describe('App', () => {
     });
 
     it('should render the app', async () => {
-        const productsPayload = [
-            {
-                active: true,
-                stock: '24',
-                images: [
-                    {
-                        avatar: '5da5c9624f651730df445459.avatar.jpg?42639d03824bb02c32939f7ce9a7c2e3',
-                        card: '5da5c9624f651730df445459.card.jpg?7e42d30ed0a97b7aefb8a96294aed314',
-                        tile: '5da5c9624f651730df445459.tile.jpg?96010ab5e06f34fb358ad3e154fee610',
-                    }
-                ],
-                description: 'Et dolore amet pers',
-                longDescription: 'Molestias accusamus',
-                name: 'Abdul Br',
-                unitPrice: '43200',
-                weight: '5300',
-                slug: 'abdul-br',
-                createdAt: '2019-10-15T13:28:02.928Z',
-                updatedAt: '2020-01-24T13:41:53.218Z',
-                id: '5da5c9624f651730df445459',
-            }
-        ];
-
         mock.onGet(/.*/).replyOnce(200, productsPayload);
         const {getByText} = await renderWithRouter(<App/>, store);
         expect(await waitForElement(() => getByText(productsPayload[0].name))).toBeDefined();
@@ -56,6 +56,45 @@ describe('App', () => {
             route: '/something-that-does-not-match',
         });
         expect(await waitForElement(() => getByText('Request failed with status code 404'))).toBeDefined();
+    });
+
+    describe('PrivateRoute', () => {
+
+        it('should render private route component', async () => {
+            class FakeAuth {
+                isAuthenticated() {
+                    return true;
+                }
+                renewSession() {
+                    Promise.resolve();
+                }
+            };
+            mock.onGet(/.*/).replyOnce(200, productsPayload);
+            const {getByText} = await renderWithAuth(<App/>, store, new FakeAuth(), {
+                route: '/admin/products/list',
+            });
+            expect(await waitForElement(() => getByText(productsPayload[0].name))).toBeDefined();
+        });
+
+        it('should not render private route component if not authenticated', async () => {
+            class FakeAuth {
+                isAuthenticated() {
+                    return false;
+                }
+                renewSession() {
+                    Promise.resolve();
+                }
+                login() {
+                    return null;
+                }
+            };
+            mock.onGet(/.*/).replyOnce(200, productsPayload);
+            const {queryByText} = await renderWithAuth(<App/>, store, new FakeAuth(), {
+                route: '/admin/products/list',
+            });
+            expect(queryByText(productsPayload[0].name)).toBeNull();
+        });
+
     });
 
     it('should be able to toggle drawer visibility', async () => {

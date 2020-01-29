@@ -1,6 +1,5 @@
 import React, {useEffect} from 'react';
 import {useAuth} from '../../../contexts/AuthContext';
-import {removeLoggedInItem, setLoggedInItem} from '../../../utils/localStorage';
 import {updateAuth} from '../actions';
 import {withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
@@ -12,7 +11,6 @@ const LoginCallbackHandler = props => {
             if (/access_token|id_token|error/.test(props.location.hash)) {
                 try {
                     await auth.handleAuthentication();
-                    setLoggedInItem(true);
                     props.updateAuth({
                         accessToken: auth.getAccessToken(),
                         idToken: auth.getIdToken(),
@@ -26,7 +24,6 @@ const LoginCallbackHandler = props => {
                         idToken: null,
                         expiresAt: 0,
                     });
-                    removeLoggedInItem();
                     console.error(e);
                     props.history.replace('/login');
                 }

@@ -3,7 +3,6 @@ import {connect} from 'react-redux';
 import {withRouter} from 'react-router-dom';
 import {useAuth} from '../../../contexts/AuthContext';
 import {updateAuth} from '../actions';
-import {removeLoggedInItem} from '../../../utils/localStorage';
 
 const Logout = props => {
     const auth = useAuth();
@@ -14,7 +13,6 @@ const Logout = props => {
             idToken: null,
             expiresAt: 0,
         });
-        removeLoggedInItem();
         props.history.replace('/');
     }, []);
     return null;

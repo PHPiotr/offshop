@@ -15,14 +15,14 @@ import Auth from './services/auth';
 
 WebFont.load({
     google: {
-        families: [process.env.REACT_APP_LOGO_FONT || 'Roboto']
+        families: [process.env.REACT_APP_LOGO_FONT]
     }
 });
 
 const theme = createMuiTheme({
     palette: {
         primary: {
-            main: process.env.REACT_APP_MAIN_COLOR || '#3f51b5',
+            main: process.env.REACT_APP_MAIN_COLOR,
         },
     },
 });
