@@ -105,11 +105,6 @@ export const products = (state = initialProductsState, {type, payload}) => {
                 isFetching: false,
                 error: payload.error,
             };
-        case actions.SYNC_QUANTITIES:
-            const newState = {...state};
-            payload.productsIds.forEach(id => newState.data[id].stock = payload.productsById[id].stock);
-            return newState;
-
         case actions.ON_CREATE_PRODUCT:
             return {
                 ...state,

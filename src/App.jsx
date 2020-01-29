@@ -26,7 +26,7 @@ import PrivateRoute from './components/PrivateRoute';
 import LoginCallbackHandler from './modules/Auth/components/LoginCallbackHandler';
 import Logout from './modules/Auth/components/Logout';
 import Login from './modules/Auth/components/Login';
-import ErrorPage from './components/ErrorPage';
+import NotFound from './components/NotFound';
 
 const styles = theme => ({
     root: {
@@ -62,7 +62,7 @@ const styles = theme => ({
     },
 });
 
-const pageTitle = process.env.REACT_APP_PAGE_TITLE || 'Offshop';
+const pageTitle = process.env.REACT_APP_PAGE_TITLE;
 
 const App = props => {
     const {classes} = props;
@@ -84,11 +84,11 @@ const App = props => {
                             alignItems="center"
                         >
                             <Switch>
-                                <Route path="/" exact render={props => <Products {...props}/>}/>
+                                <Route path="/" exact component={Products}/>
                                 <Route path="/products/:slug" component={Product}/>
-                                <Route path="/cart" render={props => <Cart {...props} />}/>
+                                <Route path="/cart" component={Cart}/>
                                 <Route path="/order" component={Order}/>
-                                <Route path="/checkout" render={props => <Checkout {...props}/>}/>
+                                <Route path="/checkout" component={Checkout}/>
                                 <Route path="/callback" component={LoginCallbackHandler}/>
                                 <Route path="/login" component={Login}/>;
                                 <PrivateRoute path="/logout" component={Logout}/>
@@ -100,7 +100,7 @@ const App = props => {
                                 <PrivateRoute path="/admin/orders/:id" component={AdminOrder}/>
                                 <PrivateRoute path="/admin/delivery-methods/new" component={AddDeliveryMethod}/>
                                 <PrivateRoute path="/admin/delivery-methods/:id" component={EditDeliveryMethod}/>
-                                <Route path="/*" render={() => <ErrorPage message="Request failed with status code 404"/>}/>
+                                <Route path="/*" component={NotFound}/>
                             </Switch>
                         </Grid>
                     </div>

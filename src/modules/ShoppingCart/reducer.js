@@ -1,5 +1,5 @@
 import * as actions from './actionTypes';
-import {ON_DELETE_PRODUCT, ON_UPDATE_PRODUCT, SYNC_QUANTITIES} from '../../modules/Products/actionTypes';
+import {ON_DELETE_PRODUCT, ON_UPDATE_PRODUCT} from '../../modules/Products/actionTypes';
 import {
     ON_DELETE_DELIVERY_METHOD,
     ON_UPDATE_DELIVERY_METHOD,
@@ -156,42 +156,6 @@ export const cart = (state = initialCartState, { payload, type }) => {
                 deliveryTotalPrice: Math.round(state.deliveryUnitPrice * (state.weight - weight) / 100),
                 totalPriceWithDelivery: Math.round((state.totalPrice - totalPrice) + (state.deliveryUnitPrice * (state.weight - weight) / 100)),
             };
-        case SYNC_QUANTITIES:
-            if (!state.quantity) {
-                return state;
-            }
-            const newState = {...state};
-            payload.productsIds.forEach(id => {
-                if (state.ids.indexOf(id) > -1) {
-                    const {stock = 0, weight, unitPrice} = payload.productsById[id];
-                    const productInCart = newState.products[id];
-                    const productInCartQuantity = productInCart.quantity;
-                    if (productInCartQuantity > stock) {
-                        const quantitySubtract = productInCartQuantity - stock;
-                        const newWeight = newState.weight - weight * quantitySubtract;
-                        const newTotalPrice = newState.totalPrice - unitPrice * quantitySubtract;
-                        const newDeliveryTotalPrice = newState.deliveryUnitPrice * newWeight / 100;
-                        newState.quantity -= quantitySubtract;
-                        newState.weight = newWeight;
-                        newState.totalPrice = newTotalPrice;
-                        newState.deliveryTotalPrice = Math.round(newDeliveryTotalPrice);
-                        newState.totalPriceWithDelivery = Math.round(newTotalPrice + newDeliveryTotalPrice);
-                        if (stock) {
-                            newState.products[id] = {
-                                ...productInCart,
-                                quantity: quantity,
-                                weight: weight * stock,
-                                totalPrice: unitPrice * stock,
-                            };
-                        } else {
-                            newState.products[id] = undefined;
-                            newState.ids = newState.ids.filter(i => i !== id);
-                        }
-                    }
-                }
-            });
-
-            return newState;
 
         case CREATE_ORDER_SUCCESS:
             return {...initialCartState};
