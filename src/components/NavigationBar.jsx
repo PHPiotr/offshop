@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {connect} from 'react-redux';
 import {Link as RouterLink} from 'react-router-dom';
 import PropTypes from 'prop-types';
@@ -10,7 +10,6 @@ import Badge from '@material-ui/core/Badge';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import {withStyles} from '@material-ui/core/styles';
 import Link from '@material-ui/core/Link';
-import Chip from "@material-ui/core/Chip";
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Divider from "@material-ui/core/Divider";
 import MenuIcon from '@material-ui/icons/Menu';
@@ -20,8 +19,8 @@ import ListItemText from '@material-ui/core/ListItemText';
 import List from "@material-ui/core/List";
 import ListSubheader from '@material-ui/core/ListSubheader';
 
-const logoFont = process.env.REACT_APP_LOGO_FONT || 'Roboto';
-const pageTitle = process.env.REACT_APP_PAGE_TITLE || 'Offshop';
+const logoFont = process.env.REACT_APP_LOGO_FONT;
+const pageTitle = process.env.REACT_APP_PAGE_TITLE;
 
 const styles = theme => ({
     root: {
@@ -60,7 +59,6 @@ const styles = theme => ({
 const NavigationBar = props => {
 
     const {classes, cart, isAuthenticated} = props;
-    const [isOffline, setIsOffline] = useState(!navigator.onLine);
     const [isMobileOpen, setIsMobileOpen] = useState(false);
 
     const handleDrawerOpen = () => {
@@ -71,22 +69,9 @@ const NavigationBar = props => {
         setIsMobileOpen(false);
     };
 
-    const setOfflineStatus = () => {
-        setIsOffline(!navigator.onLine);
-    };
-
-    useEffect(() => {
-        window.addEventListener('online', setOfflineStatus);
-        window.addEventListener('offline', setOfflineStatus);
-        return () => {
-            window.removeEventListener('online', setOfflineStatus);
-            window.removeEventListener('offline', setOfflineStatus);
-        };
-    }, []);
-
     const drawer = (
         <div>
-            {isAuthenticated && (
+            {isAuthenticated && isMobileOpen && (
                 <List subheader={<ListSubheader>Admin</ListSubheader>}>
                     <Divider />
                     <ListItem dense button className={props.classes.listItem}>
@@ -153,13 +138,11 @@ const NavigationBar = props => {
                             </Badge>
                         </IconButton>
                     </div>
-                    {isOffline && <div>
-                        <Chip label="Offline" className={classes.chip} color="secondary"/>
-                    </div>}
                 </Toolbar>
             </AppBar>
             <nav className={classes.drawer}>
                 <Drawer
+                    aria-label="Close drawer"
                     container={props.container}
                     variant="temporary"
                     anchor="left"
