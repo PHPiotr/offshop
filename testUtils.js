@@ -6,6 +6,7 @@ import {render} from '@testing-library/react';
 import io from './src/services/socket';
 import MockedSocket from 'socket.io-mock';
 import SocketContext from './src/contexts/SocketContext';
+import AuthContext from './src/contexts/AuthContext';
 let socket = new MockedSocket();
 jest.mock('./src/services/socket');
 io.mockResolvedValue(socket);
@@ -32,6 +33,27 @@ global.renderWithRouter = (
         <Provider store={store}>
             <SocketContext.Provider value={socket}>
                 <Router history={history}>{children}</Router>
+            </SocketContext.Provider>
+        </Provider>
+    );
+    return {...render(ui, { wrapper: Wrapper }), history};
+};
+
+global.renderWithAuth = (
+    ui,
+    store,
+    auth,
+    {
+        route = '/',
+        history = createMemoryHistory({ initialEntries: [route] }),
+    } = {}
+) => {
+    const Wrapper = ({ children }) => (
+        <Provider store={store}>
+            <SocketContext.Provider value={socket}>
+                <AuthContext.Provider value={auth}>
+                    <Router history={history}>{children}</Router>
+                </AuthContext.Provider>
             </SocketContext.Provider>
         </Provider>
     );
