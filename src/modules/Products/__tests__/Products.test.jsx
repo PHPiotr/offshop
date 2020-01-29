@@ -220,10 +220,13 @@ describe('Products', () => {
             const message = `Produkt ${productPayload.name} został usunięty.`;
 
             it('should show notification message when deleted product WAS active', async () => {
-                const {getByText, queryByText} = await renderWithStore(<Fragment><Products/><NotificationBar /></Fragment>, store);
+                const {getByText, queryByText, getByLabelText} = await renderWithStore(<Fragment><Products/><NotificationBar /></Fragment>, store);
                 expect(queryByText(message)).toBeNull();
                 socket.socketClient.emit('deleteProduct', {product: productPayload, wasActive: true});
                 expect(getByText(message)).toBeDefined();
+                const closeMessage = getByLabelText('Close');
+                fireEvent.click(closeMessage);
+                expect(queryByText(message)).toBeNull();
             });
 
             it('should not show notification message when deleted product WAS NOT active', async () => {

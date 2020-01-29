@@ -6,6 +6,7 @@ import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import App from '../App';
 import reducers from '../reducers';
+import {UPDATE_AUTH} from '../modules/Auth/actionTypes';
 
 const mock = new MockAdapter(axios);
 let store;
@@ -55,6 +56,22 @@ describe('App', () => {
             route: '/something-that-does-not-match',
         });
         expect(await waitForElement(() => getByText('Request failed with status code 404'))).toBeDefined();
+    });
+
+    it('should be able to toggle drawer visibility', async () => {
+        store.dispatch({type: UPDATE_AUTH, payload: {
+            accessToken: 'j.w.t',
+            idToken: 'foo.bar.baz',
+            expiresAt: new Date().getTime() + 3600,
+            }});
+        const {getByLabelText, getByText, queryByText} = await renderWithRouter(<App/>, {...store});
+        const openDrawer = await waitForElement(() => getByLabelText('Open drawer'));
+        expect(queryByText('Admin')).toBeNull();
+        fireEvent.click(openDrawer);
+        expect(getByText('Admin')).toBeDefined();
+        const closeDrawer = getByLabelText('Close drawer');
+        fireEvent.click(closeDrawer);
+        expect(queryByText('Admin')).toBeNull();
     });
 
 });
