@@ -20,7 +20,7 @@ const BuyerListItem = ({buyer}) => {
                 {buyerOpen ? <ExpandLess/> : <ExpandMore/>}
             </ButtonListItem>
             <Collapse in={buyerOpen} timeout="auto" unmountOnExit>
-                <BuyerDetailsList buyer={buyer} />
+                {buyerOpen ? <BuyerDetailsList buyer={buyer} /> : null}
             </Collapse>
         </Fragment>
     );

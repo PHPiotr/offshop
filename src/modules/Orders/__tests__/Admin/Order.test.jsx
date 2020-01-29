@@ -96,6 +96,17 @@ describe('Admin/Order', () => {
         expect(getByText(`${(orderPayload.totalWeight / 100).toFixed(2)} kg`)).toBeDefined();
     });
 
+    it('should toggle visibility of buyer section', async () => {
+        const {getByText, queryByText} = await renderWithStore(<Order match={{params: {id: orderPayload.extOrderId}}}/>, store);
+        expect(await waitForElement(() => getByText(`Zamówienie ${orderPayload.extOrderId}`))).toBeDefined();
+        const buyerLabel = await waitForElement(() => getByText('Kupujący'));
+        expect(queryByText(orderPayload.buyer.firstName)).toBeNull();
+        fireEvent.click(buyerLabel);
+        expect(getByText(orderPayload.buyer.firstName)).toBeDefined();
+        fireEvent.click(buyerLabel);
+        expect(queryByText(orderPayload.buyer.firstName)).toBeNull();
+    });
+
     it('should render error page on retrieve order failure', async () => {
         mock.onGet(/admin\/orders/).networkError();
         const {getByText} = await renderWithStore(<Order match={{params: {id: orderPayload.extOrderId}}}/>, store);
