@@ -1,6 +1,7 @@
 import React from 'react';
 import {Provider} from 'react-redux';
-import {BrowserRouter} from 'react-router-dom';
+import {BrowserRouter, Router} from 'react-router-dom';
+import {createMemoryHistory} from 'history';
 import {render} from '@testing-library/react';
 import io from './src/services/socket';
 import MockedSocket from 'socket.io-mock';
@@ -18,6 +19,24 @@ global.renderWithStore = (node, store) => render(
         </SocketContext.Provider>
     </Provider>
 );
+
+global.renderWithRouter = (
+    ui,
+    store,
+    {
+        route = '/',
+        history = createMemoryHistory({ initialEntries: [route] }),
+    } = {}
+) => {
+    const Wrapper = ({ children }) => (
+        <Provider store={store}>
+            <SocketContext.Provider value={socket}>
+                <Router history={history}>{children}</Router>
+            </SocketContext.Provider>
+        </Provider>
+    );
+    return {...render(ui, { wrapper: Wrapper }), history};
+};
 
 global.fakeLocalStorage = () => {
     Object.defineProperty(window, "localStorage", {

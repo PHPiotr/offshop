@@ -89,7 +89,7 @@ const Checkout = props => {
 };
 
 const mapStateToProps = state => ({
-    products: state.cart.ids.map(i => state.products.data[i]) || [],
+    products: state.cart.ids.map(i => state.products.data[i]),
     order: state.order,
     hasProductsInCart: state.cart.ids.length > 0,
 });
