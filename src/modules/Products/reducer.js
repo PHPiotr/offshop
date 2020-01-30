@@ -161,7 +161,7 @@ const initialAdminProductsState = {
     isFetching: false,
     data: {},
     ids: [],
-    error: {},
+    error: null,
 };
 
 export const adminProducts = (state = initialAdminProductsState, action) => {
@@ -170,6 +170,7 @@ export const adminProducts = (state = initialAdminProductsState, action) => {
             return {
                 ...state,
                 isFetching: true,
+                error: null,
             };
         case actions.RETRIEVE_ADMIN_PRODUCTS_SUCCESS:
             return {

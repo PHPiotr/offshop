@@ -59,14 +59,14 @@ describe('Admin/ProductsList', () => {
             combineReducers({adminProducts, auth}),
             applyMiddleware(thunk),
         );
+    });
+
+    it('should delete product', async () => {
         mock.onGet(/admin\/products/).replyOnce(200, adminProductsPayload);
         mock.onDelete(/admin\/products/).replyOnce(() => {
             socket.socketClient.emit('adminDeleteProduct', {product: adminProductsPayload[0], wasActive: adminProductsPayload[0].active});
             return [204];
         });
-    });
-
-    it('should delete product', async () => {
         const testedProductName = adminProductsPayload[0].name;
         const {getByLabelText, getByText, queryByText} = await renderWithStore(<ProductsList/>, store);
         expect(await waitForElement(() => getByText(testedProductName))).toBeDefined();
@@ -79,6 +79,12 @@ describe('Admin/ProductsList', () => {
         fireEvent.click(deleteBtn);
         fireEvent.click(yes);
         expect(queryByText(testedProductName)).toBeNull();
+    });
+
+    it('should render error page on list products failure', async () => {
+        mock.onGet(/admin\/products/).networkErrorOnce();
+        const {getByText} = await renderWithStore(<ProductsList/>, store);
+        expect(await waitForElement(() => getByText('Network Error'))).toBeDefined();
     });
 
 });
