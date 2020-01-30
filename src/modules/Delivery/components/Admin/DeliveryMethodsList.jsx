@@ -16,6 +16,7 @@ import Dialog from '../../../../components/Dialog';
 import ProgressIndicator from '../../../../components/ProgressIndicator';
 import {getAdminDeliveryMethodsIfNeeded, deleteDeliveryMethodIfNeeded} from '../../actions';
 import {showNotification} from '../../../../actions/notification';
+import ErrorPage from '../../../../components/ErrorPage';
 
 const styles = theme => ({
     root: {
@@ -53,6 +54,10 @@ const DeliveryMethodsList = props => {
         toggleDialog();
         props.deleteDeliveryMethodIfNeeded(deliveryMethodToDelete.id);
     };
+
+    if (props.error) {
+        return <ErrorPage message={props.error.message}/>;
+    }
 
     return (
         <Fragment>
@@ -107,6 +112,7 @@ DeliveryMethodsList.propTypes = {
 const mapStateToProps = state => ({
     data: state.adminDeliveryMethods.ids.map(i => state.adminDeliveryMethods.data[i]),
     isFetching: state.adminDeliveryMethods.isFetching,
+    error: state.adminDeliveryMethods.error,
 });
 
 const mapDispatchToProps = {

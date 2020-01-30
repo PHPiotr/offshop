@@ -13,7 +13,7 @@ const adminDeliveryMethodsInitialState = {
     isFetching: false,
     data: {},
     ids: [],
-    error: {},
+    error: null,
 };
 
 export const adminDeliveryMethod = (state = adminDeliveryMethodInitialState, action) => {
@@ -37,7 +37,7 @@ export const adminDeliveryMethod = (state = adminDeliveryMethodInitialState, act
                 isFetching: false,
             };
         case actions.RESET_DELIVERY_METHOD:
-            return adminDeliveryMethodsInitialState;
+            return adminDeliveryMethodInitialState;
         default:
             return state;
     }
@@ -49,6 +49,7 @@ export const adminDeliveryMethods = (state = adminDeliveryMethodsInitialState, a
             return {
                 ...state,
                 isFetching: true,
+                error: null,
             };
         case actions.RETRIEVE_ADMIN_DELIVERY_METHODS_SUCCESS:
             return {

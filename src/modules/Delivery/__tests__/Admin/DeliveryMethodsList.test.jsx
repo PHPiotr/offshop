@@ -47,12 +47,12 @@ describe('Admin/DeliveryMethodsList', () => {
             }),
             applyMiddleware(thunk),
         );
-        mock.onGet(/admin\/delivery-methods/).reply(200, deliveryMethodsPayload);
-        mock.onDelete(/admin\/delivery-methods/).reply(204);
     });
 
     it('should render', async () => {
-        const {getByText, getByTestId} = await renderWithStore(<><DeliveryMethodsList /><NotificationBar/></>, store);
+        mock.onGet(/admin\/delivery-methods/).reply(200, deliveryMethodsPayload);
+        mock.onDelete(/admin\/delivery-methods/).reply(204);
+        const {getByText, getByTestId} = await renderWithStore(<><DeliveryMethodsList/><NotificationBar/></>, store);
         let i = deliveryMethodsPayload.length;
         while (--i) {
             const currentItem = deliveryMethodsPayload[i];
@@ -63,6 +63,12 @@ describe('Admin/DeliveryMethodsList', () => {
             const confirmDeleteBtn = getByText('Tak');
             fireEvent.click(confirmDeleteBtn);
         }
+    });
+
+    it('should render error page on list delivery methods failure', async () => {
+        mock.onGet(/admin\/delivery-methods/).networkErrorOnce();
+        const {getByText} = await renderWithStore(<DeliveryMethodsList/>, store);
+        expect(await waitForElement(() => getByText('Network Error'))).toBeDefined();
     });
 
 });
