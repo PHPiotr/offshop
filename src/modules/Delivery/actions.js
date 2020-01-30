@@ -98,9 +98,9 @@ export const getAdminDeliveryMethodsIfNeeded = (params = {}) => {
             const {data} = await getRequestPrivate(accessToken)('/admin/delivery-methods', params);
             const payload = normalize(data, deliveryMethodSchema.deliveryMethodList);
             dispatch({type: actions.RETRIEVE_ADMIN_DELIVERY_METHODS_SUCCESS, payload});
+            return payload;
         } catch (error) {
             dispatch({type: actions.RETRIEVE_ADMIN_DELIVERY_METHODS_FAILURE, payload: {error}});
-            throw error;
         }
     };
 };

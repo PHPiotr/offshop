@@ -7,7 +7,7 @@ import {withRouter} from 'react-router-dom';
 import {addToCart} from '../../../modules/ShoppingCart/actions';
 import {openDialog} from '../../../actions/dialog';
 import {showNotification} from '../../../actions/notification';
-import {getProductIfNeeded, resetProductData, onDeleteCurrentProduct, onUpdateCurrentProduct} from '../actions';
+import {getProductIfNeeded, onDeleteCurrentProduct, onUpdateCurrentProduct} from '../actions';
 import ProductView from './ProductView';
 import RequestHandler from '../../../components/RequestHandler';
 import SocketContext from '../../../contexts/SocketContext';
@@ -122,7 +122,6 @@ const mapStateToProps = state => ({
 });
 const mapDispatchToProps = {
     getProductIfNeeded,
-    resetProductData,
     addToCart,
     openDialog,
     onDeleteCurrentProduct,

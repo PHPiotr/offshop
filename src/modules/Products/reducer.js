@@ -81,8 +81,6 @@ export const product = (state = initialProductState, action) => {
                 isFetching: false,
                 error: action.payload,
             };
-        case actions.RESET_PRODUCT_DATA:
-            return initialProductState;
         default:
             return state;
     }
