@@ -66,10 +66,6 @@ export const onDeleteProduct = (product) => ({
     payload: {product},
 });
 
-export const resetProductData = () => ({
-    type: actions.RESET_PRODUCT_DATA,
-});
-
 export const onDeleteCurrentProduct = product => ({
     type: actions.ON_DELETE_CURRENT_PRODUCT,
     payload: {product},
