@@ -102,6 +102,7 @@ const ProductsList = props => {
                             />
                             <ListItemSecondaryAction>
                                 <IconButton
+                                    aria-label={`Delete product ${p.id}`}
                                     onClick={showDeleteProductPrompt(p)}
                                     disabled={false}
                                 >
