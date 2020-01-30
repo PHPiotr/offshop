@@ -22,6 +22,7 @@ import {getAdminProductsIfNeeded, deleteProductIfNeeded} from '../../../../modul
 import {showNotification} from '../../../../actions/notification';
 import useInfiniteScrolling from '../../../../hooks/useInfiniteScrolling';
 import SocketContext from '../../../../contexts/SocketContext';
+import ErrorPage from '../../../../components/ErrorPage';
 
 const styles = theme => ({
     root: {
@@ -73,6 +74,10 @@ const ProductsList = props => {
         toggleDialog();
         props.deleteProductIfNeeded(productToDelete.id);
     };
+
+    if (props.error) {
+        return <ErrorPage message={props.error.message} />
+    }
 
     return (
         <Fragment>
@@ -142,6 +147,7 @@ ProductsList.propTypes = {
 const mapStateToProps = state => ({
     products: state.adminProducts.ids.map(i => state.adminProducts.data[i]),
     isFetching: state.adminProducts.isFetching,
+    error: state.adminProducts.error,
 });
 
 const mapDispatchToProps = {
