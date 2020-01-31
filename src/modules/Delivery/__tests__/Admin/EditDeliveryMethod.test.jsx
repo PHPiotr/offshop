@@ -38,31 +38,48 @@ describe('Admin/EditDeliveryMethod', () => {
             }),
             applyMiddleware(thunk),
         );
-        mock.onGet(/admin\/delivery-methods/).replyOnce(() => {
-            return [200, deliveryMethodPayload];
-        });
     });
 
-    it('should render edit-delivery-method page', async () => {
-        mock.onPut(/admin\/delivery-methods/).replyOnce(() => {
-            socket.socketClient.emit('adminUpdateDelivery', {deliveryMethod: deliveryMethodPayload});
-            return [200, deliveryMethodPayload];
+    describe('fetch delivery method ok', () => {
+
+        beforeEach(() => {
+            mock.onGet(/admin\/delivery-methods/).replyOnce(() => {
+                return [200, deliveryMethodPayload];
+            });
         });
-        const {getByText, getByRole} = await renderWithStore(<><EditDeliveryMethod match={{params: {id: deliveryMethodPayload.id}}}/><NotificationBar/></>, store);
-        expect(await waitForElement(() => getByText('Edytuj opcję dostawy'))).toBeDefined();
-        expect(await waitForElement(() => getByText('Zapisz'))).toBeDefined();
-        const saveBtn = await waitForElement(() => getByRole('button'));
-        expect(saveBtn.disabled).toBe(false);
-        fireEvent.click(saveBtn);
-        expect(await waitForElement(() => getByText(`Opcja dostawy ${deliveryMethodPayload.name} została zmieniona.`))).toBeDefined();
+
+        it('should render edit-delivery-method page', async () => {
+            mock.onPut(/admin\/delivery-methods/).replyOnce(() => {
+                socket.socketClient.emit('adminUpdateDelivery', {deliveryMethod: deliveryMethodPayload});
+                return [200, deliveryMethodPayload];
+            });
+            const {getByText, getByRole} = await renderWithStore(<><EditDeliveryMethod match={{params: {id: deliveryMethodPayload.id}}}/><NotificationBar/></>, store);
+            expect(await waitForElement(() => getByText('Edytuj opcję dostawy'))).toBeDefined();
+            expect(await waitForElement(() => getByText('Zapisz'))).toBeDefined();
+            const saveBtn = await waitForElement(() => getByRole('button'));
+            expect(saveBtn.disabled).toBe(false);
+            fireEvent.click(saveBtn);
+            expect(await waitForElement(() => getByText(`Opcja dostawy ${deliveryMethodPayload.name} została zmieniona.`))).toBeDefined();
+        });
+
+        it('should show error message on network error', async () => {
+            mock.onPut(/admin\/delivery-methods/).networkErrorOnce();
+            const {getByText, getByRole} = await renderWithStore(<><EditDeliveryMethod match={{params: {id: deliveryMethodPayload.id}}}/><NotificationBar/></>, store);
+            const saveBtn = await waitForElement(() => getByRole('button'));
+            fireEvent.click(saveBtn);
+            expect(await waitForElement(() => getByText('Network Error'))).toBeDefined();
+        });
+
     });
 
-    it('should show error message on network error', async () => {
-        mock.onPut(/admin\/delivery-methods/).networkErrorOnce();
-        const {getByText, getByRole} = await renderWithStore(<><EditDeliveryMethod match={{params: {id: deliveryMethodPayload.id}}}/><NotificationBar/></>, store);
-        const saveBtn = await waitForElement(() => getByRole('button'));
-        fireEvent.click(saveBtn);
-        expect(await waitForElement(() => getByText('Network Error'))).toBeDefined();
+    describe('fetch delivery method fails', () => {
+
+        it('should render error page when loading delivery method fails', async () => {
+            mock.onGet(/admin\/delivery-methods/).networkErrorOnce();
+            const {getByText} = await renderWithStore(<EditDeliveryMethod match={{params: {id: deliveryMethodPayload.id}}}/>, store);
+            expect(await waitForElement(() => getByText('Network Error'))).toBeDefined();
+        });
+
     });
 
 });
