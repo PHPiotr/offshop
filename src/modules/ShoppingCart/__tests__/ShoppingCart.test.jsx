@@ -93,157 +93,179 @@ describe('ShoppingCart', () => {
             combineReducers({auth, cart, deliveryMethods, dialog, notification, products}),
             applyMiddleware(thunk),
         );
-        mock.onGet(/delivery-methods/).replyOnce(200, deliveryMethodsPayload);
-        mock.onGet(/products/).reply(200, productsPayload);
     });
 
-    afterEach(async () => {
-        await renderWithStore(null, store);
+    describe('response error', () => {
+
+        it('should render error page if getting delivery methods fails', async () => {
+            mock.onGet(/products/).reply(200, productsPayload);
+            const {getByTestId} = await renderWithStore(<Products/>, store);
+            const addToCartButton = await waitForElement(() => getByTestId(`add-to-cart-button-${firstProductId}`));
+            expect(addToCartButton).toBeDefined();
+            fireEvent.click(addToCartButton);
+            mock.onGet(/delivery-methods/).networkErrorOnce();
+            const {getByText} = await renderWithStore(<Cart/>, store);
+            expect(await waitForElement(() => getByText('Network Error'))).toBeDefined();
+        });
+
     });
 
-    it('should render empty cart page', async () => {
-        const {getByTestId} = await renderWithStore(<Cart/>, store);
-        const emptyCart = getByTestId('empty-cart');
-        expect(emptyCart).toBeDefined();
-    });
+    describe('response ok', () => {
 
-    it('should increment/decrement/remove items in cart', async () => {
-        const {getByTestId} = await renderWithStore(<Products/>, store);
-        const addToCartButton = await waitForElement(() => getByTestId(`add-to-cart-button-${firstProductId}`));
-        expect(addToCartButton).toBeDefined();
-        fireEvent.click(addToCartButton);
-        const {queryByTestId} = await renderWithStore(<Fragment><Navigation/><Cart/></Fragment>, store);
-        expect(queryByTestId('empty-cart')).toBeNull();
-        const productLink = getByTestId(`link-${firstProductId}`);
-        expect(productLink).toBeDefined();
-        const productIncrementBtn = getByTestId(`increment-${firstProductId}`);
-        expect(getByTestId('cart-badge').textContent).toBe('1');
-        fireEvent.click(productIncrementBtn);
-        expect(getByTestId('cart-badge').textContent).toBe('2');
-        const productDecrementBtn = getByTestId(`decrement-${firstProductId}`);
-        fireEvent.click(productDecrementBtn);
-        expect(getByTestId('cart-badge').textContent).toBe('1');
-        fireEvent.click(productDecrementBtn);
-        expect(getByTestId('cart-badge').textContent).toBe('1');
-        const firstItemStock = firstProduct.stock;
-        let i = firstItemStock - 1;
-        while(i--) {
+        beforeEach(() => {
+            mock.onGet(/delivery-methods/).replyOnce(200, deliveryMethodsPayload);
+            mock.onGet(/products/).reply(200, productsPayload);
+        });
+
+        afterEach(async () => {
+            await renderWithStore(null, store);
+        });
+
+        it('should render empty cart page', async () => {
+            const {getByTestId} = await renderWithStore(<Cart/>, store);
+            const emptyCart = getByTestId('empty-cart');
+            expect(emptyCart).toBeDefined();
+        });
+
+        it('should increment/decrement/remove items in cart', async () => {
+            const {getByTestId} = await renderWithStore(<Products/>, store);
+            const addToCartButton = await waitForElement(() => getByTestId(`add-to-cart-button-${firstProductId}`));
+            expect(addToCartButton).toBeDefined();
+            fireEvent.click(addToCartButton);
+            const {queryByTestId} = await renderWithStore(<Fragment><Navigation/><Cart/></Fragment>, store);
+            expect(queryByTestId('empty-cart')).toBeNull();
+            const productLink = getByTestId(`link-${firstProductId}`);
+            expect(productLink).toBeDefined();
+            const productIncrementBtn = getByTestId(`increment-${firstProductId}`);
+            expect(getByTestId('cart-badge').textContent).toBe('1');
             fireEvent.click(productIncrementBtn);
-        }
-        expect(getByTestId('cart-badge').textContent).toBe(firstItemStock);
-        fireEvent.click(productIncrementBtn);
-        expect(getByTestId('cart-badge').textContent).toBe(firstItemStock);
-        const productRemoveBtn = getByTestId(`remove-${firstProductId}`);
-        fireEvent.click(productRemoveBtn);
-        expect(getByTestId('cart-badge').textContent).toBe('0');
-    });
+            expect(getByTestId('cart-badge').textContent).toBe('2');
+            const productDecrementBtn = getByTestId(`decrement-${firstProductId}`);
+            fireEvent.click(productDecrementBtn);
+            expect(getByTestId('cart-badge').textContent).toBe('1');
+            fireEvent.click(productDecrementBtn);
+            expect(getByTestId('cart-badge').textContent).toBe('1');
+            const firstItemStock = firstProduct.stock;
+            let i = firstItemStock - 1;
+            while(i--) {
+                fireEvent.click(productIncrementBtn);
+            }
+            expect(getByTestId('cart-badge').textContent).toBe(firstItemStock);
+            fireEvent.click(productIncrementBtn);
+            expect(getByTestId('cart-badge').textContent).toBe(firstItemStock);
+            const productRemoveBtn = getByTestId(`remove-${firstProductId}`);
+            fireEvent.click(productRemoveBtn);
+            expect(getByTestId('cart-badge').textContent).toBe('0');
+        });
 
-    it('should render delivery methods and require to choose one before checkout', async () => {
-        const {getByTestId, getByText} = await renderWithStore(<Products/>, store);
-        const addToCartButton = await waitForElement(() => getByTestId(`add-to-cart-button-${firstProductId}`));
-        expect(addToCartButton).toBeDefined();
-        fireEvent.click(addToCartButton);
-        await renderWithStore(<Cart/>, store);
-        let i = deliveryMethodsPayloadLength;
-        let deliveryMethodRadio;
-        const checkoutButton = await waitForElement(() => getByTestId('checkout-btn'));
-        expect(checkoutButton.disabled).toBe(true);
-        while(i--) {
-            const currentDeliveryMethod = deliveryMethodsPayload[i];
-            expect(await waitForElement(() => getByText(currentDeliveryMethod.name))).toBeDefined();
-            expect(await waitForElement(() => getByText((currentDeliveryMethod.unitPrice * (store.getState().cart.weight / 100) / 100).toFixed(2)))).toBeDefined();
-            deliveryMethodRadio = await waitForElement(() => getByTestId(`radio-btn-${currentDeliveryMethod.id}`));
-            expect(deliveryMethodRadio).toBeDefined();
+        it('should render delivery methods and require to choose one before checkout', async () => {
+            const {getByTestId, getByText} = await renderWithStore(<Products/>, store);
+            const addToCartButton = await waitForElement(() => getByTestId(`add-to-cart-button-${firstProductId}`));
+            expect(addToCartButton).toBeDefined();
+            fireEvent.click(addToCartButton);
+            await renderWithStore(<Cart/>, store);
+            let i = deliveryMethodsPayloadLength;
+            let deliveryMethodRadio;
+            const checkoutButton = await waitForElement(() => getByTestId('checkout-btn'));
             expect(checkoutButton.disabled).toBe(true);
-        }
-        fireEvent.click(deliveryMethodRadio);
-        expect(checkoutButton.disabled).toBe(false);
-        fireEvent.click(checkoutButton);
-    });
-
-    it('should adjust total price on delivery method change and on item amount increment/decrement', async () => {
-        const {getByTestId} = await renderWithStore(<Products/>, store);
-        const addToCartButton = await waitForElement(() => getByTestId(`add-to-cart-button-${firstProductId}`));
-        expect(addToCartButton).toBeDefined();
-        fireEvent.click(addToCartButton);
-        await renderWithStore(<Cart/>, store);
-        const totalPriceWithDelivery = await waitForElement(() => getByTestId('total-price-with-delivery'));
-        expect(totalPriceWithDelivery.innerHTML).toBe((firstProduct.unitPrice / 100).toFixed(2));
-        const productIncrementBtn = getByTestId(`increment-${firstProductId}`);
-        const productDecrementBtn = getByTestId(`decrement-${firstProductId}`);
-        let i = deliveryMethodsPayloadLength;
-        while(i--) {
-            const currentDeliveryMethod = deliveryMethodsPayload[i];
-            const deliveryMethodRadio = await waitForElement(() => getByTestId(`radio-btn-${currentDeliveryMethod.id}`));
+            while(i--) {
+                const currentDeliveryMethod = deliveryMethodsPayload[i];
+                expect(await waitForElement(() => getByText(currentDeliveryMethod.name))).toBeDefined();
+                expect(await waitForElement(() => getByText((currentDeliveryMethod.unitPrice * (store.getState().cart.weight / 100) / 100).toFixed(2)))).toBeDefined();
+                deliveryMethodRadio = await waitForElement(() => getByTestId(`radio-btn-${currentDeliveryMethod.id}`));
+                expect(deliveryMethodRadio).toBeDefined();
+                expect(checkoutButton.disabled).toBe(true);
+            }
             fireEvent.click(deliveryMethodRadio);
-            const totalForOneItem = (currentDeliveryMethod.unitPrice * (firstProduct.weight / 100) / 100 + firstProduct.unitPrice / 100).toFixed(2);
-            const totalForTwoItems = (currentDeliveryMethod.unitPrice * (firstProduct.weight * 2 / 100) / 100 + firstProduct.unitPrice * 2 / 100).toFixed(2);
-            const totalForThreeItems = (currentDeliveryMethod.unitPrice * (firstProduct.weight * 3 / 100) / 100 + firstProduct.unitPrice * 3 / 100).toFixed(2);
-            expect(totalPriceWithDelivery.innerHTML).toBe(totalForOneItem);
-            fireEvent.click(productIncrementBtn);
-            expect(totalPriceWithDelivery.innerHTML).toBe(totalForTwoItems);
-            fireEvent.click(productIncrementBtn);
-            expect(totalPriceWithDelivery.innerHTML).toBe(totalForThreeItems);
-            fireEvent.click(productDecrementBtn);
-            expect(totalPriceWithDelivery.innerHTML).toBe(totalForTwoItems);
-            fireEvent.click(productDecrementBtn);
-            expect(totalPriceWithDelivery.innerHTML).toBe(totalForOneItem);
-        }
-    });
+            expect(checkoutButton.disabled).toBe(false);
+            fireEvent.click(checkoutButton);
+        });
 
-    describe('event listeners', () => {
+        it('should adjust total price on delivery method change and on item amount increment/decrement', async () => {
+            const {getByTestId} = await renderWithStore(<Products/>, store);
+            const addToCartButton = await waitForElement(() => getByTestId(`add-to-cart-button-${firstProductId}`));
+            expect(addToCartButton).toBeDefined();
+            fireEvent.click(addToCartButton);
+            await renderWithStore(<Cart/>, store);
+            const totalPriceWithDelivery = await waitForElement(() => getByTestId('total-price-with-delivery'));
+            expect(totalPriceWithDelivery.innerHTML).toBe((firstProduct.unitPrice / 100).toFixed(2));
+            const productIncrementBtn = getByTestId(`increment-${firstProductId}`);
+            const productDecrementBtn = getByTestId(`decrement-${firstProductId}`);
+            let i = deliveryMethodsPayloadLength;
+            while(i--) {
+                const currentDeliveryMethod = deliveryMethodsPayload[i];
+                const deliveryMethodRadio = await waitForElement(() => getByTestId(`radio-btn-${currentDeliveryMethod.id}`));
+                fireEvent.click(deliveryMethodRadio);
+                const totalForOneItem = (currentDeliveryMethod.unitPrice * (firstProduct.weight / 100) / 100 + firstProduct.unitPrice / 100).toFixed(2);
+                const totalForTwoItems = (currentDeliveryMethod.unitPrice * (firstProduct.weight * 2 / 100) / 100 + firstProduct.unitPrice * 2 / 100).toFixed(2);
+                const totalForThreeItems = (currentDeliveryMethod.unitPrice * (firstProduct.weight * 3 / 100) / 100 + firstProduct.unitPrice * 3 / 100).toFixed(2);
+                expect(totalPriceWithDelivery.innerHTML).toBe(totalForOneItem);
+                fireEvent.click(productIncrementBtn);
+                expect(totalPriceWithDelivery.innerHTML).toBe(totalForTwoItems);
+                fireEvent.click(productIncrementBtn);
+                expect(totalPriceWithDelivery.innerHTML).toBe(totalForThreeItems);
+                fireEvent.click(productDecrementBtn);
+                expect(totalPriceWithDelivery.innerHTML).toBe(totalForTwoItems);
+                fireEvent.click(productDecrementBtn);
+                expect(totalPriceWithDelivery.innerHTML).toBe(totalForOneItem);
+            }
+        });
 
-        const productPayload = productsPayload[0];
-        const deletedProductMessage = `Produkt ${productPayload.name} został usunięty.`;
-        const updatedProductMessage = `Produkt ${productPayload.name} został zmieniony.`;
+        describe('event listeners', () => {
 
-        describe('updateProduct', () => {
+            const productPayload = productsPayload[0];
+            const deletedProductMessage = `Produkt ${productPayload.name} został usunięty.`;
+            const updatedProductMessage = `Produkt ${productPayload.name} został zmieniony.`;
 
-            test.each([
-                [true, true, true, true, productPayload, updatedProductMessage],
-                [false, true, true, false, {...productPayload, id: 'foo'}, updatedProductMessage],
-                [false, true, true, false, {...productPayload, id: 'foo'}, deletedProductMessage],
-                [true, true, true, true, {...productPayload, active: false}, deletedProductMessage],
-                [true, true, true, true, {...productPayload, stock: 0}, deletedProductMessage],
-            ])('should notify of product updated: %s if wasActive: %s, isActive: %s, item being viewed: %s', async (shouldShow, wasActive, isActive, isViewed, product, message) => {
-                const {getByTestId, getByText, queryByText} = await renderWithStore(<Products/>, store);
-                const addToCartButton = await waitForElement(() => getByTestId(`add-to-cart-button-${firstProductId}`));
-                fireEvent.click(addToCartButton);
-                socket.removeAllListeners('updateProduct');
-                await renderWithStore(<Fragment><Cart/><NotificationBar/></Fragment>, store);
-                expect(queryByText(message)).toBeNull();
-                socket.socketClient.emit('updateProduct', {product, wasActive, isActive});
-                if (shouldShow) {
-                    expect(getByText(message)).toBeDefined();
-                } else {
+            describe('updateProduct', () => {
+
+                test.each([
+                    [true, true, true, true, productPayload, updatedProductMessage],
+                    [false, true, true, false, {...productPayload, id: 'foo'}, updatedProductMessage],
+                    [false, true, true, false, {...productPayload, id: 'foo'}, deletedProductMessage],
+                    [true, true, true, true, {...productPayload, active: false}, deletedProductMessage],
+                    [true, true, true, true, {...productPayload, stock: 0}, deletedProductMessage],
+                ])('should notify of product updated: %s if wasActive: %s, isActive: %s, item being viewed: %s', async (shouldShow, wasActive, isActive, isViewed, product, message) => {
+                    const {getByTestId, getByText, queryByText} = await renderWithStore(<Products/>, store);
+                    const addToCartButton = await waitForElement(() => getByTestId(`add-to-cart-button-${firstProductId}`));
+                    fireEvent.click(addToCartButton);
+                    socket.removeAllListeners('updateProduct');
+                    await renderWithStore(<Fragment><Cart/><NotificationBar/></Fragment>, store);
                     expect(queryByText(message)).toBeNull();
-                }
+                    socket.socketClient.emit('updateProduct', {product, wasActive, isActive});
+                    if (shouldShow) {
+                        expect(getByText(message)).toBeDefined();
+                    } else {
+                        expect(queryByText(message)).toBeNull();
+                    }
+                });
+
             });
 
-        });
+            describe('deleteProduct', () => {
 
-        describe('deleteProduct', () => {
-
-            test.each([
-                [true, true, true, productPayload],
-                [false, true, false, {...productPayload, id: 'foo'}],
-            ])('should notify of product deleted: %s if wasActive: %s, item being viewed: %s', async (shouldShow, wasActive, isViewed, product) => {
-                const {getByTestId, getByText, queryByText} = await renderWithStore(<Products/>, store);
-                const addToCartButton = await waitForElement(() => getByTestId(`add-to-cart-button-${firstProductId}`));
-                fireEvent.click(addToCartButton);
-                socket.removeAllListeners('deleteProduct');
-                await renderWithStore(<Fragment><Cart/><NotificationBar/></Fragment>, store);
-                expect(queryByText(deletedProductMessage)).toBeNull();
-                socket.socketClient.emit('deleteProduct', {product, wasActive});
-                if (shouldShow) {
-                    expect(getByText(deletedProductMessage)).toBeDefined();
-                } else {
+                test.each([
+                    [true, true, true, productPayload],
+                    [false, true, false, {...productPayload, id: 'foo'}],
+                ])('should notify of product deleted: %s if wasActive: %s, item being viewed: %s', async (shouldShow, wasActive, isViewed, product) => {
+                    const {getByTestId, getByText, queryByText} = await renderWithStore(<Products/>, store);
+                    const addToCartButton = await waitForElement(() => getByTestId(`add-to-cart-button-${firstProductId}`));
+                    fireEvent.click(addToCartButton);
+                    socket.removeAllListeners('deleteProduct');
+                    await renderWithStore(<Fragment><Cart/><NotificationBar/></Fragment>, store);
                     expect(queryByText(deletedProductMessage)).toBeNull();
-                }
+                    socket.socketClient.emit('deleteProduct', {product, wasActive});
+                    if (shouldShow) {
+                        expect(getByText(deletedProductMessage)).toBeDefined();
+                    } else {
+                        expect(queryByText(deletedProductMessage)).toBeNull();
+                    }
+                });
+
             });
 
         });
-
     });
+
 
 });
