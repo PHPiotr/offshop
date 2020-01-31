@@ -7,6 +7,7 @@ import {onUpdateProductInCart, onDeleteProductInCart} from '../actions';
 import {showNotification} from '../../../actions/notification';
 import {getDeliveryMethodsIfNeeded} from '../../Delivery/actions';
 import SocketContext from '../../../contexts/SocketContext';
+import ErrorPage from '../../../components/ErrorPage';
 
 const ShoppingCart = props => {
 
@@ -68,6 +69,10 @@ const ShoppingCart = props => {
         };
     }, []);
 
+    if (props.error) {
+        return <ErrorPage message={props.error.message}/>;
+    }
+
     if (!props.products.length) {
         return <EmptyCart/>;
     }
@@ -82,6 +87,7 @@ const ShoppingCart = props => {
 
 const mapStateToProps = state => ({
     products: state.cart.ids.map(i => state.products.data[i]),
+    error: state.deliveryMethods.error,
 });
 
 const mapDispatchToProps = {

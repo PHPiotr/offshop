@@ -93,32 +93,27 @@ const initialDeliveryMethodsState = {
     data: {},
     currentId: null,
     isFetching: false,
+    error: null,
 };
 
 export const deliveryMethods = (state = initialDeliveryMethodsState, {type, payload}) => {
     switch (type) {
-
         case actions.SET_CURRENT_DELIVERY_METHOD:
             return {
                 ...state,
                 currentId: payload.current.id,
             };
-        case actions.SYNC_DELIVERY_METHODS:
-            const newState = {...state};
-            payload.deliveryMethodsIds.forEach(id => newState[id].quantity = payload.productsById[id].quantity);
-            return {
-                ...state,
-                data: newState,
-            };
         case actions.RETRIEVE_DELIVERY_METHODS_REQUEST:
             return {
                 ...state,
                 isFetching: true,
+                error: null,
             };
         case actions.RETRIEVE_DELIVERY_METHODS_FAILURE:
             return {
                 ...state,
                 isFetching: false,
+                error: payload.error,
             };
         case actions.RETRIEVE_DELIVERY_METHODS_SUCCESS:
             return {

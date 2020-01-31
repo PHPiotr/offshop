@@ -29,11 +29,6 @@ export const getDeliveryMethodsIfNeeded = params => {
     };
 };
 
-export const sync = (deliveryMethodsIds, deliveryMethodsById) => ({
-    type: actions.SYNC_DELIVERY_METHODS,
-    payload: {deliveryMethodsIds, deliveryMethodsById},
-});
-
 export const onCreateDeliveryMethod = deliveryMethod => ({
     type: actions.ON_CREATE_DELIVERY_METHOD,
     payload: {deliveryMethod},
