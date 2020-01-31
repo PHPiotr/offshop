@@ -9,6 +9,7 @@ import {
     putRequestPrivate
 } from '../../api';
 import * as deliveryMethodsSchema from '../ShoppingCart/schema';
+import {SHOW_NOTIFICATION} from '../../actions/notification';
 
 export const setCurrentDeliveryMethod = current => ({
     type: actions.SET_CURRENT_DELIVERY_METHOD,
@@ -85,7 +86,7 @@ export const getAdminDeliveryMethodIfNeeded = deliveryMethodId => {
 
 export const resetDeliveryMethod = () => ({type: actions.RESET_DELIVERY_METHOD});
 
-export const getAdminDeliveryMethodsIfNeeded = (params = {}) => {
+export const getAdminDeliveryMethodsIfNeeded = params => {
     return async (dispatch, getState) => {
         const {auth: {accessToken}} = getState();
         dispatch({type: actions.RETRIEVE_ADMIN_DELIVERY_METHODS_REQUEST});
@@ -108,7 +109,7 @@ export const deleteDeliveryMethodIfNeeded = deliveryMethodId => {
             await deleteRequestPrivate(accessToken)(`/admin/delivery-methods/${deliveryMethodId}`);
             dispatch({type: actions.DELETE_DELIVERY_METHOD_SUCCESS});
         } catch (error) {
-            dispatch({type: actions.DELETE_DELIVERY_METHOD_FAILURE, payload: {error, ids}});
+            dispatch({type: actions.DELETE_DELIVERY_METHOD_FAILURE, payload: {ids}});
             throw error;
         }
     };

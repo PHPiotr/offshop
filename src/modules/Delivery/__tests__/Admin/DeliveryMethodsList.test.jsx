@@ -49,7 +49,7 @@ describe('Admin/DeliveryMethodsList', () => {
         );
     });
 
-    it('should render', async () => {
+    it('should render list page and be able to delete delivery method', async () => {
         mock.onGet(/admin\/delivery-methods/).reply(200, deliveryMethodsPayload);
         mock.onDelete(/admin\/delivery-methods/).reply(204);
         const {getByText, getByTestId} = await renderWithStore(<><DeliveryMethodsList/><NotificationBar/></>, store);
@@ -69,6 +69,24 @@ describe('Admin/DeliveryMethodsList', () => {
         mock.onGet(/admin\/delivery-methods/).networkErrorOnce();
         const {getByText} = await renderWithStore(<DeliveryMethodsList/>, store);
         expect(await waitForElement(() => getByText('Network Error'))).toBeDefined();
+    });
+
+    it('should show error snackbar on delete failure and bring back optimistically removed item', async () => {
+        mock.onGet(/admin\/delivery-methods/).reply(200, deliveryMethodsPayload);
+        mock.onDelete(/admin\/delivery-methods/).networkError();
+        const {getByText, getByTestId, queryByText} = await renderWithStore(<><DeliveryMethodsList/><NotificationBar/></>, store);
+        let i = deliveryMethodsPayload.length;
+        while (--i) {
+            const currentItem = deliveryMethodsPayload[i];
+            const deliveryMethodElement = await waitForElement(() => getByText(currentItem.name));
+            expect(deliveryMethodElement).toBeDefined();
+            const deleteBtn = await waitForElement(() => getByTestId(`delete-btn-${currentItem.id}`));
+            fireEvent.click(deleteBtn);
+            const confirmDeleteBtn = getByText('Tak');
+            fireEvent.click(confirmDeleteBtn);
+            expect(await waitForElement(() => getByText('Network Error'))).toBeDefined();
+            expect(getByText(currentItem.name));
+        }
     });
 
 });

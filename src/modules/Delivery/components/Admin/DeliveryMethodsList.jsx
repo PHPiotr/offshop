@@ -50,9 +50,13 @@ const DeliveryMethodsList = props => {
         toggleDialog();
     };
 
-    const handleDeleteDeliveryMethod = () => {
+    const handleDeleteDeliveryMethod = async () => {
         toggleDialog();
-        props.deleteDeliveryMethodIfNeeded(deliveryMethodToDelete.id);
+        try {
+            await props.deleteDeliveryMethodIfNeeded(deliveryMethodToDelete.id);
+        } catch (e) {
+            props.showNotification({message: e.message, variant: 'error'});
+        }
     };
 
     if (props.error) {
