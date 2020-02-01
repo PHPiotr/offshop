@@ -37,10 +37,8 @@ let BuyerDeliveryForm = props => {
                     const validateFunctions = [];
                     let required = false;
                     validate.forEach(rule => {
-                        if (rule === 'required') {
-                            validateFunctions.push(validateRequired);
-                            required = true;
-                        }
+                        validateFunctions.push(validateRequired);
+                        required = true;
                     });
                     acc.push(
                         <Grid item xs={12} key={itemId}>
