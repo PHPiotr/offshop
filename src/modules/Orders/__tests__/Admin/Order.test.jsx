@@ -22,6 +22,7 @@ const orderPayload = {
     totalAmount: '90200',
     totalWithoutDelivery: '87312',
     id: '5e149a3e8f62305337b7c8a3',
+    description: 'foo',
     currencyCode: 'PLN',
     totalWeight: '200',
     properties: [
