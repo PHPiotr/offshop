@@ -165,7 +165,7 @@ describe('Checkout', () => {
     });
 
     it('should prevent from proceeding to next step before filling required fields', async () => {
-        const {getByText, getByTestId, queryByTestId} = await renderWithStore(<Products/>, store);
+        const {getByText, getByTestId, queryByText, queryByTestId} = await renderWithStore(<Products/>, store);
         const addToCartButton = await waitForElement(() => getByTestId(`add-to-cart-button-${productsPayload[0].id}`));
         fireEvent.click(addToCartButton);
         await renderWithStore(<Cart/>, store);
@@ -175,7 +175,11 @@ describe('Checkout', () => {
         let nextStepButton = queryByTestId('next-step-btn');
         expect(nextStepButton).toBeNull();
         const emailInput = getByTestId('email').getElementsByTagName('input')[0];
+        fireEvent.change(emailInput, {target: {value: 'invalid_email'}});
+        fireEvent.blur(emailInput);
+        expect(getByText('Niepoprawny email')).toBeDefined();
         fireEvent.change(emailInput, {target: {value: 'john.doe@example.com'}});
+        expect(queryByText('Niepoprawny email')).toBeNull();
         expect(getByTestId('next-step-btn')).toBeDefined();
         fireEvent.change(emailInput, {target: {value: 'invalid email'}});
         expect(queryByTestId('next-step-btn')).toBeNull();
