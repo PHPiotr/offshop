@@ -200,7 +200,11 @@ describe('Checkout', () => {
         requiredFields.forEach((key, idx) => {
             expect(queryByTestId('next-step-btn')).toBeNull();
             const requiredInput = getByTestId(key).getElementsByTagName('input')[0];
+            fireEvent.change(requiredInput, {target: {value: ''}});
+            fireEvent.blur(requiredInput);
+            expect(getByText('To pole jest wymagane')).toBeDefined();
             fireEvent.change(requiredInput, {target: {value: 'foo'}});
+            expect(queryByText('To pole jest wymagane')).toBeNull();
         });
         nextStepButton = getByTestId('next-step-btn');
         fireEvent.click(nextStepButton);
