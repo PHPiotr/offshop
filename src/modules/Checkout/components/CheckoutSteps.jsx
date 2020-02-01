@@ -14,7 +14,7 @@ import BuyerForm from '../../Buyers/components/Buyer';
 import BuyerDeliveryForm from '../../Buyers/components/BuyerDelivery';
 import Review from './Review';
 import {getFormValues, isValid} from 'redux-form';
-import {stepBack, stepNext} from '../actions';
+import {stepBack, stepNext, setActiveStepId} from '../actions';
 import steps from '../config';
 
 const styles = theme => ({
@@ -84,7 +84,7 @@ const CheckoutSteps = props => {
                 {stepsIds.map(id => (
                     <Step key={id} className={classes.step}>
                         {(id < activeStepId) ? (
-                            <StepButton onClick={handleOnStepButtonClick(id)}>
+                            <StepButton onClick={handleOnStepButtonClick(id)} data-testid={`step-btn`}>
                                 <StepLabel>{steps[id].label}</StepLabel>
                             </StepButton>
                         ) : (
@@ -145,6 +145,9 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
     },
     handleBack() {
         dispatch(stepBack());
+    },
+    handleSetActiveStepId(id) {
+        dispatch(setActiveStepId(id));
     },
     redirectToCart() {
         ownProps.history.replace('/cart');

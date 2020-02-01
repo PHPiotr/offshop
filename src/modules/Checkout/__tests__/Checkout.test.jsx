@@ -184,8 +184,16 @@ describe('Checkout', () => {
         fireEvent.change(emailInput, {target: {value: 'invalid email'}});
         expect(queryByTestId('next-step-btn')).toBeNull();
         fireEvent.change(emailInput, {target: {value: 'john.doe@example.com'}});
-        nextStepButton = getByTestId('next-step-btn');
-        fireEvent.click(nextStepButton);
+        fireEvent.click(getByText('Wróć'));
+        fireEvent.click(getByTestId('next-step-btn'));
+        expect(queryByTestId('email')).toBeNull();
+        fireEvent.click(getByText('Wróć'));
+        expect(getByTestId('email')).toBeDefined();
+        fireEvent.click(getByTestId('next-step-btn'));
+        const prevStepBtn = getByTestId('step-btn');
+        fireEvent.click(prevStepBtn);
+        expect(getByTestId('email')).toBeDefined();
+        fireEvent.click(getByTestId('next-step-btn'));
         expect(queryByTestId('email')).toBeNull();
         const inputKeys = store.getState().buyerDelivery.ids;
         const inputs = store.getState().buyerDelivery.data;
