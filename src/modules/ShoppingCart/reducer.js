@@ -119,18 +119,13 @@ export const cart = (state = initialCartState, { payload, type }) => {
             };
         case actions.DECREMENT_IN_CART:
 
-            item = state.products[payload.item.id] || {
-                quantity: 0,
-                weight: 0,
-                totalPrice: 0,
-            };
+            item = state.products[payload.item.id];
 
             return {
                 ...state,
                 quantity: state.quantity - payload.quantity,
                 weight: state.weight - payload.item.weight * payload.quantity,
                 totalPrice: state.totalPrice - (payload.item.unitPrice * payload.quantity),
-                ids: item.quantity - payload.quantity <= 0 ? state.ids.filter(i => i !== payload.item.id) : state.ids,
                 products: {...state.products, [payload.item.id]: {
                         quantity: item.quantity - payload.quantity,
                         weight: item.weight - payload.item.weight * payload.quantity,
@@ -141,10 +136,12 @@ export const cart = (state = initialCartState, { payload, type }) => {
             };
         case ON_DELETE_PRODUCT:
         case actions.DELETE_FROM_CART:
-            if (type === ON_DELETE_PRODUCT && state.products[payload.product.id] === undefined) {
+            const payloadProductId = payload.product.id;
+            const productBeingDeleted = state.products[payloadProductId];
+            if (productBeingDeleted === undefined) {
                 return state;
             }
-            const {quantity, weight, totalPrice} = state.products[payload.product.id] || {};
+            const {quantity, weight, totalPrice} = productBeingDeleted;
 
             return {
                 ...state,
@@ -152,7 +149,7 @@ export const cart = (state = initialCartState, { payload, type }) => {
                 weight: state.weight - weight,
                 totalPrice: state.totalPrice - totalPrice,
                 ids: state.ids.filter(id => id !== payload.product.id),
-                products: {...state.products, [payload.product.id]: undefined},
+                products: {...state.products, [payloadProductId]: undefined},
                 deliveryTotalPrice: Math.round(state.deliveryUnitPrice * (state.weight - weight) / 100),
                 totalPriceWithDelivery: Math.round((state.totalPrice - totalPrice) + (state.deliveryUnitPrice * (state.weight - weight) / 100)),
             };
