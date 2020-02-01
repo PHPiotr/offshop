@@ -165,7 +165,7 @@ describe('Checkout', () => {
     });
 
     it('should prevent from proceeding to next step before filling required fields', async () => {
-        const {getByText, getByTestId, queryByTestId} = await renderWithStore(<Products/>, store);
+        const {getByText, getByTestId, queryByText, queryByTestId} = await renderWithStore(<Products/>, store);
         const addToCartButton = await waitForElement(() => getByTestId(`add-to-cart-button-${productsPayload[0].id}`));
         fireEvent.click(addToCartButton);
         await renderWithStore(<Cart/>, store);
@@ -175,13 +175,25 @@ describe('Checkout', () => {
         let nextStepButton = queryByTestId('next-step-btn');
         expect(nextStepButton).toBeNull();
         const emailInput = getByTestId('email').getElementsByTagName('input')[0];
+        fireEvent.change(emailInput, {target: {value: 'invalid_email'}});
+        fireEvent.blur(emailInput);
+        expect(getByText('Niepoprawny email')).toBeDefined();
         fireEvent.change(emailInput, {target: {value: 'john.doe@example.com'}});
+        expect(queryByText('Niepoprawny email')).toBeNull();
         expect(getByTestId('next-step-btn')).toBeDefined();
         fireEvent.change(emailInput, {target: {value: 'invalid email'}});
         expect(queryByTestId('next-step-btn')).toBeNull();
         fireEvent.change(emailInput, {target: {value: 'john.doe@example.com'}});
-        nextStepButton = getByTestId('next-step-btn');
-        fireEvent.click(nextStepButton);
+        fireEvent.click(getByText('Wróć'));
+        fireEvent.click(getByTestId('next-step-btn'));
+        expect(queryByTestId('email')).toBeNull();
+        fireEvent.click(getByText('Wróć'));
+        expect(getByTestId('email')).toBeDefined();
+        fireEvent.click(getByTestId('next-step-btn'));
+        const prevStepBtn = getByTestId('step-btn');
+        fireEvent.click(prevStepBtn);
+        expect(getByTestId('email')).toBeDefined();
+        fireEvent.click(getByTestId('next-step-btn'));
         expect(queryByTestId('email')).toBeNull();
         const inputKeys = store.getState().buyerDelivery.ids;
         const inputs = store.getState().buyerDelivery.data;
@@ -196,7 +208,11 @@ describe('Checkout', () => {
         requiredFields.forEach((key, idx) => {
             expect(queryByTestId('next-step-btn')).toBeNull();
             const requiredInput = getByTestId(key).getElementsByTagName('input')[0];
+            fireEvent.change(requiredInput, {target: {value: ''}});
+            fireEvent.blur(requiredInput);
+            expect(getByText('To pole jest wymagane')).toBeDefined();
             fireEvent.change(requiredInput, {target: {value: 'foo'}});
+            expect(queryByText('To pole jest wymagane')).toBeNull();
         });
         nextStepButton = getByTestId('next-step-btn');
         fireEvent.click(nextStepButton);
