@@ -17,21 +17,21 @@ import {deliveryMethods} from '../../../modules/Delivery/reducer';
 
 const deliveryMethodsPayload = [
     {
-        id: "5c7dca6a0c37236da9232f9d",
-        name: "Foo",
-        slug: "foo",
-        unitPrice: "1999",
-        createdAt: "2019-03-05T01:01:30.486Z",
-        updatedAt: "2019-10-10T21:23:01.106Z",
+        id: '5c7dca6a0c37236da9232f9d',
+        name: 'Foo',
+        slug: 'foo',
+        unitPrice: '1999',
+        createdAt: '2019-03-05T01:01:30.486Z',
+        updatedAt: '2019-10-10T21:23:01.106Z',
         active: true,
     },
     {
-        id: "5cd6be587732b1ba409678b2",
-        name: "Bar",
-        slug: "bar",
-        unitPrice: "2999",
-        createdAt: "2019-05-11T12:21:44.173Z",
-        updatedAt: "2019-10-10T21:28:58.547Z",
+        id: '5cd6be587732b1ba409678b2',
+        name: 'Bar',
+        slug: 'bar',
+        unitPrice: '2999',
+        createdAt: '2019-05-11T12:21:44.173Z',
+        updatedAt: '2019-10-10T21:28:58.547Z',
         active: true,
     },
 ];
@@ -39,41 +39,41 @@ const deliveryMethodsPayload = [
 const productsPayload = [
     {
         active: true,
-        stock: "29",
+        stock: '29',
         images: [
             {
-                avatar: "5da476864f651730df445456.avatar.jpg?abb63a0b73a1cc303570caed5ab39036",
-                card: "5da476864f651730df445456.card.jpg?fc373385a066033dc2de08d152ffabd0",
-                tile: "5da476864f651730df445456.tile.jpg?297aca95d06c26c3cf47fe98ce37c3c0",
+                avatar: '5da476864f651730df445456.avatar.jpg?abb63a0b73a1cc303570caed5ab39036',
+                card: '5da476864f651730df445456.card.jpg?fc373385a066033dc2de08d152ffabd0',
+                tile: '5da476864f651730df445456.tile.jpg?297aca95d06c26c3cf47fe98ce37c3c0',
             }
         ],
-        description: "Rerum officia irure",
-        longDescription: "Et sed cillum eiusmo",
-        name: "Aaron Reese",
-        unitPrice: "45100",
-        weight: "2700",
-        slug: "aaron-reese",
-        createdAt: "2019-10-14T13:22:14.129Z",
-        updatedAt: "2019-10-14T13:22:14.636Z",
-        id: "5da476864f651730df445456"
+        description: 'Rerum officia irure',
+        longDescription: 'Et sed cillum eiusmo',
+        name: 'Aaron Reese',
+        unitPrice: '45100',
+        weight: '2700',
+        slug: 'aaron-reese',
+        createdAt: '2019-10-14T13:22:14.129Z',
+        updatedAt: '2019-10-14T13:22:14.636Z',
+        id: '5da476864f651730df445456'
     },
     {
         active: true,
-        stock: "91",
+        stock: '91',
         images: [{
-            avatar: "5da5c9d24f651730df44545e.avatar.jpg?82c368ccdfc68ca2855b3cd78acfcbb2",
-            card: "5da5c9d24f651730df44545e.card.jpg?c6afbd96a8053a416dac3049f26f33ce",
-            tile: "5da5c9d24f651730df44545e.tile.jpg?ff23fd6a259cc3d463413ce026d5d514",
+            avatar: '5da5c9d24f651730df44545e.avatar.jpg?82c368ccdfc68ca2855b3cd78acfcbb2',
+            card: '5da5c9d24f651730df44545e.card.jpg?c6afbd96a8053a416dac3049f26f33ce',
+            tile: '5da5c9d24f651730df44545e.tile.jpg?ff23fd6a259cc3d463413ce026d5d514',
         }],
-        description: "Adipisicing mollit u",
-        longDescription: "Est dolore error sin",
-        name: "Valentine Michael",
-        unitPrice: "92900",
-        weight: "4000",
-        slug: "valentine-michael",
-        createdAt: "2019-10-15T13:29:54.991Z",
-        updatedAt: "2019-10-15T13:29:55.546Z",
-        id: "5da5c9d24f651730df44545e"
+        description: 'Adipisicing mollit u',
+        longDescription: 'Est dolore error sin',
+        name: 'Valentine Michael',
+        unitPrice: '92900',
+        weight: '4000',
+        slug: 'valentine-michael',
+        createdAt: '2019-10-15T13:29:54.991Z',
+        updatedAt: '2019-10-15T13:29:55.546Z',
+        id: '5da5c9d24f651730df44545e'
     }
 ];
 
@@ -262,6 +262,62 @@ describe('ShoppingCart', () => {
                     }
                 });
 
+            });
+
+            describe('deleteDelivery', () => {
+
+                it('should remove deleted delivery method from the list', async () => {
+                    const {getByTestId, getByText, queryByText} = await renderWithStore(<Products/>, store);
+                    const addToCartButton = await waitForElement(() => getByTestId(`add-to-cart-button-${firstProductId}`));
+                    fireEvent.click(addToCartButton);
+                    socket.removeAllListeners('deleteProduct');
+                    await renderWithStore(<Cart/>, store);
+                    expect(await waitForElement(() => getByText(deliveryMethodsPayload[0].name))).toBeDefined();
+                    socket.socketClient.emit('deleteDelivery', {deliveryMethod: deliveryMethodsPayload[0]});
+                    expect(queryByText(deliveryMethodsPayload[0].name)).toBeNull();
+                });
+
+                it('should require to choose delivery method if the chosen one deleted', async () => {
+                    const {getByTestId, getByText, queryByText} = await renderWithStore(<Products/>, store);
+                    const addToCartButton = await waitForElement(() => getByTestId(`add-to-cart-button-${firstProductId}`));
+                    fireEvent.click(addToCartButton);
+                    socket.removeAllListeners('deleteProduct');
+                    await renderWithStore(<Cart/>, store);
+                    const [deliveryMethodLabel1, deliveryMethodLabel2, checkoutButton] = await Promise.all([
+                        waitForElement(() => getByText(deliveryMethodsPayload[0].name)),
+                        waitForElement(() => getByText(deliveryMethodsPayload[1].name)),
+                        waitForElement(() => getByTestId('checkout-btn')),
+                    ]);
+                    expect(deliveryMethodLabel1).toBeDefined();
+                    expect(checkoutButton.disabled).toBe(true);
+                    fireEvent.click(deliveryMethodLabel1);
+                    expect(checkoutButton.disabled).toBe(false);
+                    socket.socketClient.emit('deleteDelivery', {deliveryMethod: deliveryMethodsPayload[0]});
+                    expect(queryByText(deliveryMethodsPayload[0].name)).toBeNull();
+                    expect(checkoutButton.disabled).toBe(true);
+                    fireEvent.click(deliveryMethodLabel2);
+                    expect(checkoutButton.disabled).toBe(false);
+                });
+
+            });
+            
+            describe('updateDelivery', () => {
+                
+                it('should update cart data if chosen delivery method changed', async () => {
+                    const {getByTestId, getByText} = await renderWithStore(<Products/>, store);
+                    const addToCartButton = await waitForElement(() => getByTestId(`add-to-cart-button-${firstProductId}`));
+                    fireEvent.click(addToCartButton);
+                    socket.removeAllListeners('deleteProduct');
+                    await renderWithStore(<Cart/>, store);
+                    const currentDeliveryMethod = deliveryMethodsPayload[0];
+                    const deliveryMethodLabel = await waitForElement(() => getByText(currentDeliveryMethod.name));
+                    fireEvent.click(deliveryMethodLabel);
+                    const totalPriceWithDeliveryBefore = getByTestId('total-price-with-delivery').innerHTML;
+                    socket.socketClient.emit('updateDelivery', {deliveryMethod: {...deliveryMethodsPayload[0], unitPrice: '2999'}});
+                    const totalPriceWithDeliveryAfter = getByTestId('total-price-with-delivery').innerHTML;
+                    expect(totalPriceWithDeliveryBefore).not.toBe(totalPriceWithDeliveryAfter);
+                });
+                
             });
 
         });
