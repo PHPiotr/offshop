@@ -95,6 +95,31 @@ describe('App', () => {
             expect(queryByText(productsPayload[0].name)).toBeNull();
         });
 
+        it('should redirect back if logged in and trying to log in again', async () => {
+            class FakeAuth {
+                isAuthenticated() {
+                    return true;
+                }
+                renewSession() {
+                    Promise.resolve();
+                }
+            };
+            mock.onGet(/.*/).reply(200, productsPayload);
+            store.dispatch({type: UPDATE_AUTH, payload: {
+                accessToken: 'j.w.t',
+                idToken: 'foo.bar.baz',
+                expiresAt: new Date().getTime() + 3600,
+            }});
+            const {getByText} = await renderWithAuth(<App/>, store, new FakeAuth(), {
+                route: '/admin/products/list',
+            });
+            await renderWithAuth(<App/>, store, new FakeAuth(), {
+                route: '/login',
+            });
+
+           expect(await waitForElement(() => getByText(productsPayload[0].name))).toBeDefined();
+        });
+
     });
 
     it('should be able to toggle drawer visibility', async () => {
