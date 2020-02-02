@@ -24,9 +24,10 @@ const LoginCallbackHandler = props => {
                         idToken: null,
                         expiresAt: 0,
                     });
-                    console.error(e);
                     props.history.replace('/login');
                 }
+            } else {
+                props.history.goBack();
             }
         })();
     }, []);

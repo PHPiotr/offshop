@@ -11,6 +11,26 @@ import {UPDATE_AUTH} from '../modules/Auth/actionTypes';
 const mock = new MockAdapter(axios);
 let store;
 
+const ordersPayload = [
+    {
+        extOrderId: '5e15a4d08f62305337b7c8a6',
+        orderCreateDate: '2020-01-08T09:45:52.015Z',
+        status: 'PENDING',
+        totalAmount: '99073',
+        id: '5e15a4d08f62305337b7c8a7',
+    },
+    {
+        extOrderId: '5e149a958f62305337b7c8a4',
+        orderCreateDate: '2020-01-07T14:49:57.734Z',
+        status: 'COMPLETED',
+        totalAmount: '45100',
+        id: '5e149a958f62305337b7c8a5',
+        refund: {
+            status: 'fizz',
+        },
+    },
+];
+
 const productsPayload = [
     {
         active: true,
@@ -136,6 +156,102 @@ describe('App', () => {
         const closeDrawer = getByLabelText('Close drawer');
         fireEvent.click(closeDrawer);
         expect(queryByText('Admin')).toBeNull();
+    });
+
+    it('should redirect back if trying access callback handler', async () => {
+        mock.onGet(/.*/).replyOnce(200, productsPayload);
+        class FakeAuth {
+            isAuthenticated() {
+                return true;
+            }
+            renewSession() {
+                Promise.resolve();
+            }
+        };
+        const {getByText} = await renderWithAuth(<App/>, store, new FakeAuth(), {
+            route: '/admin/products/list',
+        });
+        await renderWithAuth(<App/>, store, new FakeAuth(), {
+            route: '/callback',
+        });
+        expect(await waitForElement(() => getByText(productsPayload[0].name))).toBeDefined();
+    });
+
+    it('should redirect to admin orders page if callback handler contains access token', async () => {
+        mock.onGet(/.*/).replyOnce(200, ordersPayload);
+        class FakeAuth {
+            isAuthenticated() {
+                return true;
+            }
+            renewSession() {
+                Promise.resolve();
+            }
+            handleAuthentication() {
+                Promise.resolve();
+            }
+            getAccessToken() {
+                return 'f.o.o'
+            }
+            getIdToken() {
+                return 'b.a.r'
+            }
+            getExpiresAt() {
+                return (new Date()).getTime() + 3600;
+            }
+        };
+        const {getByText} = await renderWithAuth(<App/>, store, new FakeAuth(), {
+            route: '/callback#access_token=f.o.o',
+        });
+        expect(await waitForElement(() => getByText(ordersPayload[0].extOrderId))).toBeDefined();
+    });
+
+    it('should call auth logout on callback error', async () => {
+        mock.onGet(/.*/).replyOnce(200, ordersPayload);
+        class FakeAuth {
+            access_token = 'fizz';
+            isAuthenticated() {
+                return true;
+            }
+            renewSession() {
+                Promise.resolve();
+            }
+            handleAuthentication() {
+                Promise.resolve();
+            }
+            getAccessToken() {
+                throw new Error('Foo');
+            }
+            login() {
+                Promise.resolve();
+            }
+            logout() {
+                this.access_token = 'buzz';
+            }
+        };
+        const fakeAuth = new FakeAuth();
+        expect(fakeAuth.access_token).toEqual('fizz');
+        await renderWithAuth(<App/>, store, fakeAuth, {
+            route: '/callback#access_token=f.o.o',
+        });
+        expect(fakeAuth.access_token).toEqual('buzz');
+    });
+
+    it('should logout and redirect to home age on logout route', async () => {
+        mock.onGet(/.*/).replyOnce(200, productsPayload);
+        class FakeAuth {
+            isAuthenticated() {
+                return true;
+            }
+            renewSession() {
+                Promise.resolve();
+            }
+            logout() {}
+        };
+        const fakeAuth = new FakeAuth();
+        const {getByText} = await renderWithAuth(<App/>, store, fakeAuth, {
+            route: '/logout',
+        });
+        expect(await waitForElement(() => getByText(productsPayload[0].name))).toBeDefined();
     });
 
 });
