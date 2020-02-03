@@ -70,18 +70,14 @@ export const createOrderIfNeeded = payMethods => {
                 totalWithoutDelivery: state.cart.totalPrice,
             });
             dispatch({type: CREATE_ORDER_SUCCESS, payload: {orderData: data}});
-        } catch (e) {
-            dispatch({
-                type: CREATE_ORDER_FAILURE, payload: {
-                    orderError: (e.response && e.response.data && e.response.data.message) || e.message || 'Something went wrong'
-                }
-            });
-            throw e;
+        } catch (error) {
+            dispatch({type: CREATE_ORDER_FAILURE, payload: {error}});
+            throw error;
         }
     }
 };
 
 export const handleCreateOrderError = e => showNotification({
-    message: (e.response && e.response.data && e.response.data.message) || e.message || 'Something went wrong',
+    message: e.message,
     variant: 'error',
 });

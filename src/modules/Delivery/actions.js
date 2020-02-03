@@ -9,7 +9,6 @@ import {
     putRequestPrivate
 } from '../../api';
 import * as deliveryMethodsSchema from '../ShoppingCart/schema';
-import {SHOW_NOTIFICATION} from '../../actions/notification';
 
 export const setCurrentDeliveryMethod = current => ({
     type: actions.SET_CURRENT_DELIVERY_METHOD,

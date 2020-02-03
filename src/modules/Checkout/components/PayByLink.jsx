@@ -14,8 +14,12 @@ const styles = () => ({
 });
 
 const PayByLink = props => {
-    const handleOnClick = (payMethods) => () => {
-        props.createOrderIfNeeded(payMethods);
+    const handleOnClick = (payMethods) => async () => {
+        try {
+            await props.createOrderIfNeeded(payMethods);
+        } catch (e) {
+            props.handleCreateOrderError(e);
+        }
     };
     const payMethods = {
         payMethod: {
