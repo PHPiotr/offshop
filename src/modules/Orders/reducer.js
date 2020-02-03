@@ -160,12 +160,11 @@ export const order = (state = initialOrderState, action) => {
                 ...state,
                 retrievingOrder: false,
                 data: action.payload.orderData,
-                error: null,
             };
         case actions.RETRIEVE_ORDER_FAILURE:
             return {
                 ...initialOrderState,
-                error: action.payload.orderError,
+                error: action.payload.error,
             };
         case actions.CREATE_ORDER_REQUEST:
             return {
@@ -178,12 +177,11 @@ export const order = (state = initialOrderState, action) => {
                 ...state,
                 isCreating: false,
                 data: action.payload.orderData,
-                error: null,
             };
         case actions.CREATE_ORDER_FAILURE:
             return {
                 ...state,
-                error: action.payload.orderError,
+                error: action.payload.error,
                 isCreating: false,
             };
         case actions.RESET_ORDER_DATA:
