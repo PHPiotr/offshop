@@ -19,6 +19,7 @@ import form from '../../../reducers/form';
 import notification from '../../../reducers/notification';
 import {products} from '../../../modules/Products/reducer';
 import {deliveryMethods} from '../../../modules/Delivery/reducer';
+import App from '../../../App';
 
 const deliveryMethodsPayload = [
     {
@@ -144,12 +145,28 @@ describe('Checkout', () => {
         mock.onGet(/delivery-methods/).reply(200, deliveryMethodsPayload);
         mock.onGet(/products/).reply(200, productsPayload);
         mock.onPost(/authorize/).reply(200, authorizePayload);
-        mock.onGet(/pay-methods/).reply(200, payMethodsPayload);
+    });
+
+    describe('pay methods failure', () => {
+
+        it('should show error notification if fetching pay methods fail', async () => {
+            mock.onGet(/pay-methods/).networkErrorOnce();
+            const {getByTestId, getByText} = await renderWithRouter(<App/>, store);
+            fireEvent.click(await waitForElement(() => getByTestId(`add-to-cart-button-${productsPayload[0].id}`)));
+            fireEvent.click(getByText('Przejdź do koszyka'));
+            fireEvent.click(await waitForElement(() => getByTestId(`radio-btn-${deliveryMethodsPayload[1].id}`)));
+            fireEvent.click(getByText('Dalej'));
+            fireEvent.change(getByTestId('email').getElementsByTagName('input')[0], {target: {value: 'john.doe@example.com'}});
+            fireEvent.click(getByTestId('next-step-btn'));
+            expect(await waitForElement(() => getByText('Network Error'))).toBeDefined();
+        });
+
     });
 
     describe('createOrderRequest ok with redirectUri', () => {
 
         it('should redirect', async ()  => {
+            mock.onGet(/pay-methods/).reply(200, payMethodsPayload);
             mock.onPost(/orders/).reply(200, {...ordersPayload, redirectUri: window.location.origin + '/products'});
             const {getByTestId, getByText} = await renderWithStore(<Products/>, store);
             const addToCartButton = await waitForElement(() => getByTestId(`add-to-cart-button-${productsPayload[0].id}`));
@@ -173,6 +190,7 @@ describe('Checkout', () => {
     describe('createOrderRequest ok', () => {
 
         beforeEach(() => {
+            mock.onGet(/pay-methods/).reply(200, payMethodsPayload);
             mock.onPost(/orders/).reply(200, ordersPayload);
         });
 
@@ -319,11 +337,9 @@ describe('Checkout', () => {
 
     describe('createOrderRequest error', () => {
 
-        beforeEach(() => {
-            mock.onPost(/orders/).networkErrorOnce();
-        });
-
         it('should display error notification when create order fails', async () => {
+            mock.onGet(/pay-methods/).reply(200, payMethodsPayload);
+            mock.onPost(/orders/).networkErrorOnce();
             const {getByTestId, queryByTestId} = await renderWithStore(<Products/>, store);
             const addToCartButton = await waitForElement(() => getByTestId(`add-to-cart-button-${productsPayload[0].id}`));
             fireEvent.click(addToCartButton);

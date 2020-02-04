@@ -121,9 +121,6 @@ const Review = props => {
                     </List>
                 </Fragment>
             )}
-            <Typography variant="subtitle1" gutterBottom className={classes.title}>
-                Wybierz metodę płatności
-            </Typography>
             <PayMethods/>
         </Fragment>
     );
