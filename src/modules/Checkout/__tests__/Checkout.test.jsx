@@ -147,6 +147,29 @@ describe('Checkout', () => {
         mock.onGet(/pay-methods/).reply(200, payMethodsPayload);
     });
 
+    describe('createOrderRequest ok with redirectUri', () => {
+
+        it('should redirect', async ()  => {
+            mock.onPost(/orders/).reply(200, {...ordersPayload, redirectUri: window.location.origin + '/products'});
+            const {getByTestId, getByText} = await renderWithStore(<Products/>, store);
+            const addToCartButton = await waitForElement(() => getByTestId(`add-to-cart-button-${productsPayload[0].id}`));
+            fireEvent.click(addToCartButton);
+            await renderWithStore(<Cart/>, store);
+            const deliveryMethodRadio = await waitForElement(() => getByTestId(`radio-btn-${deliveryMethodsPayload[1].id}`));
+            fireEvent.click(deliveryMethodRadio);
+            await renderWithRouter(<Checkout/>, store, {
+                route: '/checkout',
+            });
+            const emailInput = getByTestId('email').getElementsByTagName('input')[0];
+            fireEvent.change(emailInput, {target: {value: 'john.doe@example.com'}});
+            fireEvent.click(getByTestId('next-step-btn'));
+            const cardPayBtn = await waitForElement(() => getByTestId(`pay-button-${payMethodsPayload.payByLinks[1].value}`));
+            fireEvent.click(cardPayBtn);
+            expect(await waitForElement(() => getByText(productsPayload[0].name))).toBeDefined();
+        });
+
+    });
+
     describe('createOrderRequest ok', () => {
 
         beforeEach(() => {
