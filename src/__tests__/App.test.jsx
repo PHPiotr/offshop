@@ -254,4 +254,12 @@ describe('App', () => {
         expect(await waitForElement(() => getByText(productsPayload[0].name))).toBeDefined();
     });
 
+    it('should redirect to home page if trying to access checkout and no products in cart', async () => {
+        mock.onGet(/.*/).reply(200, productsPayload);
+        const {getByText} = await renderWithRouter(<App/>, store, {
+            route: '/checkout',
+        });
+        expect(await waitForElement(() => getByText(productsPayload[0].name))).toBeDefined();
+    });
+
 });
