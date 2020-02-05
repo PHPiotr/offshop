@@ -1,7 +1,7 @@
 import React, {Fragment, useState, useEffect, useContext} from 'react';
 import PropTypes from 'prop-types';
 import {withStyles} from '@material-ui/core/styles';
-import {Link} from 'react-router-dom';
+import {Link, withRouter} from 'react-router-dom';
 import Badge from '@material-ui/core/Badge';
 import Tooltip from '@material-ui/core/Tooltip';
 import List from '@material-ui/core/List';
@@ -14,6 +14,7 @@ import IconButton from '@material-ui/core/IconButton/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
 import Divider from '@material-ui/core/Divider';
 import {connect} from 'react-redux';
+import queryString from 'query-string';
 import Button from '@material-ui/core/Button';
 import Dialog from '../../../../components/Dialog';
 import FloatingAddButton from '../../../../components/FloatingAddButton';
@@ -45,6 +46,7 @@ const ProductsList = props => {
     useInfiniteScrolling({
         sort: 'name',
         order: 1,
+        ...queryString.parse(props.location.search),
         getItems: getAdminProductsIfNeeded,
     });
 
@@ -156,4 +158,4 @@ const mapDispatchToProps = {
     showNotification,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(ProductsList));
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(ProductsList)));

@@ -77,7 +77,7 @@ export const onUpdateCurrentProduct = product => ({
 });
 
 
-export const getAdminProductsIfNeeded = (params = {}) => {
+export const getAdminProductsIfNeeded = params => {
     return async (dispatch, getState) => {
         const {adminProducts: {data, ids}, auth: {accessToken}} = getState();
         dispatch({type: actions.RETRIEVE_ADMIN_PRODUCTS_REQUEST});

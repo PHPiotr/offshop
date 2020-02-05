@@ -61,6 +61,53 @@ describe('Admin/ProductsList', () => {
         );
     });
 
+    it('should merge existing results with new one on scroll to bottom', async () => {
+        mock.onGet(/admin\/products/).replyOnce(200, adminProductsPayload);
+        class FakeAuth {
+            isAuthenticated() {
+                return true;
+            }
+            renewSession() {
+                Promise.resolve();
+            }
+        };
+        const {getByText} = await renderWithAuth(<ProductsList match={{params: {limit: 1}}}/>, store, new FakeAuth(), {
+            route: '/admin/products?limit=1',
+        });
+        await Promise.all([
+            waitForElement(() => getByText(adminProductsPayload[0].name)),
+            waitForElement(() => getByText(adminProductsPayload[1].name)),
+        ]);
+        mock.onGet(/admin\/products/).replyOnce(200, [{
+            active: true,
+            stock: '122',
+            images: [{
+                avatar: '6da5c9624f651730df445459.avatar.jpg?42639d03824bb02c32939f7ce9a7c2e3',
+                card: '6da5c9624f651730df445459.card.jpg?7e42d30ed0a97b7aefb8a96294aed314',
+                tile: '6da5c9624f651730df445459.tile.jpg?96010ab5e06f34fb358ad3e154fee610',
+            }],
+            description: 'Hello et dolore amet pers',
+            longDescription: 'World molestias accusamus',
+            name: 'Abigail Brown',
+            unitPrice: '53200',
+            weight: '4300',
+            slug: 'abigail-brown',
+            createdAt: '2019-11-15T13:28:02.928Z',
+            updatedAt: '2020-02-01T13:41:53.218Z',
+            id: '6da5c9624f651730df445459',
+        }]);
+        fireEvent.scroll(window, {
+            target: {
+                scrollY: 1000,
+            }
+        });
+        await Promise.all([
+            waitForElement(() => getByText(adminProductsPayload[0].name)),
+            waitForElement(() => getByText(adminProductsPayload[1].name)),
+            waitForElement(() => getByText('Abigail Brown')),
+        ]);
+    });
+
     it('should delete product', async () => {
         mock.onGet(/admin\/products/).replyOnce(200, adminProductsPayload);
         mock.onDelete(/admin\/products/).replyOnce(() => {
