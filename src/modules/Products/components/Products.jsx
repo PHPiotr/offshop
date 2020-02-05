@@ -1,5 +1,7 @@
 import React, {useContext, useEffect, useState} from 'react';
+import {withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
+import queryString from 'query-string';
 import ProductsList from './ProductsList';
 import {getProductsIfNeeded, onCreateProduct, onDeleteProduct, onUpdateProduct} from '../actions';
 import {showNotification} from '../../../actions/notification';
@@ -21,6 +23,7 @@ const Products = props => {
     useInfiniteScrolling({
         sort,
         order,
+        ...queryString.parse(props.location.search),
         getItems: getProductsIfNeeded,
     });
 
@@ -91,4 +94,4 @@ const mapDispatchToProps = {
     onDeleteProduct,
 };
 
-export default connect(null, mapDispatchToProps)(Products);
+export default withRouter(connect(null, mapDispatchToProps)(Products));

@@ -77,7 +77,7 @@ export const onUpdateCurrentProduct = product => ({
 });
 
 
-export const getAdminProductsIfNeeded = (params = {}) => {
+export const getAdminProductsIfNeeded = params => {
     return async (dispatch, getState) => {
         const {adminProducts: {data, ids}, auth: {accessToken}} = getState();
         dispatch({type: actions.RETRIEVE_ADMIN_PRODUCTS_REQUEST});
@@ -115,7 +115,7 @@ export const deleteProductIfNeeded = productId => {
             await deleteRequestPrivate(accessToken)(`/admin/products/${productId}`);
             dispatch({type: actions.DELETE_PRODUCT_SUCCESS});
         } catch (error) {
-            dispatch({type: actions.DELETE_PRODUCT_FAILURE, payload: {error, ids}});
+            dispatch({type: actions.DELETE_PRODUCT_FAILURE, payload: {ids}});
             throw error;
         }
     };

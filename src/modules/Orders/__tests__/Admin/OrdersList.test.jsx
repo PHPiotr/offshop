@@ -1,7 +1,7 @@
 import React from 'react';
 import thunk from 'redux-thunk';
 import {createStore, applyMiddleware, combineReducers} from 'redux';
-import {waitForElement} from '@testing-library/react';
+import {fireEvent, waitForElement} from '@testing-library/react';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import {adminOrders} from '../../reducer';
@@ -58,10 +58,46 @@ describe('Admin/OrdersList', () => {
             combineReducers({adminOrders, auth, dialog, notification}),
             applyMiddleware(thunk),
         );
-        mock.onGet(/admin\/orders/).reply(200, ordersPayload);
+    });
+
+    it('should merge results with existing ones when skip attribute used', async () => {
+        mock.onGet(/admin\/orders/).replyOnce(200, ordersPayload);
+        class FakeAuth {
+            isAuthenticated() {
+                return true;
+            }
+            renewSession() {
+                Promise.resolve();
+            }
+        };
+        const {getByText} = await renderWithAuth(<OrdersList/>, store, new FakeAuth(), {
+            route: '/admin/orders?limit=1',
+        });
+        await Promise.all([
+            waitForElement(() => getByText(ordersPayload[0].extOrderId)),
+            waitForElement(() => getByText(ordersPayload[1].extOrderId)),
+        ]);
+        mock.onGet(/admin\/orders/).replyOnce(200, [{
+            extOrderId: '5e15a4d08f62305337b7c8a8',
+            orderCreateDate: '2020-01-09T09:45:52.015Z',
+            status: 'CANCELED',
+            totalAmount: '88073',
+            id: '5e15a4d08f62305337b7c8a9',
+        }]);
+        fireEvent.scroll(window, {
+            target: {
+                scrollY: 1000,
+            }
+        });
+        await Promise.all([
+            waitForElement(() => getByText(ordersPayload[0].extOrderId)),
+            waitForElement(() => getByText(ordersPayload[1].extOrderId)),
+            waitForElement(() => getByText('5e15a4d08f62305337b7c8a8')),
+        ]);
     });
 
     it('should render list of orders', async () => {
+        mock.onGet(/admin\/orders/).reply(200, ordersPayload);
         const {getByText} = await renderWithStore(<OrdersList/>, store);
         let i = ordersPayload.length;
         while(--i) {
@@ -77,6 +113,10 @@ describe('Admin/OrdersList', () => {
     });
 
     describe('event listeners', () => {
+
+        beforeEach(() => {
+            mock.onGet(/admin\/orders/).reply(200, ordersPayload);
+        });
 
         describe('adminCreateOrder', () => {
 

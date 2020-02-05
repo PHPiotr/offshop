@@ -89,11 +89,50 @@ describe('Products', () => {
             combineReducers({auth, cart, dialog, notification, product, products}),
             applyMiddleware(thunk),
         );
-        mock.onGet(/products/).replyOnce(200, productsPayload);
         mock.onGet(`/products/${lastProduct.slug}`).replyOnce(200, lastProduct);
     });
 
+    it('should merge existing records with new one on scroll to bottom', async () => {
+        mock.onGet(/.*/).replyOnce(200, productsPayload);
+        const {getByText} = await renderWithRouter(<Products/>, store, {
+            route: '/?limit=1',
+        });
+        await Promise.all([
+            waitForElement(() => getByText(productsPayload[0].name)),
+            waitForElement(() => getByText(productsPayload[1].name)),
+        ]);
+        mock.onGet(/.*/).replyOnce(200, [{
+            active: true,
+            stock: '122',
+            images: [{
+                avatar: '6da5c9624f651730df445459.avatar.jpg?42639d03824bb02c32939f7ce9a7c2e3',
+                card: '6da5c9624f651730df445459.card.jpg?7e42d30ed0a97b7aefb8a96294aed314',
+                tile: '6da5c9624f651730df445459.tile.jpg?96010ab5e06f34fb358ad3e154fee610',
+            }],
+            description: 'Hello et dolore amet pers',
+            longDescription: 'World molestias accusamus',
+            name: 'Abigail Brown',
+            unitPrice: '53200',
+            weight: '4300',
+            slug: 'abigail-brown',
+            createdAt: '2019-11-15T13:28:02.928Z',
+            updatedAt: '2020-02-01T13:41:53.218Z',
+            id: '6da5c9624f651730df445459',
+        }]);
+        fireEvent.scroll(window, {
+            target: {
+                scrollY: 1000,
+            }
+        });
+        await Promise.all([
+            waitForElement(() => getByText(productsPayload[0].name)),
+            waitForElement(() => getByText(productsPayload[1].name)),
+            waitForElement(() => getByText('Abigail Brown')),
+        ]);
+    });
+
     it('should render products list page and be able to enter product view page', async () => {
+        mock.onGet(/products/).replyOnce(200, productsPayload);
         const {getByText, getByTestId} = await renderWithStore(<Products/>, store);
         let i;
         let productLink;
@@ -113,6 +152,7 @@ describe('Products', () => {
     });
 
     it("should add item to cart", async () => {
+        mock.onGet(/products/).replyOnce(200, productsPayload);
         const {getByTestId, queryByTestId, queryByRole, getByRole} = await renderWithStore(<Fragment><Navigation/><Products/></Fragment>, store);
         const cartButton = getByTestId('cart-button');
         expect(cartButton).toBeDefined();
@@ -141,6 +181,7 @@ describe('Products', () => {
     });
 
     it('should prevent from adding item to cart if the whole item stock already added', async () => {
+        mock.onGet(/products/).replyOnce(200, productsPayload);
         const {getByTestId, queryByTestId} = await renderWithStore(<Fragment><Navigation/><Products/></Fragment>, store);
         const addToCartButton = await waitForElement(() => getByTestId(`add-to-cart-button-${lastProduct.id}`));
         let i = lastProduct.stock;
@@ -154,6 +195,10 @@ describe('Products', () => {
     });
 
     describe('event listeners', () => {
+
+        beforeEach(() => {
+            mock.onGet(/products/).replyOnce(200, productsPayload);
+        });
 
         describe('createProduct', () => {
 

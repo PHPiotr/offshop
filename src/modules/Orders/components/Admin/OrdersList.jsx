@@ -7,8 +7,9 @@ import ListItemText from '@material-ui/core/ListItemText';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import Divider from '@material-ui/core/Divider';
 import Typography from '@material-ui/core/Typography';
-import {Link} from 'react-router-dom';
+import {Link, withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
+import queryString from 'query-string';
 import ProgressIndicator from '../../../../components/ProgressIndicator';
 import {onAdminRefund, getAdminOrdersIfNeeded, onAdminOrder} from '../../actions';
 import {showNotification} from '../../../../actions/notification';
@@ -37,6 +38,7 @@ const OrdersList = props => {
         showNotification,
     } = props;
     useInfiniteScrolling({
+        ...queryString.parse(props.location.search),
         getItems: getAdminOrdersIfNeeded,
     });
 
@@ -130,4 +132,4 @@ const mapDispatchToProps = {
     showNotification,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(OrdersList);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(OrdersList));

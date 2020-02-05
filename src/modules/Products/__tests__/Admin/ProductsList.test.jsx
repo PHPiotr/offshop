@@ -6,7 +6,9 @@ import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import ProductsList from '../../components/Admin/ProductsList';
 import auth from '../../../Auth/reducer';
+import notification from '../../../../reducers/notification';
 import {adminProducts} from '../../reducer';
+import NotificationBar from '../../../../components/NotificationBar';
 
 const mock = new MockAdapter(axios);
 let store;
@@ -56,9 +58,56 @@ describe('Admin/ProductsList', () => {
         fakeLocalStorage();
         mock.reset();
         store = createStore(
-            combineReducers({adminProducts, auth}),
+            combineReducers({adminProducts, auth, notification}),
             applyMiddleware(thunk),
         );
+    });
+
+    it('should merge existing results with new one on scroll to bottom', async () => {
+        mock.onGet(/admin\/products/).replyOnce(200, adminProductsPayload);
+        class FakeAuth {
+            isAuthenticated() {
+                return true;
+            }
+            renewSession() {
+                Promise.resolve();
+            }
+        };
+        const {getByText} = await renderWithAuth(<ProductsList match={{params: {limit: 1}}}/>, store, new FakeAuth(), {
+            route: '/admin/products?limit=1',
+        });
+        await Promise.all([
+            waitForElement(() => getByText(adminProductsPayload[0].name)),
+            waitForElement(() => getByText(adminProductsPayload[1].name)),
+        ]);
+        mock.onGet(/admin\/products/).replyOnce(200, [{
+            active: true,
+            stock: '122',
+            images: [{
+                avatar: '6da5c9624f651730df445459.avatar.jpg?42639d03824bb02c32939f7ce9a7c2e3',
+                card: '6da5c9624f651730df445459.card.jpg?7e42d30ed0a97b7aefb8a96294aed314',
+                tile: '6da5c9624f651730df445459.tile.jpg?96010ab5e06f34fb358ad3e154fee610',
+            }],
+            description: 'Hello et dolore amet pers',
+            longDescription: 'World molestias accusamus',
+            name: 'Abigail Brown',
+            unitPrice: '53200',
+            weight: '4300',
+            slug: 'abigail-brown',
+            createdAt: '2019-11-15T13:28:02.928Z',
+            updatedAt: '2020-02-01T13:41:53.218Z',
+            id: '6da5c9624f651730df445459',
+        }]);
+        fireEvent.scroll(window, {
+            target: {
+                scrollY: 1000,
+            }
+        });
+        await Promise.all([
+            waitForElement(() => getByText(adminProductsPayload[0].name)),
+            waitForElement(() => getByText(adminProductsPayload[1].name)),
+            waitForElement(() => getByText('Abigail Brown')),
+        ]);
     });
 
     it('should delete product', async () => {
@@ -84,6 +133,15 @@ describe('Admin/ProductsList', () => {
     it('should render error page on list products failure', async () => {
         mock.onGet(/admin\/products/).networkErrorOnce();
         const {getByText} = await renderWithStore(<ProductsList/>, store);
+        expect(await waitForElement(() => getByText('Network Error'))).toBeDefined();
+    });
+
+    it('should display error notification on delete product failure', async () => {
+        mock.onGet(/admin\/products/).replyOnce(200, adminProductsPayload);
+        mock.onDelete(/admin\/products/).networkErrorOnce();
+        const {getByLabelText, getByText} = await renderWithStore(<><ProductsList/><NotificationBar/></>, store);
+        fireEvent.click(await waitForElement(() => getByLabelText(`Delete product ${adminProductsPayload[0].id}`)));
+        fireEvent.click(getByText('Tak'));
         expect(await waitForElement(() => getByText('Network Error'))).toBeDefined();
     });
 

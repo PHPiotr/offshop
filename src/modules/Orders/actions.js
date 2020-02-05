@@ -4,7 +4,7 @@ import * as actions from './actionTypes';
 import {deleteRequestPrivate, getRequestPrivate, postRequestPrivate, putRequestPrivate} from '../../api';
 import {authorize} from '../../api/payu';
 
-export const getAdminOrdersIfNeeded = (params = {}) => {
+export const getAdminOrdersIfNeeded = params => {
     return async (dispatch, getState) => {
         const {adminOrders: {data, ids}, auth: {accessToken}} = getState();
         dispatch({type: actions.RETRIEVE_ADMIN_ORDERS_REQUEST});
