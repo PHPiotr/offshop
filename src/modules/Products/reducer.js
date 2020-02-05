@@ -200,7 +200,6 @@ export const adminProducts = (state = initialAdminProductsState, action) => {
                 ...state,
                 isDeleting: false,
                 ids: action.payload.ids,
-                error: action.payload.error,
             };
         default:
             return state;

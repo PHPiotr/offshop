@@ -6,7 +6,9 @@ import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import ProductsList from '../../components/Admin/ProductsList';
 import auth from '../../../Auth/reducer';
+import notification from '../../../../reducers/notification';
 import {adminProducts} from '../../reducer';
+import NotificationBar from '../../../../components/NotificationBar';
 
 const mock = new MockAdapter(axios);
 let store;
@@ -56,7 +58,7 @@ describe('Admin/ProductsList', () => {
         fakeLocalStorage();
         mock.reset();
         store = createStore(
-            combineReducers({adminProducts, auth}),
+            combineReducers({adminProducts, auth, notification}),
             applyMiddleware(thunk),
         );
     });
@@ -131,6 +133,15 @@ describe('Admin/ProductsList', () => {
     it('should render error page on list products failure', async () => {
         mock.onGet(/admin\/products/).networkErrorOnce();
         const {getByText} = await renderWithStore(<ProductsList/>, store);
+        expect(await waitForElement(() => getByText('Network Error'))).toBeDefined();
+    });
+
+    it('should display error notification on delete product failure', async () => {
+        mock.onGet(/admin\/products/).replyOnce(200, adminProductsPayload);
+        mock.onDelete(/admin\/products/).networkErrorOnce();
+        const {getByLabelText, getByText} = await renderWithStore(<><ProductsList/><NotificationBar/></>, store);
+        fireEvent.click(await waitForElement(() => getByLabelText(`Delete product ${adminProductsPayload[0].id}`)));
+        fireEvent.click(getByText('Tak'));
         expect(await waitForElement(() => getByText('Network Error'))).toBeDefined();
     });
 

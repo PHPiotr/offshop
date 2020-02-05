@@ -115,7 +115,7 @@ export const deleteProductIfNeeded = productId => {
             await deleteRequestPrivate(accessToken)(`/admin/products/${productId}`);
             dispatch({type: actions.DELETE_PRODUCT_SUCCESS});
         } catch (error) {
-            dispatch({type: actions.DELETE_PRODUCT_FAILURE, payload: {error, ids}});
+            dispatch({type: actions.DELETE_PRODUCT_FAILURE, payload: {ids}});
             throw error;
         }
     };

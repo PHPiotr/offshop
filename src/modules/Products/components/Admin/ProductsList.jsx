@@ -72,9 +72,16 @@ const ProductsList = props => {
         toggleDialog();
     };
 
-    const handleDeleteProduct = () => {
+    const handleDeleteProduct = async () => {
         toggleDialog();
-        props.deleteProductIfNeeded(productToDelete.id);
+        try {
+            await props.deleteProductIfNeeded(productToDelete.id);
+        } catch (e) {
+            props.showNotification({
+                message: e.message,
+                variant: 'error',
+            });
+        }
     };
 
     if (props.error) {
