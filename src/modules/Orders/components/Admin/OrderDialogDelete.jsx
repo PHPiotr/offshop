@@ -20,6 +20,10 @@ const OrderDialogDelete = props => {
         setIsDeleteOrderDialogOpen(false);
         try {
             await deleteOrderIfNeeded(order.extOrderId);
+            props.showNotification({
+                message: `Zamówienie ${order.extOrderId} zostało usunięte`,
+                variant: 'success',
+            });
             props.history.replace('/admin/orders/list');
         } catch (e){
             props.showNotification({
