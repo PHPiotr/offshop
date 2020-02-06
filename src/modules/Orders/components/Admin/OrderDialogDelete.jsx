@@ -1,10 +1,12 @@
 import React, {Fragment, useState} from 'react';
+import {connect} from 'react-redux';
 import {withRouter} from 'react-router-dom';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
 import Tooltip from '@material-ui/core/Tooltip';
 import Dialog from '../../../../components/Dialog';
+import {showNotification} from '../../../../actions/notification';
 
 const deleteAllowedStatuses = ['LOCAL_NEW_INITIATED', 'LOCAL_NEW_REJECTED', 'LOCAL_NEW_COMPLETED'];
 const canDeleteForStatus = status => deleteAllowedStatuses.indexOf(status) > -1;
@@ -19,7 +21,12 @@ const OrderDialogDelete = props => {
         try {
             await deleteOrderIfNeeded(order.extOrderId);
             props.history.replace('/admin/orders/list');
-        } catch {}
+        } catch (e){
+            props.showNotification({
+                message: e.message,
+                variant: 'error',
+            });
+        }
     };
     if (!canDeleteForStatus(order.status)) {
         return null;
@@ -45,4 +52,4 @@ const OrderDialogDelete = props => {
     );
 };
 
-export default withRouter(OrderDialogDelete);
+export default withRouter(connect(null, {showNotification})(OrderDialogDelete));

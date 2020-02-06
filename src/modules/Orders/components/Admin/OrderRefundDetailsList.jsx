@@ -21,7 +21,7 @@ const OrderRefundDetailsList = props => {
             </NestedListItem>
             <NestedListItem>
                 <ListItemText
-                    primary={(new Date(refund.refundDate || refund.statusDateTime)).toLocaleString('pl', {
+                    primary={(new Date([refund.refundDate, refund.statusDateTime].filter(i => i)[0])).toLocaleString('pl', {
                         dateStyle: 'short',
                         timeStyle: 'short'
                     })}

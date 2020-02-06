@@ -11,7 +11,7 @@ import {Link, withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
 import queryString from 'query-string';
 import ProgressIndicator from '../../../../components/ProgressIndicator';
-import {onAdminRefund, getAdminOrdersIfNeeded, onAdminOrder} from '../../actions';
+import {onAdminRefund, getAdminOrdersIfNeeded, onAdminCreateOrder, onAdminUpdateOrder} from '../../actions';
 import {showNotification} from '../../../../actions/notification';
 import useInfiniteScrolling from '../../../../hooks/useInfiniteScrolling';
 import SocketContext from '../../../../contexts/SocketContext';
@@ -33,7 +33,6 @@ const OrdersList = props => {
     const classes = useStyles();
     const {
         getAdminOrdersIfNeeded,
-        onAdminOrder,
         onAdminRefund,
         showNotification,
     } = props;
@@ -43,14 +42,14 @@ const OrdersList = props => {
     });
 
     const onAdminCreateOrderListener = ({order}) => {
-        onAdminOrder(order);
+        props.onAdminCreateOrder(order);
         showNotification({
             message: `Nowa transakcja: ${order.extOrderId} została dodana.`,
             variant: 'success',
         });
     };
     const onAdminUpdateOrderListener = ({order})  => {
-        onAdminOrder(order);
+        props.onAdminUpdateOrder(order);
         showNotification({
             message: `Status transakcji: ${order.extOrderId} został zmieniony.`,
             variant: 'warning',
@@ -127,7 +126,8 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = {
     getAdminOrdersIfNeeded,
-    onAdminOrder,
+    onAdminCreateOrder,
+    onAdminUpdateOrder,
     onAdminRefund,
     showNotification,
 };

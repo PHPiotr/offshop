@@ -1,9 +1,11 @@
 import React, {Fragment, useState} from 'react';
+import {connect} from 'react-redux';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import CancelIcon from '@material-ui/icons/Cancel';
 import Tooltip from '@material-ui/core/Tooltip';
 import Dialog from '../../../../components/Dialog';
+import {showNotification} from '../../../../actions/notification';
 
 const cancelAllowedStatuses = ['NEW', 'PENDING', 'WAITING_FOR_CONFIRMATION', 'REJECTED'];
 const canCancelForStatus = status => cancelAllowedStatuses.indexOf(status) > -1;
@@ -13,9 +15,16 @@ const OrderDialogCancel = props => {
     const [isCancelOrderDialogOpen, setIsCancelOrderDialogOpen] = useState(false);
     const handleCancelOrderClick = () => setIsCancelOrderDialogOpen(true);
     const hideCancelOrderDialog = () => setIsCancelOrderDialogOpen(false);
-    const handleCancelOrder = () => {
+    const handleCancelOrder = async () => {
         setIsCancelOrderDialogOpen(false);
-        cancelOrderIfNeeded(order.extOrderId, order.status);
+        try {
+            await cancelOrderIfNeeded(order.extOrderId, order.status);
+        } catch (e) {
+            props.showNotification({
+                message: e.message,
+                variant: 'error',
+            });
+        }
     };
     if (!canCancelForStatus(order.status)) {
         return null;
@@ -41,4 +50,4 @@ const OrderDialogCancel = props => {
     );
 };
 
-export default OrderDialogCancel;
+export default connect(null, {showNotification})(OrderDialogCancel);

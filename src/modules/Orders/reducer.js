@@ -3,7 +3,6 @@ import * as actions from './actionTypes';
 const orderInitialState = {
     isDeleting: false,
     isFetching: false,
-    isRefunding: false,
     data: {},
     id: null,
     error: {},
@@ -37,12 +36,16 @@ export const adminOrders = (state = ordersInitialState, action) => {
                 error: action.payload.error,
                 isFetching: false,
             };
-        case actions.ON_ADMIN_ORDER:
+        case actions.ON_ADMIN_CREATE_ORDER:
             return {
                 ...state,
                 data: {...state.data, [action.payload.order.id]: action.payload.order},
-                ids: state.ids.indexOf(action.payload.order.id) === -1
-                    ? [action.payload.order.id, ...state.ids] : state.ids,
+                ids: [action.payload.order.id, ...state.ids],
+            };
+        case actions.ON_ADMIN_UPDATE_ORDER:
+            return {
+                ...state,
+                data: {...state.data, [action.payload.order.id]: action.payload.order},
             };
         case actions.ON_ADMIN_REFUND:
             return {
@@ -74,17 +77,7 @@ export const adminOrder = (state = orderInitialState, action) => {
                 id: null,
             };
         case actions.CANCEL_ORDER_REQUEST:
-            return {
-                ...state,
-                data: {...state.data, [state.id]: {...state.data[state.id], status: action.payload.status}},
-                error: {},
-            };
         case actions.CANCEL_ORDER_FAILURE:
-            return {
-                ...state,
-                data: {...state.data, [state.id]: {...state.data[state.id], status: action.payload.status}},
-                error: action.payload.error,
-            };
         case actions.CANCEL_ORDER_SUCCESS:
             return {
                 ...state,
@@ -94,6 +87,7 @@ export const adminOrder = (state = orderInitialState, action) => {
             return {
                 ...state,
                 isFetching: true,
+                error: null,
             };
         case actions.RETRIEVE_ADMIN_ORDER_SUCCESS:
             return {
@@ -109,28 +103,16 @@ export const adminOrder = (state = orderInitialState, action) => {
                 isFetching: false,
             };
         case actions.REFUND_ORDER_REQUEST:
+        case actions.REFUND_ORDER_SUCCESS:
+        case actions.REFUND_ORDER_FAILURE:
             return {
                 ...state,
-                isRefunding: true,
                 data: {...state.data, [state.id]: {...state.data[state.id], refund: action.payload.refund}},
             };
         case actions.ON_ADMIN_REFUND:
             return {
                 ...state,
                 data: {...state.data, [state.id]: action.payload.order},
-            };
-        case actions.REFUND_ORDER_SUCCESS:
-            return {
-                ...state,
-                isRefunding: false,
-                data: {...state.data, [state.id]: {...state.data[state.id], refund: action.payload.refund}},
-            };
-        case actions.REFUND_ORDER_FAILURE:
-            return {
-                ...state,
-                isRefunding: false,
-                error: action.payload.error,
-                data: {...state.data, [state.id]: {...state.data[state.id], refund: undefined}},
             };
         default:
             return state;
@@ -149,23 +131,6 @@ const initialOrderState = {
 
 export const order = (state = initialOrderState, action) => {
     switch (action.type) {
-        case actions.RETRIEVE_ORDER_REQUEST:
-            return {
-                ...state,
-                retrievingOrder: true,
-                error: null,
-            };
-        case actions.RETRIEVE_ORDER_SUCCESS:
-            return {
-                ...state,
-                retrievingOrder: false,
-                data: action.payload.orderData,
-            };
-        case actions.RETRIEVE_ORDER_FAILURE:
-            return {
-                ...initialOrderState,
-                error: action.payload.error,
-            };
         case actions.CREATE_ORDER_REQUEST:
             return {
                 ...state,
