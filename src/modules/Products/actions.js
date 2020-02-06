@@ -172,11 +172,7 @@ export const updateProductIfNeeded = (formProps, accessToken) => async (dispatch
 
 export const getAdminProductIfNeeded = productId => {
     return async (dispatch, getState) => {
-        const {adminProduct: {isFetching}, auth: {accessToken}} = getState();
-        if (isFetching) {
-            return;
-        }
-
+        const {auth: {accessToken}} = getState();
         dispatch({type: actions.RETRIEVE_ADMIN_PRODUCT_REQUEST});
         try {
             const response = await getRequestPrivate(accessToken)(`/admin/products/${productId}`);
