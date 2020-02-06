@@ -15,6 +15,7 @@ import BuyerListItem from '../../../Buyers/components/Admin/BuyerListItem';
 import DeliveryListItem from '../../../Delivery/components/Admin/DeliveryListItem';
 import {getOrderIfNeeded} from '../../actions';
 import RequestHandler from '../../../../components/RequestHandler';
+import ProgressIndicator from '../../../../components/ProgressIndicator';
 
 const useStyles = makeStyles(theme => ({
     list: {
@@ -51,6 +52,7 @@ const Order = props => {
             <Helmet>
                 <title>{`Zamówienie ${order.extOrderId}`}</title>
             </Helmet>
+            {props.isDeleting && <ProgressIndicator/>}
             <List
                 className={classes.list}
                 disablePadding
@@ -115,6 +117,7 @@ const mapStateToProps = state => ({
         refund: {},
     },
     isFetching: state.adminOrder.isFetching,
+    isDeleting: state.adminOrder.isDeleting,
 });
 const mapDispatchToProps = {
     getOrderIfNeeded,

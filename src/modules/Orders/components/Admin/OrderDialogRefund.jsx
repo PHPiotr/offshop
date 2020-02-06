@@ -1,9 +1,11 @@
 import React, {Fragment, useState} from 'react';
+import {connect} from 'react-redux';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import RefundIcon from '@material-ui/icons/MoneyOff';
 import Tooltip from '@material-ui/core/Tooltip';
 import Dialog from '../../../../components/Dialog';
+import {showNotification} from '../../../../actions/notification';
 
 const refundAllowedStatuses = ['COMPLETED'];
 const canRefund = order => {
@@ -25,7 +27,12 @@ const OrderDialogRefund = props => {
         setIsRefundOrderDialogOpen(false);
         try {
             await refundOrderIfNeeded(order.extOrderId, order.totalAmount);
-        } catch {}
+        } catch (e) {
+            props.showNotification({
+                message: e.message,
+                variant: 'error',
+            });
+        }
     };
     if (!canRefundOrder) {
         return null;
@@ -51,4 +58,4 @@ const OrderDialogRefund = props => {
     );
 };
 
-export default OrderDialogRefund;
+export default connect(null, {showNotification})(OrderDialogRefund);

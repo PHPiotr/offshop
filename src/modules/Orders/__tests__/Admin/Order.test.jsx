@@ -14,6 +14,13 @@ import NotificationBar from '../../../../components/NotificationBar';
 const mock = new MockAdapter(axios);
 let store;
 
+const authorizePayload = {
+    access_token: 'foo',
+    token_type: 'bearer',
+    expires_in: 3600,
+    grant_type: 'client_credentials',
+};
+
 const orderPayload = {
     extOrderId: '5e149a3e8f62305337b7c8a2',
     localReceiptDateTime: '2020-01-07T14:48:30.113Z',
@@ -59,7 +66,7 @@ const orderPayload = {
         lastName: 'Kowalski',
         language: 'pl',
         delivery: {
-            street: 'foo',
+            street: 'foo-street',
             postalCode: 'bar',
             city: 'baz',
             recipientName: 'fizz',
@@ -86,10 +93,10 @@ describe('Admin/Order', () => {
             combineReducers({adminOrder, auth, dialog, notification}),
             applyMiddleware(thunk),
         );
-        mock.onGet(/admin\/orders/).reply(200, orderPayload);
     });
 
     it('should render admin order page', async () => {
+        mock.onGet(/admin\/orders/).reply(200, orderPayload);
         const {getByText} = await renderWithStore(<Order match={{params: {id: orderPayload.extOrderId}}}/>, store);
         expect(await waitForElement(() => getByText(`Zamówienie ${orderPayload.extOrderId}`))).toBeDefined();
         const detailsLabel = await waitForElement(() => getByText('Szczegóły'));
@@ -97,15 +104,24 @@ describe('Admin/Order', () => {
         expect(getByText(`${(orderPayload.totalWeight / 100).toFixed(2)} kg`)).toBeDefined();
     });
 
-    it('should toggle visibility of buyer section', async () => {
+    it('should toggle visibility of buyer and buyer delivery sections', async () => {
+        mock.onGet(/admin\/orders/).reply(200, orderPayload);
         const {getByText, queryByText} = await renderWithStore(<Order match={{params: {id: orderPayload.extOrderId}}}/>, store);
         expect(await waitForElement(() => getByText(`Zamówienie ${orderPayload.extOrderId}`))).toBeDefined();
-        const buyerLabel = await waitForElement(() => getByText('Kupujący'));
+        const [buyerLabel, buyerDeliveryLabel] = await Promise.all([
+            waitForElement(() => getByText('Kupujący')),
+            waitForElement(() => getByText('Dostawa')),
+        ]);
         expect(queryByText(orderPayload.buyer.firstName)).toBeNull();
         fireEvent.click(buyerLabel);
         expect(getByText(orderPayload.buyer.firstName)).toBeDefined();
         fireEvent.click(buyerLabel);
         expect(queryByText(orderPayload.buyer.firstName)).toBeNull();
+        expect(queryByText(orderPayload.buyer.delivery.street)).toBeNull();
+        fireEvent.click(buyerDeliveryLabel);
+        expect(getByText(orderPayload.buyer.delivery.street)).toBeDefined();
+        fireEvent.click(buyerDeliveryLabel);
+        expect(queryByText(orderPayload.buyer.delivery.street)).toBeNull();
     });
 
     it('should render error page on retrieve order failure', async () => {
@@ -115,8 +131,9 @@ describe('Admin/Order', () => {
     });
 
     it('should cancel order', async () => {
-        mock.onGet(/admin\/orders/).reply(200, {...orderPayload, status: 'WAITING_FOR_CONFIRMATION'});
-        mock.onPut(/admin\/orders/).reply(200, {...orderPayload, status: 'CANCELED'});
+        mock.onGet(/admin\/orders/).replyOnce(200, {...orderPayload, status: 'WAITING_FOR_CONFIRMATION'});
+        mock.onPut(/admin\/orders/).replyOnce(200, {...orderPayload, status: 'CANCELED'});
+        mock.onPost(/authorize/).replyOnce(200, authorizePayload);
         const {getByText, getByLabelText} = await renderWithStore(<Order match={{params: {id: orderPayload.extOrderId}}}/>, store);
         const detailsLabel = await waitForElement(() => getByText('Szczegóły'));
         fireEvent.click(detailsLabel);
@@ -131,9 +148,21 @@ describe('Admin/Order', () => {
         expect(await waitForElement(() => getByText('CANCELED'))).toBeDefined();
     });
 
+    it('should show error notification on cancel order failure', async () => {
+        mock.onGet(/admin\/orders/).replyOnce(200, {...orderPayload, status: 'WAITING_FOR_CONFIRMATION'});
+        mock.onPut(/admin\/orders/).networkErrorOnce();
+        mock.onPost(/authorize/).replyOnce(200, authorizePayload);
+        const {getByText, getByLabelText} = await renderWithStore(<><Order match={{params: {id: orderPayload.extOrderId}}}/><NotificationBar/></>, store);
+        fireEvent.click(await waitForElement(() => getByText('Szczegóły')));
+        fireEvent.click(await waitForElement(() => getByLabelText('Anuluj zamówienie')));
+        fireEvent.click(getByText('Tak'));
+        expect(await waitForElement(() => getByText('Network Error'))).toBeDefined();
+    });
+
     it('should delete order', async () => {
-        mock.onGet(/admin\/orders/).reply(200, {...orderPayload, status: 'LOCAL_NEW_REJECTED'});
-        mock.onDelete(/admin\/orders/).reply(204);
+        mock.onGet(/admin\/orders/).replyOnce(200, {...orderPayload, status: 'LOCAL_NEW_REJECTED'});
+        mock.onDelete(/admin\/orders/).replyOnce(204);
+        mock.onPost(/authorize/).replyOnce(200, authorizePayload);
         const {getByText, getByLabelText} = await renderWithStore(<Order match={{params: {id: orderPayload.extOrderId}}}/>, store);
         const detailsLabel = await waitForElement(() => getByText('Szczegóły'));
         fireEvent.click(detailsLabel);
@@ -147,9 +176,21 @@ describe('Admin/Order', () => {
         fireEvent.click(yes);
     });
 
+    it('should show error notification on delete order failure', async () => {
+        mock.onGet(/admin\/orders/).replyOnce(200, {...orderPayload, status: 'LOCAL_NEW_REJECTED'});
+        mock.onDelete(/admin\/orders/).networkErrorOnce();
+        mock.onPost(/authorize/).replyOnce(200, authorizePayload);
+        const {getByText, getByLabelText} = await renderWithStore(<><Order match={{params: {id: orderPayload.extOrderId}}}/><NotificationBar/></>, store);
+        fireEvent.click(await waitForElement(() => getByText('Szczegóły')));
+        fireEvent.click(await waitForElement(() => getByLabelText('Usuń zamówienie')));
+        fireEvent.click(getByText('Tak'));
+        expect(await waitForElement(() => getByText('Network Error'))).toBeDefined();
+    });
+
     it('should refund order', async () => {
-        mock.onGet(/admin\/orders/).reply(200, {...orderPayload, status: 'COMPLETED', refund: undefined});
-        mock.onPost(/refunds/).reply(200, {...orderPayload.refund, status: 'hello world'});
+        mock.onGet(/admin\/orders/).replyOnce(200, {...orderPayload, status: 'COMPLETED', refund: undefined});
+        mock.onPost(/refunds/).replyOnce(200, {...orderPayload.refund, status: 'hello world'});
+        mock.onPost(/authorize/).replyOnce(200, authorizePayload);
         const {getByText, getByLabelText} = await renderWithStore(<Order match={{params: {id: orderPayload.extOrderId}}}/>, store);
         const detailsLabel = await waitForElement(() => getByText('Szczegóły'));
         fireEvent.click(detailsLabel);
@@ -163,6 +204,17 @@ describe('Admin/Order', () => {
         fireEvent.click(yes);
     });
 
+    it('should show error notification on refund order failure', async () => {
+        mock.onGet(/admin\/orders/).replyOnce(200, {...orderPayload, status: 'COMPLETED', refund: undefined});
+        mock.onPost(/refunds/).networkErrorOnce();
+        mock.onPost(/authorize/).replyOnce(200, authorizePayload);
+        const {getByText, getByLabelText} = await renderWithStore(<><Order match={{params: {id: orderPayload.extOrderId}}}/><NotificationBar/></>, store);
+        fireEvent.click(await waitForElement(() => getByText('Szczegóły')));
+        fireEvent.click(await waitForElement(() => getByLabelText('Zwróć środki na konto kupującego')));
+        fireEvent.click(getByText('Tak'));
+        expect(await waitForElement(() => getByText('Network Error'))).toBeDefined();
+    });
+
     describe('event listeners', () => {
 
         describe('adminRefund', () => {
@@ -170,6 +222,7 @@ describe('Admin/Order', () => {
             const message = `Status zwrotu został zmieniony na ${orderPayload.refund.status}.`;
 
             it('should show notification on admin refund event', async () => {
+                mock.onGet(/admin\/orders/).reply(200, orderPayload);
                 const {getByText, queryByText} = await renderWithStore(<><Order match={{params: {id: orderPayload.extOrderId}}}/><NotificationBar/></>, store);
                 expect(queryByText(message)).toBeNull();
                 const refundLabel = await waitForElement(() => getByText('Zwrot'));

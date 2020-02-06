@@ -34,7 +34,8 @@ export const getAdminOrdersIfNeeded = params => {
     };
 };
 
-export const onAdminOrder = order => ({type: actions.ON_ADMIN_ORDER, payload: {order}});
+export const onAdminCreateOrder = order => ({type: actions.ON_ADMIN_CREATE_ORDER, payload: {order}});
+export const onAdminUpdateOrder = order => ({type: actions.ON_ADMIN_UPDATE_ORDER, payload: {order}});
 
 export const getOrderIfNeeded = extOrderId => {
     return async (dispatch, getState) => {
@@ -63,7 +64,8 @@ export const cancelOrderIfNeeded = (extOrderId, status) => {
             const {data} = await putRequestPrivate(accessToken)(`/admin/orders/${extOrderId}`, {}, {payuToken});
             dispatch({type: actions.CANCEL_ORDER_SUCCESS, payload: {status: data.status}});
         } catch (error) {
-            dispatch({type: actions.CANCEL_ORDER_FAILURE, payload: {status, error}});
+            dispatch({type: actions.CANCEL_ORDER_FAILURE, payload: {status}});
+            throw error;
         }
     };
 };
@@ -85,7 +87,8 @@ export const refundOrderIfNeeded = (extOrderId, amount) => {
             });
             dispatch({type: actions.REFUND_ORDER_SUCCESS, payload: {refund: data}});
         } catch (error) {
-            dispatch({type: actions.REFUND_ORDER_FAILURE, payload: {error, refund: undefined}});
+            dispatch({type: actions.REFUND_ORDER_FAILURE, payload: {refund: undefined}});
+            throw error;
         }
     };
 };
@@ -97,9 +100,10 @@ export const deleteOrderIfNeeded = (extOrderId) => {
             dispatch({type: actions.DELETE_ORDER_REQUEST});
             const {data: {access_token: payuToken}} = await authorize();
             const {data} = await deleteRequestPrivate(accessToken)(`/admin/orders/${extOrderId}`, {}, {payuToken});
-            dispatch({type: actions.DELETE_ORDER_SUCCESS, payload: {status: data.status}});
+            dispatch({type: actions.DELETE_ORDER_SUCCESS});
         } catch (error) {
             dispatch({type: actions.DELETE_ORDER_FAILURE, payload: {error}});
+            throw error;
         }
     };
 };
