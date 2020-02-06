@@ -217,7 +217,7 @@ describe('Checkout', () => {
             await renderWithStore(<Cart/>, store);
             const deliveryMethodRadio = await waitForElement(() => getByTestId(`radio-btn-${deliveryMethodsPayload[0].id}`));
             fireEvent.click(deliveryMethodRadio);
-            await renderWithStore(<Checkout/>, store);
+            await renderWithStore(<><Checkout/><NotificationBar/></>, store);
             let nextStepButton = queryByTestId('next-step-btn');
             expect(nextStepButton).toBeNull();
             const emailInput = getByTestId('email').getElementsByTagName('input')[0];
@@ -265,6 +265,9 @@ describe('Checkout', () => {
             const googlePayBtn = await waitForElement(() => getByTestId(`pay-button-${payMethodsPayload.payByLinks[0].value}`));
             const cardPayBtn = await waitForElement(() => getByTestId(`pay-button-${payMethodsPayload.payByLinks[1].value}`));
             const buttons = [cardPayBtn, googlePayBtn];
+            socket.socketClient.emit('updateProduct', {product: {...productsPayload[0], unitPrice: '45200'}});
+            expect(await waitForElement(() => getByText(`Produkt ${productsPayload[0].name} został zmieniony.`))).toBeDefined();
+            expect(getByText('452.00')).toBeDefined();
             for (let i = 0; i < 2; i++) {
                 fireEvent.click(buttons[i]);
                 await renderWithStore(<Order/>, store);
