@@ -77,12 +77,10 @@ describe('Admin/EditDeliveryMethod', () => {
             }),
             applyMiddleware(thunk),
         );
-        mock.onGet(/admin\/products/).replyOnce(() => {
-            return [200, productPayload];
-        });
     });
 
     it('should render edit-product page', async () => {
+        mock.onGet(/admin\/products/).replyOnce(200, productPayload);
         mock.onPut(/admin\/products/).replyOnce(() => {
             socket.socketClient.emit('adminUpdateProduct', {product: productPayload, isActive: true});
             return [200, productPayload];
@@ -99,11 +97,18 @@ describe('Admin/EditDeliveryMethod', () => {
     });
 
     it('should show error message on network error', async () => {
+        mock.onGet(/admin\/products/).replyOnce(200, productPayload);
         mock.onPut(/admin\/products/).networkErrorOnce();
         const {getByText, getByRole, getByTestId} = await renderWithStore(<><EditProduct match={{params: {productId: productPayload.id}}}/><NotificationBar/></>, store);
         const saveBtn = await waitForElement(() => getByRole('button'));
         setupFakeInputValues(store, getByTestId);
         fireEvent.click(saveBtn);
+        expect(await waitForElement(() => getByText('Network Error'))).toBeDefined();
+    });
+
+    it('should show error message on network error when fetching product fails', async () => {
+        mock.onGet(/admin\/products/).networkErrorOnce();
+        const {getByText} = await renderWithStore(<><EditProduct match={{params: {productId: productPayload.id}}}/><NotificationBar/></>, store);
         expect(await waitForElement(() => getByText('Network Error'))).toBeDefined();
     });
 
