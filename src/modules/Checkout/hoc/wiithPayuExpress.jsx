@@ -62,7 +62,6 @@ const withPayuExpress = (WrappedComponent) => {
                 e.target.PayU.Merchant &&
                 e.target.PayU.Merchant.sig === this.state.sig &&
                 e.data.message &&
-                e.data.message.data &&
                 e.data.message.data
             ) {
                 const {value, type} = e.data.message.data;

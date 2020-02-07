@@ -21,6 +21,25 @@ import {products} from '../../../modules/Products/reducer';
 import {deliveryMethods} from '../../../modules/Delivery/reducer';
 import App from '../../../App';
 
+const dispatchMessageEvent = () => {
+    window.PayU = {
+        Merchant: {
+            sig: '3c1370c962f171c328b87364a4e31a32031ccbd9b1a817f96a528968f5be64c1',
+        },
+    };
+    window.dispatchEvent(new MessageEvent('message', {
+        data: {
+            service: 'MerchantService',
+            message: {
+                data: {
+                    value: 'foo',
+                    type: 'bar',
+                },
+            },
+        },
+    }));
+};
+
 const deliveryMethodsPayload = [
     {
         id: "5c7dca6a0c37236da9232f9d",
@@ -147,6 +166,32 @@ describe('Checkout', () => {
         mock.onPost(/authorize/).reply(200, authorizePayload);
     });
 
+    describe('PayU Express', () => {
+
+        it('should create order via payu express widget', async () => {
+            mock.onGet(/pay-methods/).reply(200, payMethodsPayload);
+            mock.onPost(/orders/).replyOnce(200, ordersPayload);
+            mock.onGet(/\//).replyOnce(200, productsPayload);
+            const {getByText, getByTestId, queryByTestId} = await renderWithRouter(<App/>, store);
+            fireEvent.click(await waitForElement(() => getByTestId(`add-to-cart-button-${productsPayload[0].id}`)));
+            fireEvent.click(getByText('Przejdź do koszyka'));
+            fireEvent.click(await waitForElement(() => getByTestId(`radio-btn-${deliveryMethodsPayload[1].id}`)));
+            fireEvent.click(getByText('Dalej'));
+            let nextStepButton = queryByTestId('next-step-btn');
+            expect(nextStepButton).toBeNull();
+            fireEvent.change(getByTestId('email').getElementsByTagName('input')[0], {target: {value: 'john.doe@example.com'}});
+            fireEvent.click(getByTestId('next-step-btn'));
+            const payuExpressBtn = await waitForElement(() => getByTestId('payu-express-btn'));
+            fireEvent.click(payuExpressBtn);
+            dispatchMessageEvent();
+            //expect(await waitForElement(() => getByText(/Dziękujemy/))).toBeDefined();
+            mock.onPost(/orders/).networkErrorOnce();
+            dispatchMessageEvent();
+            //expect(await waitForElement(() => getByText('Network Error'))).toBeDefined();
+        });
+
+    });
+
     describe('pay methods failure', () => {
 
         it('should show error notification if fetching pay methods fail', async () => {
@@ -165,7 +210,7 @@ describe('Checkout', () => {
 
     describe('createOrderRequest ok with redirectUri', () => {
 
-        it('should redirect', async ()  => {
+        it('should redirect', async () => {
             mock.onGet(/pay-methods/).reply(200, payMethodsPayload);
             mock.onPost(/orders/).reply(200, {...ordersPayload, redirectUri: window.location.origin + '/products'});
             const {getByTestId, getByText} = await renderWithStore(<Products/>, store);
@@ -189,12 +234,9 @@ describe('Checkout', () => {
 
     describe('createOrderRequest ok', () => {
 
-        beforeEach(() => {
+        it('should render checkout page', async () => {
             mock.onGet(/pay-methods/).reply(200, payMethodsPayload);
             mock.onPost(/orders/).reply(200, ordersPayload);
-        });
-
-        it('should render checkout page', async () => {
             const {getByTestId, getByText} = await renderWithStore(<Products/>, store);
             const addToCartButton = await waitForElement(() => getByTestId(`add-to-cart-button-${productsPayload[0].id}`));
             fireEvent.click(addToCartButton);
@@ -211,13 +253,15 @@ describe('Checkout', () => {
         });
 
         it('should prevent from proceeding to next step before filling required fields', async () => {
+            mock.onGet(/pay-methods/).reply(200, payMethodsPayload);
+            mock.onPost(/orders/).reply(200, ordersPayload);
             const {getByText, getByTestId, queryByText, queryByTestId} = await renderWithStore(<Products/>, store);
             const addToCartButton = await waitForElement(() => getByTestId(`add-to-cart-button-${productsPayload[0].id}`));
             fireEvent.click(addToCartButton);
             await renderWithStore(<Cart/>, store);
             const deliveryMethodRadio = await waitForElement(() => getByTestId(`radio-btn-${deliveryMethodsPayload[0].id}`));
             fireEvent.click(deliveryMethodRadio);
-            await renderWithStore(<Checkout/>, store);
+            await renderWithStore(<><Checkout/><NotificationBar/></>, store);
             let nextStepButton = queryByTestId('next-step-btn');
             expect(nextStepButton).toBeNull();
             const emailInput = getByTestId('email').getElementsByTagName('input')[0];
@@ -265,6 +309,9 @@ describe('Checkout', () => {
             const googlePayBtn = await waitForElement(() => getByTestId(`pay-button-${payMethodsPayload.payByLinks[0].value}`));
             const cardPayBtn = await waitForElement(() => getByTestId(`pay-button-${payMethodsPayload.payByLinks[1].value}`));
             const buttons = [cardPayBtn, googlePayBtn];
+            socket.socketClient.emit('updateProduct', {product: {...productsPayload[0], unitPrice: '45200'}});
+            expect(await waitForElement(() => getByText(`Produkt ${productsPayload[0].name} został zmieniony.`))).toBeDefined();
+            expect(getByText('452.00')).toBeDefined();
             for (let i = 0; i < 2; i++) {
                 fireEvent.click(buttons[i]);
                 await renderWithStore(<Order/>, store);
@@ -277,6 +324,11 @@ describe('Checkout', () => {
 
             const deletedProductMessage = `Produkt ${productPayload.name} został usunięty.`;
             const updatedProductMessage = `Produkt ${productPayload.name} został zmieniony.`;
+
+            beforeEach(() => {
+                mock.onGet(/pay-methods/).reply(200, payMethodsPayload);
+                mock.onPost(/orders/).reply(200, ordersPayload);
+            });
 
             describe('updateProduct', () => {
 
@@ -294,7 +346,7 @@ describe('Checkout', () => {
                     const deliveryMethodRadio = await waitForElement(() => getByTestId(`radio-btn-${deliveryMethodsPayload[0].id}`));
                     fireEvent.click(deliveryMethodRadio);
                     socket.removeAllListeners('updateProduct');
-                    await renderWithStore(<Fragment><Checkout/><NotificationBar /></Fragment>, store);
+                    await renderWithStore(<Fragment><Checkout/><NotificationBar/></Fragment>, store);
                     expect(queryByText(message)).toBeNull();
                     socket.socketClient.emit('updateProduct', {product, wasActive, isActive});
                     if (shouldShow) {
@@ -319,7 +371,7 @@ describe('Checkout', () => {
                     const deliveryMethodRadio = await waitForElement(() => getByTestId(`radio-btn-${deliveryMethodsPayload[0].id}`));
                     fireEvent.click(deliveryMethodRadio);
                     socket.removeAllListeners('deleteProduct');
-                    await renderWithStore(<Fragment><Checkout/><NotificationBar /></Fragment>, store);
+                    await renderWithStore(<Fragment><Checkout/><NotificationBar/></Fragment>, store);
                     expect(queryByText(deletedProductMessage)).toBeNull();
                     socket.socketClient.emit('deleteProduct', {product, wasActive});
                     if (shouldShow) {

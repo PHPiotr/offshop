@@ -22,7 +22,7 @@ const styles = theme => ({
 });
 
 const PayuExpress = ({classes}) => (
-    <button id="pay-button" className={classes.button}></button>
+    <button data-testid="payu-express-btn" id="pay-button" className={classes.button}></button>
 );
 
 PayuExpress.propTypes = {
