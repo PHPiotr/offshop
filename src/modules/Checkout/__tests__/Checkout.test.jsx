@@ -1,6 +1,6 @@
 import React, {Fragment} from 'react';
 import thunk from 'redux-thunk';
-import {createStore, applyMiddleware, combineReducers} from 'redux';
+import {createStore, applyMiddleware} from 'redux';
 import {waitForElement, fireEvent} from '@testing-library/react';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
@@ -9,36 +9,8 @@ import Checkout from '../components/Checkout';
 import Order from '../../../modules/Orders/components/Order';
 import Products from '../../../modules/Products/components/Products';
 import NotificationBar from '../../../components/NotificationBar';
-import auth from '../../../modules/Auth/reducer';
-import {buyer, buyerDelivery} from '../../../modules/Buyers/reducer';
-import {cart} from '../../../modules/ShoppingCart/reducer';
-import {checkout} from '../../../modules/Checkout/reducer';
-import {order} from '../../../modules/Orders/reducer';
-import dialog from '../../../reducers/dialog';
-import form from '../../../reducers/form';
-import notification from '../../../reducers/notification';
-import {products} from '../../../modules/Products/reducer';
-import {deliveryMethods} from '../../../modules/Delivery/reducer';
+import reducers from '../../../reducers';
 import App from '../../../App';
-
-const dispatchMessageEvent = () => {
-    window.PayU = {
-        Merchant: {
-            sig: '3c1370c962f171c328b87364a4e31a32031ccbd9b1a817f96a528968f5be64c1',
-        },
-    };
-    window.dispatchEvent(new MessageEvent('message', {
-        data: {
-            service: 'MerchantService',
-            message: {
-                data: {
-                    value: 'foo',
-                    type: 'bar',
-                },
-            },
-        },
-    }));
-};
 
 const deliveryMethodsPayload = [
     {
@@ -146,50 +118,12 @@ describe('Checkout', () => {
         fakeLocalStorage();
         mock.reset();
         store = createStore(
-            combineReducers({
-                auth,
-                buyer,
-                buyerDelivery,
-                cart,
-                checkout,
-                deliveryMethods,
-                dialog,
-                form,
-                notification,
-                order,
-                products,
-            }),
+            reducers,
             applyMiddleware(thunk),
         );
         mock.onGet(/delivery-methods/).reply(200, deliveryMethodsPayload);
         mock.onGet(/products/).reply(200, productsPayload);
         mock.onPost(/authorize/).reply(200, authorizePayload);
-    });
-
-    describe('PayU Express', () => {
-
-        it('should create order via payu express widget', async () => {
-            mock.onGet(/pay-methods/).reply(200, payMethodsPayload);
-            mock.onPost(/orders/).replyOnce(200, ordersPayload);
-            mock.onGet(/\//).replyOnce(200, productsPayload);
-            const {getByText, getByTestId, queryByTestId} = await renderWithRouter(<App/>, store);
-            fireEvent.click(await waitForElement(() => getByTestId(`add-to-cart-button-${productsPayload[0].id}`)));
-            fireEvent.click(getByText('Przejdź do koszyka'));
-            fireEvent.click(await waitForElement(() => getByTestId(`radio-btn-${deliveryMethodsPayload[1].id}`)));
-            fireEvent.click(getByText('Dalej'));
-            let nextStepButton = queryByTestId('next-step-btn');
-            expect(nextStepButton).toBeNull();
-            fireEvent.change(getByTestId('email').getElementsByTagName('input')[0], {target: {value: 'john.doe@example.com'}});
-            fireEvent.click(getByTestId('next-step-btn'));
-            const payuExpressBtn = await waitForElement(() => getByTestId('payu-express-btn'));
-            fireEvent.click(payuExpressBtn);
-            dispatchMessageEvent();
-            //expect(await waitForElement(() => getByText(/Dziękujemy/))).toBeDefined();
-            mock.onPost(/orders/).networkErrorOnce();
-            dispatchMessageEvent();
-            //expect(await waitForElement(() => getByText('Network Error'))).toBeDefined();
-        });
-
     });
 
     describe('pay methods failure', () => {
