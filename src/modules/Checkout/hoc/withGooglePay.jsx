@@ -72,7 +72,7 @@ const withGooglePay = (WrappedComponent) => {
             script.async = true;
             script.id = this.props.googlePayScriptId;
             document.body.appendChild(script);
-            script.onload = this.handleOnLoadGooglePay;
+            script.addEventListener('load', this.handleOnLoadGooglePay);
         };
 
         async handleOnLoadGooglePay() {
@@ -80,11 +80,7 @@ const withGooglePay = (WrappedComponent) => {
                 const {environment} = this.props;
                 // eslint-disable-next-line no-undef
                 const paymentsClient = new google.payments.api.PaymentsClient({environment});
-                const response = await paymentsClient.isReadyToPay(this.isReadyToPayRequest);
-
-                if (!response.result) {
-                    throw new Error('Problem creating google pay button');
-                }
+                await paymentsClient.isReadyToPay(this.isReadyToPayRequest);
 
                 const onClick = () => this.handleOnClickGooglePayButton(paymentsClient);
                 const googlePayButton = paymentsClient.createButton({onClick});
