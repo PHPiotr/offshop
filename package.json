@@ -65,6 +65,7 @@
       "renderWithAuth": "readonly",
       "renderWithStore": "readonly",
       "renderWithRouter": "readonly",
+      "google": "readonly",
       "socket": "readonly"
     },
     "plugins": [

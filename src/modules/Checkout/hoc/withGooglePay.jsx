@@ -78,7 +78,6 @@ const withGooglePay = (WrappedComponent) => {
         async handleOnLoadGooglePay() {
             try {
                 const {environment} = this.props;
-                // eslint-disable-next-line no-undef
                 const paymentsClient = new google.payments.api.PaymentsClient({environment});
                 await paymentsClient.isReadyToPay(this.isReadyToPayRequest);
 
