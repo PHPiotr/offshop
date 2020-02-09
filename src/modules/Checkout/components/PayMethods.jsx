@@ -8,6 +8,7 @@ import GooglePay from './GooglePay';
 import {authorize} from '../../../api/payu';
 import {getRequestPrivate} from '../../../api';
 import {showNotification} from '../../../actions/notification';
+import {usePayment} from '../../../contexts/PaymentContext';
 
 const useStyles = makeStyles(theme => ({
     listItem: {
@@ -20,6 +21,7 @@ const PayMethods = props => {
     const classes = useStyles();
     const [payByLinksMethods, setPayByLinksMethods] = useState([]);
     const [error, setError] = useState(null);
+    const payment = usePayment();
 
     useEffect(() => {
         (async () => {
@@ -48,10 +50,10 @@ const PayMethods = props => {
             </Typography>
             <List disablePadding>
                 <ListItem className={classes.listItem}>
-                    <PayuExpress/>
+                    <PayuExpress {...payment}/>
                 </ListItem>
                 <ListItem className={classes.listItem}>
-                    <GooglePay/>
+                    <GooglePay {...payment}/>
                 </ListItem>
                 {payByLinksMethods.map(tile => (
                     <Fragment key={tile.value}>

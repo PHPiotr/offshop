@@ -11,6 +11,37 @@ import Products from '../../../modules/Products/components/Products';
 import NotificationBar from '../../../components/NotificationBar';
 import reducers from '../../../reducers';
 import App from '../../../App';
+import PaymentContext from '../../../contexts/PaymentContext';
+
+const paymentContextData = {
+    src: 'http://example.com/front/widget/js/payu-bootstrap.js',
+    currencyCode: 'PLN',
+    customerLanguage: 'pl',
+    merchantPosId: '13456',
+    shopName: 'Offshop',
+    secondKeyMd5: '134567890qwertyuiopasdfhjklzxcbn',
+    payuBrand: 'true',
+    payButton: '#pay-button',
+    recurringPayment: 'false',
+    storeCard: 'false',
+    widgetMode: 'pay',
+    googlePayScriptId: 'google-pay-script',
+    googlePayButtonParentId: 'google-pay-btn-wrapper',
+    googlePayScriptSrc: 'http://example.com/gp/p/js/pay.js',
+    environment: 'TEST',
+    apiVersion: 2,
+    apiVersionMinor: 0,
+    baseCardPaymentMethodType: 'CARD',
+    baseCardPaymentMethodAllowedAuthMethods: ['PAN_ONLY', 'CRYPTOGRAM_3DS'],
+    baseCardPaymentMethodAllowedCardNetworks: ['MASTERCARD', 'VISA'],
+    tokenizationSpecificationType: 'PAYMENT_GATEWAY',
+    tokenizationSpecificationGateway: 'payu',
+    tokenizationSpecificationGatewayMerchantId: '123456',
+    merchantName: 'Offshop',
+    totalPriceStatus: 'FINAL',
+    googlePayMethodValue: 'ap',
+    googlePayMethodType: 'PBL',
+};
 
 const deliveryMethodsPayload = [
     {
@@ -130,7 +161,7 @@ describe('Checkout', () => {
 
         it('should show error notification if fetching pay methods fail', async () => {
             mock.onGet(/pay-methods/).networkErrorOnce();
-            const {getByTestId, getByText} = await renderWithRouter(<App/>, store);
+            const {getByTestId, getByText} = await renderWithRouter(<PaymentContext.Provider value={paymentContextData}><App/></PaymentContext.Provider>, store);
             fireEvent.click(await waitForElement(() => getByTestId(`add-to-cart-button-${productsPayload[0].id}`)));
             fireEvent.click(getByText('Przejdź do koszyka'));
             fireEvent.click(await waitForElement(() => getByTestId(`radio-btn-${deliveryMethodsPayload[1].id}`)));
@@ -153,7 +184,7 @@ describe('Checkout', () => {
             await renderWithStore(<Cart/>, store);
             const deliveryMethodRadio = await waitForElement(() => getByTestId(`radio-btn-${deliveryMethodsPayload[1].id}`));
             fireEvent.click(deliveryMethodRadio);
-            await renderWithRouter(<Checkout/>, store, {
+            await renderWithRouter(<PaymentContext.Provider value={paymentContextData}><Checkout/></PaymentContext.Provider>, store, {
                 route: '/checkout',
             });
             const emailInput = getByTestId('email').getElementsByTagName('input')[0];
@@ -195,7 +226,7 @@ describe('Checkout', () => {
             await renderWithStore(<Cart/>, store);
             const deliveryMethodRadio = await waitForElement(() => getByTestId(`radio-btn-${deliveryMethodsPayload[0].id}`));
             fireEvent.click(deliveryMethodRadio);
-            await renderWithStore(<><Checkout/><NotificationBar/></>, store);
+            await renderWithStore(<><PaymentContext.Provider value={paymentContextData}><Checkout/></PaymentContext.Provider><NotificationBar/></>, store);
             let nextStepButton = queryByTestId('next-step-btn');
             expect(nextStepButton).toBeNull();
             const emailInput = getByTestId('email').getElementsByTagName('input')[0];
@@ -332,7 +363,7 @@ describe('Checkout', () => {
             await renderWithStore(<Cart/>, store);
             const deliveryMethodRadio = await waitForElement(() => getByTestId(`radio-btn-${deliveryMethodsPayload[1].id}`));
             fireEvent.click(deliveryMethodRadio);
-            await renderWithStore(<Checkout/>, store);
+            await renderWithStore(<PaymentContext.Provider value={paymentContextData}><Checkout/></PaymentContext.Provider>, store);
             const emailInput = getByTestId('email').getElementsByTagName('input')[0];
             fireEvent.change(emailInput, {target: {value: 'john.doe@example.com'}});
             fireEvent.click(getByTestId('next-step-btn'));
