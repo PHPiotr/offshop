@@ -27,6 +27,12 @@ GooglePay.propTypes = {
 const mapStateToProps = state => ({
     googlePayButtonParentId: 'google-pay-btn-wrapper',
     totalPrice: (state.cart.totalPriceWithDelivery / 100).toFixed(2),
+});
+
+const config = {
+    googlePayScriptId: process.env.REACT_APP_GOOGLE_PAY_SCRIPT_ID,
+    googlePayScriptSrc: process.env.REACT_APP_GOOGLE_PAY_SCRIPT_SRC,
+    environment: process.env.REACT_APP_GOOGLE_PAY_ENV,
     apiVersion: parseInt(process.env.REACT_APP_GOOGLE_PAY_API_VERSION, 10),
     apiVersionMinor: parseInt(process.env.REACT_APP_GOOGLE_PAY_API_VERSION_MINOR, 10),
     baseCardPaymentMethodType: process.env.REACT_APP_GOOGLE_PAY_BASE_CARD_PAYMENT_METHOD_TYPE,
@@ -40,6 +46,6 @@ const mapStateToProps = state => ({
     googlePayMethodValue: process.env.REACT_APP_PAYU_METHOD_VALUE_GOOGLE_PAY,
     googlePayMethodType: process.env.REACT_APP_PAYU_METHOD_TYPE_GOOGLE_PAY,
     currencyCode: process.env.REACT_APP_CURRENCY_CODE,
-});
+};
 
-export default connect(mapStateToProps, {createOrderIfNeeded, handleCreateOrderError})(withStyles(styles)(withGooglePay(GooglePay)));
+export default connect(mapStateToProps, {createOrderIfNeeded, handleCreateOrderError})(withStyles(styles)(withGooglePay(config)(GooglePay)));
