@@ -6,8 +6,29 @@ import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import reducers from '../../../reducers';
 import App from '../../../App';
+import PaymentContext from '../../../contexts/PaymentContext';
 
 let fakeGoogleButton;
+
+const paymentContextData = {
+    currencyCode: 'PLN',
+    googlePayScriptId: 'google-pay-script',
+    googlePayButtonParentId: 'google-pay-btn-wrapper',
+    googlePayScriptSrc: 'http://example.com/gp/p/js/pay.js',
+    environment: 'TEST',
+    apiVersion: 2,
+    apiVersionMinor: 0,
+    baseCardPaymentMethodType: 'CARD',
+    baseCardPaymentMethodAllowedAuthMethods: ['PAN_ONLY', 'CRYPTOGRAM_3DS'],
+    baseCardPaymentMethodAllowedCardNetworks: ['MASTERCARD', 'VISA'],
+    tokenizationSpecificationType: 'PAYMENT_GATEWAY',
+    tokenizationSpecificationGateway: 'payu',
+    tokenizationSpecificationGatewayMerchantId: '123456',
+    merchantName: 'Offshop',
+    totalPriceStatus: 'FINAL',
+    googlePayMethodValue: 'ap',
+    googlePayMethodType: 'PBL',
+};
 
 const fakeGoogleCanceled = {
     payments: {
@@ -149,7 +170,7 @@ describe('Google Pay', () => {
         mock.onPost(/authorize/).reply(200, authorizePayload);
         mock.onGet(/pay-methods/).reply(200, payMethodsPayload);
         mock.onGet(/\//).replyOnce(200, productsPayload);
-        const {getByText, getByTestId, queryByText, queryByTestId} = await renderWithRouter(<App/>, store);
+        const {getByText, getByTestId, queryByText, queryByTestId} = await renderWithRouter(<PaymentContext.Provider value={paymentContextData}><App/></PaymentContext.Provider>, store);
         fireEvent.click(await waitForElement(() => getByTestId(`add-to-cart-button-${productsPayload[0].id}`)));
         fireEvent.click(getByText('Przejdź do koszyka'));
         fireEvent.click(await waitForElement(() => getByTestId(`radio-btn-${deliveryMethodsPayload[1].id}`)));

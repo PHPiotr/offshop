@@ -113,23 +113,15 @@ const withPayuExpress = (WrappedComponent) => {
         customerLanguage: PropTypes.string.isRequired,
         handleCreateOrderError: PropTypes.func.isRequired,
         merchantPosId: PropTypes.string.isRequired,
-        payButton: PropTypes.string,
-        payuBrand: PropTypes.oneOf(['true', 'false']),
+        payButton: PropTypes.string.isRequired,
+        payuBrand: PropTypes.oneOf(['true', 'false']).isRequired,
         recurringPayment: PropTypes.oneOf(['true', 'false']),
         secondKeyMd5: PropTypes.string.isRequired,
         shopName: PropTypes.string.isRequired,
         src: PropTypes.string.isRequired,
-        storeCard: PropTypes.oneOf(['true', 'false']),
+        storeCard: PropTypes.oneOf(['true', 'false']).isRequired,
         totalAmount: PropTypes.string.isRequired,
-        widgetMode: PropTypes.oneOf(['pay', 'use']),
-    };
-
-    PayU.defaultProps = {
-        payButton: '#pay-button',
-        payuBrand: 'true',
-        recurringPayment: 'false',
-        storeCard: 'false',
-        widgetMode: 'pay',
+        widgetMode: PropTypes.oneOf(['pay', 'use']).isRequired,
     };
 
     return PayU;

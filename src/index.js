@@ -9,9 +9,11 @@ import './index.css';
 import App from './App';
 import store from './store';
 import AuthContext from './contexts/AuthContext';
+import PaymentContext from './contexts/PaymentContext';
 import SocketContext from './contexts/SocketContext';
 import getSocket from './services/socket';
 import Auth from './services/auth';
+import payment from './services/payment';
 
 WebFont.load({
     google: {
@@ -34,9 +36,11 @@ ReactDOM.render(
         <ThemeProvider theme={theme}>
             <SocketContext.Provider value={socket}>
                 <AuthContext.Provider value={auth}>
-                    <Router>
-                        <App/>
-                    </Router>
+                    <PaymentContext.Provider value={payment}>
+                        <Router>
+                            <App/>
+                        </Router>
+                    </PaymentContext.Provider>
                 </AuthContext.Provider>
             </SocketContext.Provider>
         </ThemeProvider>

@@ -6,11 +6,26 @@ import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import reducers from '../../../reducers';
 import App from '../../../App';
+import PaymentContext from '../../../contexts/PaymentContext';
+
+const paymentContextData = {
+    src: 'http://example.com/front/widget/js/payu-bootstrap.js',
+    currencyCode: 'PLN',
+    customerLanguage: 'pl',
+    merchantPosId: '13456',
+    shopName: 'Offshop',
+    secondKeyMd5: '134567890qwertyuiopasdfhjklzxcbn',
+    payuBrand: 'true',
+    payButton: '#pay-button',
+    recurringPayment: 'false',
+    storeCard: 'false',
+    widgetMode: 'pay',
+};
 
 const dispatchMessageEvent = () => {
     window.PayU = {
         Merchant: {
-            sig: '3c1370c962f171c328b87364a4e31a32031ccbd9b1a817f96a528968f5be64c1',
+            sig: '582fc073bce4faf839566d4fff9f55948ad01a8a43ab03781cbb56dd48e03827',
         },
     };
     window.dispatchEvent(new MessageEvent('message', {
@@ -143,7 +158,7 @@ describe('PayU Express', () => {
         mock.onGet(/pay-methods/).replyOnce(200, payMethodsPayload);
         mock.onPost(/orders/).replyOnce(200, ordersPayload);
         mock.onGet(/\//).replyOnce(200, productsPayload);
-        const {getByText, getByTestId, queryByTestId} = await renderWithRouter(<App/>, store);
+        const {getByText, getByTestId, queryByTestId} = await renderWithRouter(<PaymentContext.Provider value={paymentContextData}><App/></PaymentContext.Provider>, store);
         fireEvent.click(await waitForElement(() => getByTestId(`add-to-cart-button-${productsPayload[0].id}`)));
         fireEvent.click(getByText('Przejdź do koszyka'));
         fireEvent.click(await waitForElement(() => getByTestId(`radio-btn-${deliveryMethodsPayload[1].id}`)));
@@ -154,11 +169,12 @@ describe('PayU Express', () => {
         fireEvent.click(getByTestId('next-step-btn'));
         const payuExpressBtn = await waitForElement(() => getByTestId('payu-express-btn'));
         fireEvent.click(payuExpressBtn);
+        window.dispatchEvent(new MessageEvent('message'));
         dispatchMessageEvent();
-        //expect(await waitForElement(() => getByText(/Dziękujemy/))).toBeDefined();
+        expect(await waitForElement(() => getByText(/Dziękujemy/))).toBeDefined();
         mock.onPost(/orders/).networkErrorOnce();
         dispatchMessageEvent();
-        //expect(await waitForElement(() => getByText('Network Error'))).toBeDefined();
+        expect(await waitForElement(() => getByText('Network Error'))).toBeDefined();
     });
 
 });
