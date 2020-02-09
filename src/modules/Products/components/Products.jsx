@@ -17,13 +17,12 @@ const Products = props => {
         onDeleteProduct,
         showNotification,
     } = props;
-    const [sort] = useState('name');
-    const [order] = useState(1);
     const socket = useContext(SocketContext);
+    const {sort = 'name', order = '1', ...rest} = queryString.parse(props.location.search);
     useInfiniteScrolling({
         sort,
         order,
-        ...queryString.parse(props.location.search),
+        ...rest,
         getItems: getProductsIfNeeded,
     });
 

@@ -28,7 +28,7 @@ const mergeIds = (state, payload) => {
     return mergedIds
         .map(i => updatedData[i])
         .sort((a, b) => {
-            if (payload.order === 1) {
+            if (payload.order === '1') {
                 if (a[payload.sort] < b[payload.sort]) {
                     return -1;
                 }

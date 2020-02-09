@@ -5,7 +5,7 @@ import NestedListItem from '../../../../components/List/NestedListItem';
 
 const ProductsDetailsList = ({products, currencyCode}) => (
     <List component="div" disablePadding>
-        {(products || []).map(({name, quantity, unitPrice}) => (
+        {products.map(({name, quantity, unitPrice}) => (
             <NestedListItem key={name}>
                 <ListItemText
                     primary={`${name} (${quantity} szt.)`}
