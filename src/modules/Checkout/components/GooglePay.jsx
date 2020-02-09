@@ -30,7 +30,7 @@ const mapStateToProps = state => ({
 });
 
 const config = {
-    googlePayScriptId: process.env.REACT_APP_GOOGLE_PAY_SCRIPT_ID,
+    googlePayScriptId: 'google-pay-script',
     googlePayScriptSrc: process.env.REACT_APP_GOOGLE_PAY_SCRIPT_SRC,
     environment: process.env.REACT_APP_GOOGLE_PAY_ENV,
     apiVersion: parseInt(process.env.REACT_APP_GOOGLE_PAY_API_VERSION, 10),
