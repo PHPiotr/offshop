@@ -136,7 +136,7 @@ describe('Products', () => {
 
     it('should merge existing records with new one on scroll to bottom', async () => {
         mock.onGet(/.*/).replyOnce(200, productsPayload);
-        const {getByText} = await renderWithRouter(<Products/>, store, {
+        const {getByText, queryByText} = await renderWithRouter(<Products/>, store, {
             route: '/?limit=1',
         });
         await Promise.all([
@@ -169,8 +169,16 @@ describe('Products', () => {
         await Promise.all([
             waitForElement(() => getByText(productsPayload[0].name)),
             waitForElement(() => getByText(productsPayload[1].name)),
-            waitForElement(() => getByText('Abigail Brown')),
         ]);
+        mock.onGet(/.*/).networkErrorOnce();
+        window.innerHeight = -1000;
+        fireEvent.scroll(window, {
+            target: {
+                scrollY: 0,
+            }
+        });
+        await waitForElement(() => getByText('Abigail Brown'));
+        expect(queryByText('Network Error')).toBeNull();
     });
 
     it('should render products list page and be able to enter product view page', async () => {
