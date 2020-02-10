@@ -108,9 +108,10 @@ describe('Admin/Order', () => {
         mock.onGet(/admin\/orders/).reply(200, orderPayload);
         const {getByText, queryByText} = await renderWithStore(<Order match={{params: {id: orderPayload.extOrderId}}}/>, store);
         expect(await waitForElement(() => getByText(`Zamówienie ${orderPayload.extOrderId}`))).toBeDefined();
-        const [buyerLabel, buyerDeliveryLabel] = await Promise.all([
+        const [buyerLabel, buyerDeliveryLabel, productsLabel] = await Promise.all([
             waitForElement(() => getByText('Kupujący')),
             waitForElement(() => getByText('Dostawa')),
+            waitForElement(() => getByText('Produkty')),
         ]);
         expect(queryByText(orderPayload.buyer.firstName)).toBeNull();
         fireEvent.click(buyerLabel);
@@ -122,6 +123,12 @@ describe('Admin/Order', () => {
         expect(getByText(orderPayload.buyer.delivery.street)).toBeDefined();
         fireEvent.click(buyerDeliveryLabel);
         expect(queryByText(orderPayload.buyer.delivery.street)).toBeNull();
+        const productText = `${orderPayload.products[0].name} (${orderPayload.products[0].quantity} szt.)`;
+        expect(queryByText(productText)).toBeNull();
+        fireEvent.click(productsLabel);
+        expect(getByText(productText)).toBeDefined();
+        fireEvent.click(productsLabel);
+        expect(queryByText(productText)).toBeNull();
     });
 
     it('should render error page on retrieve order failure', async () => {

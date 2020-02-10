@@ -10,8 +10,6 @@ import {resetAdminProduct} from '../../../../modules/Products/actions';
 import {inputs, inputKeys, initialValues, formName} from '../../config';
 import {useSocket} from '../../../../contexts/SocketContext';
 
-window.URL = window.URL || window.webkitURL;
-
 const useStyles = makeStyles(theme => ({
     form: {
         paddingLeft: theme.spacing(1),

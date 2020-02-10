@@ -1,4 +1,5 @@
 import * as actions from './actionTypes';
+import {CREATE_ORDER_SUCCESS} from '../Orders/actionTypes';
 
 const adminDeliveryMethodInitialState = {
     isDeleting: false,
@@ -148,6 +149,8 @@ export const deliveryMethods = (state = initialDeliveryMethodsState, {type, payl
                 },
                 currentId: payload.deliveryMethod.id === state.currentId ? null : state.currentId,
             };
+        case CREATE_ORDER_SUCCESS:
+            return {...initialDeliveryMethodsState};
         default:
             return state;
     }

@@ -20,7 +20,7 @@ const ProductsListItem = props => {
                 {productsOpen ? <ExpandLess/> : <ExpandMore/>}
             </ButtonListItem>
             <Collapse in={productsOpen} timeout="auto" unmountOnExit>
-                <ProductsDetailsList {...props} />
+                {productsOpen ? <ProductsDetailsList {...props} /> : null}
             </Collapse>
         </Fragment>
     );

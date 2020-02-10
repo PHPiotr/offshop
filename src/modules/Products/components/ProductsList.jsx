@@ -113,7 +113,7 @@ ProductsGridList.propTypes = {
 
 const mapStateToProps = state => ({
     cart: state.cart,
-    products: state.products.ids.map(i => state.products.data[i]) || [],
+    products: state.products.ids.map(i => state.products.data[i]),
     isFetching: state.products.isFetching,
     ids: state.products.ids,
     open: state.dialog.open,
