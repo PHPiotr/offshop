@@ -15,7 +15,7 @@ const useInfiniteScrolling = config => {
                 setHasMoreData(false);
             }
         });
-    }, [sort, order, limit, skip]);
+    }, [sort, order, limit, skip, hasMoreData]);
 
     useEffect(() => {
         window.onscroll = () => {
