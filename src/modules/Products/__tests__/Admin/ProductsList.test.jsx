@@ -55,7 +55,6 @@ const adminProductsPayload = [
 describe('Admin/ProductsList', () => {
 
     beforeEach(() => {
-        fakeLocalStorage();
         mock.reset();
         store = createStore(
             combineReducers({adminProducts, auth, notification}),

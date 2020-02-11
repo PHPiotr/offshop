@@ -146,7 +146,6 @@ let store;
 describe('Checkout', () => {
 
     beforeEach(() => {
-        fakeLocalStorage();
         mock.reset();
         store = createStore(
             reducers,

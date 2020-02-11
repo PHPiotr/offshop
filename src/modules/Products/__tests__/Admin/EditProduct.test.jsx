@@ -66,7 +66,6 @@ const setupFakeInputValues = (store, getByTestId, testValues) => {
 describe('Admin/EditDeliveryMethod', () => {
 
     beforeEach(() => {
-        fakeLocalStorage();
         mock.reset();
         store = createStore(
             combineReducers({

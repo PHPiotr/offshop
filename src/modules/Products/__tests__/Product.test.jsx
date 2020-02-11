@@ -40,7 +40,6 @@ let store;
 describe('Product', () => {
 
     beforeEach(() => {
-        fakeLocalStorage();
         mock.reset();
         store = createStore(
             combineReducers({auth, cart, dialog, notification, product}),

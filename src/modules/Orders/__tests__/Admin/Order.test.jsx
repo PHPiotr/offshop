@@ -87,7 +87,6 @@ const orderPayload = {
 describe('Admin/Order', () => {
 
     beforeEach(() => {
-        fakeLocalStorage();
         mock.reset();
         store = createStore(
             combineReducers({adminOrder, auth, dialog, notification}),

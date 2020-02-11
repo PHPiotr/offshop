@@ -157,7 +157,6 @@ let store;
 describe('Google Pay', () => {
 
     beforeEach(() => {
-        fakeLocalStorage();
         mock.reset();
         store = createStore(
             reducers,

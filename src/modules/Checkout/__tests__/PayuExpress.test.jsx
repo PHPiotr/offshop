@@ -144,7 +144,6 @@ let store;
 describe('PayU Express', () => {
 
     beforeEach(() => {
-        fakeLocalStorage();
         mock.reset();
         store = createStore(
             reducers,

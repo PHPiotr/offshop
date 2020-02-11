@@ -28,7 +28,6 @@ const deliveryMethodPayload = {
 describe('Admin/AddDeliveryMethod', () => {
 
     beforeEach(() => {
-        fakeLocalStorage();
         mock.reset();
         store = createStore(
             combineReducers({
