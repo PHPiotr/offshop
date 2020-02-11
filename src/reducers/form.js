@@ -8,9 +8,6 @@ export default form.plugin({
             case '@@redux-form/RESET':
                 return undefined;
             case '@@redux-form/BLUR':
-                if (!action.meta || !state.values || !state.values.unitPrice || action.meta.field !== 'unitPrice') {
-                    return state;
-                }
                 if (action.payload.indexOf('.') === -1 && action.payload.indexOf(',') === -1) {
                     const unitPrice = parseInt(state.values.unitPrice, 10);
 
