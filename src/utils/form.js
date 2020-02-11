@@ -30,9 +30,6 @@ export const validateRequired = value => (value && value.toString().trim() ? und
 export const validateMinLength = minlength => value => (value && value.toString().trim().length >= minlength ? undefined : `Minimalna ilość znaków: ${minlength}`);
 export const validateMaxLength = maxlength => value => (value && value.toString().trim().length <= maxlength ? undefined : `Maksymalna ilość znaków: ${maxlength}`);
 export const validatePrice = value => {
-    if (!value) {
-        return undefined;
-    }
     if (!/^\s*\d*\.\d*\s*$/.test(value) && !/^\s*\d*\s*$/.test(value)) {
         return 'Niewłaściwy format ceny';
     }

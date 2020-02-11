@@ -34,8 +34,8 @@ const productPayload = {
     id: '5d8fe72d9bb05c03d3b285d8',
 };
 
-const setupFakeInputValues = (store, getByTestId) => {
-    const testValues = ['foo', 'bar baz foo bar baz', 'baz bar foo baz bar', '2', '2000', '100', true, ''];
+const defaultTestValues = ['foo', 'bar baz foo bar baz', 'baz bar foo baz bar', '2', '2000', '100', true, ''];
+const setupFakeInputValues = (store, getByTestId, testValues) => {
     inputKeys.forEach((key, idx) => {
         let requiredInput;
         if (key === 'img') {
@@ -80,7 +80,7 @@ describe('Admin/EditDeliveryMethod', () => {
     });
 
     it('should render edit-product page', async () => {
-        mock.onGet(/admin\/products/).replyOnce(200, productPayload);
+        mock.onGet(/.*/).replyOnce(200, {...productPayload, unitPrice: 'foo', description: (new Array(101)).join('too-long')});
         mock.onPut(/admin\/products/).replyOnce(() => {
             socket.socketClient.emit('adminUpdateProduct', {product: productPayload, isActive: true});
             return [200, productPayload];
@@ -90,18 +90,27 @@ describe('Admin/EditDeliveryMethod', () => {
         expect(await waitForElement(() => getByText('Zapisz'))).toBeDefined();
         const saveBtn = await waitForElement(() => getByRole('button'));
         expect(saveBtn.disabled).toBe(true);
-        setupFakeInputValues(store, getByTestId);
+        setupFakeInputValues(store, getByTestId, defaultTestValues);
+        expect(saveBtn.disabled).toBe(false);
+        const unitPriceInput = getByTestId('unitPrice').getElementsByTagName('input')[0];
+        fireEvent.change(unitPriceInput, {target: {value: ''}});
+        fireEvent.blur(unitPriceInput);
+        expect(saveBtn.disabled).toBe(true);
+        fireEvent.change(unitPriceInput, {target: {value: '20.00'}});
         expect(saveBtn.disabled).toBe(false);
         fireEvent.click(saveBtn);
         expect(await waitForElement(() => getByText(`Produkt ${productPayload.name} został zmieniony.`))).toBeDefined();
     });
 
     it('should show error message on network error', async () => {
-        mock.onGet(/admin\/products/).replyOnce(200, productPayload);
+        mock.onGet(/admin\/products/).replyOnce(200, {...productPayload, unitPrice: '34,78,88'});
         mock.onPut(/admin\/products/).networkErrorOnce();
         const {getByText, getByRole, getByTestId} = await renderWithStore(<><EditProduct match={{params: {productId: productPayload.id}}}/><NotificationBar/></>, store);
         const saveBtn = await waitForElement(() => getByRole('button'));
-        setupFakeInputValues(store, getByTestId);
+        const unitPriceInput = getByTestId('unitPrice').getElementsByTagName('input')[0];
+        fireEvent.focus(unitPriceInput);
+        fireEvent.blur(unitPriceInput);
+        setupFakeInputValues(store, getByTestId, defaultTestValues);
         fireEvent.click(saveBtn);
         expect(await waitForElement(() => getByText('Network Error'))).toBeDefined();
     });
