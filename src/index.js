@@ -28,7 +28,8 @@ const theme = createMuiTheme({
         },
     },
 });
-const socket = getSocket();
+
+const socket = getSocket(process.env.REACT_APP_API_HOST);
 const auth = new Auth(socket);
 
 ReactDOM.render(
