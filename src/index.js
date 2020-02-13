@@ -7,7 +7,7 @@ import { createMuiTheme } from '@material-ui/core/styles';
 import WebFont from 'webfontloader';
 import './index.css';
 import App from './App';
-import store from './store';
+import configureStore from './store';
 import AuthContext from './contexts/AuthContext';
 import PaymentContext from './contexts/PaymentContext';
 import SocketContext from './contexts/SocketContext';
@@ -31,6 +31,8 @@ const theme = createMuiTheme({
 
 const socket = getSocket(process.env.REACT_APP_API_HOST);
 const auth = new Auth(socket);
+
+const store = configureStore(localStorage, process.env.NODE_ENV === 'development', module.hot);
 
 ReactDOM.render(
     <Provider store={store}>

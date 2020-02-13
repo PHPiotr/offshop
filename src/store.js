@@ -4,14 +4,38 @@ import thunk from 'redux-thunk';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import throttle from 'lodash.throttle';
 import rootReducer from './reducers';
-import {loadState, saveState} from "./utils/localStorage";
 
-const devEnv = process.env.NODE_ENV === 'development';
+const loadState = (storage, isDevEnv) => {
+    try {
+        const serializedState = storage.getItem('state');
+        if (serializedState === null) {
+            return undefined;
+        }
+        return JSON.parse(serializedState);
+    } catch (e) {
+        if (isDevEnv) {
+            console.error(e);
+        }
+        return undefined;
+    }
+};
 
-const configureStore = initialState => {
+const saveState = (state, storage, isDevEnv) => {
+    try {
+        const serializedState = JSON.stringify(state);
+        storage.setItem('state', serializedState);
+    } catch (e) {
+        if (isDevEnv) {
+            console.error(e);
+        }
+    }
+};
+
+const configureStore = (storage, isDevEnv, hotModule) => {
+    const initialState = loadState(storage, isDevEnv);
     const middleware = [thunk];
 
-    if (devEnv) {
+    if (isDevEnv) {
         middleware.push(logger);
     }
 
@@ -22,7 +46,7 @@ const configureStore = initialState => {
     );
 
     createdStore.subscribe(throttle(() => {
-        const state = store.getState();
+        const state = createdStore.getState();
         saveState({
             auth: state.auth,
             products: state.products,
@@ -31,21 +55,16 @@ const configureStore = initialState => {
             order: state.order,
             deliveryMethods: {...state.deliveryMethods},
             form: {...state.form},
-        });
+        }, storage, isDevEnv);
     }, 400));
 
-    if (devEnv) {
-        if (module.hot) {
-            module.hot.accept('./reducers', () =>
-                createdStore.replaceReducer(require('./reducers').default)
-            );
-        }
+    if (isDevEnv && hotModule) {
+        hotModule.accept('./reducers', () =>
+            createdStore.replaceReducer(require('./reducers').default)
+        );
     }
 
     return createdStore;
 };
 
-
-export const store = configureStore(loadState());
-
-export default store;
+export default configureStore;
