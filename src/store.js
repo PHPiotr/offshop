@@ -4,7 +4,28 @@ import thunk from 'redux-thunk';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import throttle from 'lodash.throttle';
 import rootReducer from './reducers';
-import {loadState, saveState} from "./utils/localStorage";
+
+const loadState = () => {
+    try {
+        const serializedState = localStorage.getItem('state');
+        if (serializedState === null) {
+            return undefined;
+        }
+        return JSON.parse(serializedState);
+    } catch (e) {
+        console.error(e);
+        return undefined;
+    }
+};
+
+const saveState = (state) => {
+    try {
+        const serializedState = JSON.stringify(state);
+        localStorage.setItem('state', serializedState);
+    } catch (e) {
+        console.error(e);
+    }
+};
 
 const devEnv = process.env.NODE_ENV === 'development';
 
