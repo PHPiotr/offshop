@@ -25,7 +25,6 @@ let store;
 describe('DeliveryMethods', () => {
 
     beforeEach(() => {
-        fakeLocalStorage();
         mock.reset();
         store = createStore(
             combineReducers({

@@ -60,15 +60,5 @@ global.renderWithAuth = (
     return {...render(ui, { wrapper: Wrapper }), history};
 };
 
-global.fakeLocalStorage = () => {
-    Object.defineProperty(window, "localStorage", {
-        value: {
-            getItem: jest.fn(() => null),
-            setItem: jest.fn(() => null),
-        },
-        writable: true,
-    });
-};
-
 global.URL.createObjectURL = jest.fn(() => 'blob:http://localhost:3000/foo');
 global.URL.revokeObjectURL = jest.fn();

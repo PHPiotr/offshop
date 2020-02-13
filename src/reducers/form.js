@@ -5,10 +5,17 @@ export default form.plugin({
         switch (action.type) {
             case '@@redux-form/INITIALIZE':
                 return {...state, values: {...state.values, img: undefined}};
-            case '@@redux-form/RESET':
-                return undefined;
             case '@@redux-form/BLUR':
-                if (action.payload.indexOf('.') === -1 && action.payload.indexOf(',') === -1) {
+                if (!action.payload) {
+                    return {
+                        ...state,
+                        values: {
+                            ...state.values,
+                            unitPrice: '',
+                        },
+                    };
+                }
+                if (`${action.payload}`.indexOf('.') === -1 && `${action.payload}`.indexOf(',') === -1) {
                     const unitPrice = parseInt(state.values.unitPrice, 10);
 
                     return {
@@ -21,34 +28,29 @@ export default form.plugin({
                 }
 
                 const match = state.values && state.values.unitPrice.match(/^\D*(\d*)\D*[.,]+\D*(\d*)\D*\.*$/);
-                if (match) {
-                    match.shift();
-                    const [integral, fractional] = match;
-                    let integer, fraction;
+                match.shift();
+                const [integral, fractional] = match;
+                let integer, fraction;
 
-                    if (integral.length === 0) {
-                        integer = '00';
-                    } else {
-                        integer = integral;
-                    }
-
-                    if (fractional.length === 0) {
-                        fraction = `00`;
-                    } else if (fractional.length === 1) {
-                        fraction = `${fractional}0`;
-                    } else {
-                        fraction = fractional.substring(0, 2);
-                    }
-                    const unitPrice = `${integer}.${fraction}`;
-                    return {
-                        ...state,
-                        values: {
-                            ...state.values,
-                            unitPrice: unitPrice > 0 ? unitPrice : '',
-                        },
-                    };
+                if (integral.length === 0) {
+                    integer = '00';
+                } else {
+                    integer = integral;
                 }
-                return state;
+
+                if (fractional.length === 1) {
+                    fraction = `${fractional}0`;
+                } else {
+                    fraction = fractional.substring(0, 2);
+                }
+                const unitPrice = `${integer}.${fraction}`;
+                return {
+                    ...state,
+                    values: {
+                        ...state.values,
+                        unitPrice: unitPrice > 0 ? unitPrice : '',
+                    },
+                };
             default:
                 return state;
         }

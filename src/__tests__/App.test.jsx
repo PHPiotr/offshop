@@ -57,7 +57,6 @@ const productsPayload = [
 describe('App', () => {
 
     beforeEach(() => {
-        fakeLocalStorage();
         mock.reset();
         store = createStore(
             reducers,

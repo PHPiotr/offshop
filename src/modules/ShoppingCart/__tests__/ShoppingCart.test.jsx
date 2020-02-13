@@ -87,7 +87,6 @@ let store;
 describe('ShoppingCart', () => {
 
     beforeEach(() => {
-        fakeLocalStorage();
         mock.reset();
         store = createStore(
             combineReducers({auth, cart, deliveryMethods, dialog, notification, products}),

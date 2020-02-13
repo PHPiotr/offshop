@@ -66,7 +66,6 @@ const setupFakeInputValues = (store, getByTestId, testValues) => {
 describe('Admin/EditDeliveryMethod', () => {
 
     beforeEach(() => {
-        fakeLocalStorage();
         mock.reset();
         store = createStore(
             combineReducers({
@@ -92,11 +91,35 @@ describe('Admin/EditDeliveryMethod', () => {
         expect(saveBtn.disabled).toBe(true);
         setupFakeInputValues(store, getByTestId, defaultTestValues);
         expect(saveBtn.disabled).toBe(false);
-        const unitPriceInput = getByTestId('unitPrice').getElementsByTagName('input')[0];
-        fireEvent.change(unitPriceInput, {target: {value: ''}});
-        fireEvent.blur(unitPriceInput);
+        const priceInput = getByTestId('unitPrice').getElementsByTagName('input')[0];
+        fireEvent.change(priceInput, {target: {value: ''}});
+        fireEvent.blur(priceInput);
         expect(saveBtn.disabled).toBe(true);
-        fireEvent.change(unitPriceInput, {target: {value: '20.00'}});
+        fireEvent.change(priceInput, {target: {value: '.'}});
+        fireEvent.blur(priceInput);
+        expect(saveBtn.disabled).toBe(true);
+        fireEvent.change(priceInput, {target: {value: 'bar.foo'}});
+        fireEvent.blur(priceInput);
+        expect(saveBtn.disabled).toBe(true);
+        fireEvent.change(priceInput, {target: {value: '15'}});
+        fireEvent.blur(priceInput);
+        expect(saveBtn.disabled).toBe(false);
+        fireEvent.change(priceInput, {target: {value: '.15'}});
+        fireEvent.blur(priceInput);
+        expect(saveBtn.disabled).toBe(false);
+        fireEvent.change(priceInput, {target: {value: '.1'}});
+        fireEvent.blur(priceInput);
+        expect(saveBtn.disabled).toBe(false);
+        fireEvent.change(priceInput, {target: {value: '.00'}});
+        fireEvent.blur(priceInput);
+        fireEvent.change(priceInput, {target: {value: 0}});
+        fireEvent.blur(priceInput);
+        expect(saveBtn.disabled).toBe(true);
+        fireEvent.change(priceInput, {target: {value: '15.'}});
+        fireEvent.blur(priceInput);
+        expect(saveBtn.disabled).toBe(true);
+        fireEvent.change(priceInput, {target: {value: '20.00'}});
+        fireEvent.blur(priceInput);
         expect(saveBtn.disabled).toBe(false);
         fireEvent.click(saveBtn);
         expect(await waitForElement(() => getByText(`Produkt ${productPayload.name} został zmieniony.`))).toBeDefined();

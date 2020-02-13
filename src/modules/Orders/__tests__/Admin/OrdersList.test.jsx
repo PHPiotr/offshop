@@ -52,7 +52,6 @@ const refundedOrderPayload = {
 describe('Admin/OrdersList', () => {
 
     beforeEach(() => {
-        fakeLocalStorage();
         mock.reset();
         store = createStore(
             combineReducers({adminOrders, auth, dialog, notification}),
