@@ -7,6 +7,7 @@ import MockAdapter from 'axios-mock-adapter';
 import App from '../App';
 import reducers from '../reducers';
 import {UPDATE_AUTH} from '../modules/Auth/actionTypes';
+import configureStore from '../store';
 
 const mock = new MockAdapter(axios);
 let store;
@@ -62,6 +63,23 @@ describe('App', () => {
             reducers,
             applyMiddleware(thunk),
         );
+    });
+
+    test.each([
+        ['1', configureStore(localStorage, true, module.hot)],
+        ['2', configureStore(localStorage, false, module.hot)],
+        ['3', configureStore(localStorage, true, {accept: (foo, callback) => callback()})],
+        ['4', configureStore(localStorage, false, {accept: (foo, callback) => callback()})],
+        ['5', configureStore({
+            getItem: () => {throw new Error('Foo')},
+            setItem: () => {throw new Error('Bar')},
+        }, true, null)],
+        ['6', configureStore({
+            getItem: () => {throw new Error('Foo')},
+            setItem: () => {throw new Error('Bar')},
+        }, false, null)],
+    ])('works with store %s', async (_, store) => {
+        await renderWithStore(<App/>, store);
     });
 
     it('should render the app', async () => {
