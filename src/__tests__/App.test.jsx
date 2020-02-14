@@ -8,6 +8,7 @@ import App from '../App';
 import reducers from '../reducers';
 import {UPDATE_AUTH} from '../modules/Auth/actionTypes';
 import configureStore from '../store';
+import Auth from '../services/auth';
 
 const mock = new MockAdapter(axios);
 let store;
@@ -65,21 +66,76 @@ describe('App', () => {
         );
     });
 
-    test.each([
-        ['1', configureStore(localStorage, true, module.hot)],
-        ['2', configureStore(localStorage, false, module.hot)],
-        ['3', configureStore(localStorage, true, {accept: (foo, callback) => callback()})],
-        ['4', configureStore(localStorage, false, {accept: (foo, callback) => callback()})],
-        ['5', configureStore({
-            getItem: () => {throw new Error('Foo')},
-            setItem: () => {throw new Error('Bar')},
-        }, true, null)],
-        ['6', configureStore({
-            getItem: () => {throw new Error('Foo')},
-            setItem: () => {throw new Error('Bar')},
-        }, false, null)],
-    ])('works with store %s', async (_, store) => {
-        await renderWithStore(<App/>, store);
+    describe('Store', () => {
+
+        test.each([
+            ['1', configureStore(localStorage, true, module.hot)],
+            ['2', configureStore(localStorage, false, module.hot)],
+            ['3', configureStore(localStorage, true, {accept: (foo, callback) => callback()})],
+            ['4', configureStore(localStorage, false, {accept: (foo, callback) => callback()})],
+            ['5', configureStore({
+                getItem: () => {throw new Error('Foo')},
+                setItem: () => {throw new Error('Bar')},
+            }, true, null)],
+            ['6', configureStore({
+                getItem: () => {throw new Error('Foo')},
+                setItem: () => {throw new Error('Bar')},
+            }, false, null)],
+        ])('works with store %s', async (_, store) => {
+            await renderWithStore(<App/>, store);
+        });
+
+    });
+
+    describe('Auth context', () => {
+
+        beforeEach(() => {
+            mock.onGet(/products/).reply(200, productsPayload);
+        });
+
+        let expected;
+
+        test.each([
+            ['1', new Auth({
+                parseHash: cb => {
+                    expected = '1';
+                    cb(null, {accessToken: 'foo.bar.baz', idToken: 'fizz.buzz', expiresIn: 3600});
+                },
+                checkSession: () => {},
+                authorize: () => {},
+            }), '/callback#access_token=foo.bar.baz'],
+            ['2', new Auth({
+                parseHash: cb => {
+                    expected = '2';
+                    cb(null, {});
+                },
+                checkSession: () => {},
+                authorize: () => {},
+            }), '/callback#access_token=foo.bar.baz'],
+            ['3', new Auth({
+                parseHash: cb => {
+                    cb(null, {accessToken: 'foo.bar.baz', idToken: 'fizz.buzz', expiresIn: 3600});
+                },
+                checkSession: (_, cb) => {
+                    expected = '3';
+                    cb(null, {accessToken: 'foo.bar.baz', idToken: 'fizz.buzz', expiresIn: 3600});
+                },
+                authorize: () => {},
+            }), '/admin/products/list'],
+            ['4', new Auth({
+                parseHash: cb => {
+                    cb(null, {accessToken: 'foo.bar.baz', idToken: 'fizz.buzz', expiresIn: 3600});
+                },
+                checkSession: async (_, cb) => {
+                    expected = '4';
+                    cb(new Error('Foo'), null);
+                },
+                authorize: () => {},
+            }), '/admin/products/list'],
+        ])('works with auth %s', async (actual, auth, route) => {
+            await renderWithAuth(<App/>, store, auth, {route});
+            expect(expected).toEqual(actual);
+        });
     });
 
     it('should render the app', async () => {

@@ -1,11 +1,13 @@
 import React, {useEffect} from 'react';
-import {useAuth} from '../../../contexts/AuthContext';
-import {updateAuth} from '../actions';
 import {withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
+import {useAuth} from '../../../contexts/AuthContext';
+import {useSocket} from '../../../contexts/SocketContext';
+import {updateAuth} from '../actions';
 
 const LoginCallbackHandler = props => {
     const auth = useAuth();
+    const socket = useSocket();
     useEffect(() => {
         (async () => {
             if (/access_token|id_token|error/.test(props.location.hash)) {
@@ -16,6 +18,7 @@ const LoginCallbackHandler = props => {
                         idToken: auth.getIdToken(),
                         expiresAt: auth.getExpiresAt(),
                     });
+                    socket.emit('userLoggedIn');
                     props.history.replace('/admin/orders/list');
                 } catch (e) {
                     auth.logout();
