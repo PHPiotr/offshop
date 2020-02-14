@@ -1,23 +1,12 @@
-import Auth0 from 'auth0-js';
-
-const auth0 = new Auth0.WebAuth({
-    domain: process.env.REACT_APP_AUTH0_DOMAIN,
-    clientID: process.env.REACT_APP_AUTH0_CLIENT_ID,
-    redirectUri: process.env.REACT_APP_AUTH0_REDIRECT_URI,
-    audience: process.env.REACT_APP_AUTH0_AUDIENCE,
-    responseType: process.env.REACT_APP_AUTH0_RESPONSE_TYPE,
-    scope: process.env.REACT_APP_AUTH0_SCOPE,
-});
-
 export default class Auth {
 
-    socket;
+    auth0;
     accessToken;
     idToken;
     expiresAt;
 
-    constructor(socket) {
-        this.socket = socket;
+    constructor(auth0) {
+        this.auth0 = auth0;
         this.login = this.login.bind(this);
         this.logout = this.logout.bind(this);
         this.handleAuthentication = this.handleAuthentication.bind(this);
@@ -29,7 +18,7 @@ export default class Auth {
 
     handleAuthentication() {
         return new Promise((resolve, reject) => {
-            auth0.parseHash((err, authResult) => {
+            this.auth0.parseHash((err, authResult) => {
                 if (authResult && authResult.accessToken && authResult.idToken) {
                     this.setSession(authResult);
                     resolve();
@@ -41,14 +30,14 @@ export default class Auth {
     }
 
     renewSession() {
-        return new Promise((resolve, reject) => {
-            auth0.checkSession({}, (err, authResult) => {
+        return new Promise(resolve => {
+            this.auth0.checkSession({}, (err, authResult) => {
                 if (authResult && authResult.accessToken && authResult.idToken) {
                     this.setSession(authResult);
                     resolve();
                 } else {
                     this.logout();
-                    reject(err);
+                    resolve();
                 }
             });
         });
@@ -71,18 +60,16 @@ export default class Auth {
         this.accessToken = authResult.accessToken;
         this.idToken = authResult.idToken;
         this.expiresAt = expiresAt;
-        this.socket.emit('userLoggedIn');
     }
 
     login() {
-        auth0.authorize();
+        this.auth0.authorize();
     }
 
     logout() {
         this.accessToken = null;
         this.idToken = null;
         this.expiresAt = 0;
-        this.socket.emit('userLoggedOut');
     }
 
     isAuthenticated() {
