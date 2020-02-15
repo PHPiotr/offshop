@@ -3,13 +3,10 @@ import {Provider} from 'react-redux';
 import {BrowserRouter, Router} from 'react-router-dom';
 import {createMemoryHistory} from 'history';
 import {render} from '@testing-library/react';
-import io from './src/services/socket';
 import MockedSocket from 'socket.io-mock';
 import SocketContext from './src/contexts/SocketContext';
 import AuthContext from './src/contexts/AuthContext';
 let socket = new MockedSocket();
-jest.mock('./src/services/socket');
-io.mockResolvedValue(socket);
 
 global.socket = socket;
 

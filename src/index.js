@@ -1,5 +1,6 @@
 import React from 'react';
 import Auth0 from 'auth0-js';
+import io from 'socket.io-client';
 import ReactDOM from 'react-dom';
 import {Provider} from 'react-redux';
 import {BrowserRouter as Router} from 'react-router-dom';
@@ -11,7 +12,6 @@ import App from './App';
 import configureStore from './store';
 import AuthContext from './contexts/AuthContext';
 import SocketContext from './contexts/SocketContext';
-import getSocket from './services/socket';
 import Auth from './services/auth';
 
 const auth0 = new Auth0.WebAuth({
@@ -37,7 +37,7 @@ const theme = createMuiTheme({
     },
 });
 
-const socket = getSocket(process.env.REACT_APP_API_HOST);
+const socket = io(process.env.REACT_APP_API_HOST);
 const auth = new Auth(auth0);
 
 const store = configureStore(localStorage, process.env.NODE_ENV === 'development', module.hot);
