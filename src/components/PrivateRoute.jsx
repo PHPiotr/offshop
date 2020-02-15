@@ -2,11 +2,14 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {Redirect, Route} from 'react-router-dom';
 import {useAuth} from '../contexts/AuthContext';
+import {useSocket} from '../contexts/SocketContext';
 
 const PrivateRoute = ({component: Component, auth: authState, ...rest}) => {
 
     const auth = useAuth();
+    const socket = useSocket();
     const {isAuthenticated, renewSession} = auth;
+    const isAuthenticatedBefore = isAuthenticated();
 
     auth.accessToken = authState.accessToken;
     auth.idToken = authState.idToken;
@@ -17,11 +20,13 @@ const PrivateRoute = ({component: Component, auth: authState, ...rest}) => {
         <Route
             {...rest}
             render={props => {
-                return isAuthenticated() ? (
-                    <Component {...props}/>
-                ) : (
-                    <Redirect to="/login"/>
-                )
+                if (isAuthenticated()) {
+                    if (!isAuthenticatedBefore) {
+                        socket.emit('userLoggedIn');
+                    }
+                    return <Component {...props}/>;
+                }
+                return <Redirect to="/login"/>;
             }}
         />
     );
