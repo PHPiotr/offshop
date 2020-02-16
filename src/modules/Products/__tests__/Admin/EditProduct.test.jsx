@@ -15,6 +15,24 @@ import {inputKeys} from '../../config';
 const mock = new MockAdapter(axios);
 let store;
 
+const dispatchEvt = (node, type, data) => {
+    const event = new Event(type, { bubbles: true });
+    Object.assign(event, data);
+    fireEvent(node, event);
+};
+
+const mockData = files => ({
+    dataTransfer: {
+        files,
+        items: files.map(file => ({
+            kind: 'file',
+            type: file.type,
+            getAsFile: () => file
+        })),
+        types: ['Files']
+    }
+});
+
 const productPayload = {
     active: true,
     stock: '1',
@@ -39,23 +57,12 @@ const setupFakeInputValues = (store, getByTestId, testValues) => {
     inputKeys.forEach((key, idx) => {
         let requiredInput;
         if (key === 'img') {
-            store.dispatch({
-                type: '@@redux-form/CHANGE',
-                meta: {
-                    form: 'product',
-                    field: 'img',
-                    touch: false,
-                    persistentSubmitErrors: false
-                },
-                payload: {
-                    file: {
-                        path: 'foo/bar/baz.png'
-                    },
-                    name: 'baz.png',
-                    preview: 'blob:http://localhost:3001/a7240ab5-9c74-4af0-9c01-67cc25969535',
-                    size: 6612517
-                }
-            });
+            requiredInput = getByTestId('drop-zone-wrapper').querySelector('div');
+            const file = new File([
+                JSON.stringify({ping: true})
+            ], 'ping.jpeg', { type: 'image/jpeg' });
+            const data = mockData([file]);
+            dispatchEvt(requiredInput, 'drop', data);
         } else {
             requiredInput = getByTestId(key).getElementsByTagName('input')[0] || getByTestId(key).getElementsByTagName('textarea')[0];
             fireEvent.change(requiredInput, {target: {value: testValues[idx]}});
@@ -84,13 +91,20 @@ describe('Admin/EditDeliveryMethod', () => {
             socket.socketClient.emit('adminUpdateProduct', {product: productPayload, isActive: true});
             return [200, productPayload];
         });
-        const {getByText, getByRole, getByTestId} = await renderWithStore(<><EditProduct match={{params: {productId: productPayload.id}}}/><NotificationBar/></>, store);
+        const {getByText, getByRole, getByTestId} = await renderWithStore(<><EditProduct match={{params: {id: productPayload.id}}}/><NotificationBar/></>, store);
         expect(await waitForElement(() => getByText('Edytuj produkt'))).toBeDefined();
         expect(await waitForElement(() => getByText('Zapisz'))).toBeDefined();
         const saveBtn = await waitForElement(() => getByRole('button'));
         expect(saveBtn.disabled).toBe(true);
+        const dropZone = getByTestId('drop-zone-wrapper').querySelector('div');
+        const file = new File([
+            JSON.stringify({ping: true})
+        ], 'ping.json', { type: 'application/json' });
+        const data = mockData([file]);
+        dispatchEvt(dropZone, 'drop', data);
+        expect((await waitForElement(() => getByRole('button'))).disabled).toBe(true);
         setupFakeInputValues(store, getByTestId, defaultTestValues);
-        expect(saveBtn.disabled).toBe(false);
+        expect((await waitForElement(() => getByRole('button'))).disabled).toBe(false);
         const priceInput = getByTestId('unitPrice').getElementsByTagName('input')[0];
         fireEvent.change(priceInput, {target: {value: ''}});
         fireEvent.blur(priceInput);
@@ -128,20 +142,35 @@ describe('Admin/EditDeliveryMethod', () => {
     it('should show error message on network error', async () => {
         mock.onGet(/admin\/products/).replyOnce(200, {...productPayload, unitPrice: '34,78,88'});
         mock.onPut(/admin\/products/).networkErrorOnce();
-        const {getByText, getByRole, getByTestId} = await renderWithStore(<><EditProduct match={{params: {productId: productPayload.id}}}/><NotificationBar/></>, store);
+        const {getByText, getByRole, getByTestId} = await renderWithStore(<><EditProduct match={{params: {id: productPayload.id}}}/><NotificationBar/></>, store);
         const saveBtn = await waitForElement(() => getByRole('button'));
         const unitPriceInput = getByTestId('unitPrice').getElementsByTagName('input')[0];
         fireEvent.focus(unitPriceInput);
         fireEvent.blur(unitPriceInput);
         setupFakeInputValues(store, getByTestId, defaultTestValues);
+        expect((await waitForElement(() => getByRole('button'))).disabled).toBe(false);
         fireEvent.click(saveBtn);
         expect(await waitForElement(() => getByText('Network Error'))).toBeDefined();
     });
 
     it('should show error message on network error when fetching product fails', async () => {
         mock.onGet(/admin\/products/).networkErrorOnce();
-        const {getByText} = await renderWithStore(<><EditProduct match={{params: {productId: productPayload.id}}}/><NotificationBar/></>, store);
+        const {getByText} = await renderWithStore(<><EditProduct match={{params: {id: productPayload.id}}}/><NotificationBar/></>, store);
         expect(await waitForElement(() => getByText('Network Error'))).toBeDefined();
+    });
+
+    it('should be able to edit product without setting new image', async () => {
+        mock.onGet(/admin\/products/).replyOnce(200, {...productPayload, unitPrice: '34,78,88'});
+        const {getByRole, getByTestId} = await renderWithStore(<EditProduct match={{params: {id: productPayload.id}}}/>, store);
+        const saveBtn = await waitForElement(() => getByRole('button'));
+        inputKeys.forEach((key, idx) => {
+            if (key !== 'img') {
+                const requiredInput = getByTestId(key).getElementsByTagName('input')[0] || getByTestId(key).getElementsByTagName('textarea')[0];
+                fireEvent.change(requiredInput, {target: {value: defaultTestValues[idx]}});
+            }
+        });
+        expect(saveBtn.disabled).toBe(false);
+        fireEvent.click(saveBtn);
     });
 
 });

@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import DropZone from 'react-dropzone';
 import ImagePreview from '../ImagePreview';
 import Placeholder from '../Placeholder';
-import ShowError from '../ShowError';
 import withStyles from '@material-ui/core/styles/withStyles';
 
 const styles = () => ({
@@ -13,20 +12,18 @@ const styles = () => ({
     },
 });
 
-const DropZoneField = ({handleOnDrop, input: {onChange}, imagefile, meta: {error, touched}, classes}) => (
-    <div className={classes.root}>
+const DropZoneField = ({handleOnDrop, input: {onChange}, imagefile, classes}) => (
+    <div className={classes.root} data-testid="drop-zone-wrapper">
         <DropZone
             accept="image/jpeg, image/png"
             className={classes.upload}
             onDrop={file => handleOnDrop(file, onChange)}
             multiple={false}
         >
-            {({getRootProps, getInputProps}) =>
-                imagefile && imagefile.length > 0 ? (
+            {({getRootProps, getInputProps}) => {
+                return imagefile && imagefile.length > 0 && imagefile[0] && imagefile[0].name ? (
                     <Fragment>
                         <Placeholder
-                            error={error}
-                            touched={touched}
                             getInputProps={getInputProps}
                             getRootProps={getRootProps}
                         />
@@ -34,20 +31,18 @@ const DropZoneField = ({handleOnDrop, input: {onChange}, imagefile, meta: {error
                     </Fragment>
                 ) : (
                     <Placeholder
-                        error={error}
-                        touched={touched}
                         getInputProps={getInputProps}
                         getRootProps={getRootProps}
                     />
                 )
             }
+
+            }
         </DropZone>
-        <ShowError error={error} touched={touched}/>
     </div>
 );
 
 DropZoneField.propTypes = {
-    error: PropTypes.string,
     handleOnDrop: PropTypes.func.isRequired,
     imagefile: PropTypes.arrayOf(
         PropTypes.shape({
@@ -58,7 +53,6 @@ DropZoneField.propTypes = {
         })
     ),
     onChange: PropTypes.func,
-    touched: PropTypes.bool
 };
 
 export default withStyles(styles)(DropZoneField);

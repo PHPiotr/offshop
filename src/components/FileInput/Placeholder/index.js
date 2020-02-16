@@ -18,18 +18,16 @@ const styles = () => ({
     },
 });
 
-const Placeholder = ({getInputProps, getRootProps, error, touched, classes}) => (
-    <div {...getRootProps()} className={`${classes.root} ${error && touched ? classes.error : ''}`}>
+const Placeholder = ({getInputProps, getRootProps, classes}) => (
+    <div {...getRootProps()} className={`${classes.root}`}>
         <input {...getInputProps()} />
         <AddPhotoIcon className={classes.photoIcon}/>
     </div>
 );
 
 Placeholder.propTypes = {
-    error: PropTypes.string,
     getInputProps: PropTypes.func.isRequired,
     getRootProps: PropTypes.func.isRequired,
-    touched: PropTypes.bool
 };
 
 export default withStyles(styles)(Placeholder);
