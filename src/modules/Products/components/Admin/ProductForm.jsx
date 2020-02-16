@@ -31,6 +31,9 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const handleOnDrop = ([newImageFile], onChange) => {
+    if (!newImageFile) {
+        return;
+    }
     const imageFile = {
         file: newImageFile,
         name: newImageFile.name,
@@ -42,7 +45,7 @@ const handleOnDrop = ([newImageFile], onChange) => {
 };
 
 const getImageFile = (currentImage, currentSlug, imageFile) => {
-    if (!imageFile || imageFile.length === 0 && currentImage) {
+    if (!imageFile || imageFile.length === 0 || (imageFile[0] && !imageFile[0].file) && currentImage) {
         return [{
             name: currentImage,
             preview: `${process.env.REACT_APP_PRODUCT_PATH}/${currentImage}`,
@@ -187,7 +190,7 @@ const mapStateToProps = state => {
     }
     return {
         isRequestInProgress: state.adminProduct.isCreating || state.adminProduct.isFetching || state.adminProduct.isDeleting,
-        imageFile: imageFile ? [imageFile] : [],
+        imageFile: imageFile ? [imageFile] : [{}],
         active: selector(state, 'active'),
         accessToken: state.auth.accessToken,
         isValidProduct: isValid(formName)(state),

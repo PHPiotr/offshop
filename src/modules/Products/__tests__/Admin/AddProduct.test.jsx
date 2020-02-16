@@ -15,6 +15,24 @@ import {inputKeys} from '../../config';
 const mock = new MockAdapter(axios);
 let store;
 
+const dispatchEvt = (node, type, data) => {
+    const event = new Event(type, { bubbles: true });
+    Object.assign(event, data);
+    fireEvent(node, event);
+};
+
+const mockData = files => ({
+    dataTransfer: {
+        files,
+        items: files.map(file => ({
+            kind: 'file',
+            type: file.type,
+            getAsFile: () => file
+        })),
+        types: ['Files']
+    }
+});
+
 const productPayload = {
     active: true,
     stock: '1',
@@ -39,23 +57,12 @@ const setupFakeInputValues = (store, getByTestId) => {
     inputKeys.forEach((key, idx) => {
         let requiredInput;
         if (key === 'img') {
-            store.dispatch({
-                type: '@@redux-form/CHANGE',
-                meta: {
-                    form: 'product',
-                    field: 'img',
-                    touch: false,
-                    persistentSubmitErrors: false
-                },
-                payload: {
-                    file: {
-                        path: 'foo/bar/baz.png'
-                    },
-                    name: 'baz.png',
-                    preview: 'blob:http://localhost:3001/a7240ab5-9c74-4af0-9c01-67cc25969535',
-                    size: 6612517
-                }
-            });
+            requiredInput = getByTestId('drop-zone-wrapper').querySelector('div');
+            const file = new File([
+                JSON.stringify({ping: true})
+            ], 'ping.jpeg', { type: 'image/jpeg' });
+            const data = mockData([file]);
+            dispatchEvt(requiredInput, 'drop', data);
         } else {
             requiredInput = getByTestId(key).getElementsByTagName('input')[0] || getByTestId(key).getElementsByTagName('textarea')[0];
             fireEvent.change(requiredInput, {target: {value: testValues[idx]}});
@@ -89,7 +96,7 @@ describe('Admin/AddDeliveryMethod', () => {
         const saveBtn = await waitForElement(() => getByRole('button'));
         expect(saveBtn.disabled).toBe(true);
         setupFakeInputValues(store, getByTestId);
-        expect(saveBtn.disabled).toBe(false);
+        expect((await waitForElement(() => getByRole('button'))).disabled).toBe(false);
         fireEvent.click(saveBtn);
         expect(await waitForElement(() => getByText(`Produkt ${productPayload.name} został dodany.`))).toBeDefined();
     });
@@ -99,6 +106,7 @@ describe('Admin/AddDeliveryMethod', () => {
         const {getByText, getByRole, getByTestId} = await renderWithStore(<><AddProduct/><NotificationBar/></>, store);
         const saveBtn = await waitForElement(() => getByRole('button'));
         setupFakeInputValues(store, getByTestId);
+        expect((await waitForElement(() => getByRole('button'))).disabled).toBe(false);
         fireEvent.click(saveBtn);
         expect(await waitForElement(() => getByText('Network Error'))).toBeDefined();
     });
