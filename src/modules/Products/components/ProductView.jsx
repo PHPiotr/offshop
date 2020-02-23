@@ -22,6 +22,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import {addToCart} from '../../../modules/ShoppingCart/actions';
 import {openDialog} from '../../../actions/dialog';
 import ProductAddedToCartDialog from './ProductAddedToCartDialog';
+import NotFound from '../../../components/NotFound';
 
 const styles = theme => ({
     card: {
@@ -76,6 +77,10 @@ const ProductView = props => {
         props.addToCart(props.product, 1);
         props.openDialog();
     };
+
+    if (!props.product.name) {
+        return <NotFound/>;
+    }
 
     return (
         <Fragment>
@@ -165,9 +170,13 @@ const mapDispatchToProps = {addToCart, openDialog};
 
 ProductView.propTypes = {
     classes: PropTypes.object.isRequired,
-    product: PropTypes.object.isRequired,
+    product: PropTypes.object,
     isFetching: PropTypes.bool.isRequired,
     productInCart: PropTypes.object.isRequired,
+};
+
+ProductView.defaultProps = {
+    product: {},
 };
 
 export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(ProductView));

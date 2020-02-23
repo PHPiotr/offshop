@@ -1,4 +1,4 @@
-import React, {Fragment} from 'react';
+import React from 'react';
 import thunk from 'redux-thunk';
 import {createStore, applyMiddleware} from 'redux';
 import {waitForElement, fireEvent} from '@testing-library/react';

@@ -1,7 +1,7 @@
 import React, {Fragment} from 'react';
 import thunk from 'redux-thunk';
 import {createStore, applyMiddleware, combineReducers} from 'redux';
-import {waitForElement, fireEvent} from '@testing-library/react';
+import {waitForElement, fireEvent, act} from '@testing-library/react';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import Navigation from '../../../components/NavigationBar';
@@ -157,10 +157,11 @@ describe('Product', () => {
                     [false, false, true, false, {...productPayload, id: 'foo'}, createdProductMessage],
                 ])('should notify of product updated: %s if wasActive: %s, isActive: %s, item being viewed: %s', async (shouldShow, wasActive, isActive, isViewed, product, message) => {
                     const {getByText, queryByText} = await renderWithStore(<Fragment><Product product={productPayload}/><NotificationBar /></Fragment>, store);
+                    expect(await waitForElement(() => getByText(productPayload.name))).toBeDefined();
                     expect(queryByText(message)).toBeNull();
-                    socket.socketClient.emit('updateProduct', {product, wasActive, isActive});
+                    act(() => socket.socketClient.emit('updateProduct', {product, wasActive, isActive}));
                     if (shouldShow) {
-                        expect(getByText(message)).toBeDefined();
+                        expect(await waitForElement(() => getByText(message))).toBeDefined();
                     } else {
                         expect(queryByText(message)).toBeNull();
                     }
@@ -177,6 +178,7 @@ describe('Product', () => {
                     [false, false, false, {...productPayload, id: 'foo'}],
                 ])('should notify of product deleted: %s if wasActive: %s, item being viewed: %s', async (shouldShow, wasActive, isViewed, product) => {
                     const {getByText, queryByText} = await renderWithStore(<Fragment><Product product={productPayload}/><NotificationBar /></Fragment>, store);
+                    expect(await waitForElement(() => getByText(productPayload.name))).toBeDefined();
                     expect(queryByText(deletedProductMessage)).toBeNull();
                     socket.socketClient.emit('deleteProduct', {product, wasActive});
                     if (shouldShow) {

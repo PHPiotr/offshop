@@ -1,7 +1,7 @@
 import React from 'react';
 import thunk from 'redux-thunk';
 import {createStore, applyMiddleware} from 'redux';
-import {waitForElement, fireEvent} from '@testing-library/react';
+import {waitForElement, fireEvent, act} from '@testing-library/react';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import App from '../App';
@@ -134,7 +134,7 @@ describe('App', () => {
             }), '/admin/products/list'],
         ])('works with auth %s', async (actual, auth, route) => {
             await renderWithAuth(<App/>, store, auth, {route});
-            expect(expected).toEqual(actual);
+            expect(await waitForElement(() => expected)).toEqual(actual);
         });
     });
 

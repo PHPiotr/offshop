@@ -356,18 +356,18 @@ describe('Checkout', () => {
         it('should display error notification when create order fails', async () => {
             mock.onGet(/pay-methods/).reply(200, payMethodsPayload);
             mock.onPost(/orders/).networkErrorOnce();
-            const {getByTestId, queryByTestId} = await renderWithStore(<Products/>, store);
+            const {getByTestId, getByText} = await renderWithRouter(<PaymentContext.Provider value={paymentContextData}><App/></PaymentContext.Provider>, store);
             const addToCartButton = await waitForElement(() => getByTestId(`add-to-cart-button-${productsPayload[0].id}`));
             fireEvent.click(addToCartButton);
-            await renderWithStore(<Cart/>, store);
+            fireEvent.click(getByText('Przejdź do koszyka'));
             const deliveryMethodRadio = await waitForElement(() => getByTestId(`radio-btn-${deliveryMethodsPayload[1].id}`));
             fireEvent.click(deliveryMethodRadio);
-            await renderWithStore(<PaymentContext.Provider value={paymentContextData}><Checkout/></PaymentContext.Provider>, store);
+            fireEvent.click(getByText('Dalej'));
             const emailInput = getByTestId('email').getElementsByTagName('input')[0];
             fireEvent.change(emailInput, {target: {value: 'john.doe@example.com'}});
-            fireEvent.click(getByTestId('next-step-btn'));
-            const cardPayBtn = await waitForElement(() => getByTestId(`pay-button-${payMethodsPayload.payByLinks[1].value}`));
-            fireEvent.click(cardPayBtn);
+            fireEvent.click(await waitForElement(() => getByTestId('next-step-btn')));
+            fireEvent.click(await waitForElement(() => getByTestId(`pay-button-${payMethodsPayload.payByLinks[1].value}`)));
+            expect(await waitForElement(() => getByText('Network Error'))).toBeDefined();
         });
     });
 
