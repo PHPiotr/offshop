@@ -60,7 +60,6 @@ export const createOrderIfNeeded = payMethods => {
                 deliveryMethod: state.deliveryMethods.data[state.deliveryMethods.currentId],
                 description: 'OFFSHOP - transakcja',
                 merchantPosId: process.env.REACT_APP_GOOGLE_PAY_TOKENIZATION_GATEWAY_MERCHANT_ID,
-                notifyUrl: `${process.env.REACT_APP_API_HOST}${process.env.REACT_APP_PAYU_NOTIFY_PATH}`,
                 payMethods,
                 productsById,
                 productsIds: state.cart.ids,
