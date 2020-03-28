@@ -52,16 +52,13 @@ function ProductsGridList(props) {
     const md = productsLength >= 3 ? 4 : 12 / productsLength;
     const lg = productsLength >= 4 ? 3 : 12 / productsLength;
 
-    if (props.isFetching) {
-        return <ProgressIndicator />;
-    }
-
     if (!productsLength) {
         return <NoProducts />;
     }
 
     return (
         <Fragment>
+            {props.isFetching && <ProgressIndicator />}
             <GridList cellHeight={`auto`}>
                 {products.map(product => {
 

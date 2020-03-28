@@ -24,7 +24,10 @@ export const getProductIfNeeded = slug => async (dispatch) => {
 
 export const getProductsIfNeeded = params => {
     return async (dispatch, getState) => {
-        const {products: {data, ids}} = getState();
+        const {products: {data, ids, isFetching}} = getState();
+        if (isFetching) {
+            return;
+        }
         dispatch({type: actions.RETRIEVE_PRODUCTS_REQUEST});
         try {
             const response = await getRequestPublic('/products', params);
