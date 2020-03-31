@@ -16,6 +16,7 @@ import {showNotification} from '../../../../actions/notification';
 import useInfiniteScrolling from '../../../../hooks/useInfiniteScrolling';
 import SocketContext from '../../../../contexts/SocketContext';
 import ErrorPage from '../../../../components/ErrorPage';
+import Empty from '../../../../components/Empty';
 
 const useStyles = makeStyles(theme => ({
     list: {
@@ -76,6 +77,10 @@ const OrdersList = props => {
 
     if (props.error) {
         return <ErrorPage message={props.error.message} />
+    }
+
+    if (!props.isFetching && !props.data.length) {
+        return <Empty label="Brak zamówień" />
     }
 
     return (

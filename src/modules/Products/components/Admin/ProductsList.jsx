@@ -24,6 +24,7 @@ import {showNotification} from '../../../../actions/notification';
 import useInfiniteScrolling from '../../../../hooks/useInfiniteScrolling';
 import SocketContext from '../../../../contexts/SocketContext';
 import ErrorPage from '../../../../components/ErrorPage';
+import Empty from '../../../../components/Empty';
 
 const styles = theme => ({
     root: {
@@ -91,6 +92,9 @@ const ProductsList = props => {
     return (
         <Fragment>
             {props.isFetching && <ProgressIndicator />}
+            {!props.isFetching && !props.products.length && (
+                <Empty label="Brak produktów" linkLabel="Dodaj produkt" linkTo="/admin/products/new" />
+            )}
             <List className={props.classes.root} disablePadding>
                 {props.products.map((p, i) => (
                     <Fragment key={p.id}>

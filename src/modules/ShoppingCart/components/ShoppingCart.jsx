@@ -2,7 +2,7 @@ import React, {Fragment, useContext, useEffect, useState} from 'react';
 import {connect} from 'react-redux';
 import ProductsInCart from './ProductsInCart';
 import CartSummary from './CartSummary';
-import EmptyCart from './EmptyCart';
+import Empty from '../../../components/Empty';
 import {onUpdateProductInCart, onDeleteProductInCart} from '../actions';
 import {showNotification} from '../../../actions/notification';
 import {getDeliveryMethodsIfNeeded} from '../../Delivery/actions';
@@ -74,7 +74,7 @@ const ShoppingCart = props => {
     }
 
     if (!props.products.length) {
-        return <EmptyCart/>;
+        return <Empty label="Pusty koszyk" linkLabel="Wróć do strony głównej." linkTo="/" />;
     }
 
     return (

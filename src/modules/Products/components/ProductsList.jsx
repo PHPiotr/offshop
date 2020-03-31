@@ -14,7 +14,7 @@ import {addToCart} from '../../../modules/ShoppingCart/actions';
 import {openDialog} from '../../../actions/dialog';
 import ProductAddedToCartDialog from './ProductAddedToCartDialog';
 import ProgressIndicator from '../../../components/ProgressIndicator';
-import NoProducts from './NoProducts';
+import Empty from '../../../components/Empty';
 
 const styles = theme => ({
     gridListTitle: {
@@ -53,7 +53,7 @@ function ProductsGridList(props) {
     const lg = productsLength >= 4 ? 3 : 12 / productsLength;
 
     if (!productsLength) {
-        return <NoProducts />;
+        return <Empty label="Brak produktów" />;
     }
 
     return (
