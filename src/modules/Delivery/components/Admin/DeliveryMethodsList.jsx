@@ -17,6 +17,7 @@ import ProgressIndicator from '../../../../components/ProgressIndicator';
 import {getAdminDeliveryMethodsIfNeeded, deleteDeliveryMethodIfNeeded} from '../../actions';
 import {showNotification} from '../../../../actions/notification';
 import ErrorPage from '../../../../components/ErrorPage';
+import Empty from '../../../../components/Empty';
 
 const styles = theme => ({
     root: {
@@ -66,6 +67,9 @@ const DeliveryMethodsList = props => {
     return (
         <Fragment>
             {props.isFetching && <ProgressIndicator />}
+            {!props.isFetching && !props.data.length && (
+                <Empty label="Brak opcji dostawy" linkLabel="Dodaj opcję dostawy" linkTo="/admin/delivery-methods/new" />
+            )}
             <List className={props.classes.root} disablePadding>
                 {props.data.map((p, i) => (
                     <Fragment key={p.id}>
