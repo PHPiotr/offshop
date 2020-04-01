@@ -112,7 +112,7 @@ const App = props => {
                         color="textSecondary"
                         component="p"
                     >
-                        Stworzone z miłości do żony
+                        {`${process.env.REACT_APP_FOOTER_TEXT}`}
                     </Typography>
                 </footer>
             </div>
