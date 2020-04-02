@@ -59,7 +59,7 @@ export const createOrderIfNeeded = payMethods => {
                 currencyCode: process.env.REACT_APP_CURRENCY_CODE,
                 deliveryMethod: state.deliveryMethods.data[state.deliveryMethods.currentId],
                 description: 'OFFSHOP - transakcja',
-                merchantPosId: process.env.REACT_APP_GOOGLE_PAY_TOKENIZATION_GATEWAY_MERCHANT_ID,
+                merchantPosId: process.env.REACT_APP_MERCHANT_POS_ID,
                 payMethods,
                 productsById,
                 productsIds: state.cart.ids,
