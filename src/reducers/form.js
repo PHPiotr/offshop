@@ -1,4 +1,5 @@
 import {reducer as form} from 'redux-form';
+import get from 'lodash.get';
 
 export default form.plugin({
     product: (state, action) => {
@@ -27,7 +28,7 @@ export default form.plugin({
                     };
                 }
 
-                const match = state.values && state.values.unitPrice.match(/^\D*(\d*)\D*[.,]+\D*(\d*)\D*\.*$/);
+                const match = (get(state, 'values.unitPrice') || '0.00').match(/^\D*(\d*)\D*[.,]+\D*(\d*)\D*\.*$/);
                 match.shift();
                 const [integral, fractional] = match;
                 let integer, fraction;
