@@ -58,7 +58,7 @@ export const createOrderIfNeeded = payMethods => {
                 continueUrl: process.env.REACT_APP_PAYU_CONTINUE_URL,
                 currencyCode: process.env.REACT_APP_CURRENCY_CODE,
                 deliveryMethod: state.deliveryMethods.data[state.deliveryMethods.currentId],
-                description: 'OFFSHOP - transakcja',
+                description: 'Transakcja',
                 merchantPosId: process.env.REACT_APP_MERCHANT_POS_ID,
                 payMethods,
                 productsById,
