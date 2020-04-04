@@ -96,8 +96,8 @@ export const inputs = {
         component: TextField,
         inputProps: {
             inputProps: {
-                min: 1.0,
-                step: 0.1,
+                min: 0.001,
+                step: 0.001,
             },
             endAdornment: <InputAdornment position="start">kg</InputAdornment>
         },
