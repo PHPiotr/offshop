@@ -62,7 +62,7 @@ const styles = theme => ({
     },
 });
 
-const pageTitle = process.env.REACT_APP_PAGE_TITLE;
+const pageTitle = process.env.REACT_APP_MERCHANT_NAME;
 
 const App = props => {
     const {classes} = props;
