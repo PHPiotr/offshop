@@ -55,7 +55,7 @@ export const createOrderIfNeeded = payMethods => {
 
             const {data} = await postRequestPrivate(accessToken)('/orders', {}, {
                 buyer,
-                continueUrl: process.env.REACT_APP_PAYU_CONTINUE_URL,
+                continueUrl: `${process.env.REACT_APP_URL}/order`,
                 currencyCode: process.env.REACT_APP_CURRENCY_CODE,
                 deliveryMethod: state.deliveryMethods.data[state.deliveryMethods.currentId],
                 description: 'Transakcja',

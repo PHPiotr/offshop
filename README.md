@@ -14,7 +14,7 @@ REACT_APP_AUTH0_AUDIENCE=https://offshop-back-end.herokuapp.com
 REACT_APP_AUTH0_CLIENT_ID=**************************
 REACT_APP_AUTH0_CLIENT_SECRET=**************************
 REACT_APP_AUTH0_DOMAIN=johndoe.eu.auth0.com
-REACT_APP_AUTH0_REDIRECT_URI=https://offshop-front-end.herokuapp.com/callback
+REACT_APP_BUYER_LANGUAGE=pl
 REACT_APP_CURRENCY_CODE=PLN
 REACT_APP_FOOTER_TEXT="Your footer text"
 REACT_APP_GOOGLE_PAY_API_VERSION=2
@@ -24,13 +24,12 @@ REACT_APP_LOGO_FONT=Roboto
 REACT_APP_MAIN_COLOR=#3f51b5
 REACT_APP_MERCHANT_NAME=Acme
 REACT_APP_MERCHANT_POS_ID=**************************
-REACT_APP_PAYU_API_URL=https://secure.snd.payu.com/api/v2_1
-REACT_APP_PAYU_BASE_URL=https://secure.snd.payu.com
 REACT_APP_PAYU_CLIENT_ID=**************************
 REACT_APP_PAYU_CLIENT_SECRET=**************************
-REACT_APP_PAYU_CONTINUE_URL=https://offshop-front-end.herokuapp.com/order
+REACT_APP_PAYU_URL=https://secure.snd.payu.com
 REACT_APP_PRODUCT_PATH=https://your-bucket.s3.eu-central-1.amazonaws.com
 REACT_APP_SECOND_KEY=**************************
+REACT_APP_URL=https://offshop-front-end.herokuapp.com
 ```
 
 ## Available Scripts
