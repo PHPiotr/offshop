@@ -52,7 +52,7 @@ function ProductsGridList(props) {
     const md = productsLength >= 3 ? 4 : 12 / productsLength;
     const lg = productsLength >= 4 ? 3 : 12 / productsLength;
 
-    if (!productsLength) {
+    if (!productsLength && !props.isFetching) {
         return <Empty label="Brak produktów" />;
     }
 

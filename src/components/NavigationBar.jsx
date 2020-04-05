@@ -20,7 +20,7 @@ import List from "@material-ui/core/List";
 import ListSubheader from '@material-ui/core/ListSubheader';
 
 const logoFont = process.env.REACT_APP_LOGO_FONT;
-const pageTitle = process.env.REACT_APP_PAGE_TITLE;
+const pageTitle = process.env.REACT_APP_MERCHANT_NAME;
 
 const styles = theme => ({
     root: {
