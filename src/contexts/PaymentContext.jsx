@@ -1,7 +1,7 @@
 import React, {useContext} from 'react';
 
 const payment = {
-    src: `${process.env.REACT_APP_PAYU_BASE_URL}/front/widget/js/payu-bootstrap.js`,
+    src: `${process.env.REACT_APP_PAYU_URL}/front/widget/js/payu-bootstrap.js`,
     currencyCode: process.env.REACT_APP_CURRENCY_CODE,
     customerLanguage: 'pl',
     merchantPosId: process.env.REACT_APP_MERCHANT_POS_ID,
