@@ -11,11 +11,15 @@ export const formName = 'deliveryMethod';
 export const inputKeys = [
     'name',
     'unitPrice',
+    'step',
+    'stepPrice',
 ];
 
 export const initialValues = {
     name: '',
     unitPrice: '',
+    step: '',
+    stepPrice: '',
 };
 
 export const inputs = {
@@ -28,7 +32,7 @@ export const inputs = {
     },
     unitPrice: {
         type: 'number',
-        label: 'Cena za kg',
+        label: 'Cena',
         validate: [validateRequired, validatePrice],
         component: TextField,
         inputProps: {
@@ -36,7 +40,31 @@ export const inputs = {
                 min: 0.00,
                 step: 0.01,
             },
-            endAdornment: <InputAdornment position="start">zł/kg</InputAdornment>
+            endAdornment: <InputAdornment position="start">zł</InputAdornment>
+        },
+    },
+    step: {
+        type: 'number',
+        label: 'Zwiększ cenę co x kg',
+        component: TextField,
+        inputProps: {
+            inputProps: {
+                min: 1,
+                step: 1,
+            },
+            endAdornment: <InputAdornment position="start">kg</InputAdornment>
+        },
+    },
+    stepPrice: {
+        type: 'number',
+        label: 'Zwiększ cenę o x zł',
+        component: TextField,
+        inputProps: {
+            inputProps: {
+                min: 0.00,
+                step: 0.01,
+            },
+            endAdornment: <InputAdornment position="start">zł</InputAdornment>
         },
     },
 };

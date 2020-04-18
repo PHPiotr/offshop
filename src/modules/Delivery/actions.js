@@ -45,7 +45,11 @@ export const onDeleteDeliveryMethod = deliveryMethod => ({
 export const createDeliveryMethodIfNeeded = (formProps, accessToken) => async dispatch => {
     dispatch({type: actions.CREATE_DELIVERY_METHOD_REQUEST});
     try {
-        const {data} = await postRequestPrivate(accessToken)('/admin/delivery-methods', {}, {...formProps, unitPrice: formProps.unitPrice * 1000 / 10});
+        const {data} = await postRequestPrivate(accessToken)('/admin/delivery-methods', {}, {
+            ...formProps,
+            unitPrice: formProps.unitPrice * 1000 / 10,
+            stepPrice: formProps.stepPrice * 1000 / 10,
+        });
         const payload = normalize(data, deliveryMethodSchema.deliveryMethod);
         dispatch({type: actions.CREATE_DELIVERY_METHOD_SUCCESS, payload});
     } catch (error) {
@@ -58,7 +62,11 @@ export const updateDeliveryMethodIfNeeded = (formProps, accessToken) => async (d
     const {adminDeliveryMethod: {id}} = getState();
     dispatch({type: actions.UPDATE_DELIVERY_METHOD_REQUEST});
     try {
-        const {data} = await putRequestPrivate(accessToken)(`/admin/delivery-methods/${id}`, {}, {...formProps, unitPrice: formProps.unitPrice * 1000 / 10});
+        const {data} = await putRequestPrivate(accessToken)(`/admin/delivery-methods/${id}`, {}, {
+            ...formProps,
+            unitPrice: formProps.unitPrice * 1000 / 10,
+            stepPrice: formProps.stepPrice * 1000 / 10,
+        });
         const payload = normalize(data, deliveryMethodSchema.deliveryMethod);
         dispatch({type: actions.UPDATE_DELIVERY_METHOD_SUCCESS, payload});
     } catch (error) {

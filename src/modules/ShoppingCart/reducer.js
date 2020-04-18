@@ -6,6 +6,7 @@ import {
     SET_CURRENT_DELIVERY_METHOD
 } from '../Delivery/actionTypes';
 import {CREATE_ORDER_SUCCESS} from '../Orders/actionTypes';
+import getDeliveryTotalPrice from '../../helpers/getDeliveryTotalPrice';
 
 const initialCartState = {
     quantity: 0,
@@ -14,9 +15,16 @@ const initialCartState = {
     ids: [],
     products: {},
     deliveryId: null,
+    deliveryStep: 0,
+    deliveryStepPrice: 0,
     deliveryUnitPrice: 0,
     deliveryTotalPrice: 0,
     totalPriceWithDelivery: 0,
+};
+
+const getTotalPriceWithDelivery = (deliveryStep, deliveryStepPrice, totalPrice, deliveryUnitPrice, weight) => {
+    const deliveryTotalPrice = getDeliveryTotalPrice(deliveryStep, deliveryStepPrice, deliveryUnitPrice, weight);
+    return Math.round(Number(totalPrice) + deliveryTotalPrice);
 };
 
 export const cart = (state = initialCartState, { payload, type }) => {
@@ -36,8 +44,8 @@ export const cart = (state = initialCartState, { payload, type }) => {
                     totalPrice: state.totalPrice - totalPrice,
                     ids: state.ids.filter(id => id !== payload.product.id),
                     products: {...state.products, [payload.product.id]: undefined},
-                    deliveryTotalPrice: Math.round(state.deliveryUnitPrice * (state.weight - weight) / 100),
-                    totalPriceWithDelivery: Math.round((state.totalPrice - totalPrice) + (state.deliveryUnitPrice * (state.weight - weight) / 100)),
+                    deliveryTotalPrice: getDeliveryTotalPrice(state.deliveryStep, state.deliveryStepPrice, state.deliveryUnitPrice, state.weight - weight),
+                    totalPriceWithDelivery: getTotalPriceWithDelivery(state.deliveryStep, state.deliveryStepPrice, state.totalPrice - totalPrice, state.deliveryUnitPrice, state.weight - weight),
                 };
             }
 
@@ -63,8 +71,8 @@ export const cart = (state = initialCartState, { payload, type }) => {
                         totalPrice: payload.product.unitPrice * itemQuantity,
                     } : undefined},
                 ids: Number(payload.product.stock) > 0 ? state.ids : state.ids.filter(id => id !== payload.product.id),
-                deliveryTotalPrice: Math.round(state.deliveryUnitPrice * (totalWeight + payload.product.weight * itemQuantity) / 100),
-                totalPriceWithDelivery: Math.round(priceTotal + (state.deliveryUnitPrice * totalWeight) / 100),
+                deliveryTotalPrice: getDeliveryTotalPrice(state.deliveryStep, state.deliveryStepPrice, state.deliveryUnitPrice, (totalWeight + payload.product.weight * itemQuantity)),
+                totalPriceWithDelivery: getTotalPriceWithDelivery(state.deliveryStep, state.deliveryStepPrice, priceTotal, state.deliveryUnitPrice, totalWeight),
             };
         case ON_DELETE_DELIVERY_METHOD:
             if (payload.deliveryMethod.id !== state.deliveryId) {
@@ -73,6 +81,8 @@ export const cart = (state = initialCartState, { payload, type }) => {
             return {
                 ...state,
                 deliveryId: null,
+                deliveryStep: 0,
+                deliveryStepPrice: 0,
                 deliveryUnitPrice: 0,
                 deliveryTotalPrice: 0,
                 totalPriceWithDelivery: state.totalPrice,
@@ -83,17 +93,21 @@ export const cart = (state = initialCartState, { payload, type }) => {
             }
             return {
                 ...state,
+                deliveryStep: payload.deliveryMethod.step,
+                deliveryStepPrice: payload.deliveryMethod.stepPrice,
                 deliveryUnitPrice: payload.deliveryMethod.unitPrice,
-                deliveryTotalPrice: Math.round(payload.deliveryMethod.unitPrice * state.weight / 100),
-                totalPriceWithDelivery: Math.round(state.totalPrice + payload.deliveryMethod.unitPrice * state.weight / 100),
+                deliveryTotalPrice: getDeliveryTotalPrice(payload.deliveryMethod.deliveryStep, payload.deliveryMethod.deliveryStepPrice, payload.deliveryMethod.unitPrice, state.weight),
+                totalPriceWithDelivery: getTotalPriceWithDelivery(payload.deliveryMethod.deliveryStep, payload.deliveryMethod.deliveryStepPrice, state.totalPrice, payload.deliveryMethod.unitPrice, state.weight),
             };
         case SET_CURRENT_DELIVERY_METHOD:
             return {
                 ...state,
                 deliveryId: payload.current.id,
+                deliveryStep: payload.current.step,
+                deliveryStepPrice: payload.current.stepPrice,
                 deliveryUnitPrice: payload.current.unitPrice,
-                deliveryTotalPrice: Math.round(payload.current.unitPrice * state.weight / 100),
-                totalPriceWithDelivery: Math.round(state.totalPrice + payload.current.unitPrice * state.weight / 100),
+                deliveryTotalPrice: getDeliveryTotalPrice(payload.current.step, payload.current.stepPrice, payload.current.unitPrice, state.weight),
+                totalPriceWithDelivery: getTotalPriceWithDelivery(payload.current.step, payload.current.stepPrice, state.totalPrice, payload.current.unitPrice, state.weight),
             };
         case actions.ADD_TO_CART:
 
@@ -114,8 +128,8 @@ export const cart = (state = initialCartState, { payload, type }) => {
                         weight: item.weight + payload.item.weight * payload.quantity,
                         totalPrice: item.totalPrice + payload.item.unitPrice * payload.quantity,
                     }},
-                deliveryTotalPrice: Math.round(state.deliveryUnitPrice * (state.weight + payload.item.weight * payload.quantity) / 100),
-                totalPriceWithDelivery: Math.round((state.totalPrice + payload.item.unitPrice * payload.quantity) + (state.deliveryUnitPrice * (state.weight + payload.item.weight * payload.quantity) / 100)),
+                deliveryTotalPrice: getDeliveryTotalPrice(state.deliveryStep, state.deliveryStepPrice, state.deliveryUnitPrice, (state.weight + payload.item.weight * payload.quantity)),
+                totalPriceWithDelivery: getTotalPriceWithDelivery(state.deliveryStep, state.deliveryStepPrice, (state.totalPrice + payload.item.unitPrice * payload.quantity), state.deliveryUnitPrice, (state.weight + payload.item.weight * payload.quantity)),
             };
         case actions.DECREMENT_IN_CART:
 
@@ -131,8 +145,8 @@ export const cart = (state = initialCartState, { payload, type }) => {
                         weight: item.weight - payload.item.weight * payload.quantity,
                         totalPrice: item.totalPrice - payload.item.unitPrice * payload.quantity,
                     }},
-                deliveryTotalPrice: Math.round(state.deliveryUnitPrice * (state.weight - payload.item.weight * payload.quantity) / 100),
-                totalPriceWithDelivery: Math.round((state.totalPrice - (payload.item.unitPrice * payload.quantity)) + (state.deliveryUnitPrice * (state.weight - payload.item.weight * payload.quantity) / 100)),
+                deliveryTotalPrice: getDeliveryTotalPrice(state.deliveryStep, state.deliveryStepPrice, state.deliveryUnitPrice, (state.weight - payload.item.weight * payload.quantity)),
+                totalPriceWithDelivery: getTotalPriceWithDelivery(state.deliveryStep, state.deliveryStepPrice, (state.totalPrice - (payload.item.unitPrice * payload.quantity)), state.deliveryUnitPrice, (state.weight - payload.item.weight * payload.quantity)),
             };
         case ON_DELETE_PRODUCT:
         case actions.DELETE_FROM_CART:
@@ -150,8 +164,8 @@ export const cart = (state = initialCartState, { payload, type }) => {
                 totalPrice: state.totalPrice - totalPrice,
                 ids: state.ids.filter(id => id !== payload.product.id),
                 products: {...state.products, [payloadProductId]: undefined},
-                deliveryTotalPrice: Math.round(state.deliveryUnitPrice * (state.weight - weight) / 100),
-                totalPriceWithDelivery: Math.round((state.totalPrice - totalPrice) + (state.deliveryUnitPrice * (state.weight - weight) / 100)),
+                deliveryTotalPrice: getDeliveryTotalPrice(state.deliveryStep, state.deliveryStepPrice, state.deliveryUnitPrice, state.weight - weight),
+                totalPriceWithDelivery: getTotalPriceWithDelivery(state.deliveryStep, state.deliveryStepPrice, (state.totalPrice - totalPrice), state.deliveryUnitPrice, (state.weight - weight)),
             };
 
         case CREATE_ORDER_SUCCESS:

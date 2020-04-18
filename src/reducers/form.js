@@ -13,17 +13,20 @@ export default form.plugin({
                         values: {
                             ...state.values,
                             unitPrice: '',
+                            stepPrice: '',
                         },
                     };
                 }
                 if (`${action.payload}`.indexOf('.') === -1 && `${action.payload}`.indexOf(',') === -1) {
                     const unitPrice = parseInt(state.values.unitPrice, 10);
+                    const stepPrice = parseInt(state.values.stepPrice, 10);
 
                     return {
                         ...state,
                         values: {
                             ...state.values,
                             unitPrice: unitPrice > 0 ? `${unitPrice}.00` : '',
+                            stepPrice: stepPrice > 0 ? `${stepPrice}.00` : '',
                         },
                     };
                 }
@@ -45,11 +48,31 @@ export default form.plugin({
                     fraction = fractional.substring(0, 2);
                 }
                 const unitPrice = `${integer}.${fraction}`;
+
+                const matchStepPrice = (get(state, 'values.stepPrice') || '0.00').match(/^\D*(\d*)\D*[.,]+\D*(\d*)\D*\.*$/);
+                matchStepPrice.shift();
+                const [integralStepPrice, fractionalStepPrice] = matchStepPrice;
+                let integerStepPrice, fractionStepPrice;
+
+                if (integralStepPrice.length === 0) {
+                    integerStepPrice = '00';
+                } else {
+                    integerStepPrice = integralStepPrice;
+                }
+
+                if (fractionalStepPrice.length === 1) {
+                    fractionStepPrice = `${fractionalStepPrice}0`;
+                } else {
+                    fractionStepPrice = fractionalStepPrice.substring(0, 2);
+                }
+                const stepPrice = `${integerStepPrice}.${fractionStepPrice}`;
+
                 return {
                     ...state,
                     values: {
                         ...state.values,
                         unitPrice: unitPrice > 0 ? unitPrice : '',
+                        stepPrice: stepPrice > 0 ? stepPrice : '',
                     },
                 };
             default:
