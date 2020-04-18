@@ -113,6 +113,9 @@ const mapStateToProps = state => {
     if (initialValues.unitPrice) {
         initialValues.unitPrice = (initialValues.unitPrice / 100).toFixed(2);
     }
+    if (initialValues.stepPrice) {
+        initialValues.stepPrice = (initialValues.stepPrice / 100).toFixed(2);
+    }
     return {
         isRequestInProgress: state.adminDeliveryMethod.isCreating || state.adminDeliveryMethod.isFetching || state.adminDeliveryMethod.isDeleting,
         accessToken: state.auth.accessToken,

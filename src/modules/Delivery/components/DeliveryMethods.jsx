@@ -10,6 +10,7 @@ import {
 import PropTypes from 'prop-types';
 import {showNotification} from '../../../actions/notification';
 import SocketContext from '../../../contexts/SocketContext';
+import getDeliveryTotalPrice from '../../../helpers/getDeliveryTotalPrice';
 
 const DeliveryMethods = props => {
 
@@ -62,27 +63,36 @@ const DeliveryMethods = props => {
 
     return (
         <RadioGroup name="position" defaultValue={props.currentDeliveryMethod.id}>
-            {props.deliveryMethods.map(({ id, name, unitPrice }) => (
-                <FormControlLabel
-                    data-testid={`radio-btn-${id}`}
-                    key={id}
-                    value={id}
-                    control={<Radio color="primary" />}
-                    label={
-                        <React.Fragment>
-                            <Typography component="span" color="textPrimary">
-                                <span>{name}</span>
-                            </Typography>
-                            <Typography component="span" color="textSecondary">
-                                &nbsp;<span>{`${(unitPrice * (props.cart.weight / 100) / 100).toFixed(2)}`}</span> zł
-                            </Typography>
-                        </React.Fragment>
-                    }
-                    labelPlacement="end"
-                    checked={id === props.currentDeliveryMethod.id}
-                    onChange={handleSetCurrentDeliveryMethod}
-                />
-            ))}
+            {props.deliveryMethods.map(({ id, name, step, stepPrice, unitPrice }) => {
+                const deliveryTotalPrice = getDeliveryTotalPrice(step, stepPrice, unitPrice, props.cart.weight);
+                return (
+                    <FormControlLabel
+                        data-testid={`radio-btn-${id}`}
+                        key={id}
+                        value={id}
+                        control={<Radio color="primary" />}
+                        label={
+                            <React.Fragment>
+                                <Typography component="span" color="textPrimary">
+                                    <span>{name}</span>
+                                </Typography>
+                                <Typography component="span" color="textSecondary">
+                                    &nbsp;
+                                    {id === props.currentDeliveryMethod.id ? (
+                                        <span>{`${(props.cart.deliveryTotalPrice ? (props.cart.deliveryTotalPrice / 100) : 0).toFixed(2)}`}</span>
+                                    ) : (
+                                        <span>{`${(deliveryTotalPrice ? (deliveryTotalPrice / 100) : 0).toFixed(2)}`}</span>
+                                    )}
+                                    &nbsp;zł
+                                </Typography>
+                            </React.Fragment>
+                        }
+                        labelPlacement="end"
+                        checked={id === props.currentDeliveryMethod.id}
+                        onChange={handleSetCurrentDeliveryMethod}
+                    />
+                )
+            })}
         </RadioGroup>
     );
 };

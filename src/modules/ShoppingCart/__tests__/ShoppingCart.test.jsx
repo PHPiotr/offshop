@@ -14,12 +14,15 @@ import dialog from '../../../reducers/dialog';
 import notification from '../../../reducers/notification';
 import {products} from '../../../modules/Products/reducer';
 import {deliveryMethods} from '../../../modules/Delivery/reducer';
+import getDeliveryTotalPrice from '../../../helpers/getDeliveryTotalPrice';
 
 const deliveryMethodsPayload = [
     {
         id: '5c7dca6a0c37236da9232f9d',
         name: 'Foo',
         slug: 'foo',
+        step: 5,
+        stepPrice: '300',
         unitPrice: '1999',
         createdAt: '2019-03-05T01:01:30.486Z',
         updatedAt: '2019-10-10T21:23:01.106Z',
@@ -29,6 +32,8 @@ const deliveryMethodsPayload = [
         id: '5cd6be587732b1ba409678b2',
         name: 'Bar',
         slug: 'bar',
+        step: 4,
+        stepPrice: '200',
         unitPrice: '2999',
         createdAt: '2019-05-11T12:21:44.173Z',
         updatedAt: '2019-10-10T21:28:58.547Z',
@@ -170,7 +175,7 @@ describe('ShoppingCart', () => {
             while(i--) {
                 const currentDeliveryMethod = deliveryMethodsPayload[i];
                 expect(await waitForElement(() => getByText(currentDeliveryMethod.name))).toBeDefined();
-                expect(await waitForElement(() => getByText((currentDeliveryMethod.unitPrice * (store.getState().cart.weight / 100) / 100).toFixed(2)))).toBeDefined();
+                expect(await waitForElement(() => getByText((getDeliveryTotalPrice(currentDeliveryMethod.step, currentDeliveryMethod.stepPrice, currentDeliveryMethod.unitPrice, store.getState().cart.weight) / 100).toFixed(2)))).toBeDefined();
                 deliveryMethodRadio = await waitForElement(() => getByTestId(`radio-btn-${currentDeliveryMethod.id}`));
                 expect(deliveryMethodRadio).toBeDefined();
                 expect(checkoutButton.disabled).toBe(true);
@@ -178,36 +183,6 @@ describe('ShoppingCart', () => {
             fireEvent.click(deliveryMethodRadio);
             expect(checkoutButton.disabled).toBe(false);
             fireEvent.click(checkoutButton);
-        });
-
-        it('should adjust total price on delivery method change and on item amount increment/decrement', async () => {
-            const {getByTestId} = await renderWithStore(<Products/>, store);
-            const addToCartButton = await waitForElement(() => getByTestId(`add-to-cart-button-${firstProductId}`));
-            expect(addToCartButton).toBeDefined();
-            fireEvent.click(addToCartButton);
-            await renderWithStore(<Cart/>, store);
-            const totalPriceWithDelivery = await waitForElement(() => getByTestId('total-price-with-delivery'));
-            expect(totalPriceWithDelivery.innerHTML).toBe((firstProduct.unitPrice / 100).toFixed(2));
-            const productIncrementBtn = getByTestId(`increment-${firstProductId}`);
-            const productDecrementBtn = getByTestId(`decrement-${firstProductId}`);
-            let i = deliveryMethodsPayloadLength;
-            while(i--) {
-                const currentDeliveryMethod = deliveryMethodsPayload[i];
-                const deliveryMethodRadio = await waitForElement(() => getByTestId(`radio-btn-${currentDeliveryMethod.id}`));
-                fireEvent.click(deliveryMethodRadio);
-                const totalForOneItem = (currentDeliveryMethod.unitPrice * (firstProduct.weight / 100) / 100 + firstProduct.unitPrice / 100).toFixed(2);
-                const totalForTwoItems = (currentDeliveryMethod.unitPrice * (firstProduct.weight * 2 / 100) / 100 + firstProduct.unitPrice * 2 / 100).toFixed(2);
-                const totalForThreeItems = (currentDeliveryMethod.unitPrice * (firstProduct.weight * 3 / 100) / 100 + firstProduct.unitPrice * 3 / 100).toFixed(2);
-                expect(totalPriceWithDelivery.innerHTML).toBe(totalForOneItem);
-                fireEvent.click(productIncrementBtn);
-                expect(totalPriceWithDelivery.innerHTML).toBe(totalForTwoItems);
-                fireEvent.click(productIncrementBtn);
-                expect(totalPriceWithDelivery.innerHTML).toBe(totalForThreeItems);
-                fireEvent.click(productDecrementBtn);
-                expect(totalPriceWithDelivery.innerHTML).toBe(totalForTwoItems);
-                fireEvent.click(productDecrementBtn);
-                expect(totalPriceWithDelivery.innerHTML).toBe(totalForOneItem);
-            }
         });
 
         describe('event listeners', () => {
