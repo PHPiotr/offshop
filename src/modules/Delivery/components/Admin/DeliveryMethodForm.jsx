@@ -1,7 +1,7 @@
 import React, {useEffect} from 'react';
 import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
-import {Field, Form, isValid, reduxForm} from 'redux-form';
+import {Field, Form, formValueSelector, isValid, reduxForm} from 'redux-form';
 import {Box, Button, makeStyles} from '@material-ui/core';
 import {inputs, inputKeys, initialValues, formName} from '../../config';
 import {resetDeliveryMethod} from '../../actions';
@@ -62,20 +62,35 @@ let DeliveryMethodForm = props => {
         <Form className={classes.form} onSubmit={props.handleSubmit}>
             {inputKeys.reduce((acc, itemId) => {
                 const {label, type, validate, component, inputProps} = inputs[itemId];
-                acc.push(
-                    <Box key={itemId} className={classes.box}>
-                        <Field
-                            data-testid={itemId}
-                            name={itemId}
-                            component={component}
-                            label={label}
-                            fullWidth
-                            type={type}
-                            validate={validate}
-                            InputProps={inputProps}
-                        />
-                    </Box>
-                );
+                if (type === 'switch') {
+                    acc.push(
+                        <Box key={itemId} className={classes.box}>
+                            <Field
+                                data-testid={itemId}
+                                name={itemId}
+                                component={component}
+                                label={label}
+                                validate={validate}
+                                checked={!!props[itemId]}
+                            />
+                        </Box>
+                    )
+                } else {
+                    acc.push(
+                        <Box key={itemId} className={classes.box}>
+                            <Field
+                                data-testid={itemId}
+                                name={itemId}
+                                component={component}
+                                label={label}
+                                fullWidth
+                                type={type}
+                                validate={validate}
+                                InputProps={inputProps}
+                            />
+                        </Box>
+                    );
+                }
                 return acc;
             }, [])}
             <Box className={classes.buttons}>
@@ -108,6 +123,8 @@ DeliveryMethodForm.defaultProps = {
     isValidDeliveryMethod: false,
 };
 
+const selector = formValueSelector(formName);
+
 const mapStateToProps = state => {
     const initialValues = {...state.adminDeliveryMethod.data[state.adminDeliveryMethod.id]};
     if (initialValues.unitPrice) {
@@ -120,6 +137,7 @@ const mapStateToProps = state => {
         isRequestInProgress: state.adminDeliveryMethod.isCreating || state.adminDeliveryMethod.isFetching || state.adminDeliveryMethod.isDeleting,
         accessToken: state.auth.accessToken,
         isValidDeliveryMethod: isValid(formName)(state),
+        payAfterDelivery: selector(state, 'payAfterDelivery'),
         initialValues: initialValues,
         values: state.adminDeliveryMethod.data[state.adminDeliveryMethod.id],
     };
