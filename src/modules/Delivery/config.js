@@ -1,6 +1,7 @@
 import React from 'react';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import {
+    renderSwitch as SwitchField,
     renderTextField as TextField,
     validatePrice,
     validateRequired,
@@ -13,6 +14,7 @@ export const inputKeys = [
     'unitPrice',
     'step',
     'stepPrice',
+    'payAfterDelivery',
 ];
 
 export const initialValues = {
@@ -20,6 +22,7 @@ export const initialValues = {
     unitPrice: '',
     step: '',
     stepPrice: '',
+    payAfterDelivery: false,
 };
 
 export const inputs = {
@@ -66,5 +69,11 @@ export const inputs = {
             },
             endAdornment: <InputAdornment position="start">zł</InputAdornment>
         },
+    },
+    payAfterDelivery: {
+        type: 'switch',
+        label: 'Płatność za pobraniem',
+        component: SwitchField,
+        inputProps: {},
     },
 };

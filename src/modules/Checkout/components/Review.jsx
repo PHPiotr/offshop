@@ -121,7 +121,7 @@ const Review = props => {
                     </List>
                 </Fragment>
             )}
-            <PayMethods/>
+            {props.deliveryMethod.payAfterDelivery || <PayMethods/>}
         </Fragment>
     );
 };

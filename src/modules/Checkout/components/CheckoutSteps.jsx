@@ -12,6 +12,7 @@ import StepLabel from '@material-ui/core/StepLabel/StepLabel';
 import Button from '@material-ui/core/Button/Button';
 import BuyerForm from '../../Buyers/components/Buyer';
 import BuyerDeliveryForm from '../../Buyers/components/BuyerDelivery';
+import PayAfterDelivery from './PayAfterDelivery';
 import Review from './Review';
 import {getFormValues, isValid} from 'redux-form';
 import {stepBack, stepNext, setActiveStepId} from '../actions';
@@ -114,6 +115,7 @@ const CheckoutSteps = props => {
                         className={classes.button}
                     >Dalej</Button>
                 )}
+                {activeStepId === stepsIds[stepsIds.length - 1] && <PayAfterDelivery className={classes.button} />}
             </Box>
         </Box>
     );
