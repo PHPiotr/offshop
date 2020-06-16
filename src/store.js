@@ -35,15 +35,15 @@ const configureStore = (storage, isDevEnv, hotModule) => {
     const initialState = loadState(storage, isDevEnv);
     const middleware = [thunk];
 
+    let enhancer;
     if (isDevEnv) {
         middleware.push(logger);
+        enhancer = composeWithDevTools(applyMiddleware(...middleware));
+    } else {
+        enhancer = applyMiddleware(...middleware);
     }
 
-    const createdStore = createStore(
-        rootReducer,
-        initialState,
-        composeWithDevTools(applyMiddleware(...middleware))
-    );
+    const createdStore = createStore(rootReducer, initialState, enhancer);
 
     createdStore.subscribe(throttle(() => {
         const state = createdStore.getState();
