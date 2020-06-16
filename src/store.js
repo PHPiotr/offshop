@@ -49,7 +49,7 @@ const configureStore = (storage, isDevEnv, hotModule) => {
         const state = createdStore.getState();
         saveState({
             auth: state.auth,
-            products: state.products,
+            products: {...state.products, isFetching: undefined},
             cart: state.cart,
             checkout: state.checkout,
             order: state.order,
