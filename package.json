@@ -14,7 +14,7 @@
     "auth0-js": "^9.13.4",
     "aws-amplify": "^2.3.0",
     "aws-amplify-react": "^3.1.9",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "bfj": "^7.0.2",
     "chalk": "^3.0.0",
     "classnames": "^2.2.6",
